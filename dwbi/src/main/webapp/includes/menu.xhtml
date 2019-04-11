@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+	<ul class="sidebar-menu">
+		<li><p:link href="/index.xhtml">
+				<i class="fa fa-home"></i>
+				<span>Inicio</span>
+			</p:link></li>
+		
+	
+	<li class="treeview"><a href="#"> <i class="fa fa-th-list"></i>
+			<span>Relatórios</span> <span class="pull-right-container"> <i
+				class="fa fa-angle-left pull-right"></i>
+		</span>
+	</a>	
+		<ul class="treeview-menu">
+		
+		<li><p:link href="/pages/relatorios/vendaanomes/vendaanomes.xhtml">
+					<i class="fa fa-bars"></i>
+					<span>Vendas Ano x Mes</span>
+				</p:link>
+		</li>
+		
+		<li><p:link href="/pages/relatorios/vendagruposubgrupoprodutoquantidadevalor/vendagruposubgrupoprodutoquantidadevalor.xhtml">
+					<i class="fa fa-bars"></i>
+					<span>Venda SubGrupo Produto</span>
+				</p:link>
+		</li>
+				
+		</ul>	
+	</li>
+		
+		
+	</ul>
+</ui:composition>

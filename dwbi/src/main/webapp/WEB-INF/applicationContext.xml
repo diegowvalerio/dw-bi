@@ -1,0 +1,45 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/security
+http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+	<http pattern="/login.xhtml" security="none" />
+	<http pattern="/negado.xhtml" security="none" />
+	<http pattern="/javax.faces.resource/**" security="none" />
+	<http pattern="/reset/**" security="none" />
+	<http auto-config="true" use-expressions="true">
+		<intercept-url pattern="/**" access="hasRole('ADM')"/> 
+		<access-denied-handler error-page="/negado.xhtml" />
+		<form-login login-page="/login.xhtml" authentication-failure-url="/login.xhtml?error=true" />
+		<logout logout-success-url="/" logout-url="/j_spring_security_logout" invalidate-session="true"/>
+		<!-- 
+		<intercept-url pattern="/tecnico/**" access="hasAnyRole('ADM','TEC')"/>
+		 -->
+	</http> 
+	
+	
+	<authentication-manager>
+		<authentication-provider>
+			<!--    
+			<user-service>
+				<user name="admin" authorities="ADM" password="123"/>
+			</user-service>
+			-->
+			<jdbc-user-service data-source-ref="dataSource" 
+				users-by-username-query="select c.CADCFTVID as USERNAME, c.CNPJCPF_CADCFTV AS PASSWORD, 'true' as ENABLE from cadcftv c where c.cadcftvid =?"
+				authorities-by-username-query="select c.CADCFTVID as USERNAME, 'ADM' AS AUTHORITY from cadcftv c where c.cadcftvid =?"
+			 />
+		</authentication-provider>
+	</authentication-manager>
+	
+	<beans:bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
+		<beans:property name="url" value="jdbc:oracle:thin:@MSERVER2:1521:AWORKSDB" />
+		<beans:property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<beans:property name="username" value="SEVEN" />
+		<beans:property name="password" value="SEVEN" />
+	</beans:bean>
+</beans:beans>
+

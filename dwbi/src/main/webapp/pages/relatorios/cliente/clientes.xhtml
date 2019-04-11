@@ -1,0 +1,84 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Relatório Cliente
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Relatório de Cliente" />
+
+		<h:form id="form">
+		<div class="box box-primary">
+		<p:separator />
+			<p:panelGrid columns="4" id="paineld">
+				
+				<p:outputLabel value="Nome:" for="nome" />
+				<p:inputText id="nome" value="#{beanCliente.filtro_nome}">
+				</p:inputText>
+				
+				<p:outputLabel value="Ativo : " for="situacao" />
+				<p:selectOneMenu id="situacao" value="#{beanCliente.filtro_situacao}">
+					<f:selectItem itemLabel="Todos"  itemValue="T"/>
+					<f:selectItem itemLabel="Ativo"  itemValue="A"/>
+					<f:selectItem itemLabel="Inativo"  itemValue="I"/>
+				</p:selectOneMenu>
+
+				
+				<p:outputLabel value="Vendedor:" for="vendedor" />
+				<p:inputText id="vendedor" value="#{beanCliente.filtro_vendedor}">
+				</p:inputText>
+				<p:outputLabel value="Até:" for="vendedor" />
+				<p:inputText id="vendedor1" value="#{beanCliente.filtro_vendedor1}">
+				</p:inputText>
+
+				<p:outputLabel value="Data Cadastro:" for="dtcadastro" />
+				<p:calendar  locale="pt_BR"	id="dtcadastro" value="#{beanCliente.filtro_data}"
+					pattern="dd/MM/yyyy" mask="true"  effect="fold" />
+				
+				<p:outputLabel value="Até:" for="dtcadastro" />
+				<p:calendar  locale="pt_BR"	id="dtcadastro1"  value="#{beanCliente.filtro_data1}"
+					pattern="dd/MM/yyyy" mask="true"  effect="fold" />
+				
+			</p:panelGrid>
+			
+				<div class="box-header with-border">
+					<p:commandButton
+						actionListener="#{beanCliente.rel_clientes_lista()}" ajax="false"
+						icon="ui-icon-print" value="Visualizar" styleClass="btn-primary" />
+					<p:spacer width="5" />
+					<p:separator />
+
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
