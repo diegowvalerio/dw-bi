@@ -24,6 +24,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.dwbi.classe.VendaAnoMes;
 import br.com.dwbi.classe.VendaGrupoSubGrupoProdutoQuantidadeValor;
+import br.com.dwbi.classe.VendasEmGeral;
+import br.com.dwbi.classe.VendasEmGeralItem;
 import br.com.dwbi.dwbi.dao.DAOGenerico;
 
 public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
@@ -77,100 +79,221 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 
 		return criteria.list();
 	}
-	
-	/*pegar usuario conectado*/
-	public String usuarioconectado(){
-		String nome;		
+
+	/* pegar usuario conectado */
+	public String usuarioconectado() {
+		String nome;
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		if (principal instanceof UserDetails) {
-		    nome = ((UserDetails)principal).getUsername();
+			nome = ((UserDetails) principal).getUsername();
 		} else {
-		    nome = principal.toString();
+			nome = principal.toString();
 		}
-		//System.out.println(nome);
+		// System.out.println(nome);
 		return nome;
 	}
 
 	/* venda ano mes */
-	public List<VendaAnoMes> vendaanomes(){
+	public List<VendaAnoMes> vendaanomes() {
 		List<VendaAnoMes> list = new ArrayList<>();
-		
-		
+
 		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
-						//"SELECT * FROM("
-						" SELECT "
-						+" TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') AS ANO, "
-						+" TO_CHAR(EN.DT_PEDIDOVENDA,'MM') AS MES, "
-						+" SUM(EN.VL_TOTALPROD_PEDIDOVENDA)as VL_TOTAL "
-						+" FROM PEDIDOVENDA EN "
-						+" INNER JOIN CFOP CF ON CF.CFOPID = EN.CFOPID "
-						+" WHERE "
-						+" CF.TIPOOPERACAO_CFOP = 'VENDA' "
-						+" AND EN.status_pedidovenda in ('IMPORTADO','ABERTO','BLOQUEADO','PARCIAL') "
-						+" AND EN.VENDEDOR1ID = ' " +usuarioconectado()+ " ' "
-						+" GROUP BY "
-						+" TO_CHAR(EN.DT_PEDIDOVENDA,'MM'), "
-						+" TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') "
-						+" ORDER BY "
-						+" TO_CHAR(EN.DT_PEDIDOVENDA,'MM'),TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') ");
-		//query.setParameter("vendedorlogado", usuarioconectado());
+				// "SELECT * FROM("
+				" SELECT " + " TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') AS ANO, " + " TO_CHAR(EN.DT_PEDIDOVENDA,'MM') AS MES, "
+						+ " SUM(EN.VL_TOTALPROD_PEDIDOVENDA)as VL_TOTAL " + " FROM PEDIDOVENDA EN "
+						+ " INNER JOIN CFOP CF ON CF.CFOPID = EN.CFOPID " + " WHERE "
+						+ " CF.TIPOOPERACAO_CFOP = 'VENDA' "
+						+ " AND EN.status_pedidovenda in ('IMPORTADO','ABERTO','BLOQUEADO','PARCIAL') "
+						+ " AND EN.VENDEDOR1ID = ' " + usuarioconectado() + " ' " + " GROUP BY "
+						+ " TO_CHAR(EN.DT_PEDIDOVENDA,'MM'), " + " TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') " + " ORDER BY "
+						+ " TO_CHAR(EN.DT_PEDIDOVENDA,'MM'),TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') ");
+		// query.setParameter("vendedorlogado", usuarioconectado());
 		List<Object[]> lista = query.getResultList();
 
-        for(Object[] row : lista){
-        	VendaAnoMes vendaAnoMes = new VendaAnoMes();
-            
+		for (Object[] row : lista) {
+			VendaAnoMes vendaAnoMes = new VendaAnoMes();
 
-            vendaAnoMes.setAno((String) row[0]);
-            vendaAnoMes.setMes((String) row[1]);      
-            vendaAnoMes.setValor((BigDecimal) row[2]);
-            //System.out.println((String) row[0]+","+(String) row[1]+","+(BigDecimal) row[2]);
-            list.add(vendaAnoMes);
+			vendaAnoMes.setAno((String) row[0]);
+			vendaAnoMes.setMes((String) row[1]);
+			vendaAnoMes.setValor((BigDecimal) row[2]);
+			// System.out.println((String) row[0]+","+(String)
+			// row[1]+","+(BigDecimal) row[2]);
+			list.add(vendaAnoMes);
 
-        }
-		
+		}
+
 		return list;
 	}
-	
-	public List<VendaGrupoSubGrupoProdutoQuantidadeValor> vendaGrupoSubGrupoProdutoQuantidadeValor(Date data1, Date data2){
+
+	public List<VendaGrupoSubGrupoProdutoQuantidadeValor> vendaGrupoSubGrupoProdutoQuantidadeValor(Date data1,
+			Date data2) {
 		List<VendaGrupoSubGrupoProdutoQuantidadeValor> list = new ArrayList<>();
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 		String dataFormatada = formato.format(data1);
 		String dataFormatada2 = formato.format(data2);
-		
+
 		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
-						//"SELECT * FROM("
-						" SELECT "
-						+" sub.NOME_SUBGRUPOPRODUTO as subgrupo, "
-						+" sum(it.qt_pedidovenda_item) qtde, "
-						+" sum(IT.vl_total_pedidovenda_item) vlr "
-						+" from pedidovenda p "
-						+" INNER JOIN PEDIDOVENDA_ITEM IT ON IT.PEDIDOVENDAID= P.PEDIDOVENDAID "
-						+" INNER JOIN PRODUTO PR ON PR.PRODUTOID = IT.PRODUTOID "
-						+" INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
-						+" INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
-						+" inner join subgrupoproduto sub on sub.subgrupoprodutoid = pr.subgrupoprodutoid "
-						+" inner join GRUPOPRODUTO gru on gru.GRUPOPRODUTOID = sub.GRUPOPRODUTOID "
-						+" WHERE p.status_pedidovenda in ('IMPORTADO','ABERTO','BLOQUEADO','PARCIAL') "
-						+" AND CF.tipooperacao_cfop = 'VENDA'and p.VENDEDOR1ID = ' " +usuarioconectado()+ " ' "
-						+" and p.DT_PEDIDOVENDA between ' " +dataFormatada+ " ' and ' " +dataFormatada2+ " ' "
-						+" group by sub.NOME_SUBGRUPOPRODUTO "
-						+" order by sub.NOME_SUBGRUPOPRODUTO ");
-		
+				// "SELECT * FROM("
+				" SELECT " + " sub.NOME_SUBGRUPOPRODUTO as subgrupo, " + " sum(it.qt_pedidovenda_item) qtde, "
+						+ " sum(IT.vl_total_pedidovenda_item) vlr " + " from pedidovenda p "
+						+ " INNER JOIN PEDIDOVENDA_ITEM IT ON IT.PEDIDOVENDAID= P.PEDIDOVENDAID "
+						+ " INNER JOIN PRODUTO PR ON PR.PRODUTOID = IT.PRODUTOID "
+						+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
+						+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+						+ " inner join subgrupoproduto sub on sub.subgrupoprodutoid = pr.subgrupoprodutoid "
+						+ " inner join GRUPOPRODUTO gru on gru.GRUPOPRODUTOID = sub.GRUPOPRODUTOID "
+						+ " WHERE p.status_pedidovenda in ('IMPORTADO','ABERTO','BLOQUEADO','PARCIAL') "
+						+ " AND CF.tipooperacao_cfop = 'VENDA'and p.VENDEDOR1ID = ' " + usuarioconectado() + " ' "
+						+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
+						+ " group by sub.NOME_SUBGRUPOPRODUTO " + " order by sub.NOME_SUBGRUPOPRODUTO ");
+
 		List<Object[]> lista = query.getResultList();
 
-        for(Object[] row : lista){
-        	VendaGrupoSubGrupoProdutoQuantidadeValor vendaGrupoSubGrupoProdutoQuantidadeValor = new VendaGrupoSubGrupoProdutoQuantidadeValor();
-            
+		for (Object[] row : lista) {
+			VendaGrupoSubGrupoProdutoQuantidadeValor vendaGrupoSubGrupoProdutoQuantidadeValor = new VendaGrupoSubGrupoProdutoQuantidadeValor();
 
-        	vendaGrupoSubGrupoProdutoQuantidadeValor.setSubgrupo((String) row[0]);
-        	vendaGrupoSubGrupoProdutoQuantidadeValor.setQuantidade((BigDecimal) row[1]);      
-        	vendaGrupoSubGrupoProdutoQuantidadeValor.setValor((BigDecimal) row[2]);
-            //System.out.println((String) row[0]+","+(String) row[1]+","+(BigDecimal) row[2]);
-            list.add(vendaGrupoSubGrupoProdutoQuantidadeValor);
-        }
-		
+			vendaGrupoSubGrupoProdutoQuantidadeValor.setSubgrupo((String) row[0]);
+			vendaGrupoSubGrupoProdutoQuantidadeValor.setQuantidade((BigDecimal) row[1]);
+			vendaGrupoSubGrupoProdutoQuantidadeValor.setValor((BigDecimal) row[2]);
+			// System.out.println((String) row[0]+","+(String)
+			// row[1]+","+(BigDecimal) row[2]);
+			list.add(vendaGrupoSubGrupoProdutoQuantidadeValor);
+		}
+
 		return list;
+	}
+
+	public List<VendasEmGeral> vendasemgeral(Date data1, Date data2) {
+		List<VendasEmGeral> list = new ArrayList<>();
+		
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		String dataFormatada = formato.format(data1);
+		String dataFormatada2 = formato.format(data2);
+
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				// "SELECT * FROM("
+						" select " 
+						+ " CI.CADCFTVID AS CLIENTE, " 
+						+ " CI.NOME_CADCFTV AS NOME_CLIENTE, "
+						+ " p.pedidovendaid pedido, " 
+						+ " P.DT_PEDIDOVENDA AS DATAPEDIDO, "
+						+ " p.vl_totalprod_pedidovenda, " 
+						+ " pg.nome_formapagto as prazo, "
+						+ " t.desc_tipo_pedido as tipo_pedido, " 
+						+ " CF.tipooperacao_cfop, " 
+						+ " p.status_pedidovenda "
+						+ " from pedidovenda p "
+						+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
+						+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID "
+						+ " inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid "
+						+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid "
+						+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+						+ " inner join roteiro r on r.roteiroid = p.roteiroid "
+						+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+						+ " AND CF.tipooperacao_cfop = 'VENDA' and p.VENDEDOR1ID = ' " + usuarioconectado() + " ' "
+						+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
+						+ " ORDER BY P.PEDIDOVENDAID  ");
+
+		List<Object[]> lista = query.getResultList();
+		
+		
+
+		for (Object[] row : lista) {
+			VendasEmGeral vendasEmGeral = new VendasEmGeral();
+
+			vendasEmGeral.setCodigocliente((BigDecimal) row[0]);
+			vendasEmGeral.setNomecliente((String) row[1] );
+			vendasEmGeral.setPedido((BigDecimal) row[2] );
+			vendasEmGeral.setDatapedido((Date) row[3] );
+			vendasEmGeral.setValortotalpedido((BigDecimal) row[4] );
+			vendasEmGeral.setPrazo((String) row[5] );
+			vendasEmGeral.setTipopedido((String) row[6] );
+			vendasEmGeral.setTipooperacaocfop((String) row[7] );
+			vendasEmGeral.setStatuspedido((String) row[8] );
+			
+			
+			
+			list.add(vendasEmGeral);
+		}
+
+		return list;
+	}
+	
+	public List<VendasEmGeralItem> vendasemgeralitem(BigDecimal pedido) {
+		List<VendasEmGeralItem> list = new ArrayList<>();
+		
+		/*lista 2*/
+		javax.persistence.Query query2 = (javax.persistence.Query) manager.createNativeQuery(
+				// "SELECT * FROM("
+						" select " 
+						+ " CI.CADCFTVID AS CLIENTE, " 
+						+ " CI.NOME_CADCFTV AS NOME_CLIENTE, "
+						+ " p.pedidovendaid pedido, " 
+						+ " P.DT_PEDIDOVENDA AS DATAPEDIDO, "
+						+ " p.vl_totalprod_pedidovenda, " 
+						+ " pg.nome_formapagto as prazo, "
+						+ " t.desc_tipo_pedido as tipo_pedido, " 
+						+ " CF.tipooperacao_cfop, " 
+						+ " p.status_pedidovenda, "
+						+ " it.produtoid, " 
+						+ " it.ds_produto_pedidovenda_item, " 
+						+ " it.qt_pedidovenda_item, "
+						+ " IT.VL_UNIT_PEDIDOVENDA_ITEM, " 
+						+ " IT.vl_total_pedidovenda_item, "
+						+ " x1.NR_NOTA_PEDIDOVENDA,  " 
+						+ " x1.DT_SAIDA_PEDIDOVENDA,  "
+						+ " x1.STATUS_PEDIDOVENDA status_nota " 
+						+ " from pedidovenda p "
+						+ " INNER JOIN PEDIDOVENDA_ITEM IT ON IT.PEDIDOVENDAID= P.PEDIDOVENDAID "
+						+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
+						+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID "
+						+ " inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid "
+						+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid "
+						+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+						+ " inner join roteiro r on r.roteiroid = p.roteiroid "
+						+ " left join ( " 
+						+ " select " 
+						+ " nota.NR_NOTA_PEDIDOVENDA, " 
+						+ " nota.DT_SAIDA_PEDIDOVENDA,  "
+						+ " nota.STATUS_PEDIDOVENDA, " 
+						+ " it_nota.ORIGEM_PEDIDOVENDA_ITEM,  " 
+						+ " IT_nota.produtoid "
+						+ " from PEDIDOVENDA_ITEM IT_nota "
+						+ " inner join pedidovenda nota on nota.pedidovendaid = it_nota.pedidovendaid " 
+						+ " group by  "
+						+ " nota.NR_NOTA_PEDIDOVENDA, " 
+						+ " nota.DT_SAIDA_PEDIDOVENDA,  " 
+						+ " nota.STATUS_PEDIDOVENDA, "
+						+ " it_nota.ORIGEM_PEDIDOVENDA_ITEM , " 
+						+ " IT_nota.produtoid "
+						+ " ) x1 on x1.ORIGEM_PEDIDOVENDA_ITEM = IT.PEDIDOVENDAITEMID  and x1.produtoid = it.produtoid "
+
+						+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+						+ " AND CF.tipooperacao_cfop = 'VENDA' and p.VENDEDOR1ID = ' " + usuarioconectado() + " ' "
+						+ " and p.pedidovendaid = ' " + pedido + " ' " 
+						+ " ORDER BY P.PEDIDOVENDAID  ");
+		List<Object[]> lista2 = query2.getResultList();
+		
+		for (Object[] row2 : lista2) {
+			
+				
+			VendasEmGeralItem vendasEmGeralItem = new VendasEmGeralItem();
+			
+			vendasEmGeralItem.setPedido((BigDecimal) row2[2] );
+			vendasEmGeralItem.setCodigoproduto((BigDecimal) row2[9] );
+			vendasEmGeralItem.setNomeproduto((String) row2[10] );
+			vendasEmGeralItem.setQuantidadeproduto((BigDecimal) row2[11] );
+			vendasEmGeralItem.setValorunitarioproduto((BigDecimal) row2[12] );
+			vendasEmGeralItem.setValortotalproduto((BigDecimal) row2[13] );
+			vendasEmGeralItem.setNota((String) row2[14] );
+			vendasEmGeralItem.setDatanota((Date) row2[15] );
+			vendasEmGeralItem.setStatusnota((String) row2[16] );
+			
+			list.add(vendasEmGeralItem);
+		}
+		return list;
+		
 	}
 
 }
