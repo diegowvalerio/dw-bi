@@ -10,7 +10,7 @@
 	<name>dwbigestor</name>
 	<url>http://maven.apache.org</url>
 	<properties>
-		<versao.spring>3.2.6.RELEASE</versao.spring>
+		<versao.spring>4.1.1.RELEASE</versao.spring>
 		<!-- 5.0.0.RELEASE 4.1.4.RELEASE 3.2.6.RELEASE -->
 	</properties>
 
