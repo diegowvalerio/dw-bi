@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:adm="http://github.com/adminfaces"
+      xmlns:p="http://primefaces.org/ui">
+
+<f:view contentType="text/html">
+    <h:head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+        <meta name="mobile-web-app-capable" content="yes"/>
+        <h:outputStylesheet library="css" name="prism.css"/>
+
+        <style type="text/css">
+            @media (max-width: 768px) {
+                div.ui-growl {
+                    display: none!important;
+                }
+
+                div.ui-messages-error {
+                    display: block!important;
+                }
+            }
+
+            @media (min-width: 769px) {
+                div.ui-growl {
+                    display: block!important;
+                }
+
+                div.ui-messages-error {
+                    display: none!important;
+                }
+            }
+
+        </style>
+    </h:head>
+
+
+    <h:body styleClass="hold-transition login-page">
+        <p:growl autoUpdate="true" sticky="true"/>
+        <div id="loader" class="load-bar" style="display: none">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+
+        <div class="login-box">
+            <div class="login-logo">
+                <p:link href="index.xhtml"><b>Admin</b>Faces</p:link>
+            </div>
+            <!-- /.login-logo -->
+            <div class="box login-box-body">
+                <h:form>
+                    <p class="login-box-msg">Sign in to start your session</p>
+                    <p:messages closable="true" />
+                    <form action="j_spring_security_check" method="post">
+                    <div class="form-group has-feedback">
+                        <p:inputText id="j_username" />
+                        <i class="fa fa-envelope form-control-feedback"></i>
+                    </div>
+                    <div class="form-group has-feedback">
+                        <p:password  id="j_password" />
+                        <i class="fa fa-lock form-control-feedback" ></i>
+                    </div>
+                    </form>
+                </h:form>
+
+            </div>
+            <!-- /.login-box-body -->
+        </div>
+
+        <h:outputScript library="js" name="prism.js"  target="head"/>
+        <h:outputScript library="js" name="admintemplate.js"  target="head"/>
+        <adm:ripple/>
+
+        <style type="text/css">
+            body .load-bar {
+                margin-top: -20px;
+            }
+        </style>
+    </h:body>
+</f:view>
+</html>

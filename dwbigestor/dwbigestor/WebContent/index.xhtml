@@ -1,0 +1,140 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Resumo
+    </ui:define>
+
+	<ui:define name="description">
+
+	</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Resumo" />
+		<h:form id="form">
+			<section class="content">
+
+				<p:outputLabel value=" Data:  " for="data_grafico" />
+				<p:calendar locale="pt_BR" id="data_grafico"
+					value="#{beanResumo.data_grafico}" pattern="dd/MM/yyyy"
+					mask="true" required="true" readonlyInput="true">
+				</p:calendar>
+
+				<p:outputLabel value=" Até:  " for="data_grafico2" />
+				<p:calendar locale="pt_BR" id="data_grafico2"
+					value="#{beanResumo.data_grafico2}" pattern="dd/MM/yyyy"
+					mask="true" required="true" readonlyInput="true">
+				</p:calendar>
+				<SPAN></SPAN>
+				<p:commandButton action="#{beanResumo.init()}"
+					value="Filtrar" icon="fa fa-check" update=":form"
+					styleClass="btn-primary" />
+
+				<p:separator />
+
+				<div class="row">
+					<div class="col-lg-3 col-xs-6">
+						<!-- small box -->
+						<div class="small-box bg-aqua">
+							<div class="inner">
+								<h3>
+									<h:outputText value="#{beanResumo.pedidododia}" />
+								</h3>
+
+								<p>Pedidos</p>
+							</div>
+							<div class="icon">
+								<i class="fa fa-shopping-cart"></i>
+							</div>
+							
+							<h:commandLink action="#{beanResumo.encaminha2()}" 
+							 styleClass="fa fa-arrow-circle-right small-box-footer" value=" Detalhes"/>
+							 
+						</div>
+					</div>
+					<!-- ./col -->
+					<div class="col-lg-3 col-xs-6">
+						<!-- small box -->
+						<div class="small-box bg-green">
+							<div class="inner">
+								<h3>
+									<h:outputText value="#{beanResumo.valorTotal}" />
+								</h3>
+
+								<p>Valor</p>
+							</div>
+							<div class="icon">
+								<i class="ion ion-stats-bars"></i>
+							</div>
+							
+							<h:commandLink action="#{beanResumo.encaminha2()}" 
+							 styleClass="fa fa-arrow-circle-right small-box-footer" value=" Detalhes"/>
+						</div>
+					</div>
+					<!-- ./col -->
+					
+					<div class="col-lg-3 col-xs-6">
+						<!-- small box -->
+						<div class="small-box bg-yellow">
+							<div class="inner">
+								<h3>
+									<h:outputText value="#{beanResumo.totalClientes}" />
+								</h3>
+
+								<p>Novos Clientes</p>
+							</div>
+							<div class="icon">
+								<i class="ion ion-person-add"></i>
+							</div>
+							<h:commandLink action="#{beanResumo.encaminha3()}" 
+							 styleClass="fa fa-arrow-circle-right small-box-footer" value=" Detalhes"/>
+							 
+						</div>
+					</div>
+					<!-- ./col -->
+					<div class="col-lg-3 col-xs-6">
+						<!-- small box -->
+						<div class="small-box bg-red">
+							<div class="inner">
+								<h3>65</h3>
+
+								<p>Teste</p>
+							</div>
+							<div class="icon">
+								<i class="ion ion-pie-graph"></i>
+							</div>
+							
+							<h:commandLink action="#{beanVendasemGeral.encaminha2()}" 
+							 styleClass="fa fa-arrow-circle-right small-box-footer" value=" Detalhes"/>
+						</div>
+					</div>
+					<!-- ./col -->
+				</div>
+			</section>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

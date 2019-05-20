@@ -1,0 +1,101 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Clientes
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Clientes" />
+
+		<h:form id="form">
+			<div class="box box-primary">
+				<div class="box-header with-border">
+
+					<p:outputLabel value=" Data:  " for="data_grafico" />
+					<p:calendar locale="pt_BR" id="data_grafico"
+						value="#{beanClientesNovos.data_grafico}" pattern="dd/MM/yyyy"
+						mask="true" required="true" readonlyInput="true">
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico2" />
+					<p:calendar locale="pt_BR" id="data_grafico2"
+						value="#{beanClientesNovos.data_grafico2}" pattern="dd/MM/yyyy"
+						mask="true" required="true" readonlyInput="true">
+					</p:calendar>
+
+					<p:commandButton action="#{beanClientesNovos.init()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld"
+						styleClass="btn-primary" />
+
+					<p:separator />
+
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right"
+						style="width:100%">
+						<p:dataTable id="cliente" var="clientes"
+							value="#{beanClientesNovos.lista}">
+
+							<f:facet name="header">
+								<p:commandButton id="toggler" type="button" value="Colunas"
+									icon="fa fa-bars" />
+								<p:columnToggler datasource="cliente" trigger="toggler" />
+							</f:facet>
+
+							<p:column headerText="Vendedor" sortBy="#{clientes.nomevendedor}">
+								<h:outputText value="#{clientes.nomevendedor}" />
+							</p:column>
+
+							<p:column headerText="Razão Social" sortBy="#{clientes.nomecliente}">
+								<h:outputText value="#{clientes.nomecliente}" />
+							</p:column>
+							
+							<p:column headerText="Fantasia" sortBy="#{clientes.nomefantasia}">
+								<h:outputText value="#{clientes.nomefantasia}" />
+							</p:column>
+
+							<p:column width="10%" headerText="Data Cadastro" sortBy="#{clientes.datacadastro}">
+								<h:outputText value="#{clientes.datacadastro}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Cpf/Cnpj" sortBy="#{clientes.cpfcnpj}" visible="false">
+								<h:outputText value="#{clientes.cpfcnpj}" />
+							</p:column>
+							
+						</p:dataTable>
+					</h:panelGrid>
+				</div>
+			</div>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

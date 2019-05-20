@@ -1,0 +1,36 @@
+@CHARSET "ISO-8859-1";
+
+#pagina{
+	max-width: 1200px;
+	margin: 20px auto;
+	
+}
+
+img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* Menu sistema inicio */
+.menu-sistema {
+    background: #ffffff!important;
+}
+
+.menu-sistema .ui-menu-parent > a .ui-menuitem-text, .menu-sistema > .ui-menu-list > .ui-menuitem > a > .ui-menuitem-text {
+    overflow: visible !important; 
+    color: #000000!important;
+}
+
+.menu-sistema .ui-menuitem-text {
+    /*top: 25px !important;    */
+    
+    color: #000000!important;
+}
+
+
+
+
+/*mudar fonte do pimefaces*/
+.ui-widget {
+	font-size: 13.5px !important;
+}
