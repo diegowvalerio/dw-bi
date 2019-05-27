@@ -1,6 +1,7 @@
 package br.com.dwbigestor.bean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.dwbigestor.classe.VendasEmGeral;
 import br.com.dwbigestor.classe.VendasEmGeralItem;
+import br.com.dwbigestor.classe.Vendedor;
 import br.com.dwbigestor.servico.ServicoVendasemGeral;
 
 @Named
@@ -33,11 +35,15 @@ public class BeanVendasemGeral implements Serializable {
 	private ServicoVendasemGeral servico;
 	private List<VendasEmGeral> listavenda = new ArrayList<>();
 	private List<VendasEmGeralItem> listavendaitems = new ArrayList<>();
+	private Vendedor vendedor = new Vendedor();
 
 	private String vendedorlogado;
 
 	private Date data_grafico = new Date();
 	private Date data_grafico2 = new Date();
+	
+	private String vendedorfiltrado;
+	private String vendedorfiltrado2;
 
 	@PostConstruct
 	public void init() {
@@ -45,19 +51,62 @@ public class BeanVendasemGeral implements Serializable {
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
 				.getRequest();
 		HttpSession session = (HttpSession) request.getSession();
+		if (session.getAttribute("vendedor") != null){
+			vendedor = (Vendedor) session.getAttribute("vendedor");
+			if (vendedor == null){
+				vendedorfiltrado = "0";
+				vendedorfiltrado2 = "999999";
+				
+			}else{
+				vendedorfiltrado = vendedor.getCodigovendedor().toString();
+				vendedorfiltrado2 = vendedor.getCodigovendedor().toString();
+			}
+		}
+		if (vendedor == null){
+			vendedorfiltrado = "0";
+			vendedorfiltrado2 = "999999";
+			
+		}else{
+			vendedorfiltrado = vendedor.getCodigovendedor().toString();
+			vendedorfiltrado2 = vendedor.getCodigovendedor().toString();
+		}
 		if ((Date) session.getAttribute("data1") != null) {
 			this.data_grafico = (Date) session.getAttribute("data1");
 			this.data_grafico2 = (Date) session.getAttribute("data2");
-			listavenda = servico.vendasemgeral(data_grafico, data_grafico2);
+			listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 		} else {			
-			listavenda = servico.vendasemgeral(data_grafico, data_grafico2);
+			listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 		}
 
 		session.removeAttribute("data1");
 		session.removeAttribute("data2");
+		session.removeAttribute("vendedor");
 
 	}
 
+	public Vendedor getVendedor() {
+		return vendedor;
+	}
+
+	public void setVendedor(Vendedor vendedor) {
+		this.vendedor = vendedor;
+	}
+
+	public String getVendedorfiltrado() {
+		return vendedorfiltrado;
+	}
+
+	public void setVendedorfiltrado(String vendedorfiltrado) {
+		this.vendedorfiltrado = vendedorfiltrado;
+	}
+
+	public String getVendedorfiltrado2() {
+		return vendedorfiltrado2;
+	}
+
+	public void setVendedorfiltrado2(String vendedorfiltrado2) {
+		this.vendedorfiltrado2 = vendedorfiltrado2;
+	}
 	public String getVendedorlogado() {
 		return vendedorlogado;
 	}

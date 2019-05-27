@@ -2,6 +2,7 @@ package br.com.dwbigestor.hibernate;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Blob;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +28,7 @@ import br.com.dwbigestor.classe.VendaAnoMes;
 import br.com.dwbigestor.classe.VendaGrupoSubGrupoProdutoQuantidadeValor;
 import br.com.dwbigestor.classe.VendasEmGeral;
 import br.com.dwbigestor.classe.VendasEmGeralItem;
+import br.com.dwbigestor.classe.Vendedor;
 import br.com.dwbigestor.dao.DAOGenerico;
 
 public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
@@ -171,7 +173,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		return list;
 	}
 	//pedidos de venda
-	public List<VendasEmGeral> vendasemgeral(Date data1, Date data2) {
+	public List<VendasEmGeral> vendasemgeral(Date data1, Date data2, String vendedor1, String vendedor2) {
 		List<VendasEmGeral> list = new ArrayList<>();
 		
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -204,6 +206,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
 						+ " AND CF.tipooperacao_cfop = 'VENDA' " + " AND V2.GESTORID = G.GESTORID "
 						+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
+						+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 						+ " ORDER BY P.PEDIDOVENDAID  ");
 
 		List<Object[]> lista = query.getResultList();
@@ -255,9 +258,11 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " IT.vl_total_pedidovenda_item, "
 						+ " x1.NR_NOTA_PEDIDOVENDA,  " 
 						+ " x1.DT_SAIDA_PEDIDOVENDA,  "
-						+ " x1.STATUS_PEDIDOVENDA status_nota " 
+						+ " x1.STATUS_PEDIDOVENDA status_nota, " 
+						+ " IMG.IMAGEM_PRODUTO "
 						+ " from pedidovenda p "
 						+ " INNER JOIN PEDIDOVENDA_ITEM IT ON IT.PEDIDOVENDAID= P.PEDIDOVENDAID "
+						+ " LEFT JOIN PRODUTO_IMAGEM IMG ON IMG.PRODUTOID = IT.PRODUTOID "
 						+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
 						+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID "
 						+ " inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid "
@@ -304,6 +309,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			vendasEmGeralItem.setNota((String) row2[14] );
 			vendasEmGeralItem.setDatanota((Date) row2[15] );
 			vendasEmGeralItem.setStatusnota((String) row2[16] );
+			vendasEmGeralItem.setImagem((Blob) row2[17] );
 			
 			list.add(vendasEmGeralItem);
 		}
@@ -320,7 +326,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
 						" SELECT " 
 						+ " cl.VENDEDORID1 vendedor, " 
-						+ " c.NOME_CADCFTV nome_vendedor, "
+						+ " v.NOME_CADCFTV nome_vendedor, "
 						+ " c.cadcftvid cliente, " 
 						+ " c.NOME_CADCFTV nome_cliente, " 
 						+ " c.APELIDO_CADCFTV nome_fantasia, " 
@@ -357,5 +363,75 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 
 		return list;
 	}
+	
+	public List<Vendedor> consultavendedor() {
+		List<Vendedor> list = new ArrayList<>();
 
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+						" SELECT " 
+						+ " V.CADCFTVID vendedor, " 
+						+ " v.NOME_CADCFTV nome_vendedor, "
+						+ " v.CNPJCPF_CADCFTV cnpj_cpf "  
+						
+						+ " from cadcftv v "
+						+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  " + usuarioconectado()
+						+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+						+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = V.CADCFTVID and V2.GESTORID = G.GESTORID "						
+						+ " WHERE v.ATIVO_CADCFTV = 'SIM' "
+						+ " order by v.cadcftvid ");
+
+		List<Object[]> lista = query.getResultList();
+
+		for (Object[] row : lista) {
+			Vendedor vendedor = new Vendedor();
+
+			vendedor.setCodigovendedor((BigDecimal) row[0]);
+			vendedor.setNomevendedor((String) row[1]);
+			vendedor.setCpfcnpj((String) row[2]);
+			
+			
+			list.add(vendedor);
+		}
+		return list;
+	}
+	
+	public VendasEmGeralItem consultaitem(BigDecimal produto) {
+		VendasEmGeralItem vendasEmGeralItem = new VendasEmGeralItem();
+
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				" select " 
+						+ " '1' pedido, " 
+						+ " '01/01/2019' AS DATAPEDIDO, "
+						+ " it.produtoid, " 
+						+ " '' ds_produto_pedidovenda_item, " 
+						+ " 0 qt_pedidovenda_item, "
+						+ " 0 VL_UNIT_PEDIDOVENDA_ITEM, " 
+						+ " 0 vl_total_pedidovenda_item, "
+						+ " '0' NR_NOTA_PEDIDOVENDA,  " 
+						+ " '01/01/2019' DT_SAIDA_PEDIDOVENDA,  "
+						+ " '0'  status_nota, " 
+						+ " IMG.IMAGEM_PRODUTO "  
+						+ " from produto it "	
+						+ " LEFT JOIN PRODUTO_IMAGEM IMG ON IMG.PRODUTOID = IT.PRODUTOID "
+						+ " WHERE it.produtoid = " +produto);
+
+		List<Object[]> lista = query.getResultList();
+
+		for (Object[] row2 : lista) {
+			
+			vendasEmGeralItem.setPedido((BigDecimal) row2[0] );
+			vendasEmGeralItem.setCodigoproduto((BigDecimal) row2[2] );
+			vendasEmGeralItem.setNomeproduto((String) row2[3] );
+			vendasEmGeralItem.setQuantidadeproduto((BigDecimal) row2[11] );
+			vendasEmGeralItem.setValorunitarioproduto((BigDecimal) row2[12] );
+			vendasEmGeralItem.setValortotalproduto((BigDecimal) row2[13] );
+			vendasEmGeralItem.setNota((String) row2[14] );
+			vendasEmGeralItem.setDatanota((Date) row2[15] );
+			vendasEmGeralItem.setStatusnota((String) row2[16] );
+			vendasEmGeralItem.setImagem((Blob) row2[17] );
+			
+		}
+		return vendasEmGeralItem;
+	}
+	
 }

@@ -10,6 +10,7 @@ import br.com.dwbigestor.classe.VendaAnoMes;
 import br.com.dwbigestor.classe.VendaGrupoSubGrupoProdutoQuantidadeValor;
 import br.com.dwbigestor.classe.VendasEmGeral;
 import br.com.dwbigestor.classe.VendasEmGeralItem;
+import br.com.dwbigestor.classe.Vendedor;
 
 public interface DAOGenerico<E> {
 	public E salvar(E e);
@@ -26,10 +27,14 @@ public interface DAOGenerico<E> {
 	
 	public List<VendaGrupoSubGrupoProdutoQuantidadeValor> vendaGrupoSubGrupoProdutoQuantidadeValor(Date data1, Date data2);
 	
-	public List<VendasEmGeral> vendasemgeral(Date data1, Date data2);
+	public List<VendasEmGeral> vendasemgeral(Date data1, Date data2, String vendedor1, String vendedor2);
 	
 	public List<VendasEmGeralItem> vendasemgeralitem(BigDecimal pedido);
 	
 	public List<ClientesNovos> clientesnovos(Date data1, Date data2);
+	
+	public List<Vendedor> consultavendedor();
+	
+	public VendasEmGeralItem consultaitem(BigDecimal produto);
 	
 }

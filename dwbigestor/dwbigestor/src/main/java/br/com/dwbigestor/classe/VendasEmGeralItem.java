@@ -3,6 +3,7 @@ package br.com.dwbigestor.classe;
 import java.io.Serializable;
 import java.lang.String;
 import java.math.BigDecimal;
+import java.sql.Blob;
 import java.util.Date;
 
 import javax.persistence.*;
@@ -22,6 +23,8 @@ public class VendasEmGeralItem implements Serializable {
 	private String nota;
 	private Date datanota;
 	private String statusnota;
+	
+	private Blob imagem;
 		
 
 	public VendasEmGeralItem() {
@@ -104,6 +107,18 @@ public class VendasEmGeralItem implements Serializable {
 
 	public void setStatusnota(String statusnota) {
 		this.statusnota = statusnota;
+	}
+
+
+
+	public Blob getImagem() {
+		return imagem;
+	}
+
+
+
+	public void setImagem(Blob imagem) {
+		this.imagem = imagem;
 	}
 	
 	

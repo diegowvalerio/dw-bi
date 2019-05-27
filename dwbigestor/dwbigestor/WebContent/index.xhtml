@@ -36,11 +36,12 @@
 		<adm:breadcrumb title="Resumo" />
 		<h:form id="form">
 			<section class="content">
-
+			<p:panelGrid columns="7" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+                             layout="grid" styleClass="ui-fluid card">
 				<p:outputLabel value=" Data:  " for="data_grafico" />
 				<p:calendar locale="pt_BR" id="data_grafico"
-					value="#{beanResumo.data_grafico}" pattern="dd/MM/yyyy"
-					mask="true" required="true" readonlyInput="true">
+					value="#{beanResumo.data_grafico}" pattern="dd/MM/yyyy" mask="true"
+					required="true" readonlyInput="true">
 				</p:calendar>
 
 				<p:outputLabel value=" Até:  " for="data_grafico2" />
@@ -48,11 +49,21 @@
 					value="#{beanResumo.data_grafico2}" pattern="dd/MM/yyyy"
 					mask="true" required="true" readonlyInput="true">
 				</p:calendar>
-				<SPAN></SPAN>
-				<p:commandButton action="#{beanResumo.init()}"
-					value="Filtrar" icon="fa fa-check" update=":form"
-					styleClass="btn-primary" />
 
+				<p:outputLabel value="Vendedor:" for="vendedor" />
+				<p:selectOneMenu id="vendedor"
+					value="#{beanResumo.vendedor}"
+					converter="conversorVendedor">
+					<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
+					<f:selectItems value="#{beanResumo.listavendedor}"
+						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
+						itemValue="#{vendedor}" />
+				</p:selectOneMenu>
+				
+				<p:commandButton action="#{beanResumo.filtrar()}" value="Filtrar"
+					icon="fa fa-check" update=":form" styleClass="btn-primary" />
+			</p:panelGrid>
+				
 				<p:separator />
 
 				<div class="row">
@@ -69,10 +80,11 @@
 							<div class="icon">
 								<i class="fa fa-shopping-cart"></i>
 							</div>
-							
-							<h:commandLink action="#{beanResumo.encaminha2()}" 
-							 styleClass="fa fa-arrow-circle-right small-box-footer" value=" Detalhes"/>
-							 
+
+							<h:commandLink action="#{beanResumo.encaminha2()}"
+								styleClass="fa fa-arrow-circle-right small-box-footer"
+								value=" Detalhes" />
+
 						</div>
 					</div>
 					<!-- ./col -->
@@ -89,13 +101,14 @@
 							<div class="icon">
 								<i class="ion ion-stats-bars"></i>
 							</div>
-							
-							<h:commandLink action="#{beanResumo.encaminha2()}" 
-							 styleClass="fa fa-arrow-circle-right small-box-footer" value=" Detalhes"/>
+
+							<h:commandLink action="#{beanResumo.encaminha2()}"
+								styleClass="fa fa-arrow-circle-right small-box-footer"
+								value=" Detalhes" />
 						</div>
 					</div>
 					<!-- ./col -->
-					
+
 					<div class="col-lg-3 col-xs-6">
 						<!-- small box -->
 						<div class="small-box bg-yellow">
@@ -109,9 +122,10 @@
 							<div class="icon">
 								<i class="ion ion-person-add"></i>
 							</div>
-							<h:commandLink action="#{beanResumo.encaminha3()}" 
-							 styleClass="fa fa-arrow-circle-right small-box-footer" value=" Detalhes"/>
-							 
+							<h:commandLink action="#{beanResumo.encaminha3()}"
+								styleClass="fa fa-arrow-circle-right small-box-footer"
+								value=" Detalhes" />
+
 						</div>
 					</div>
 					<!-- ./col -->
@@ -119,20 +133,22 @@
 						<!-- small box -->
 						<div class="small-box bg-red">
 							<div class="inner">
-								<h3>65</h3>
+								<h3>#</h3>
 
 								<p>Teste</p>
 							</div>
 							<div class="icon">
 								<i class="ion ion-pie-graph"></i>
 							</div>
-							
-							<h:commandLink action="#{beanVendasemGeral.encaminha2()}" 
-							 styleClass="fa fa-arrow-circle-right small-box-footer" value=" Detalhes"/>
+
+							<h:commandLink action="#{beanVendasemGeral.encaminha2()}"
+								styleClass="fa fa-arrow-circle-right small-box-footer"
+								value=" Detalhes" />
 						</div>
 					</div>
 					<!-- ./col -->
 				</div>
+			
 			</section>
 		</h:form>
 	</ui:define>

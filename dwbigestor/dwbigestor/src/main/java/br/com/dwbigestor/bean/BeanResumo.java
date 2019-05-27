@@ -1,6 +1,7 @@
 package br.com.dwbigestor.bean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,8 +23,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import br.com.dwbigestor.classe.ClientesNovos;
 import br.com.dwbigestor.classe.VendasEmGeral;
 import br.com.dwbigestor.classe.VendasEmGeralItem;
+import br.com.dwbigestor.classe.Vendedor;
 import br.com.dwbigestor.servico.ServicoClientesNovos;
 import br.com.dwbigestor.servico.ServicoVendasemGeral;
+import br.com.dwbigestor.servico.ServicoVendedor;
 
 @Named
 @ViewScoped
@@ -39,14 +42,26 @@ public class BeanResumo implements Serializable {
 	@Inject
 	private ServicoClientesNovos servicoclientes;
 	private List<ClientesNovos> listaclientes = new ArrayList<>();
-
+	
+	private Vendedor vendedor = new Vendedor();
+	@Inject
+	private ServicoVendedor servicovendedor;
+	private List<Vendedor> listavendedor = new ArrayList<>();
+	
+	//filtros
 	private String vendedorlogado;
 
 	private Date data_grafico = new Date();
 	private Date data_grafico2 = new Date();
+	
+	private String vendedorfiltrado;
+	private String vendedorfiltrado2;
 
 	@PostConstruct
 	public void init() {
+		listavendedor = servicovendedor.consultavendedor();
+		vendedorfiltrado = "0";
+		vendedorfiltrado2 = "999999";
 		
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
 				.getRequest();
@@ -54,10 +69,10 @@ public class BeanResumo implements Serializable {
 		if ((Date) session.getAttribute("data1") != null) {
 			this.data_grafico = (Date) session.getAttribute("data1");
 			this.data_grafico2 = (Date) session.getAttribute("data2");
-			listavenda = servico.vendasemgeral(data_grafico, data_grafico2);
+			listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 			listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2);
 		} else {			
-			listavenda = servico.vendasemgeral(data_grafico, data_grafico2);
+			listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 			listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2);
 		}
 
@@ -65,9 +80,38 @@ public class BeanResumo implements Serializable {
 		session.removeAttribute("data2");
 
 	}
-
+	
+	public void filtrar(){
+		if (vendedor == null){
+			vendedorfiltrado = "0";
+			vendedorfiltrado2 = "999999";
+			
+		}else{
+			vendedorfiltrado = vendedor.getCodigovendedor().toString();
+			vendedorfiltrado2 = vendedor.getCodigovendedor().toString();
+		}
+		listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+		listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2);
+	}
+	
 	public String getVendedorlogado() {
 		return vendedorlogado;
+	}
+
+	public Vendedor getVendedor() {
+		return vendedor;
+	}
+
+	public void setVendedor(Vendedor vendedor) {
+		this.vendedor = vendedor;
+	}
+
+	public List<Vendedor> getListavendedor() {
+		return listavendedor;
+	}
+
+	public void setListavendedor(List<Vendedor> listavendedor) {
+		this.listavendedor = listavendedor;
 	}
 
 	public void setVendedorlogado(String vendedorlogado) {
@@ -98,12 +142,29 @@ public class BeanResumo implements Serializable {
 		this.listavenda = listavenda;
 	}
 
+	public String getVendedorfiltrado() {
+		return vendedorfiltrado;
+	}
+
+	public void setVendedorfiltrado(String vendedorfiltrado) {
+		this.vendedorfiltrado = vendedorfiltrado;
+	}
+	
+	
 	public VendasEmGeral getVendasEmGeral() {
 		return vendasEmGeral;
 	}
 
 	public void setVendasEmGeral(VendasEmGeral vendasEmGeral) {
 		this.vendasEmGeral = vendasEmGeral;
+	}
+	
+	public String getVendedorfiltrado2() {
+		return vendedorfiltrado2;
+	}
+
+	public void setVendedorfiltrado2(String vendedorfiltrado2) {
+		this.vendedorfiltrado2 = vendedorfiltrado2;
 	}
 
 
@@ -127,7 +188,7 @@ public class BeanResumo implements Serializable {
 	public String encaminha2() {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
-		// session.setAttribute("vendaGeral", this.vendasEmGeral);
+		session.setAttribute("vendedor", this.vendedor);
 		session.setAttribute("data1", this.data_grafico);
 		session.setAttribute("data2", this.data_grafico2);
 
@@ -190,4 +251,6 @@ public class BeanResumo implements Serializable {
 
 		return total;
 	}
+
+
 }
