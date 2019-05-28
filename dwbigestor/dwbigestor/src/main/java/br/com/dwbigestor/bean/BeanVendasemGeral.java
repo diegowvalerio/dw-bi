@@ -24,6 +24,7 @@ import br.com.dwbigestor.classe.VendasEmGeral;
 import br.com.dwbigestor.classe.VendasEmGeralItem;
 import br.com.dwbigestor.classe.Vendedor;
 import br.com.dwbigestor.servico.ServicoVendasemGeral;
+import br.com.dwbigestor.servico.ServicoVendedor;
 
 @Named
 @ViewScoped
@@ -35,6 +36,10 @@ public class BeanVendasemGeral implements Serializable {
 	private ServicoVendasemGeral servico;
 	private List<VendasEmGeral> listavenda = new ArrayList<>();
 	private List<VendasEmGeralItem> listavendaitems = new ArrayList<>();
+	
+	@Inject
+	private ServicoVendedor servicovendedor;
+	private List<Vendedor> listavendedor = new ArrayList<>();
 	private Vendedor vendedor = new Vendedor();
 
 	private String vendedorlogado;
@@ -47,7 +52,7 @@ public class BeanVendasemGeral implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		
+		listavendedor = servicovendedor.consultavendedor();
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
 				.getRequest();
 		HttpSession session = (HttpSession) request.getSession();
@@ -62,7 +67,7 @@ public class BeanVendasemGeral implements Serializable {
 				vendedorfiltrado2 = vendedor.getCodigovendedor().toString();
 			}
 		}
-		if (vendedor == null){
+		if (vendedor.getCodigovendedor() == null){
 			vendedorfiltrado = "0";
 			vendedorfiltrado2 = "999999";
 			
@@ -82,6 +87,26 @@ public class BeanVendasemGeral implements Serializable {
 		session.removeAttribute("data2");
 		session.removeAttribute("vendedor");
 
+	}
+	
+	public void filtrar(){
+		if (vendedor == null){
+			vendedorfiltrado = "0";
+			vendedorfiltrado2 = "999999";
+			
+		}else{
+			vendedorfiltrado = vendedor.getCodigovendedor().toString();
+			vendedorfiltrado2 = vendedor.getCodigovendedor().toString();
+		}
+		listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+	}
+
+	public List<Vendedor> getListavendedor() {
+		return listavendedor;
+	}
+
+	public void setListavendedor(List<Vendedor> listavendedor) {
+		this.listavendedor = listavendedor;
 	}
 
 	public Vendedor getVendedor() {

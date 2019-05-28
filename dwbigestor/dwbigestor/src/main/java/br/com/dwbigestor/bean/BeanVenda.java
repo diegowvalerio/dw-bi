@@ -21,7 +21,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.dwbigestor.classe.VendaAnoMes;
+import br.com.dwbigestor.classe.Vendedor;
 import br.com.dwbigestor.servico.ServicoVendaAnoMes;
+import br.com.dwbigestor.servico.ServicoVendedor;
 
 @Named
 @ViewScoped

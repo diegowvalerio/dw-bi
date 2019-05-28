@@ -18,8 +18,8 @@ public class ServicoClientesNovos implements Serializable{
 	private DAOClientesNovos dao;
 	
 	
-	public List<ClientesNovos> clientesnovos(Date data1, Date data2){
-		return dao.clientesnovos(data1, data2);
+	public List<ClientesNovos> clientesnovos(Date data1, Date data2,String vendedor1, String vendedor2){
+		return dao.clientesnovos(data1, data2,vendedor1, vendedor2);
 	}
 	
 }

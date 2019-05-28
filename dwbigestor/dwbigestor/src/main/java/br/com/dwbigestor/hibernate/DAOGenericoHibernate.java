@@ -317,7 +317,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		
 	}
 	//clientes cadastrados no periodo
-	public List<ClientesNovos> clientesnovos(Date data1,Date data2) {
+	public List<ClientesNovos> clientesnovos(Date data1,Date data2,String vendedor1, String vendedor2) {
 		List<ClientesNovos> list = new ArrayList<>();
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 		String dataFormatada = formato.format(data1);
@@ -343,6 +343,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " WHERE V2.GESTORID = G.GESTORID  "
 						+ " and c.ATIVO_CADCFTV = 'SIM' "
 						+ " and c.DATACREATE_CADCFTV between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
+						+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 						+ " order by cl.VENDEDORID1,c.cadcftvid ");
 
 		List<Object[]> lista = query.getResultList();

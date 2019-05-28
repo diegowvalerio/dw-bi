@@ -36,8 +36,8 @@
 		<adm:breadcrumb title="Venda em Geral" />
 
 		<h:form id="form">
-			<div class="box box-primary">
-				<div class="box-header with-border">
+				<p:panelGrid columns="7" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
 
 					<p:outputLabel value=" Data:  " for="data_grafico" />
 					<p:calendar locale="pt_BR" id="data_grafico"
@@ -50,12 +50,23 @@
 						value="#{beanVendasemGeral.data_grafico2}" pattern="dd/MM/yyyy"
 						mask="true" required="true" readonlyInput="true">
 					</p:calendar>
+					
+					<p:outputLabel value="Vendedor:" for="vendedor" />
+					<p:selectOneMenu id="vendedor"
+					value="#{beanVendasemGeral.vendedor}"
+					converter="conversorVendedor">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanVendasemGeral.listavendedor}"
+						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
+						itemValue="#{vendedor}" />
+					</p:selectOneMenu>
 
-					<p:commandButton action="#{beanVendasemGeral.init()}"
+					<p:commandButton action="#{beanVendasemGeral.filtrar()}"
 						value="Filtrar" icon="fa fa-check" update=":form:paineld"
 						styleClass="btn-primary" />
 
-					<p:separator />
+				</p:panelGrid>
+			<div class="box box-primary">
 
 					<h:panelGrid columns="1" id="paineld" columnClasses="left,right"
 						style="width:100%">
@@ -113,7 +124,6 @@
 						</p:dataTable>
 					</h:panelGrid>
 				</div>
-			</div>
 		</h:form>
 
 	</ui:define>

@@ -31,7 +31,7 @@ public interface DAOGenerico<E> {
 	
 	public List<VendasEmGeralItem> vendasemgeralitem(BigDecimal pedido);
 	
-	public List<ClientesNovos> clientesnovos(Date data1, Date data2);
+	public List<ClientesNovos> clientesnovos(Date data1, Date data2,String vendedor1, String vendedor2);
 	
 	public List<Vendedor> consultavendedor();
 	

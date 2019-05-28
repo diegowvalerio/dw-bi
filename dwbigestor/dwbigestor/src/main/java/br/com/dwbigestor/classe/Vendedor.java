@@ -40,6 +40,43 @@ public class Vendedor implements Serializable {
 	public void setCpfcnpj(String cpfcnpj) {
 		this.cpfcnpj = cpfcnpj;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((codigovendedor == null) ? 0 : codigovendedor.hashCode());
+		result = prime * result + ((cpfcnpj == null) ? 0 : cpfcnpj.hashCode());
+		result = prime * result + ((nomevendedor == null) ? 0 : nomevendedor.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Vendedor other = (Vendedor) obj;
+		if (codigovendedor == null) {
+			if (other.codigovendedor != null)
+				return false;
+		} else if (!codigovendedor.equals(other.codigovendedor))
+			return false;
+		if (cpfcnpj == null) {
+			if (other.cpfcnpj != null)
+				return false;
+		} else if (!cpfcnpj.equals(other.cpfcnpj))
+			return false;
+		if (nomevendedor == null) {
+			if (other.nomevendedor != null)
+				return false;
+		} else if (!nomevendedor.equals(other.nomevendedor))
+			return false;
+		return true;
+	}
 	
 
 }

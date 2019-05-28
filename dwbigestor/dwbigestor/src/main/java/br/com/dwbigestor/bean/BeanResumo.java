@@ -59,6 +59,13 @@ public class BeanResumo implements Serializable {
 
 	@PostConstruct
 	public void init() {
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
+		data_grafico =c.getTime();
+		
+		c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+		data_grafico2 =c.getTime();
+		
 		listavendedor = servicovendedor.consultavendedor();
 		vendedorfiltrado = "0";
 		vendedorfiltrado2 = "999999";
@@ -70,10 +77,10 @@ public class BeanResumo implements Serializable {
 			this.data_grafico = (Date) session.getAttribute("data1");
 			this.data_grafico2 = (Date) session.getAttribute("data2");
 			listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
-			listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2);
+			listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 		} else {			
 			listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
-			listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2);
+			listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 		}
 
 		session.removeAttribute("data1");
@@ -91,7 +98,7 @@ public class BeanResumo implements Serializable {
 			vendedorfiltrado2 = vendedor.getCodigovendedor().toString();
 		}
 		listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
-		listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2);
+		listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 	}
 	
 	public String getVendedorlogado() {
@@ -199,6 +206,7 @@ public class BeanResumo implements Serializable {
 	public String encaminha3() {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
+		session.setAttribute("vendedor", this.vendedor);
 		session.setAttribute("data1", this.data_grafico);
 		session.setAttribute("data2", this.data_grafico2);
 

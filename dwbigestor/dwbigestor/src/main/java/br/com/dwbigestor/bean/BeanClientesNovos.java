@@ -17,7 +17,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.dwbigestor.classe.ClientesNovos;
+import br.com.dwbigestor.classe.Vendedor;
 import br.com.dwbigestor.servico.ServicoClientesNovos;
+import br.com.dwbigestor.servico.ServicoVendedor;
 
 
 @Named
@@ -26,33 +28,107 @@ public class BeanClientesNovos implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private ClientesNovos clientesNovos = new ClientesNovos();
+	private Vendedor vendedor = new Vendedor();
 	@Inject
 	private ServicoClientesNovos servico;
 	private List<ClientesNovos> lista = new ArrayList<>();
 
+	@Inject
+	private ServicoVendedor servicovendedor;
+	private List<Vendedor> listavendedor = new ArrayList<>();
 
 	private String vendedorlogado;
 
 	private Date data_grafico = new Date();
 	private Date data_grafico2 = new Date();
+	
+	private String vendedorfiltrado;
+	private String vendedorfiltrado2;
 
 	@PostConstruct
 	public void init() {
-		
+		listavendedor = servicovendedor.consultavendedor();
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
 				.getRequest();
 		HttpSession session = (HttpSession) request.getSession();
+		if (session.getAttribute("vendedor") != null){
+			this.vendedor = (Vendedor) session.getAttribute("vendedor");
+			if (vendedor == null){
+				vendedorfiltrado = "0";
+				vendedorfiltrado2 = "999999";
+				
+			}else{
+				vendedorfiltrado = vendedor.getCodigovendedor().toString();
+				vendedorfiltrado2 = vendedor.getCodigovendedor().toString();
+			}
+		}
+		if (vendedor.getCodigovendedor() == null){
+			vendedorfiltrado = "0";
+			vendedorfiltrado2 = "999999";
+			
+		}else{
+			vendedorfiltrado = vendedor.getCodigovendedor().toString();
+			vendedorfiltrado2 = vendedor.getCodigovendedor().toString();
+		}
+		
 		if ((Date) session.getAttribute("data1") != null) {
-			this.data_grafico = (Date) session.getAttribute("data1");
-			this.data_grafico2 = (Date) session.getAttribute("data2");
-			lista = servico.clientesnovos(data_grafico, data_grafico2);
+			data_grafico = (Date) session.getAttribute("data1");
+			data_grafico2 = (Date) session.getAttribute("data2");
+			lista = servico.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 		} else {			
-			lista = servico.clientesnovos(data_grafico, data_grafico2);
+			lista = servico.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 		}
 
 		session.removeAttribute("data1");
 		session.removeAttribute("data2");
+		session.removeAttribute("vendedor");
+		
+		
 
+	}
+	
+	public void filtrar(){
+		if (vendedor == null){
+			vendedorfiltrado = "0";
+			vendedorfiltrado2 = "999999";
+			
+		}else{
+			vendedorfiltrado = vendedor.getCodigovendedor().toString();
+			vendedorfiltrado2 = vendedor.getCodigovendedor().toString();
+		}
+		lista = servico.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+	}
+
+	public List<Vendedor> getListavendedor() {
+		return listavendedor;
+	}
+
+	public void setListavendedor(List<Vendedor> listavendedor) {
+		this.listavendedor = listavendedor;
+	}
+
+	public Vendedor getVendedor() {
+		return vendedor;
+	}
+
+	public void setVendedor(Vendedor vendedor) {
+		this.vendedor = vendedor;
+	}
+
+	public String getVendedorfiltrado() {
+		return vendedorfiltrado;
+	}
+
+	public void setVendedorfiltrado(String vendedorfiltrado) {
+		this.vendedorfiltrado = vendedorfiltrado;
+	}
+
+	public String getVendedorfiltrado2() {
+		return vendedorfiltrado2;
+	}
+
+	public void setVendedorfiltrado2(String vendedorfiltrado2) {
+		this.vendedorfiltrado2 = vendedorfiltrado2;
 	}
 
 	public String getVendedorlogado() {
@@ -94,16 +170,6 @@ public class BeanClientesNovos implements Serializable {
 
 	public void setLista(List<ClientesNovos> lista) {
 		this.lista = lista;
-	}
-
-	/* dados clientesnovos */
-	public String encaminha2() {
-		FacesContext fc = FacesContext.getCurrentInstance();
-		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
-		session.setAttribute("data1", this.data_grafico);
-		session.setAttribute("data2", this.data_grafico2);
-
-		return "/pages/relatorios/clientesnovos/clientesnovos.xhtml";
 	}
 
 	/* pegar usuario conectado */
