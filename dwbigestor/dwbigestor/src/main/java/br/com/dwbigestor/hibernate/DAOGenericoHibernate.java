@@ -24,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.dwbigestor.classe.ClientesNovos;
+import br.com.dwbigestor.classe.MetaVenda;
 import br.com.dwbigestor.classe.VendaAnoMes;
 import br.com.dwbigestor.classe.VendaGrupoSubGrupoProdutoQuantidadeValor;
 import br.com.dwbigestor.classe.VendasEmGeral;
@@ -433,6 +434,74 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			
 		}
 		return vendasEmGeralItem;
+	}
+	
+	public List<MetaVenda> metavenda() {
+		List<MetaVenda> list = new ArrayList<>();
+
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				" SELECT TIPO,MES,ANO,VALOR, CASE WHEN NOME_REGIAO is null THEN 'VAZIO' ELSE NOME_REGIAO END AS NOME_REGIAO FROM ( "
+				+ "	select  "
+				+ "	'META' AS TIPO, "
+				+ "	MV.MES_METAVENDEDOR MES, "
+				+ "	MV.ANO_METAVENDEDOR ANO, "
+				+ "	SUM(MV.VALOR_METAVENDEDOR)VALOR, "
+				+ "	RE.NOME_REGIAO "
+				+ "	from meta_vendedor mv "
+				+ "	INNER JOIN CADCFTV V ON V.CADCFTVID = mv.CADCFTVID "
+				+ "	LEFT JOIN CLIENTE CLI ON CLI.CADCFTVID = V.CADCFTVID "
+				+ "	LEFT JOIN REGIAO RE ON RE.REGIAOID = CLI.REGIAOID "
+				+ "	INNER JOIN CADCFTV GR ON GR.CADCFTVID = " + usuarioconectado()
+				+ "	INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+				+ "	INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = V.CADCFTVID and V2.GESTORID = G.GESTORID "
+				+ "	WHERE mv.MES_METAVENDEDOR = TO_NUMBER(TO_CHAR(SYSDATE,'MM')) "
+				+ "	and mv.ANO_METAVENDEDOR = TO_NUMBER(TO_CHAR(SYSDATE,'YYYY')) "
+				+ "	and v.ATIVO_CADCFTV = 'SIM' "
+				+ "	GROUP BY "
+				+ "	MV.MES_METAVENDEDOR, "
+				+ "	MV.ANO_METAVENDEDOR, "
+				+ "	RE.NOME_REGIAO  "
+				+ "	UNION ALL  "
+				+ "	SELECT "
+				+ "	'VENDA' TIPO, "
+				+ "	TO_NUMBER(TO_CHAR(EN.DT_PEDIDOVENDA,'MM')) AS MES, "
+				+ "	TO_NUMBER(TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY')) AS ANO, "
+				+ "	SUM(EN.VL_TOTALPROD_PEDIDOVENDA)as VALOR, "
+				+ "	RE.NOME_REGIAO "
+				+ "	FROM PEDIDOVENDA EN  "
+				+ "	INNER JOIN VENDEDOR V ON V.CADCFTVID = EN.VENDEDOR1ID  "
+				+ "	INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
+				+ "	INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV  "
+				+ "	INNER JOIN CFOP CF ON CF.CFOPID = EN.CFOPID  "
+				+ "	LEFT JOIN CLIENTE CLI ON CLI.CADCFTVID = V.CADCFTVID "
+				+ "	LEFT JOIN REGIAO RE ON RE.REGIAOID = CLI.REGIAOID "
+				+ "	WHERE CF.TIPOOPERACAO_CFOP = 'VENDA' "
+				+ "	AND EN.status_pedidovenda in ('IMPORTADO','ABERTO','BLOQUEADO','PARCIAL') "
+				+ "	AND V.GESTORID = G.GESTORID  "
+				+ "	AND TO_CHAR(EN.DT_PEDIDOVENDA,'MM') = TO_CHAR(SYSDATE,'MM') "
+				+ "	AND TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') = TO_CHAR(SYSDATE,'YYYY') "
+				+ "	GROUP BY  "
+				+ "	TO_NUMBER(TO_CHAR(EN.DT_PEDIDOVENDA,'MM')), "
+				+ "	TO_NUMBER(TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY')), "
+				+ "	RE.NOME_REGIAO "
+				+ "	)X "
+				+ "	ORDER BY  "
+				+ "	X.ANO,X.MES,X.NOME_REGIAO,X.TIPO ");
+
+		List<Object[]> lista = query.getResultList();
+
+		for (Object[] row : lista) {
+			MetaVenda metavenda = new MetaVenda();
+
+			metavenda.setTipo((String) row[0]);
+			metavenda.setMes((BigDecimal) row[1]);
+			metavenda.setAno((BigDecimal) row[2]);
+			metavenda.setValor((BigDecimal) row[3]);
+			metavenda.setRegiao((String) row[4]);
+			
+			list.add(metavenda);
+		}
+		return list;
 	}
 	
 }

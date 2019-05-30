@@ -3,7 +3,10 @@ package br.com.dwbigestor.bean;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.time.Month;
+import java.time.MonthDay;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,14 +20,21 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.primefaces.model.chart.Axis;
+import org.primefaces.model.chart.AxisType;
+import org.primefaces.model.chart.BarChartModel;
+import org.primefaces.model.chart.ChartSeries;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.dwbigestor.classe.ClientesNovos;
+import br.com.dwbigestor.classe.MetaVenda;
+import br.com.dwbigestor.classe.VendaAnoMes;
 import br.com.dwbigestor.classe.VendasEmGeral;
 import br.com.dwbigestor.classe.VendasEmGeralItem;
 import br.com.dwbigestor.classe.Vendedor;
 import br.com.dwbigestor.servico.ServicoClientesNovos;
+import br.com.dwbigestor.servico.ServicoMetaVenda;
 import br.com.dwbigestor.servico.ServicoVendasemGeral;
 import br.com.dwbigestor.servico.ServicoVendedor;
 
@@ -48,6 +58,12 @@ public class BeanResumo implements Serializable {
 	private ServicoVendedor servicovendedor;
 	private List<Vendedor> listavendedor = new ArrayList<>();
 	
+	/*grafico metavenda*/
+	private BarChartModel graficometavenda;
+	@Inject
+	private ServicoMetaVenda servicometavenda;
+	private List<MetaVenda> listametavenda = new ArrayList<>();
+	
 	//filtros
 	private String vendedorlogado;
 
@@ -59,6 +75,8 @@ public class BeanResumo implements Serializable {
 
 	@PostConstruct
 	public void init() {
+		createAnimatedModels();
+		
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
 		data_grafico =c.getTime();
@@ -101,6 +119,22 @@ public class BeanResumo implements Serializable {
 		listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 	}
 	
+	public BarChartModel getGraficometavenda() {
+		return graficometavenda;
+	}
+
+	public void setGraficometavenda(BarChartModel graficometavenda) {
+		this.graficometavenda = graficometavenda;
+	}
+
+	public List<MetaVenda> getListametavenda() {
+		return listametavenda;
+	}
+
+	public void setListametavenda(List<MetaVenda> listametavenda) {
+		this.listametavenda = listametavenda;
+	}
+
 	public String getVendedorlogado() {
 		return vendedorlogado;
 	}
@@ -259,6 +293,100 @@ public class BeanResumo implements Serializable {
 
 		return total;
 	}
+	
+	public void createAnimatedModels() {
+		Calendar hoje = Calendar.getInstance();
+		
+		Date d = new Date();
+		graficometavenda = initBarModel();
+		graficometavenda.setTitle("Meta x Venda ("+ Integer.valueOf(d.getMonth()+1) +"/"+hoje.get(Calendar.YEAR) +")");
+		graficometavenda.setAnimate(true);
+		graficometavenda.setLegendPosition("ne");
+		graficometavenda.setSeriesColors("20B2AA,808080");
+		Axis yAxis = graficometavenda.getAxis(AxisType.Y);
+		yAxis = graficometavenda.getAxis(AxisType.Y);
+		yAxis.setMin(0);
+		// yAxis.setMax(20000);
+		yAxis.setTickFormat("R$ %'.2f");
+		yAxis.setLabel("Valor");
 
+		Axis XAxis = graficometavenda.getAxis(AxisType.X);
+		XAxis.setLabel("Região");
+	}
+	
+	@SuppressWarnings("null")
+	public BarChartModel initBarModel() {
+    	
+    	listametavenda = servicometavenda.metavenda();
+    	
+    	 BarChartModel model = new BarChartModel();
+         
+    	if(!listametavenda.isEmpty()){
+    		List<String> tipo = new ArrayList<>();
+    		for (MetaVenda movimento1: listametavenda){
+    			tipo.add(movimento1.getTipo());
+    		}
+    		List<String> tipoc = new ArrayList<>();
+    		for(String c : tipo){
+    			if(!tipoc.contains(c)){
+    				tipoc.add(c);
+    			}
+    		}
+    			    			
+    		List<String> regioes = new ArrayList<>();
+    		List<String> regioes2 = new ArrayList<>();
+    		for(String c:tipoc){
+    		ChartSeries tipopedido = new ChartSeries();
+    		tipopedido.setLabel(c);	
+    		
+    			for (MetaVenda movimento2: listametavenda){
+        			if(movimento2.getTipo().equals(c)){
+        				tipopedido.set(movimento2.getRegiao(), movimento2.getValor());
+        				regioes.add(movimento2.getRegiao());
+        			} 
+        		}
+    		model.addSeries(tipopedido);	
+    		}
+    		
+    	}else{
+    		ChartSeries tipopedido = new ChartSeries();
+    		tipopedido.set("0",0);
+    		model.addSeries(tipopedido);
+    	}
+                
+        return model;
+    }
+
+	public String getMetaTotal() {
+		float total = 0;
+
+		for (MetaVenda meta : getListametavenda()) {
+			if(meta.getTipo().equals("META")){
+			total = total + meta.getValor().floatValue();
+			}
+		}
+
+		return new DecimalFormat("###,###.###").format(total);
+	}
+	
+	public float getMetaAtingida() {
+		float totalm = 0;
+		float totalv = 0;
+		float atingido = 0;
+		for (MetaVenda meta : getListametavenda()) {
+			if(meta.getTipo().equals("META")){
+				totalm = totalm + meta.getValor().floatValue();
+			}else{
+				totalv = totalv + meta.getValor().floatValue();	
+			}
+				
+		}
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		
+		atingido = (totalv / totalm)*100;
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+	}
 
 }

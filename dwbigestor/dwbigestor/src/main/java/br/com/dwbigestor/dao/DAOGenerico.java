@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.dwbigestor.classe.ClientesNovos;
+import br.com.dwbigestor.classe.MetaVenda;
 import br.com.dwbigestor.classe.VendaAnoMes;
 import br.com.dwbigestor.classe.VendaGrupoSubGrupoProdutoQuantidadeValor;
 import br.com.dwbigestor.classe.VendasEmGeral;
@@ -36,5 +37,7 @@ public interface DAOGenerico<E> {
 	public List<Vendedor> consultavendedor();
 	
 	public VendasEmGeralItem consultaitem(BigDecimal produto);
+	
+	public List<MetaVenda> metavenda();
 	
 }
