@@ -436,7 +436,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		return vendasEmGeralItem;
 	}
 	
-	public List<MetaVenda> metavenda() {
+	public List<MetaVenda> metavenda(String vendedor1, String vendedor2) {
 		List<MetaVenda> list = new ArrayList<>();
 
 		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
@@ -457,6 +457,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ "	WHERE mv.MES_METAVENDEDOR = TO_NUMBER(TO_CHAR(SYSDATE,'MM')) "
 				+ "	and mv.ANO_METAVENDEDOR = TO_NUMBER(TO_CHAR(SYSDATE,'YYYY')) "
 				+ "	and v.ATIVO_CADCFTV = 'SIM' "
+				+ " and v2.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 				+ "	GROUP BY "
 				+ "	MV.MES_METAVENDEDOR, "
 				+ "	MV.ANO_METAVENDEDOR, "
@@ -476,6 +477,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ "	LEFT JOIN CLIENTE CLI ON CLI.CADCFTVID = V.CADCFTVID "
 				+ "	LEFT JOIN REGIAO RE ON RE.REGIAOID = CLI.REGIAOID "
 				+ "	WHERE CF.TIPOOPERACAO_CFOP = 'VENDA' "
+				+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 				+ "	AND EN.status_pedidovenda in ('IMPORTADO','ABERTO','BLOQUEADO','PARCIAL') "
 				+ "	AND V.GESTORID = G.GESTORID  "
 				+ "	AND TO_CHAR(EN.DT_PEDIDOVENDA,'MM') = TO_CHAR(SYSDATE,'MM') "

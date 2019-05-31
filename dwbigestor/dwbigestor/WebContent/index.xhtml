@@ -69,82 +69,92 @@
 				<div class="row">
 					<div class="col-md-3 col-sm-6 col-xs-12">
 						<div class="info-box ">
-							<span class="info-box-icon bg-teal"><i class="fa fa-shopping-cart"></i></span>
+							<span class="info-box-icon bg-teal"><i
+								class="fa fa-shopping-cart"></i></span>
 
 							<div class="info-box-content">
 								<span class="info-box-text">Pedidos</span> <span
-									class="info-box-number"><h:outputText value="#{beanResumo.pedidododia}" /></span>
+									class="info-box-number"><h:outputText
+										value="#{beanResumo.pedidododia}" /></span>
 
 								<div class="progress">
 									<div class="progress-bar" style="width: 100%"></div>
 								</div>
-								<span class="progress-description">
-								<h:commandLink action="#{beanResumo.encaminha2()}"
-								styleClass="fa fa-arrow-circle-right small-box-footer"
-								value=" Detalhes" />
+								<span class="progress-description"> <h:commandLink
+										action="#{beanResumo.encaminha2()}"
+										styleClass="fa fa-arrow-circle-right small-box-footer"
+										value=" Detalhes" />
 								</span>
 							</div>
 							<!-- /.info-box-content -->
 						</div>
 						<!-- /.info-box -->
 					</div>
-					
+
 					<div class="col-md-3 col-sm-6 col-xs-12">
 						<div class="info-box ">
-							<span class="info-box-icon bg-green"><i class="ion ion-stats-bars"></i></span>
+							<span class="info-box-icon bg-green"><i
+								class="ion ion-stats-bars"></i></span>
 
 							<div class="info-box-content">
 								<span class="info-box-text">Valor</span> <span
-									class="info-box-number"><h:outputText value="#{beanResumo.valorTotal}" /></span>
+									class="info-box-number"><h:outputText
+										value="#{beanResumo.valorTotal}" /></span>
 
 								<div class="progress">
 									<div class="progress-bar" style="width: 100%"></div>
 								</div>
-								<span class="progress-description">
-								<h:commandLink action="#{beanResumo.encaminha2()}"
-								styleClass="fa fa-arrow-circle-right small-box-footer"
-								value=" Detalhes" />
+								<span class="progress-description"> <h:commandLink
+										action="#{beanResumo.encaminha2()}"
+										styleClass="fa fa-arrow-circle-right small-box-footer"
+										value=" Detalhes" />
 								</span>
 							</div>
 							<!-- /.info-box-content -->
 						</div>
 						<!-- /.info-box -->
 					</div>
-					
+
 					<div class="col-md-3 col-sm-6 col-xs-12">
 						<div class="info-box ">
-							<span class="info-box-icon bg-yellow"><i class="ion ion-person-add"></i></span>
+							<span class="info-box-icon bg-yellow"><i
+								class="ion ion-person-add"></i></span>
 
 							<div class="info-box-content">
 								<span class="info-box-text">Novos Clientes</span> <span
-									class="info-box-number"><h:outputText value="#{beanResumo.totalClientes}" /></span>
+									class="info-box-number"><h:outputText
+										value="#{beanResumo.totalClientes}" /></span>
 
 								<div class="progress">
 									<div class="progress-bar" style="width: 100%"></div>
 								</div>
-								<span class="progress-description">
-								<h:commandLink action="#{beanResumo.encaminha3()}"
-								styleClass="fa fa-arrow-circle-right small-box-footer"
-								value=" Detalhes" />
+								<span class="progress-description"> <h:commandLink
+										action="#{beanResumo.encaminha3()}"
+										styleClass="fa fa-arrow-circle-right small-box-footer"
+										value=" Detalhes" />
 								</span>
 							</div>
 							<!-- /.info-box-content -->
 						</div>
 						<!-- /.info-box -->
 					</div>
-					
+
 					<div class="col-md-3 col-sm-6 col-xs-12">
 						<div class="info-box ">
-							<span class="info-box-icon bg-red"><i class="ion ion-pie-graph"></i></span>
+							<span class="info-box-icon bg-red"><i
+								class="ion ion-pie-graph"></i></span>
 
 							<div class="info-box-content">
 								<span class="info-box-text">Meta</span> <span
-									class="info-box-number"><h:outputText value="#{beanResumo.metaTotal}" /></span>
+									class="info-box-number"><h:outputText
+										value="#{beanResumo.metaTotal}" /></span>
 
 								<div class="progress">
-                					<p:progressBar value="#{beanResumo.metaAtingida}" styleClass="animated" global="false" />
-             					</div>
-             					<span class="progress-description"><h:outputText value="#{beanResumo.metaAtingida}" />%</span>
+									<p:progressBar value="#{beanResumo.metaAtingida}"
+										styleClass="animated" global="false" />
+								</div>
+								<span class="progress-description"><h:outputText
+										value="#{beanResumo.metaAtingida}" />%</span>
 							</div>
 							<!-- /.info-box-content -->
 						</div>
@@ -154,9 +164,10 @@
 				<p:separator />
 				<h:panelGrid columns="2" id="painelmetavenda"
 					columnClasses="left,right" style="width:100%">
-					
-					<p:chart id="graficometavenda" type="bar" style="width:50%"
+                                 
+					<p:chart id="graficometavenda" type="bar" style="width:50%; background:white;"
 						model="#{beanResumo.graficometavenda}" />
+
 				</h:panelGrid>
 
 

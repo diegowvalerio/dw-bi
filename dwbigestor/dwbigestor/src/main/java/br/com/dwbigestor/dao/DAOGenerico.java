@@ -38,6 +38,6 @@ public interface DAOGenerico<E> {
 	
 	public VendasEmGeralItem consultaitem(BigDecimal produto);
 	
-	public List<MetaVenda> metavenda();
+	public List<MetaVenda> metavenda(String vendedor1, String vendedor2);
 	
 }

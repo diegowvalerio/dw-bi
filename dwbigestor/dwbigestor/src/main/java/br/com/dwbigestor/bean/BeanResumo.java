@@ -75,7 +75,6 @@ public class BeanResumo implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		createAnimatedModels();
 		
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
@@ -103,7 +102,9 @@ public class BeanResumo implements Serializable {
 
 		session.removeAttribute("data1");
 		session.removeAttribute("data2");
-
+		
+		/*gerar grafico*/
+		createAnimatedModels();
 	}
 	
 	public void filtrar(){
@@ -117,8 +118,10 @@ public class BeanResumo implements Serializable {
 		}
 		listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 		listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+		/*gerar grafico*/
+		createAnimatedModels();
 	}
-	
+
 	public BarChartModel getGraficometavenda() {
 		return graficometavenda;
 	}
@@ -317,7 +320,7 @@ public class BeanResumo implements Serializable {
 	@SuppressWarnings("null")
 	public BarChartModel initBarModel() {
     	
-    	listametavenda = servicometavenda.metavenda();
+    	listametavenda = servicometavenda.metavenda(vendedorfiltrado,vendedorfiltrado2);
     	
     	 BarChartModel model = new BarChartModel();
          
