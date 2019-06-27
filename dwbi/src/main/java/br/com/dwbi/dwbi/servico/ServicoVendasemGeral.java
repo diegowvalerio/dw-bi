@@ -18,8 +18,8 @@ public class ServicoVendasemGeral implements Serializable{
 	private DAOVendasemGeral dao;
 	
 	
-	public List<VendasEmGeral> vendasemgeral(Date data1, Date data2){
-		return dao.vendasemgeral(data1, data2);
+	public List<VendasEmGeral> vendasemgeral(Date data1, Date data2, String vendedor1, String vendedor2){
+		return dao.vendasemgeral(data1, data2, vendedor1,vendedor2);
 	}
 	
 }

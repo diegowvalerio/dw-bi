@@ -12,6 +12,7 @@ import javax.persistence.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+
 public class VendasEmGeral implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -27,6 +28,7 @@ public class VendasEmGeral implements Serializable {
 	private String tipopedido;
 	private String tipooperacaocfop;
 	private String statuspedido;
+	private String nomevendedor;
 
 		
 
@@ -130,6 +132,14 @@ public class VendasEmGeral implements Serializable {
 		} else if (!pedido.equals(other.pedido))
 			return false;
 		return true;
+	}
+
+	public String getNomevendedor() {
+		return nomevendedor;
+	}
+
+	public void setNomevendedor(String nomevendedor) {
+		this.nomevendedor = nomevendedor;
 	}
 	
 	

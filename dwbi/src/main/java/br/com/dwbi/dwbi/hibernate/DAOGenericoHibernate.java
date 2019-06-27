@@ -2,6 +2,7 @@ package br.com.dwbi.dwbi.hibernate;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Blob;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,10 +23,13 @@ import org.hibernate.sql.JoinType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import br.com.dwbi.classe.ClientesNovos;
+import br.com.dwbi.classe.MetaVenda;
 import br.com.dwbi.classe.VendaAnoMes;
 import br.com.dwbi.classe.VendaGrupoSubGrupoProdutoQuantidadeValor;
 import br.com.dwbi.classe.VendasEmGeral;
 import br.com.dwbi.classe.VendasEmGeralItem;
+import br.com.dwbi.classe.Vendedor;
 import br.com.dwbi.dwbi.dao.DAOGenerico;
 
 public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
@@ -100,13 +104,20 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 
 		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
 				// "SELECT * FROM("
-				" SELECT " + " TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') AS ANO, " + " TO_CHAR(EN.DT_PEDIDOVENDA,'MM') AS MES, "
-						+ " SUM(EN.VL_TOTALPROD_PEDIDOVENDA)as VL_TOTAL " + " FROM PEDIDOVENDA EN "
-						+ " INNER JOIN CFOP CF ON CF.CFOPID = EN.CFOPID " + " WHERE "
+				" SELECT " + " TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') AS ANO, " 
+						+ " TO_CHAR(EN.DT_PEDIDOVENDA,'MM') AS MES, "
+						+ " SUM(EN.VL_TOTALPROD_PEDIDOVENDA)as VL_TOTAL " 
+						+ " FROM PEDIDOVENDA EN "
+						+ " INNER JOIN VENDEDOR V ON V.CADCFTVID = EN.VENDEDOR1ID "
+					
+						+ " INNER JOIN CFOP CF ON CF.CFOPID = EN.CFOPID " 
+						+ " WHERE "
 						+ " CF.TIPOOPERACAO_CFOP = 'VENDA' "
 						+ " AND EN.status_pedidovenda in ('IMPORTADO','ABERTO','BLOQUEADO','PARCIAL') "
-						+ " AND EN.VENDEDOR1ID = ' " + usuarioconectado() + " ' " + " GROUP BY "
-						+ " TO_CHAR(EN.DT_PEDIDOVENDA,'MM'), " + " TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') " + " ORDER BY "
+						+ " AND EN.VENDEDOR1ID =  "+ usuarioconectado()
+						+ " GROUP BY "
+						+ " TO_CHAR(EN.DT_PEDIDOVENDA,'MM'), " + " TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') " 
+						+ " ORDER BY "
 						+ " TO_CHAR(EN.DT_PEDIDOVENDA,'MM'),TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') ");
 		// query.setParameter("vendedorlogado", usuarioconectado());
 		List<Object[]> lista = query.getResultList();
@@ -125,7 +136,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 
 		return list;
 	}
-
+	//venda por grupo e subgrupo
 	public List<VendaGrupoSubGrupoProdutoQuantidadeValor> vendaGrupoSubGrupoProdutoQuantidadeValor(Date data1,
 			Date data2) {
 		List<VendaGrupoSubGrupoProdutoQuantidadeValor> list = new ArrayList<>();
@@ -141,10 +152,12 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " INNER JOIN PRODUTO PR ON PR.PRODUTOID = IT.PRODUTOID "
 						+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
 						+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+						+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
 						+ " inner join subgrupoproduto sub on sub.subgrupoprodutoid = pr.subgrupoprodutoid "
 						+ " inner join GRUPOPRODUTO gru on gru.GRUPOPRODUTOID = sub.GRUPOPRODUTOID "
 						+ " WHERE p.status_pedidovenda in ('IMPORTADO','ABERTO','BLOQUEADO','PARCIAL') "
-						+ " AND CF.tipooperacao_cfop = 'VENDA'and p.VENDEDOR1ID = ' " + usuarioconectado() + " ' "
+						+ " AND CF.tipooperacao_cfop = 'VENDA' "
+						+ " AND P.VENDEDOR1ID =  "+ usuarioconectado()
 						+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
 						+ " group by sub.NOME_SUBGRUPOPRODUTO " + " order by sub.NOME_SUBGRUPOPRODUTO ");
 
@@ -163,8 +176,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 
 		return list;
 	}
-
-	public List<VendasEmGeral> vendasemgeral(Date data1, Date data2) {
+	//pedidos de venda
+	public List<VendasEmGeral> vendasemgeral(Date data1, Date data2, String vendedor1, String vendedor2) {
 		List<VendasEmGeral> list = new ArrayList<>();
 		
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -182,7 +195,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " pg.nome_formapagto as prazo, "
 						+ " t.desc_tipo_pedido as tipo_pedido, " 
 						+ " CF.tipooperacao_cfop, " 
-						+ " p.status_pedidovenda "
+						+ " p.status_pedidovenda, "
+						+ " v.NOME_CADCFTV nome_vendedor "
 						+ " from pedidovenda p "
 						+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
 						+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID "
@@ -190,9 +204,11 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid "
 						+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
 						+ " inner join roteiro r on r.roteiroid = p.roteiroid "
+						+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
 						+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
-						+ " AND CF.tipooperacao_cfop = 'VENDA' and p.VENDEDOR1ID = ' " + usuarioconectado() + " ' "
+						+ " AND CF.tipooperacao_cfop = 'VENDA' " 
 						+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
+						+ " AND P.VENDEDOR1ID =  "+ usuarioconectado()
 						+ " ORDER BY P.PEDIDOVENDAID  ");
 
 		List<Object[]> lista = query.getResultList();
@@ -211,6 +227,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			vendasEmGeral.setTipopedido((String) row[6] );
 			vendasEmGeral.setTipooperacaocfop((String) row[7] );
 			vendasEmGeral.setStatuspedido((String) row[8] );
+			vendasEmGeral.setNomevendedor((String) row[9] );
 			
 			
 			
@@ -219,7 +236,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 
 		return list;
 	}
-	
+	//detalhes do pedido de venda
 	public List<VendasEmGeralItem> vendasemgeralitem(BigDecimal pedido) {
 		List<VendasEmGeralItem> list = new ArrayList<>();
 		
@@ -243,15 +260,18 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " IT.vl_total_pedidovenda_item, "
 						+ " x1.NR_NOTA_PEDIDOVENDA,  " 
 						+ " x1.DT_SAIDA_PEDIDOVENDA,  "
-						+ " x1.STATUS_PEDIDOVENDA status_nota " 
+						+ " x1.STATUS_PEDIDOVENDA status_nota, " 
+						+ " IMG.IMAGEM_PRODUTO "
 						+ " from pedidovenda p "
 						+ " INNER JOIN PEDIDOVENDA_ITEM IT ON IT.PEDIDOVENDAID= P.PEDIDOVENDAID "
+						+ " LEFT JOIN PRODUTO_IMAGEM IMG ON IMG.PRODUTOID = IT.PRODUTOID "
 						+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
 						+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID "
 						+ " inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid "
 						+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid "
 						+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
 						+ " inner join roteiro r on r.roteiroid = p.roteiroid "
+						+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
 						+ " left join ( " 
 						+ " select " 
 						+ " nota.NR_NOTA_PEDIDOVENDA, " 
@@ -270,7 +290,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " ) x1 on x1.ORIGEM_PEDIDOVENDA_ITEM = IT.PEDIDOVENDAITEMID  and x1.produtoid = it.produtoid "
 
 						+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
-						+ " AND CF.tipooperacao_cfop = 'VENDA' and p.VENDEDOR1ID = ' " + usuarioconectado() + " ' "
+						+ " AND CF.tipooperacao_cfop = 'VENDA' " 
+						+ " AND P.VENDEDOR1ID =  "+ usuarioconectado()
 						+ " and p.pedidovendaid = ' " + pedido + " ' " 
 						+ " ORDER BY P.PEDIDOVENDAID  ");
 		List<Object[]> lista2 = query2.getResultList();
@@ -289,11 +310,192 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			vendasEmGeralItem.setNota((String) row2[14] );
 			vendasEmGeralItem.setDatanota((Date) row2[15] );
 			vendasEmGeralItem.setStatusnota((String) row2[16] );
+			vendasEmGeralItem.setImagem((Blob) row2[17] );
 			
 			list.add(vendasEmGeralItem);
 		}
 		return list;
 		
 	}
+	//clientes cadastrados no periodo
+	public List<ClientesNovos> clientesnovos(Date data1,Date data2,String vendedor1, String vendedor2) {
+		List<ClientesNovos> list = new ArrayList<>();
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		String dataFormatada = formato.format(data1);
+		String dataFormatada2 = formato.format(data2);
 
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+						" SELECT " 
+						+ " cl.VENDEDORID1 vendedor, " 
+						+ " v.NOME_CADCFTV nome_vendedor, "
+						+ " c.cadcftvid cliente, " 
+						+ " c.NOME_CADCFTV nome_cliente, " 
+						+ " c.APELIDO_CADCFTV nome_fantasia, " 
+						+ " c.CNPJCPF_CADCFTV cnpj_cpf, " 
+						+ " c.DATACREATE_CADCFTV data_cadastro " 
+						
+						+ " from cadcftv c "
+						+ " inner join cliente cl on cl.CADCFTVID = c.cadcftvid  "
+						+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = cl.VENDEDORID1 "
+						+ " INNER JOIN cadcftv V ON V.cadcftvID = V2.CADCFTVID "
+						
+						+ " WHERE  c.ATIVO_CADCFTV = 'SIM' "
+						+ " and c.DATACREATE_CADCFTV between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
+						+ " AND V.CADCFTVID =  "+ usuarioconectado()
+						+ " order by cl.VENDEDORID1,c.cadcftvid ");
+
+		List<Object[]> lista = query.getResultList();
+
+		for (Object[] row : lista) {
+			ClientesNovos clientesNovos = new ClientesNovos();
+
+			clientesNovos.setCodigovendedor((BigDecimal) row[0]);
+			clientesNovos.setNomevendedor((String) row[1]);
+			clientesNovos.setCodigocliente((BigDecimal) row[2]);
+			clientesNovos.setNomecliente((String) row[3]);
+			clientesNovos.setNomefantasia((String) row[4]);
+			clientesNovos.setCpfcnpj((String) row[5]);
+			clientesNovos.setDatacadastro((Date) row[6] );
+			
+			list.add(clientesNovos);
+		}
+
+		return list;
+	}
+	
+	public List<Vendedor> consultavendedor() {
+		List<Vendedor> list = new ArrayList<>();
+
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+						" SELECT " 
+						+ " V.CADCFTVID vendedor, " 
+						+ " v.NOME_CADCFTV nome_vendedor, "
+						+ " v.CNPJCPF_CADCFTV cnpj_cpf "  
+						
+						+ " from cadcftv v "
+						+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  " + usuarioconectado()
+						+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+						+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = V.CADCFTVID and V2.GESTORID = G.GESTORID "						
+						+ " WHERE v.ATIVO_CADCFTV = 'SIM' "
+						+ " order by v.cadcftvid ");
+
+		List<Object[]> lista = query.getResultList();
+
+		for (Object[] row : lista) {
+			Vendedor vendedor = new Vendedor();
+
+			vendedor.setCodigovendedor((BigDecimal) row[0]);
+			vendedor.setNomevendedor((String) row[1]);
+			vendedor.setCpfcnpj((String) row[2]);
+			
+			
+			list.add(vendedor);
+		}
+		return list;
+	}
+	
+	public VendasEmGeralItem consultaitem(BigDecimal produto) {
+		VendasEmGeralItem vendasEmGeralItem = new VendasEmGeralItem();
+
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				" select " 
+						+ " '1' pedido, " 
+						+ " '01/01/2019' AS DATAPEDIDO, "
+						+ " it.produtoid, " 
+						+ " '' ds_produto_pedidovenda_item, " 
+						+ " 0 qt_pedidovenda_item, "
+						+ " 0 VL_UNIT_PEDIDOVENDA_ITEM, " 
+						+ " 0 vl_total_pedidovenda_item, "
+						+ " '0' NR_NOTA_PEDIDOVENDA,  " 
+						+ " '01/01/2019' DT_SAIDA_PEDIDOVENDA,  "
+						+ " '0'  status_nota, " 
+						+ " IMG.IMAGEM_PRODUTO "  
+						+ " from produto it "	
+						+ " LEFT JOIN PRODUTO_IMAGEM IMG ON IMG.PRODUTOID = IT.PRODUTOID "
+						+ " WHERE it.produtoid = " +produto);
+
+		List<Object[]> lista = query.getResultList();
+
+		for (Object[] row2 : lista) {
+			
+			vendasEmGeralItem.setPedido((BigDecimal) row2[0] );
+			vendasEmGeralItem.setCodigoproduto((BigDecimal) row2[2] );
+			vendasEmGeralItem.setNomeproduto((String) row2[3] );
+			vendasEmGeralItem.setQuantidadeproduto((BigDecimal) row2[11] );
+			vendasEmGeralItem.setValorunitarioproduto((BigDecimal) row2[12] );
+			vendasEmGeralItem.setValortotalproduto((BigDecimal) row2[13] );
+			vendasEmGeralItem.setNota((String) row2[14] );
+			vendasEmGeralItem.setDatanota((Date) row2[15] );
+			vendasEmGeralItem.setStatusnota((String) row2[16] );
+			vendasEmGeralItem.setImagem((Blob) row2[17] );
+			
+		}
+		return vendasEmGeralItem;
+	}
+	
+	public List<MetaVenda> metavenda(String vendedor1, String vendedor2) {
+		List<MetaVenda> list = new ArrayList<>();
+
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				" SELECT TIPO,MES,ANO,VALOR, CASE WHEN NOME_REGIAO is null THEN 'VAZIO' ELSE NOME_REGIAO END AS NOME_REGIAO FROM ( "
+				+ "	select  "
+				+ "	'META' AS TIPO, "
+				+ "	MV.MES_METAVENDEDOR MES, "
+				+ "	MV.ANO_METAVENDEDOR ANO, "
+				+ "	SUM(MV.VALOR_METAVENDEDOR)VALOR, "
+				+ "	RE.NOME_REGIAO "
+				+ "	from meta_vendedor mv "
+				+ "	INNER JOIN CADCFTV V ON V.CADCFTVID = mv.CADCFTVID "
+				+ "	LEFT JOIN CLIENTE CLI ON CLI.CADCFTVID = V.CADCFTVID "
+				+ "	LEFT JOIN REGIAO RE ON RE.REGIAOID = CLI.REGIAOID "
+				
+				+ "	WHERE mv.MES_METAVENDEDOR = TO_NUMBER(TO_CHAR(SYSDATE,'MM')) "
+				+ "	and mv.ANO_METAVENDEDOR = TO_NUMBER(TO_CHAR(SYSDATE,'YYYY')) "
+				+ "	and v.ATIVO_CADCFTV = 'SIM' "
+				+ " AND V.CADCFTVID =  "+ usuarioconectado()
+				+ "	GROUP BY "
+				+ "	MV.MES_METAVENDEDOR, "
+				+ "	MV.ANO_METAVENDEDOR, "
+				+ "	RE.NOME_REGIAO  "
+				+ "	UNION ALL  "
+				+ "	SELECT "
+				+ "	'VENDA' TIPO, "
+				+ "	TO_NUMBER(TO_CHAR(EN.DT_PEDIDOVENDA,'MM')) AS MES, "
+				+ "	TO_NUMBER(TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY')) AS ANO, "
+				+ "	SUM(EN.VL_TOTALPROD_PEDIDOVENDA)as VALOR, "
+				+ "	RE.NOME_REGIAO "
+				+ "	FROM PEDIDOVENDA EN  "
+				+ "	INNER JOIN VENDEDOR V ON V.CADCFTVID = EN.VENDEDOR1ID  "
+				+ "	INNER JOIN CFOP CF ON CF.CFOPID = EN.CFOPID  "
+				+ "	LEFT JOIN CLIENTE CLI ON CLI.CADCFTVID = V.CADCFTVID "
+				+ "	LEFT JOIN REGIAO RE ON RE.REGIAOID = CLI.REGIAOID "
+				+ "	WHERE CF.TIPOOPERACAO_CFOP = 'VENDA' "
+				+ "	AND EN.status_pedidovenda in ('IMPORTADO','ABERTO','BLOQUEADO','PARCIAL') "
+				+ " AND EN.VENDEDOR1ID =  "+ usuarioconectado()
+				+ "	AND TO_CHAR(EN.DT_PEDIDOVENDA,'MM') = TO_CHAR(SYSDATE,'MM') "
+				+ "	AND TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') = TO_CHAR(SYSDATE,'YYYY') "
+				+ "	GROUP BY  "
+				+ "	TO_NUMBER(TO_CHAR(EN.DT_PEDIDOVENDA,'MM')), "
+				+ "	TO_NUMBER(TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY')), "
+				+ "	RE.NOME_REGIAO "
+				+ "	)X "
+				+ "	ORDER BY  "
+				+ "	X.ANO,X.MES,X.NOME_REGIAO,X.TIPO ");
+
+		List<Object[]> lista = query.getResultList();
+
+		for (Object[] row : lista) {
+			MetaVenda metavenda = new MetaVenda();
+
+			metavenda.setTipo((String) row[0]);
+			metavenda.setMes((BigDecimal) row[1]);
+			metavenda.setAno((BigDecimal) row[2]);
+			metavenda.setValor((BigDecimal) row[3]);
+			metavenda.setRegiao((String) row[4]);
+			
+			list.add(metavenda);
+		}
+		return list;
+	}
+	
 }
