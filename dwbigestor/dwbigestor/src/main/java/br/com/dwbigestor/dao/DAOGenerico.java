@@ -12,6 +12,7 @@ import br.com.dwbigestor.classe.VendaGrupoSubGrupoProdutoQuantidadeValor;
 import br.com.dwbigestor.classe.VendasEmGeral;
 import br.com.dwbigestor.classe.VendasEmGeralItem;
 import br.com.dwbigestor.classe.Vendedor;
+import br.com.dwbigestor.classe.VendedorMetaVenda;
 
 public interface DAOGenerico<E> {
 	public E salvar(E e);
@@ -39,5 +40,7 @@ public interface DAOGenerico<E> {
 	public VendasEmGeralItem consultaitem(BigDecimal produto);
 	
 	public List<MetaVenda> metavenda(String vendedor1, String vendedor2);
+	
+	public List<VendedorMetaVenda> vendedormetavenda(String vendedor1, String vendedor2);
 	
 }

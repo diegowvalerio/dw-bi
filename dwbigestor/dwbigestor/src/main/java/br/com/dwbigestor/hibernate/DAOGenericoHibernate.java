@@ -30,6 +30,7 @@ import br.com.dwbigestor.classe.VendaGrupoSubGrupoProdutoQuantidadeValor;
 import br.com.dwbigestor.classe.VendasEmGeral;
 import br.com.dwbigestor.classe.VendasEmGeralItem;
 import br.com.dwbigestor.classe.Vendedor;
+import br.com.dwbigestor.classe.VendedorMetaVenda;
 import br.com.dwbigestor.dao.DAOGenerico;
 
 public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
@@ -504,6 +505,52 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			list.add(metavenda);
 		}
 		return list;
+	}
+	
+	public List<VendedorMetaVenda> vendedormetavenda(String vendedor1, String vendedor2) {
+		List<VendedorMetaVenda> list = new ArrayList<>();
+
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				"SELECT EN.VENDEDOR1ID ,VEND.NOME_CADCFTV,SUM(EN.VL_TOTALPROD_PEDIDOVENDA)as VALORVENDA,MV.VALOR_METAVENDEDOR VALORMETA, "
+				+" (SUM(EN.VL_TOTALPROD_PEDIDOVENDA) / MV.VALOR_METAVENDEDOR)*100 as atingidometa, "
+				+"case when (SUM(EN.VL_TOTALPROD_PEDIDOVENDA) / MV.VALOR_METAVENDEDOR)*100 < 50 then 'red' "
+				+" when (SUM(EN.VL_TOTALPROD_PEDIDOVENDA) / MV.VALOR_METAVENDEDOR)*100 >= 50 and (SUM(EN.VL_TOTALPROD_PEDIDOVENDA) / MV.VALOR_METAVENDEDOR)*100 < 70 then 'orange' "
+				+" when (SUM(EN.VL_TOTALPROD_PEDIDOVENDA) / MV.VALOR_METAVENDEDOR)*100 >= 70 and (SUM(EN.VL_TOTALPROD_PEDIDOVENDA) / MV.VALOR_METAVENDEDOR)*100 < 100 then 'blue' "
+				+" when (SUM(EN.VL_TOTALPROD_PEDIDOVENDA) / MV.VALOR_METAVENDEDOR)*100 >= 100 then 'green' end as cordacoluna "
+				+"FROM PEDIDOVENDA EN  "
+				+"INNER JOIN VENDEDOR V ON V.CADCFTVID = EN.VENDEDOR1ID  "
+				+"INNER JOIN CADCFTV VEND ON VEND.CADCFTVID = V.CADCFTVID "
+				+"INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
+				+"INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV   "
+				+"INNER JOIN CFOP CF ON CF.CFOPID = EN.CFOPID   "
+				+"LEFT JOIN CLIENTE CLI ON CLI.CADCFTVID = V.CADCFTVID  "
+				+"LEFT JOIN REGIAO RE ON RE.REGIAOID = CLI.REGIAOID  "
+				+"left JOIN meta_vendedor mv ON mv.CADCFTVID = VEND.CADCFTVID "
+				+"WHERE CF.TIPOOPERACAO_CFOP = 'VENDA'  "
+				+"and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+				+"AND EN.status_pedidovenda in ('IMPORTADO','ABERTO','BLOQUEADO','PARCIAL')  "
+				+"AND V.GESTORID = G.GESTORID   "
+				+"AND TO_CHAR(EN.DT_PEDIDOVENDA,'MM') = TO_CHAR(SYSDATE,'MM')  "
+				+"AND TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') = TO_CHAR(SYSDATE,'YYYY')  "
+				+"AND mv.MES_METAVENDEDOR = TO_NUMBER(TO_CHAR(SYSDATE,'MM'))  "
+				+"and mv.ANO_METAVENDEDOR = TO_NUMBER(TO_CHAR(SYSDATE,'YYYY')) "
+				+"GROUP BY EN.VENDEDOR1ID ,VEND.NOME_CADCFTV, mv.VALOR_METAVENDEDOR");
+				
+		List<Object[]> lista = query.getResultList();
+
+		for (Object[] row : lista) {
+			VendedorMetaVenda vendametavenda = new VendedorMetaVenda();
+
+			vendametavenda.setCodigovendedor((BigDecimal) row[0]);
+			vendametavenda.setNomevendedor((String) row[1]);
+			vendametavenda.setValorvenda((BigDecimal) row[2]);
+			vendametavenda.setValormeta((BigDecimal) row[3]);
+			vendametavenda.setAtingidometa((BigDecimal) row[4]);
+			vendametavenda.setCordacoluna((String) row[5]);
+			list.add(vendametavenda);
+		}
+		return list;
+		
 	}
 	
 }

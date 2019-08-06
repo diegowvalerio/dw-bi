@@ -66,12 +66,12 @@
 						styleClass="btn-primary" />
 
 				</p:panelGrid>
-			<div class="box box-primary">
-
-					<h:panelGrid columns="1" id="paineld" columnClasses="left,right"
-						style="width:100%">
+			<div class="box box-primary" >
+				<div style="overflow:scroll;width:100%;overflow:auto">
+				
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
 						<p:dataTable id="venda" var="vendas"
-							value="#{beanVendasemGeral.listavenda}">
+							value="#{beanVendasemGeral.listavenda}" resizableColumns="true">
 
 							<f:facet name="header">
 								<p:commandButton id="toggler" type="button" value="Colunas"
@@ -87,7 +87,7 @@
 								<h:outputText value="#{vendas.nomecliente}" />
 							</p:column>
 
-							<p:column width="10%" headerText="Pedido" sortBy="#{vendas.pedido}">
+							<p:column width="8%" headerText="Pedido" sortBy="#{vendas.pedido}">
 								<h:outputText value="#{vendas.pedido}" />
 							</p:column>
 
@@ -123,6 +123,7 @@
 							
 						</p:dataTable>
 					</h:panelGrid>
+					</div>
 				</div>
 		</h:form>
 

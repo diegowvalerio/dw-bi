@@ -153,8 +153,13 @@
 									<p:progressBar value="#{beanResumo.metaAtingida}"
 										styleClass="animated" global="false" />
 								</div>
-								<span class="progress-description"><h:outputText
-										value="#{beanResumo.metaAtingida}" />%</span>
+								
+										
+								<span class="progress-description"> <h:commandLink
+										action="#{beanResumo.encaminha4()}"
+										styleClass="fa fa-arrow-circle-right small-box-footer"
+										value="  #{beanResumo.metaAtingida} %" />
+								</span>
 							</div>
 							<!-- /.info-box-content -->
 						</div>
