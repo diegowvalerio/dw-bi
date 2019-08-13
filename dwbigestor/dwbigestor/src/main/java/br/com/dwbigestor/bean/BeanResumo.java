@@ -49,6 +49,7 @@ public class BeanResumo implements Serializable {
 	private List<VendasEmGeral> listavenda = new ArrayList<>();
 	private List<VendasEmGeral> listaamostra = new ArrayList<>();
 	private List<VendasEmGeral> listabonificacao = new ArrayList<>();
+	private List<VendasEmGeral> listaexpositor = new ArrayList<>();
 	
 	private ClientesNovos clientesNovos = new ClientesNovos();
 	@Inject
@@ -98,11 +99,15 @@ public class BeanResumo implements Serializable {
 			listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 			listaamostra = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 			listabonificacao = servico.bonificacaoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+			listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+			
 			listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 		} else {			
 			listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 			listaamostra = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 			listabonificacao = servico.bonificacaoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+			listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+			
 			listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 		}
 
@@ -125,6 +130,8 @@ public class BeanResumo implements Serializable {
 		listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 		listaamostra = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 		listabonificacao = servico.bonificacaoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+		listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+		
 		listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 		/*gerar grafico*/
 		createAnimatedModels();
@@ -249,7 +256,13 @@ public class BeanResumo implements Serializable {
 	public void setListabonificacao(List<VendasEmGeral> listabonificacao) {
 		this.listabonificacao = listabonificacao;
 	}
+	public List<VendasEmGeral> getListaexpositor() {
+		return listaexpositor;
+	}
 
+	public void setListaexpositor(List<VendasEmGeral> listaexpositor) {
+		this.listaexpositor = listaexpositor;
+	}
 
 	/* dados vendaemgeral */
 	public String encaminha2() {
@@ -303,6 +316,17 @@ public class BeanResumo implements Serializable {
 
 		return "/pages/relatorios/vendaemgeral/bonificacaoemgeral.xhtml";
 	}
+	
+	/* dados expositoremgeral */
+	public String encaminha7() {
+		FacesContext fc = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
+		session.setAttribute("vendedor", this.vendedor);
+		session.setAttribute("data1", this.data_grafico);
+		session.setAttribute("data2", this.data_grafico2);
+
+		return "/pages/relatorios/vendaemgeral/expositoremgeral.xhtml";
+	}
 
 	/* pegar usuario conectado */
 	public String usuarioconectado() {
@@ -346,6 +370,16 @@ public class BeanResumo implements Serializable {
 
 		return new DecimalFormat("###,###.###").format(total);
 	}
+	
+	public String getValorTotalExpositor() {
+		float total = 0;
+
+		for (VendasEmGeral venda : getListaexpositor()) {
+			total = total + venda.getValortotalpedido().floatValue();
+		}
+
+		return new DecimalFormat("###,###.###").format(total);
+	}
 	// painel de resumo
 
 	public int getPedidododia() {
@@ -372,6 +406,16 @@ public class BeanResumo implements Serializable {
 		int total = 0;
 
 		for (VendasEmGeral bonificacao : getListabonificacao()) {
+			total++;
+		}
+
+		return total;
+	}
+	
+	public int getExpositordodia() {
+		int total = 0;
+
+		for (VendasEmGeral expositor : getListaexpositor()) {
 			total++;
 		}
 
@@ -483,8 +527,6 @@ public class BeanResumo implements Serializable {
 		atingido = (totalv / totalm)*100;
 		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
 	}
-
-
 
 
 }
