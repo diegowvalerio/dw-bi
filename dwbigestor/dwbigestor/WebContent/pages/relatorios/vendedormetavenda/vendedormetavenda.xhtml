@@ -61,7 +61,7 @@
 						<p:dataTable id="vendedormetavenda" var="vendedores"
 							value="#{beanVendedorMetaVenda.lista}">
 							
-							<p:column width="10%" headerText="Código" sortBy="#{vendedores.codigovendedor}">
+							<p:column  headerText="Código" sortBy="#{vendedores.codigovendedor}">
 								<h:outputText value="#{vendedores.codigovendedor}" />
 							</p:column>
 							
@@ -69,21 +69,21 @@
 								<h:outputText value="#{vendedores.nomevendedor}" />
 							</p:column>
 							
-							<p:column width="12%" headerText="% Meta" sortBy="#{vendedores.atingidometa}" >
+							<p:column  headerText="% Meta" sortBy="#{vendedores.atingidometa}" >
 								<h:outputText value="#{vendedores.atingidometa}" 
 								style="font-weight:bold; color: #{vendedores.cordacoluna}">
 									<f:convertNumber type="currency" currencySymbol="%" />
 								</h:outputText>
 							</p:column>
 							
-							<p:column width="12%" headerText="Vlr Meta"
+							<p:column  headerText="Vlr Meta"
 								sortBy="#{vendedores.valormeta}">
 								<h:outputText value="#{vendedores.valormeta}">
 									<f:convertNumber type="currency" currencySymbol="R$" />
 								</h:outputText>
 							</p:column>
 							
-							<p:column width="12%" headerText="Vlr Venda"
+							<p:column headerText="Vlr Venda"
 								sortBy="#{vendedores.valorvenda}">
 								<h:outputText value="#{vendedores.valorvenda}">
 									<f:convertNumber type="currency" currencySymbol="R$" />
