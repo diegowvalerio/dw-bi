@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	
+</h:head>
+<h:body style="background-position: 50% 0%;" >
+	<p:dialog header="Login" visible="true" closable="false" resizable="false" widht="450" >
+		<form action="j_spring_security_check" method="post">
+			<p:panelGrid columns="2">
+				<p:outputLabel value="Usuário: " />
+				<p:inputText id="j_username" />
+
+				<p:outputLabel value="Senha: " />
+				<p:password  id="j_password" />
+			</p:panelGrid>
+			<h:commandButton value="Entrar"  styleClass="btn-primary"/>
+		</form>
+	</p:dialog>
+</h:body>
+</html>

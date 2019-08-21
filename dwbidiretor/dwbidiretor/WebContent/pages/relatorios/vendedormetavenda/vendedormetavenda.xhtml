@@ -1,0 +1,101 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Vendedor: Venda x Meta
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Vendedor: Venda x Meta" />
+
+		<h:form id="form">
+			
+					<p:panelGrid columns="3" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" id="filtroscli">
+						
+					<p:outputLabel value="Vendedor:" for="vendedor" />
+					<p:selectOneMenu id="vendedor"
+					value="#{beanVendedorMetaVenda.vendedor}"
+					converter="conversorVendedor">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanVendedorMetaVenda.listavendedor}"
+						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
+						itemValue="#{vendedor}" />
+					</p:selectOneMenu>
+					
+					<p:commandButton action="#{beanVendedorMetaVenda.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld"
+						styleClass="btn-primary" />
+
+					</p:panelGrid>
+			<div class="box box-primary">
+				
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right"
+						style="width:100%">
+						<p:dataTable id="vendedormetavenda" var="vendedores"
+							value="#{beanVendedorMetaVenda.lista}">
+							
+							<p:column  headerText="Código" sortBy="#{vendedores.codigovendedor}">
+								<h:outputText value="#{vendedores.codigovendedor}" />
+							</p:column>
+							
+							<p:column headerText="Vendedor" sortBy="#{vendedores.nomevendedor}">
+								<h:outputText value="#{vendedores.nomevendedor}" />
+							</p:column>
+							
+							<p:column  headerText="% Meta" sortBy="#{vendedores.atingidometa}" >
+								<h:outputText value="#{vendedores.atingidometa}" 
+								style="font-weight:bold; color: #{vendedores.cordacoluna}">
+									<f:convertNumber type="currency" currencySymbol="%" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column  headerText="Vlr Meta"
+								sortBy="#{vendedores.valormeta}">
+								<h:outputText value="#{vendedores.valormeta}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Vlr Venda"
+								sortBy="#{vendedores.valorvenda}">
+								<h:outputText value="#{vendedores.valorvenda}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							
+						</p:dataTable>
+					</h:panelGrid>
+				
+			</div>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,88 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Relatório Comissão
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Relatório de Comissão" />
+
+		<h:form id="form">
+		<div class="box box-primary">
+		<p:separator />
+			<p:panelGrid columns="4" id="paineld">
+								
+								
+				<p:outputLabel value="Cód. Cliente:" for="idcliente" />
+				<p:inputText id="idcliente" value="#{beanMovimento.filtro_cliente}">
+				</p:inputText>
+				<p:outputLabel value="Até:" for="idcliente" />
+				<p:inputText id="idcliente1" value="#{beanMovimento.filtro_cliente1}">
+				</p:inputText>
+				
+				<p:outputLabel value="Cód. Vendedor:" for="idvendedor" />
+				<p:inputText id="idvendedor" value="#{beanMovimento.filtro_vendedor}">
+				</p:inputText>
+				<p:outputLabel value="Até:" for="idvendedor" />
+				<p:inputText id="idvendedor1" value="#{beanMovimento.filtro_vendedor1}">
+				</p:inputText>
+				
+				<p:outputLabel value="Data Cadastro:" for="dtvenda" />
+				<p:calendar  locale="pt_BR"	id="dtvenda" value="#{beanMovimento.filtro_data}"
+					pattern="dd/MM/yyyy" mask="true"  effect="fold" />
+				
+				<p:outputLabel value="Até:" for="dtvenda1" />
+				<p:calendar  locale="pt_BR"	id="dtvenda1"  value="#{beanMovimento.filtro_data1}"
+					pattern="dd/MM/yyyy" mask="true"  effect="fold" />
+				
+				<p:outputLabel value="Tipo : " for="tipo" />
+				<p:selectOneMenu id="tipo" value="#{beanMovimento.filtro_tipo}">
+					<f:selectItem itemLabel="Todos"  itemValue="T"/>
+					<f:selectItems value="#{beanMovimento.tipoMvs}" var="tmv"
+								itemLabel="#{tmv.nome}" itemValue="#{tmv.nome}" />
+				</p:selectOneMenu>
+				
+				
+			</p:panelGrid>
+			
+				<div class="box-header with-border">
+					<p:commandButton
+						actionListener="#{beanMovimento.rel_comissao_lista()}" ajax="false"
+						icon="ui-icon-print" value="Visualizar" styleClass="btn-primary" />
+					<p:spacer width="5" />
+					<p:separator />
+
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

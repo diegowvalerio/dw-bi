@@ -1,0 +1,62 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+
+	</ui:define>
+
+	<ui:define name="title">
+        Venda Ano x Mês
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Venda Ano x Mês" />
+
+		<h:form id="form">
+			<div class="box box-primary">
+				<p:separator />
+				<div class="box-header with-border">
+					<p:commandButton
+						actionListener="#{beanVenda.rel_vendaanomes_lista()}" ajax="false"
+						icon="ui-icon-print" value="Visualizar" styleClass="btn-primary" />
+					<p:spacer width="5" />
+					<p:separator />
+
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right"
+						style="width:100%">
+
+						<p:chart id="bar1" type="bar" 
+							model="#{beanVenda.animatedModel2}" />
+					</h:panelGrid>
+
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+

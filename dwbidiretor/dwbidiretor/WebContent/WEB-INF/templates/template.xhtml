@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" template="/admin.xhtml">
+
+	<ui:define name="head">
+		<h:outputStylesheet library="css" name="showcase.css" />
+		<h:outputStylesheet library="css" name="prism.css" />
+		<h:outputScript library="js" name="locale-primeface.js" />
+		<link rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css" />
+		<h:outputStylesheet library="webjars"
+			name="font-awesome/4.7.0/css/font-awesome-jsf.css" />
+		<link rel="shortcut icon" type="image/x-icon"
+			href="#{resource['images/dwbi.png']}" />
+		<link rel="manifest" href="/manifest.json" />
+		<meta name="theme-color" content="#444" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<title>DW BI DIRETOR</title>
+	</ui:define>
+
+	<ui:define name="logo-lg">
+        DW BI GESTOR
+    </ui:define>
+
+	<ui:define name="logo-mini">
+        DW BI GESTOR
+    </ui:define>
+
+	<ui:define name="menu-begin">
+		<ui:include src="/includes/menu-search.xhtml" />
+	</ui:define>
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menu.xhtml" />
+	</ui:define>
+
+	<ui:define name="top-menu">
+		<ui:include src="/includes/top-menu.xhtml" />
+	</ui:define>
+
+	<ui:define name="content-end">
+		<section class="content">
+			<ui:insert name="code" />
+		</section>
+	</ui:define>
+
+	<ui:define name="footer">
+		<a target="_blank"> DW BI GESTOR </a>
+		<div class="pull-right hidden-xs" style="color: gray">
+			<i>v1.0</i>
+		</div>
+
+		<h:outputScript library="js" name="prism.js" target="head" />
+	</ui:define>
+
+	<script type="text/javascript">
+            if(isMobile()) {
+                $('a.ui-link').click(function() {
+                    $(this).prop('disabled', true);
+                    showBar();
+                });
+            }
+        </script>
+
+</ui:composition>
