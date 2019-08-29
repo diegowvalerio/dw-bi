@@ -37,6 +37,14 @@ public class DWBI extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void binavegador(View view) {
+        Uri uri = Uri.parse("http://vend.marchezanmetais.com.br:8180/dwbi/portal.xhtml");
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+
+        startActivity(intent);
+    }
+
     public void atualiza(View view){
         Uri uri = Uri.parse("http://www.marchezanmetais.com.br/DWBI.apk");
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
