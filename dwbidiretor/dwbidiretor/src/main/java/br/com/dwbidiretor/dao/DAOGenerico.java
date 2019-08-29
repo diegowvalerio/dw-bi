@@ -7,6 +7,7 @@ import java.util.List;
 
 import br.com.dwbidiretor.classe.ClientesNovos;
 import br.com.dwbidiretor.classe.MetaVenda;
+import br.com.dwbidiretor.classe.PedidoItem;
 import br.com.dwbidiretor.classe.VendaAnoMes;
 import br.com.dwbidiretor.classe.VendaGrupoSubGrupoProdutoQuantidadeValor;
 import br.com.dwbidiretor.classe.VendasEmGeral;
@@ -54,5 +55,7 @@ public interface DAOGenerico<E> {
 	public List<MetaVenda> metavenda(String vendedor1, String vendedor2);
 	
 	public List<VendedorMetaVenda> vendedormetavenda(String vendedor1, String vendedor2);
+	
+	public List<PedidoItem> pedidoitem(BigDecimal pedido);
 	
 }

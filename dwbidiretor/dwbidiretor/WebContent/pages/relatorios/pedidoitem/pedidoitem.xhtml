@@ -1,0 +1,108 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Analise Pedido
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Analise Pedido" />
+
+		<h:form id="form">
+				<p:panelGrid columns="3" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
+
+					<p:outputLabel value=" Pedido:  " for="pedidofiltrado" />
+					<p:inputText id="pedidofiltrado" value="#{beanPedidoItem.pedidofiltrado}" required="true" />
+				
+					<p:commandButton action="#{beanPedidoItem.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld :form:paineld1"
+						styleClass="btn-primary" />
+
+				</p:panelGrid>
+			<div class="box box-primary" >
+				<div style="overflow:scroll;width:100%;overflow:auto">
+					<h:panelGrid columns="10" id="paineld1" style="width:100%">
+					
+					<p:outputLabel value="Pedido: " />
+						<h:outputText
+							value="#{beanPedidoItem.pedidoitem.pedido}" />
+
+						<p:outputLabel value="Cliente: " />
+						<h:outputText
+							value="#{beanPedidoItem.pedidoitem.nomecliente}" />
+
+						<p:outputLabel value="Fase Atual " />
+						<h:outputText value="#{beanPedidoItem.pedidoitem.faseatual}" />
+
+						<p:outputLabel value="Status: " />
+						<h:outputText
+							value="#{beanPedidoItem.pedidoitem.statuspedido}" />
+						
+						<p:outputLabel value="Tipo: " />
+						<h:outputText
+							value="#{beanPedidoItem.pedidoitem.tipopedido}" />
+					
+					</h:panelGrid>
+					<p:separator />
+					
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
+						<p:dataTable id="venda" var="vendas"  scrollable="true"
+							value="#{beanPedidoItem.listapedidoitem}" resizableColumns="true">
+							
+							<p:column  headerText="Cod." sortBy="#{vendas.codigoproduto}">
+								<h:outputText value="#{vendas.codigoproduto}" />
+							</p:column>
+							
+							<p:column  headerText="Produto" sortBy="#{vendas.nomeproduto}">
+								<h:outputText value="#{vendas.nomeproduto}" />
+							</p:column>
+							
+							<p:column headerText="Qtde Pedido" sortBy="#{vendas.qtdepedido}">
+								<h:outputText value="#{vendas.qtdepedido}" />
+							</p:column>
+							
+							<p:column headerText="Qtde Venda Seven" sortBy="#{vendas.qtdevenda}">
+								<h:outputText value="#{vendas.qtdevenda}" />
+							</p:column>
+							
+							<p:column headerText="Qtde Venda Sige" sortBy="#{vendas.sige_qtde_venda}">
+								<h:outputText value="#{vendas.sige_qtde_venda}" />
+							</p:column>
+							
+						</p:dataTable>
+					</h:panelGrid>
+					</div>
+				</div>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

@@ -25,6 +25,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.dwbidiretor.classe.ClientesNovos;
 import br.com.dwbidiretor.classe.MetaVenda;
+import br.com.dwbidiretor.classe.PedidoItem;
 import br.com.dwbidiretor.classe.VendaAnoMes;
 import br.com.dwbidiretor.classe.VendaGrupoSubGrupoProdutoQuantidadeValor;
 import br.com.dwbidiretor.classe.VendasEmGeral;
@@ -32,6 +33,7 @@ import br.com.dwbidiretor.classe.VendasEmGeralItem;
 import br.com.dwbidiretor.classe.Vendedor;
 import br.com.dwbidiretor.classe.VendedorMetaVenda;
 import br.com.dwbidiretor.dao.DAOGenerico;
+import br.com.dwbidiretor.fabrica.EntityManagerProducer.Corporativo;
 
 public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 	private static final long serialVersionUID = 1L;
@@ -39,6 +41,11 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 	@Inject
 	protected EntityManager manager;
 	private Class classeEntidade;
+	
+	//sige
+	@Inject
+	@Corporativo
+	protected EntityManager managerSige;
 
 	public DAOGenericoHibernate(Class classeEntidade) {
 		this.classeEntidade = classeEntidade;
@@ -986,6 +993,153 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			vendametavenda.setAtingidometa((BigDecimal) row[4]);
 			vendametavenda.setCordacoluna((String) row[5]);
 			list.add(vendametavenda);
+		}
+		return list;
+		
+	}
+	
+	//pedidoitem seven e sige
+	public List<PedidoItem> pedidoitem(BigDecimal pedido) {
+		List<PedidoItem> list = new ArrayList<>();
+
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				" select " 
+				+" t.desc_tipo_pedido as tipo_pedido, "
+				+" ro.DESC_ROTEIRO fase_atual, "
+				+" p.STATUS_PEDIDOVENDA , "
+				+" p.pedidovendaid, "
+				+" cli.cadcftvid codcliente, "
+				+" cli.NOME_CADCFTV nomecliente, "
+				+" cli.cnpjcpf_cadcftv cpfcnpj, "
+
+				+" it.produtoid, "
+				+" it.DS_PRODUTO_PEDIDOVENDA_ITEM, "
+				+" it.QT_PEDIDOVENDA_ITEM qtde, "
+				+" pr.referencia_original_produto ean , "
+
+				+" case when t.desc_tipo_pedido = 'VENDA' then hist.qtde_venda - it.QT_PEDIDOVENDA_ITEM else hist.qtde_venda end as qtde_venda, "
+				+" case when t.desc_tipo_pedido = 'AMOSTRA' then hist.qtde_amostra - it.QT_PEDIDOVENDA_ITEM else hist.qtde_amostra end as qtde_amostra, "
+				+" case when t.desc_tipo_pedido = 'AMOSTRA PAGAS' then hist.qtde_amostrapaga - it.QT_PEDIDOVENDA_ITEM else hist.qtde_amostrapaga end as qtde_amostrapaga, "
+				+" case when t.desc_tipo_pedido = 'BONIFICACAO' then hist.qtde_bonificacao - it.QT_PEDIDOVENDA_ITEM else hist.qtde_bonificacao end as qtde_bonificacao, "
+				+" case when t.desc_tipo_pedido = 'EXPOSITOR' then hist.qtde_expositor - it.QT_PEDIDOVENDA_ITEM else hist.qtde_expositor end as qtde_expositor, "
+				+" case when t.desc_tipo_pedido = 'MERCADORIA COM DEFEITO' then hist.qtde_troca - it.QT_PEDIDOVENDA_ITEM else hist.qtde_troca end as qtde_troca, "
+				+" case when t.desc_tipo_pedido = 'NEGOCIAÇÕES COMERCIAIS' then hist.qtde_negociacoescomerciais - it.QT_PEDIDOVENDA_ITEM else hist.qtde_negociacoescomerciais end as qtde_negociacoescomerciais, "
+				+" 0 sige_qtde_venda, "
+				+" 0 sige_qtde_amostra, "
+				+" 0 sige_qtde_bonificacao, "
+				+" 0 sige_qtde_expositor, "
+				+" 0 sige_qtde_troca "
+
+				+" from pedidovenda p "
+				+" inner join pedidovenda_item it on it.pedidovendaid = p.pedidovendaid "
+				+" inner join produto pr on pr.produtoid = it.produtoid "
+				+" inner join cadcftv cli on cli.cadcftvid = p.CADCFTVID "
+				+" inner join roteiro ro on ro.ROTEIROID = p.roteiroid "
+				+" inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid "
+
+				+" left join( "
+				+" select resumo.cadcftvid, resumo.produtoid, "
+				+" sum(resumo.qtde_venda)qtde_venda, "
+				+" sum(resumo.qtde_amostra)qtde_amostra, "
+				+" sum(resumo.qtde_amostrapaga)qtde_amostrapaga, "
+				+" sum(resumo.qtde_bonificacao)qtde_bonificacao, "
+				+" sum(resumo.qtde_expositor)qtde_expositor, "
+				+" sum(resumo.qtde_troca)qtde_troca, "
+				+" sum(resumo.qtde_negociacoescomerciais)qtde_negociacoescomerciais "
+				+" from ( "
+				+" select p.cadcftvid, it.produtoid, "
+				+" case when p.tipopedidoid  = 1 then it.QT_PEDIDOVENDA_ITEM else 0 end as qtde_venda, "
+				+" case when p.tipopedidoid  = 4 then it.QT_PEDIDOVENDA_ITEM else 0 end as qtde_amostra, "
+				+" case when p.tipopedidoid  = 6 then it.QT_PEDIDOVENDA_ITEM else 0 end as qtde_amostrapaga, "
+				+" case when p.tipopedidoid  = 3 then it.QT_PEDIDOVENDA_ITEM else 0 end as qtde_bonificacao, "
+				+" case when p.tipopedidoid  = 5 then it.QT_PEDIDOVENDA_ITEM else 0 end as qtde_expositor, "
+				+" case when p.tipopedidoid  = 2 then it.QT_PEDIDOVENDA_ITEM else 0 end as qtde_troca, "
+				+" case when p.tipopedidoid  = 13 then it.QT_PEDIDOVENDA_ITEM else 0 end as qtde_negociacoescomerciais "
+
+				+" from pedidovenda_item it "
+				+" inner join pedidovenda p on p.pedidovendaid = it.pedidovendaid "
+
+				+" where  p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+				+" )resumo group by  resumo.cadcftvid, resumo.produtoid) hist  "
+				+" on hist.cadcftvid = p.cadcftvid and hist.produtoid = it.produtoid "
+
+				+" where p.pedidovendaid= " +pedido);
+				
+		List<Object[]> lista = query.getResultList();
+
+		for (Object[] row : lista) {
+			PedidoItem pedidoitem = new PedidoItem();
+			
+			pedidoitem.setTipopedido((String) row[0]);
+			pedidoitem.setFaseatual((String) row[1]);
+			pedidoitem.setStatuspedido((String) row[2]);
+			pedidoitem.setPedido((BigDecimal) row[3]);
+			pedidoitem.setCodigocliente((BigDecimal) row[4]);
+			pedidoitem.setNomecliente((String) row[5]);
+			pedidoitem.setCpfcnpj((String) row[6]);
+			
+			pedidoitem.setCodigoproduto((BigDecimal) row[7]);
+			pedidoitem.setNomeproduto((String) row[8]);
+			pedidoitem.setQtdepedido((BigDecimal) row[9]);
+			pedidoitem.setEan((String) row[10]);
+			
+			pedidoitem.setQtdevenda((BigDecimal) row[11]);
+			pedidoitem.setQtdeamostra((BigDecimal) row[12]);
+			pedidoitem.setQtdeamostrapaga((BigDecimal) row[13]);
+			pedidoitem.setQtdebonificacao((BigDecimal) row[14]);
+			pedidoitem.setQtdeexpositor((BigDecimal) row[15]);
+			pedidoitem.setQtdetroca((BigDecimal) row[16]);
+			pedidoitem.setQtdenegociacoescomerciais((BigDecimal) row[17]);
+			
+			//sige
+			String cliente =  String.valueOf((BigDecimal) row[4]);
+			String produto = String.valueOf((BigDecimal) row[7]);
+			String cnpj = String.valueOf((String) row[6]);
+			String ean = String.valueOf((String) row[10]);
+			
+			javax.persistence.Query querySige = (javax.persistence.Query) managerSige.createNativeQuery(
+			" select x.Cod_cadastro,x.Cpf_Cgc,x.Cod_produto,x.Ean, "
+			+" sum(x.sige_qtde_venda) sige_qtde_venda, "
+			+" sum(x.sige_qtde_amostra) sige_qtde_amostra, "
+			+" sum(x.sige_qtde_bonificacao) sige_qtde_bonificacao, "
+			+" sum(x.sige_qtde_expositor) sige_qtde_expositor, "
+			+" sum(x.sige_qtde_troca) sige_qtde_troca from( "
+			+" select g.Cod_cadastro,g.Cpf_Cgc,it.Cod_produto,r.ean, "
+			+" case when s.Cod_tipo_mv = 510 then it.Qtde_pri else 0 end as sige_qtde_venda, "
+			+" case when s.Cod_tipo_mv = 516 then it.Qtde_pri else 0 end as sige_qtde_amostra, "
+			+" case when s.Cod_tipo_mv = 512 then it.Qtde_pri else 0 end as sige_qtde_bonificacao, "
+			+" case when s.Cod_tipo_mv = 517 then it.Qtde_pri else 0 end as sige_qtde_expositor, "
+			+" case when s.Cod_tipo_mv = 515 then it.Qtde_pri else 0 end as sige_qtde_troca "
+			+" from tbSaidas s inner join tbSaidasItem it on it.chave_fato = s.chave_fato "
+			+" inner join tbproduto p on p.cod_produto = it.cod_produto "
+			+" inner join tbprodutoref r on r.cod_produto = p.cod_produto and r.cod_ref = 0 "
+			+" inner join tbCadastroGeral g on g.Cod_cadastro = s.Cod_cli_for "
+			+" inner join tbsaidas exp on exp.Chave_fato_orig_un = s.Chave_fato "
+
+			+" where (g.Cod_cadastro = " + cliente + " or g.Cpf_Cgc = '" + cnpj + "') "
+			+" and (it.cod_produto = " + produto + " or r.ean = '" + ean + "') "
+			
+			+" and s.Cod_tipo_mv in ('510','512','515','516','517') "
+			+" and s.STATUS <> 'C' AND s.STATUS_CTB = 'S' )x "
+			+" group by x.Cod_cadastro, x.Cpf_Cgc, x.Cod_produto,x.ean ");
+			List<Object[]> listasige = querySige.getResultList();
+			
+			for (Object[] rowsige : listasige) {
+				//inserir dados do sige
+				BigDecimal venda = (BigDecimal) rowsige[4];
+				BigDecimal amostra = (BigDecimal) rowsige[5];
+				BigDecimal bonificacao = (BigDecimal) rowsige[6];
+				BigDecimal expositor = (BigDecimal) rowsige[7];
+				BigDecimal troca = (BigDecimal) rowsige[8];
+				
+				pedidoitem.setSige_qtde_venda(venda.intValueExact());
+				pedidoitem.setSige_qtde_amostra(amostra.intValueExact());
+				pedidoitem.setSige_qtde_bonificacao(bonificacao.intValueExact());
+				pedidoitem.setSige_qtde_expositor(expositor.intValueExact());
+				pedidoitem.setSige_qtde_troca(troca.intValueExact());
+			}
+			
+			list.add(pedidoitem);
 		}
 		return list;
 		
