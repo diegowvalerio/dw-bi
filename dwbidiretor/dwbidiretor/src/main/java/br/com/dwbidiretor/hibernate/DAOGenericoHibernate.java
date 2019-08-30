@@ -24,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.dwbidiretor.classe.ClientesNovos;
+import br.com.dwbidiretor.classe.Gestor;
 import br.com.dwbidiretor.classe.MetaVenda;
 import br.com.dwbidiretor.classe.PedidoItem;
 import br.com.dwbidiretor.classe.VendaAnoMes;
@@ -115,12 +116,10 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				" SELECT " + " TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') AS ANO, " + " TO_CHAR(EN.DT_PEDIDOVENDA,'MM') AS MES, "
 						+ " SUM(EN.VL_TOTALPROD_PEDIDOVENDA)as VL_TOTAL " + " FROM PEDIDOVENDA EN "
 						+ " INNER JOIN VENDEDOR V ON V.CADCFTVID = EN.VENDEDOR1ID "
-						+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
-						+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
 						+ " INNER JOIN CFOP CF ON CF.CFOPID = EN.CFOPID " + " WHERE "
 						+ " CF.TIPOOPERACAO_CFOP = 'VENDA' "
 						+ " AND EN.status_pedidovenda in ('IMPORTADO','ABERTO','BLOQUEADO','PARCIAL') "
-						+ " AND V.GESTORID = G.GESTORID " + " GROUP BY "
+						+ " GROUP BY "
 						+ " TO_CHAR(EN.DT_PEDIDOVENDA,'MM'), " + " TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') " + " ORDER BY "
 						+ " TO_CHAR(EN.DT_PEDIDOVENDA,'MM'),TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') ");
 		// query.setParameter("vendedorlogado", usuarioconectado());
@@ -156,13 +155,11 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " INNER JOIN PRODUTO PR ON PR.PRODUTOID = IT.PRODUTOID "
 						+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
 						+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
-						+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
-						+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
 						+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
 						+ " inner join subgrupoproduto sub on sub.subgrupoprodutoid = pr.subgrupoprodutoid "
 						+ " inner join GRUPOPRODUTO gru on gru.GRUPOPRODUTOID = sub.GRUPOPRODUTOID "
 						+ " WHERE p.status_pedidovenda in ('IMPORTADO','ABERTO','BLOQUEADO','PARCIAL') "
-						+ " AND CF.tipooperacao_cfop = 'VENDA' "+ " AND V2.GESTORID = G.GESTORID "
+						+ " AND CF.tipooperacao_cfop = 'VENDA' "
 						+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
 						+ " group by sub.NOME_SUBGRUPOPRODUTO " + " order by sub.NOME_SUBGRUPOPRODUTO ");
 
@@ -182,7 +179,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		return list;
 	}
 	//pedidos de venda
-	public List<VendasEmGeral> vendasemgeral(Date data1, Date data2, String vendedor1, String vendedor2) {
+	public List<VendasEmGeral> vendasemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
 		List<VendasEmGeral> list = new ArrayList<>();
 		
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -208,14 +205,15 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid "
 						+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid "
 						+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
-						+ " inner join roteiro r on r.roteiroid = p.roteiroid "
-						+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
-						+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+						//+ " inner join roteiro r on r.roteiroid = p.roteiroid "
+						//+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
+						//+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
 						+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
 						+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
-						+ " AND CF.tipooperacao_cfop = 'VENDA' " + " AND V2.GESTORID = G.GESTORID "
+						+ " AND CF.tipooperacao_cfop = 'VENDA' "
 						+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
 						+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+						+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 						+ " ORDER BY P.PEDIDOVENDAID  ");
 
 		List<Object[]> lista = query.getResultList();
@@ -278,8 +276,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid "
 						+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
 						+ " inner join roteiro r on r.roteiroid = p.roteiroid "
-						+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
-						+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+						//+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
+						//+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
 						+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
 						+ " left join ( " 
 						+ " select " 
@@ -299,7 +297,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " ) x1 on x1.ORIGEM_PEDIDOVENDA_ITEM = IT.PEDIDOVENDAITEMID  and x1.produtoid = it.produtoid "
 
 						+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
-						+ " AND CF.tipooperacao_cfop = 'VENDA' " + " and V2.GESTORID = G.GESTORID "
+						+ " AND CF.tipooperacao_cfop = 'VENDA' "
 						+ " and p.pedidovendaid = ' " + pedido + " ' " 
 						+ " ORDER BY P.PEDIDOVENDAID  ");
 		List<Object[]> lista2 = query2.getResultList();
@@ -327,7 +325,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 	}
 	
 	//pedidos de amostra
-	public List<VendasEmGeral> amostraemgeral(Date data1, Date data2, String vendedor1, String vendedor2) {
+	public List<VendasEmGeral> amostraemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
 			List<VendasEmGeral> list = new ArrayList<>();
 			
 			SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -354,13 +352,14 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 							+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid "
 							+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
 							+ " inner join roteiro r on r.roteiroid = p.roteiroid "
-							+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
-							+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+							//+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
+							//+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
 							+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
 							+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
-							+ " AND CF.tipooperacao_cfop <> 'VENDA' " + " AND V2.GESTORID = G.GESTORID "
+							+ " AND CF.tipooperacao_cfop <> 'VENDA' "
 							+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
 							+ " and p.TIPOPEDIDOID = 4 and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+							+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 							+ " ORDER BY P.PEDIDOVENDAID  ");
 
 			List<Object[]> lista = query.getResultList();
@@ -424,8 +423,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 							+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid "
 							+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
 							+ " inner join roteiro r on r.roteiroid = p.roteiroid "
-							+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
-							+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+							//+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
+							//+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
 							+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
 							+ " left join ( " 
 							+ " select " 
@@ -445,7 +444,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 							+ " ) x1 on x1.ORIGEM_PEDIDOVENDA_ITEM = IT.PEDIDOVENDAITEMID  and x1.produtoid = it.produtoid "
 
 							+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
-							+ " AND CF.tipooperacao_cfop <> 'VENDA' " + " and V2.GESTORID = G.GESTORID "
+							+ " AND CF.tipooperacao_cfop <> 'VENDA' "
 							+ " and p.TIPOPEDIDOID = 4 and p.pedidovendaid = ' " + pedido + " ' " 
 							+ " ORDER BY P.PEDIDOVENDAID  ");
 			List<Object[]> lista2 = query2.getResultList();
@@ -473,7 +472,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		}
 		
 	//pedidos de bonifica��o
-	public List<VendasEmGeral> bonificacaoemgeral(Date data1, Date data2, String vendedor1, String vendedor2) {
+	public List<VendasEmGeral> bonificacaoemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
 				List<VendasEmGeral> list = new ArrayList<>();
 				
 				SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -500,13 +499,14 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 								+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid "
 								+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
 								+ " inner join roteiro r on r.roteiroid = p.roteiroid "
-								+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
-								+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+								//+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
+								//+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
 								+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
 								+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
-								+ " AND CF.tipooperacao_cfop <> 'VENDA' " + " AND V2.GESTORID = G.GESTORID "
+								+ " AND CF.tipooperacao_cfop <> 'VENDA' "
 								+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
 								+ " and p.TIPOPEDIDOID = 3 and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+								+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 								+ " ORDER BY P.PEDIDOVENDAID  ");
 
 				List<Object[]> lista = query.getResultList();
@@ -569,8 +569,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 								+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid "
 								+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
 								+ " inner join roteiro r on r.roteiroid = p.roteiroid "
-								+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
-								+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+								//+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
+								//+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
 								+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
 								+ " left join ( " 
 								+ " select " 
@@ -590,7 +590,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 								+ " ) x1 on x1.ORIGEM_PEDIDOVENDA_ITEM = IT.PEDIDOVENDAITEMID  and x1.produtoid = it.produtoid "
 
 								+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
-								+ " AND CF.tipooperacao_cfop <> 'VENDA' " + " and V2.GESTORID = G.GESTORID "
+								+ " AND CF.tipooperacao_cfop <> 'VENDA' "
 								+ " and p.TIPOPEDIDOID = 3 and p.pedidovendaid = ' " + pedido + " ' " 
 								+ " ORDER BY P.PEDIDOVENDAID  ");
 				List<Object[]> lista2 = query2.getResultList();
@@ -618,7 +618,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			}
 
 	//pedidos de amostra
-		public List<VendasEmGeral> expositoremgeral(Date data1, Date data2, String vendedor1, String vendedor2) {
+		public List<VendasEmGeral> expositoremgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
 				List<VendasEmGeral> list = new ArrayList<>();
 				
 				SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -645,13 +645,14 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 								+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid "
 								+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
 								+ " inner join roteiro r on r.roteiroid = p.roteiroid "
-								+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
-								+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+								//+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
+								//+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
 								+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
 								+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
-								+ " AND CF.tipooperacao_cfop <> 'VENDA' " + " AND V2.GESTORID = G.GESTORID "
+								+ " AND CF.tipooperacao_cfop <> 'VENDA' "
 								+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
 								+ " and p.TIPOPEDIDOID = 5 and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+								+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 								+ " ORDER BY P.PEDIDOVENDAID  ");
 
 				List<Object[]> lista = query.getResultList();
@@ -715,8 +716,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 								+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid "
 								+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
 								+ " inner join roteiro r on r.roteiroid = p.roteiroid "
-								+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
-								+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+								//+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
+								//+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
 								+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
 								+ " left join ( " 
 								+ " select " 
@@ -736,7 +737,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 								+ " ) x1 on x1.ORIGEM_PEDIDOVENDA_ITEM = IT.PEDIDOVENDAITEMID  and x1.produtoid = it.produtoid "
 
 								+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
-								+ " AND CF.tipooperacao_cfop <> 'VENDA' " + " and V2.GESTORID = G.GESTORID "
+								+ " AND CF.tipooperacao_cfop <> 'VENDA' "
 								+ " and p.TIPOPEDIDOID = 5 and p.pedidovendaid = ' " + pedido + " ' " 
 								+ " ORDER BY P.PEDIDOVENDAID  ");
 				List<Object[]> lista2 = query2.getResultList();
@@ -764,7 +765,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			}
 
 	//clientes cadastrados no periodo
-	public List<ClientesNovos> clientesnovos(Date data1,Date data2,String vendedor1, String vendedor2) {
+	public List<ClientesNovos> clientesnovos(Date data1,Date data2,String vendedor1, String vendedor2, String gestor1, String gestor2) {
 		List<ClientesNovos> list = new ArrayList<>();
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 		String dataFormatada = formato.format(data1);
@@ -782,15 +783,15 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						
 						+ " from cadcftv c "
 						+ " inner join cliente cl on cl.CADCFTVID = c.cadcftvid  "
-						+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  " + usuarioconectado()
-						+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+						//+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  " + usuarioconectado()
+						//+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
 						+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = cl.VENDEDORID1 "
 						+ " INNER JOIN cadcftv V ON V.cadcftvID = V2.CADCFTVID "
 						
-						+ " WHERE V2.GESTORID = G.GESTORID  "
-						+ " and c.ATIVO_CADCFTV = 'SIM' "
+						+ " WHERE c.ATIVO_CADCFTV = 'SIM' "
 						+ " and c.DATACREATE_CADCFTV between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
 						+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+						+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 						+ " order by cl.VENDEDORID1,c.cadcftvid ");
 
 		List<Object[]> lista = query.getResultList();
@@ -822,9 +823,9 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " v.CNPJCPF_CADCFTV cnpj_cpf "  
 						
 						+ " from cadcftv v "
-						+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  " + usuarioconectado()
-						+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
-						+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = V.CADCFTVID and V2.GESTORID = G.GESTORID "						
+						//+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  " + usuarioconectado()
+						//+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+						+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = V.CADCFTVID "						
 						+ " WHERE v.ATIVO_CADCFTV = 'SIM' "
 						+ " order by v.cadcftvid ");
 
@@ -839,6 +840,29 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			
 			
 			list.add(vendedor);
+		}
+		return list;
+	}
+	
+	public List<Gestor> consultagestor(String vendedor1, String vendedor2) {
+		List<Gestor> list = new ArrayList<>();
+
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+						" select GR.CADCFTVID, G.NOME_GESTOR, g.gestorid from  vendedor v  " 
+						+ " inner join gestor g on g.gestorid = v.gestorid  "
+						+ " left join CADCFTV GR ON GR.CNPJCPF_CADCFTV = G.CNPJ_GESTOR OR GR.CNPJCPF_CADCFTV = G.CPF_GESTOR  "
+						+ " where v.CADCFTVID between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+						+ " group by GR.CADCFTVID, G.NOME_GESTOR, g.gestorid  ");
+
+		List<Object[]> lista = query.getResultList();
+
+		for (Object[] row : lista) {
+			Gestor gestor = new Gestor();
+
+			gestor.setCodigogestor((BigDecimal) row[0]);
+			gestor.setNomegestor((String) row[1]);			
+			gestor.setGestorid((BigDecimal) row[2]);
+			list.add(gestor);
 		}
 		return list;
 	}
@@ -882,7 +906,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		return vendasEmGeralItem;
 	}
 	
-	public List<MetaVenda> metavenda(String vendedor1, String vendedor2) {
+	public List<MetaVenda> metavenda(String vendedor1, String vendedor2, String gestor1, String gestor2) {
 		List<MetaVenda> list = new ArrayList<>();
 
 		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
@@ -893,17 +917,18 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ "	MV.ANO_METAVENDEDOR ANO, "
 				+ "	SUM(MV.VALOR_METAVENDEDOR)VALOR, "
 				+ "	RE.NOME_REGIAO "
-				+ "	from meta_vendedor mv "
-				+ "	INNER JOIN CADCFTV V ON V.CADCFTVID = mv.CADCFTVID "
+				+ "	from CADCFTV V "
+				+ "	left JOIN meta_vendedor mv  ON V.CADCFTVID = mv.CADCFTVID "
 				+ "	LEFT JOIN CLIENTE CLI ON CLI.CADCFTVID = V.CADCFTVID "
 				+ "	LEFT JOIN REGIAO RE ON RE.REGIAOID = CLI.REGIAOID "
-				+ "	INNER JOIN CADCFTV GR ON GR.CADCFTVID = " + usuarioconectado()
-				+ "	INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
-				+ "	INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = V.CADCFTVID and V2.GESTORID = G.GESTORID "
+				//+ "	INNER JOIN CADCFTV GR ON GR.CADCFTVID = " + usuarioconectado()
+				//+ "	INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+				+ "	INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = V.CADCFTVID  "
 				+ "	WHERE mv.MES_METAVENDEDOR = TO_NUMBER(TO_CHAR(SYSDATE,'MM')) "
 				+ "	and mv.ANO_METAVENDEDOR = TO_NUMBER(TO_CHAR(SYSDATE,'YYYY')) "
 				+ "	and v.ATIVO_CADCFTV = 'SIM' "
 				+ " and v2.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+				+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 				+ "	GROUP BY "
 				+ "	MV.MES_METAVENDEDOR, "
 				+ "	MV.ANO_METAVENDEDOR, "
@@ -917,15 +942,15 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ "	RE.NOME_REGIAO "
 				+ "	FROM PEDIDOVENDA EN  "
 				+ "	INNER JOIN VENDEDOR V ON V.CADCFTVID = EN.VENDEDOR1ID  "
-				+ "	INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
-				+ "	INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV  "
+				//+ "	INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
+				//+ "	INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV  "
 				+ "	INNER JOIN CFOP CF ON CF.CFOPID = EN.CFOPID  "
 				+ "	LEFT JOIN CLIENTE CLI ON CLI.CADCFTVID = V.CADCFTVID "
 				+ "	LEFT JOIN REGIAO RE ON RE.REGIAOID = CLI.REGIAOID "
 				+ "	WHERE CF.TIPOOPERACAO_CFOP = 'VENDA' "
 				+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 				+ "	AND EN.status_pedidovenda in ('IMPORTADO','ABERTO','BLOQUEADO','PARCIAL') "
-				+ "	AND V.GESTORID = G.GESTORID  "
+				+ " and v.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 				+ "	AND TO_CHAR(EN.DT_PEDIDOVENDA,'MM') = TO_CHAR(SYSDATE,'MM') "
 				+ "	AND TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') = TO_CHAR(SYSDATE,'YYYY') "
 				+ "	GROUP BY  "
@@ -952,7 +977,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		return list;
 	}
 	
-	public List<VendedorMetaVenda> vendedormetavenda(String vendedor1, String vendedor2) {
+	public List<VendedorMetaVenda> vendedormetavenda(String vendedor1, String vendedor2, String gestor1, String gestor2) {
 		List<VendedorMetaVenda> list = new ArrayList<>();
 
 		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
@@ -962,19 +987,20 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+" when (SUM(EN.VL_TOTALPROD_PEDIDOVENDA) / MV.VALOR_METAVENDEDOR)*100 >= 50 and (SUM(EN.VL_TOTALPROD_PEDIDOVENDA) / MV.VALOR_METAVENDEDOR)*100 < 70 then 'orange' "
 				+" when (SUM(EN.VL_TOTALPROD_PEDIDOVENDA) / MV.VALOR_METAVENDEDOR)*100 >= 70 and (SUM(EN.VL_TOTALPROD_PEDIDOVENDA) / MV.VALOR_METAVENDEDOR)*100 < 100 then 'blue' "
 				+" when (SUM(EN.VL_TOTALPROD_PEDIDOVENDA) / MV.VALOR_METAVENDEDOR)*100 >= 100 then 'green' end as cordacoluna "
-				+"FROM PEDIDOVENDA EN  "
-				+"INNER JOIN VENDEDOR V ON V.CADCFTVID = EN.VENDEDOR1ID  "
+				+"FROM VENDEDOR V   "
+				+"left JOIN PEDIDOVENDA EN ON V.CADCFTVID = EN.VENDEDOR1ID  "
 				+"INNER JOIN CADCFTV VEND ON VEND.CADCFTVID = V.CADCFTVID "
-				+"INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
-				+"INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV   "
+				//+"INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
+				//+"INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV   "
 				+"INNER JOIN CFOP CF ON CF.CFOPID = EN.CFOPID   "
 				+"LEFT JOIN CLIENTE CLI ON CLI.CADCFTVID = V.CADCFTVID  "
 				+"LEFT JOIN REGIAO RE ON RE.REGIAOID = CLI.REGIAOID  "
 				+"left JOIN meta_vendedor mv ON mv.CADCFTVID = VEND.CADCFTVID "
 				+"WHERE CF.TIPOOPERACAO_CFOP = 'VENDA'  "
 				+"and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+				+ " and v.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 				+"AND EN.status_pedidovenda in ('IMPORTADO','ABERTO','BLOQUEADO','PARCIAL')  "
-				+"AND V.GESTORID = G.GESTORID   "
+				//+"AND V.GESTORID = G.GESTORID   "
 				+"AND TO_CHAR(EN.DT_PEDIDOVENDA,'MM') = TO_CHAR(SYSDATE,'MM')  "
 				+"AND TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') = TO_CHAR(SYSDATE,'YYYY')  "
 				+"AND mv.MES_METAVENDEDOR = TO_NUMBER(TO_CHAR(SYSDATE,'MM'))  "

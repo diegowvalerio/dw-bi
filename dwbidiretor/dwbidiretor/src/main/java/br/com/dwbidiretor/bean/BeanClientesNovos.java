@@ -17,8 +17,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.dwbidiretor.classe.ClientesNovos;
+import br.com.dwbidiretor.classe.Gestor;
 import br.com.dwbidiretor.classe.Vendedor;
 import br.com.dwbidiretor.servico.ServicoClientesNovos;
+import br.com.dwbidiretor.servico.ServicoGestor;
 import br.com.dwbidiretor.servico.ServicoVendedor;
 
 
@@ -36,6 +38,12 @@ public class BeanClientesNovos implements Serializable {
 	@Inject
 	private ServicoVendedor servicovendedor;
 	private List<Vendedor> listavendedor = new ArrayList<>();
+	
+	//filtro gestor
+	private Gestor gestor = new Gestor();
+	@Inject
+	private ServicoGestor servicogestor;
+	private List<Gestor> listagestor = new ArrayList<>();
 
 	private String vendedorlogado;
 
@@ -44,10 +52,12 @@ public class BeanClientesNovos implements Serializable {
 	
 	private String vendedorfiltrado;
 	private String vendedorfiltrado2;
+	private String gestorfiltrado;
+	private String gestorfiltrado2;
 
 	@PostConstruct
 	public void init() {
-		listavendedor = servicovendedor.consultavendedor();
+		
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
 				.getRequest();
 		HttpSession session = (HttpSession) request.getSession();
@@ -70,19 +80,42 @@ public class BeanClientesNovos implements Serializable {
 			vendedorfiltrado = vendedor.getCodigovendedor().toString();
 			vendedorfiltrado2 = vendedor.getCodigovendedor().toString();
 		}
+		//verifica filtro gestor
+		if (session.getAttribute("gestor") != null){
+			gestor = (Gestor) session.getAttribute("gestor");
+			if (gestor == null){
+				gestorfiltrado = "0";
+				gestorfiltrado2 = "999999";
+				
+			}else{
+				gestorfiltrado = gestor.getGestorid().toString();
+				gestorfiltrado2 = gestor.getGestorid().toString();
+			}
+		}
+		if (gestor.getGestorid() == null){
+			gestorfiltrado = "0";
+			gestorfiltrado2 = "999999";
+			
+		}else{
+			gestorfiltrado = gestor.getGestorid().toString();
+			gestorfiltrado2 = gestor.getGestorid().toString();
+		}//fim filtro gestor
+		
+		listavendedor = servicovendedor.consultavendedor();
+		listagestor = servicogestor.consultagestor(vendedorfiltrado,vendedorfiltrado2);
 		
 		if ((Date) session.getAttribute("data1") != null) {
 			data_grafico = (Date) session.getAttribute("data1");
 			data_grafico2 = (Date) session.getAttribute("data2");
-			lista = servico.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+			lista = servico.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
 		} else {			
-			lista = servico.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+			lista = servico.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
 		}
 
 		session.removeAttribute("data1");
 		session.removeAttribute("data2");
 		session.removeAttribute("vendedor");
-		
+		session.removeAttribute("gestor");
 		
 
 	}
@@ -96,7 +129,47 @@ public class BeanClientesNovos implements Serializable {
 			vendedorfiltrado = vendedor.getCodigovendedor().toString();
 			vendedorfiltrado2 = vendedor.getCodigovendedor().toString();
 		}
-		lista = servico.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+		if (gestor == null){
+			gestorfiltrado = "0";
+			gestorfiltrado2 = "999999";
+			
+		}else{
+			gestorfiltrado = gestor.getGestorid().toString();
+			gestorfiltrado2 = gestor.getGestorid().toString();
+		}
+		lista = servico.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
+	}
+
+	public Gestor getGestor() {
+		return gestor;
+	}
+
+	public void setGestor(Gestor gestor) {
+		this.gestor = gestor;
+	}
+
+	public List<Gestor> getListagestor() {
+		return listagestor;
+	}
+
+	public void setListagestor(List<Gestor> listagestor) {
+		this.listagestor = listagestor;
+	}
+
+	public String getGestorfiltrado() {
+		return gestorfiltrado;
+	}
+
+	public void setGestorfiltrado(String gestorfiltrado) {
+		this.gestorfiltrado = gestorfiltrado;
+	}
+
+	public String getGestorfiltrado2() {
+		return gestorfiltrado2;
+	}
+
+	public void setGestorfiltrado2(String gestorfiltrado2) {
+		this.gestorfiltrado2 = gestorfiltrado2;
 	}
 
 	public List<Vendedor> getListavendedor() {

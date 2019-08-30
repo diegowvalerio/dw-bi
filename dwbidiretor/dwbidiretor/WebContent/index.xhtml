@@ -36,7 +36,7 @@
 		<adm:breadcrumb title="Resumo" />
 		<h:form id="form">
 			<section class="content">
-				<p:panelGrid columns="7"
+				<p:panelGrid columns="9" id="filtros"
 					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 					layout="grid" styleClass="ui-fluid card">
 					<p:outputLabel value=" Data:  " for="data_grafico" />
@@ -51,6 +51,15 @@
 						mask="true" required="true" readonlyInput="true">
 					</p:calendar>
 
+					<p:outputLabel value="Gestor:" for="gestor" />
+					<p:selectOneMenu id="gestor" value="#{beanResumo.gestor}"
+						converter="conversorGestor">
+						<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
+						<f:selectItems value="#{beanResumo.listagestor}" var="gestor"
+							itemLabel="#{gestor.nomegestor}"
+							itemValue="#{gestor}" />
+					</p:selectOneMenu>
+					
 					<p:outputLabel value="Vendedor:" for="vendedor" />
 					<p:selectOneMenu id="vendedor" value="#{beanResumo.vendedor}"
 						converter="conversorVendedor">
@@ -58,6 +67,7 @@
 						<f:selectItems value="#{beanResumo.listavendedor}" var="vendedor"
 							itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
 							itemValue="#{vendedor}" />
+							<p:ajax listener="#{beanResumo.filtragestor}" update=":form:filtros" />
 					</p:selectOneMenu>
 
 					<p:commandButton action="#{beanResumo.filtrar()}" value="Filtrar"

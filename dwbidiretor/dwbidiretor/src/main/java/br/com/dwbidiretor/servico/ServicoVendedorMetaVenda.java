@@ -18,8 +18,8 @@ public class ServicoVendedorMetaVenda implements Serializable{
 	private DAOVendedorMetaVenda dao;
 	
 	
-	public List<VendedorMetaVenda> vendedormetavenda(String vendedor1, String vendedor2) {
-		return dao.vendedormetavenda(vendedor1, vendedor2);
+	public List<VendedorMetaVenda> vendedormetavenda(String vendedor1, String vendedor2, String gestor1, String gestor2) {
+		return dao.vendedormetavenda(vendedor1, vendedor2, gestor1, gestor2);
 	}
 	
 }

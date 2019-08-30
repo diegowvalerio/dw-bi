@@ -36,71 +36,147 @@
 		<adm:breadcrumb title="Analise Pedido" />
 
 		<h:form id="form">
-				<p:panelGrid columns="3" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
-                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
+			<p:panelGrid columns="3"
+				columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+				layout="grid" styleClass="ui-fluid card" id="filtroscli">
 
-					<p:outputLabel value=" Pedido:  " for="pedidofiltrado" />
-					<p:inputText id="pedidofiltrado" value="#{beanPedidoItem.pedidofiltrado}" required="true" />
-				
-					<p:commandButton action="#{beanPedidoItem.filtrar()}"
-						value="Filtrar" icon="fa fa-check" update=":form:paineld :form:paineld1"
-						styleClass="btn-primary" />
+				<p:outputLabel value=" Pedido:  " for="pedidofiltrado" />
+				<p:inputText id="pedidofiltrado"
+					value="#{beanPedidoItem.pedidofiltrado}" required="true" />
 
-				</p:panelGrid>
-			<div class="box box-primary" >
-				<div style="overflow:scroll;width:100%;overflow:auto">
+				<p:commandButton action="#{beanPedidoItem.filtrar()}"
+					value="Filtrar" icon="fa fa-check"
+					update=":form:paineld :form:paineld1" styleClass="btn-primary" />
+
+			</p:panelGrid>
+			<div class="box box-primary">
+				<div style="overflow: scroll; width: 100%; overflow: auto">
 					<h:panelGrid columns="10" id="paineld1" style="width:100%">
-					
-					<p:outputLabel value="Pedido: " />
-						<h:outputText
-							value="#{beanPedidoItem.pedidoitem.pedido}" />
+
+						<p:outputLabel value="Pedido: " />
+						<h:outputText value="#{beanPedidoItem.pedidoitem.pedido}" />
 
 						<p:outputLabel value="Cliente: " />
-						<h:outputText
-							value="#{beanPedidoItem.pedidoitem.nomecliente}" />
+						<h:outputText value="#{beanPedidoItem.pedidoitem.nomecliente}" />
 
 						<p:outputLabel value="Fase Atual " />
 						<h:outputText value="#{beanPedidoItem.pedidoitem.faseatual}" />
 
 						<p:outputLabel value="Status: " />
-						<h:outputText
-							value="#{beanPedidoItem.pedidoitem.statuspedido}" />
-						
+						<h:outputText value="#{beanPedidoItem.pedidoitem.statuspedido}" />
+
 						<p:outputLabel value="Tipo: " />
-						<h:outputText
-							value="#{beanPedidoItem.pedidoitem.tipopedido}" />
-					
+						<h:outputText value="#{beanPedidoItem.pedidoitem.tipopedido}" />
+
 					</h:panelGrid>
 					<p:separator />
-					
-					<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
-						<p:dataTable id="venda" var="vendas"  scrollable="true"
+
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right"
+						width="100%">
+						<p:dataTable id="venda" var="vendas" scrollable="true"
 							value="#{beanPedidoItem.listapedidoitem}" resizableColumns="true">
+
+							<p:columnGroup type="header">
+								<p:row>
+									<p:column colspan="3" headerText="Itens do Pedido" style="border: 1px solid"/>
+									<p:column colspan="7" headerText="Dados Seven" style="border: 1px solid"/>
+									<p:column colspan="5" headerText="Dados Sige" style="border: 1px solid"/>
+								</p:row>
+								<p:row>
+									<p:column colspan="1" headerText="Código" style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Produto" style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Qtde" style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Venda"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Amostra" style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Amostra Paga"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Bonificação"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Expositor"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Troca"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Negociações"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Venda"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Amostra"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Bonificação"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Expositor"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Troca" style="border: 1px solid; text-align: Left"/>
+								</p:row>
+							</p:columnGroup>
 							
-							<p:column  headerText="Cod." sortBy="#{vendas.codigoproduto}">
+							<p:column headerText="Cod." sortBy="#{vendas.codigoproduto}">
 								<h:outputText value="#{vendas.codigoproduto}" />
 							</p:column>
-							
-							<p:column  headerText="Produto" sortBy="#{vendas.nomeproduto}">
+
+							<p:column headerText="Produto" sortBy="#{vendas.nomeproduto}">
 								<h:outputText value="#{vendas.nomeproduto}" />
 							</p:column>
-							
+
 							<p:column headerText="Qtde Pedido" sortBy="#{vendas.qtdepedido}">
 								<h:outputText value="#{vendas.qtdepedido}" />
 							</p:column>
-							
-							<p:column headerText="Qtde Venda Seven" sortBy="#{vendas.qtdevenda}">
+
+							<p:column headerText="Qtde Venda Seven"
+								sortBy="#{vendas.qtdevenda}">
 								<h:outputText value="#{vendas.qtdevenda}" />
 							</p:column>
 							
-							<p:column headerText="Qtde Venda Sige" sortBy="#{vendas.sige_qtde_venda}">
+							<p:column headerText="Qtde Amostra Seven"
+								sortBy="#{vendas.qtdeamostra}">
+								<h:outputText value="#{vendas.qtdeamostra}" />
+							</p:column>
+							
+							<p:column headerText="Qtde Amostra Paga Seven"
+								sortBy="#{vendas.qtdeamostrapaga}">
+								<h:outputText value="#{vendas.qtdeamostrapaga}" />
+							</p:column>
+							
+							<p:column headerText="Qtde Bonificação Seven"
+								sortBy="#{vendas.qtdebonificacao}">
+								<h:outputText value="#{vendas.qtdebonificacao}" />
+							</p:column>
+							
+							<p:column headerText="Qtde Expositor Seven"
+								sortBy="#{vendas.qtdeexpositor}">
+								<h:outputText value="#{vendas.qtdeexpositor}" />
+							</p:column>
+							
+							<p:column headerText="Qtde Troca Seven"
+								sortBy="#{vendas.qtdetroca}">
+								<h:outputText value="#{vendas.qtdetroca}" />
+							</p:column>
+							
+							<p:column headerText="Qtde Negociações Seven"
+								sortBy="#{vendas.qtdenegociacoescomerciais}">
+								<h:outputText value="#{vendas.qtdenegociacoescomerciais}" />
+							</p:column>
+
+							<p:column headerText="Qtde Venda Sige"
+								sortBy="#{vendas.sige_qtde_venda}">
 								<h:outputText value="#{vendas.sige_qtde_venda}" />
 							</p:column>
 							
+							<p:column headerText="Qtde Amostra Sige"
+								sortBy="#{vendas.sige_qtde_amostra}">
+								<h:outputText value="#{vendas.sige_qtde_amostra}" />
+							</p:column>
+							<p:column headerText="Qtde Bonificação Sige"
+								sortBy="#{vendas.sige_qtde_bonificacao}">
+								<h:outputText value="#{vendas.sige_qtde_bonificacao}" />
+							</p:column>
+							<p:column headerText="Qtde Expositor Sige"
+								sortBy="#{vendas.sige_qtde_expositor}">
+								<h:outputText value="#{vendas.sige_qtde_expositor}" />
+							</p:column>
+							<p:column headerText="Qtde Troca Sige"
+								sortBy="#{vendas.sige_qtde_troca}">
+								<h:outputText value="#{vendas.sige_qtde_troca}" />
+							</p:column>
+							
+
 						</p:dataTable>
 					</h:panelGrid>
-					</div>
 				</div>
+			</div>
 		</h:form>
 
 	</ui:define>

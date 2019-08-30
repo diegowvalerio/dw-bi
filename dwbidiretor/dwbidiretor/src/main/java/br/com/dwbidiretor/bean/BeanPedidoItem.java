@@ -44,6 +44,7 @@ public class BeanPedidoItem implements Serializable {
 		}else{
 			BigDecimal p =  new BigDecimal(pedidofiltrado);
 			listapedidoitem = servico.pedidoitem(p);
+			pedidoitem = listapedidoitem.get(0);
 		}
 		
 	}
