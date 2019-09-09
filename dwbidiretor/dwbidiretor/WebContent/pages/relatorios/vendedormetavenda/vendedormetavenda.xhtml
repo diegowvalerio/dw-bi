@@ -37,8 +37,17 @@
 
 		<h:form id="form">
 			
-					<p:panelGrid columns="3" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" id="filtroscli">
+					<p:panelGrid columns="5" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" id="filtroscli">
 						
+					<p:outputLabel value="Gestor:" for="gestor" />
+					<p:selectOneMenu id="gestor" value="#{beanVendedorMetaVenda.gestor}"
+						converter="conversorGestor">
+						<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
+						<f:selectItems value="#{beanVendedorMetaVenda.listagestor}" var="gestor"
+							itemLabel="#{gestor.nomegestor}"
+							itemValue="#{gestor}" />
+					</p:selectOneMenu>
+					
 					<p:outputLabel value="Vendedor:" for="vendedor" />
 					<p:selectOneMenu id="vendedor"
 					value="#{beanVendedorMetaVenda.vendedor}"
@@ -47,6 +56,7 @@
 					<f:selectItems value="#{beanVendedorMetaVenda.listavendedor}"
 						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
 						itemValue="#{vendedor}" />
+						<p:ajax listener="#{beanVendedorMetaVenda.filtragestor}" update=":form:gestor" />
 					</p:selectOneMenu>
 					
 					<p:commandButton action="#{beanVendedorMetaVenda.filtrar()}"

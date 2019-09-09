@@ -25,7 +25,7 @@
 	</ui:define>
 
 	<ui:define name="title">
-        Amostras em Geral
+        Bonificações em Geral
     </ui:define>
 
 	<ui:define name="description">
@@ -33,45 +33,25 @@
     </ui:define>
 
 	<ui:define name="body">
-		<adm:breadcrumb title="Amostras em Geral" />
+		<adm:breadcrumb title="Bonificações em Geral" />
 
 		<h:form id="form">
-				<p:panelGrid columns="9" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+				<p:panelGrid columns="5" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
                              layout="grid" styleClass="ui-fluid card" id="filtroscli">
 
 					<p:outputLabel value=" Data:  " for="data_grafico" />
 					<p:calendar locale="pt_BR" id="data_grafico"
-						value="#{beanAmostraemGeral.data_grafico}" pattern="dd/MM/yyyy"
+						value="#{beanBonificacaoemGeral.data_grafico}" pattern="dd/MM/yyyy"
 						mask="true" required="true" readonlyInput="true">
 					</p:calendar>
 
 					<p:outputLabel value=" Até:  " for="data_grafico2" />
 					<p:calendar locale="pt_BR" id="data_grafico2"
-						value="#{beanAmostraemGeral.data_grafico2}" pattern="dd/MM/yyyy"
+						value="#{beanBonificacaoemGeral.data_grafico2}" pattern="dd/MM/yyyy"
 						mask="true" required="true" readonlyInput="true">
 					</p:calendar>
-					
-					<p:outputLabel value="Gestor:" for="gestor" />
-					<p:selectOneMenu id="gestor" value="#{beanAmostraemGeral.gestor}"
-						converter="conversorGestor">
-						<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
-						<f:selectItems value="#{beanAmostraemGeral.listagestor}" var="gestor"
-							itemLabel="#{gestor.nomegestor}"
-							itemValue="#{gestor}" />
-					</p:selectOneMenu>
-					
-					<p:outputLabel value="Vendedor:" for="vendedor" />
-					<p:selectOneMenu id="vendedor"
-					value="#{beanAmostraemGeral.vendedor}"
-					converter="conversorVendedor">
-					<f:selectItem itemLabel="Selecionar" />
-					<f:selectItems value="#{beanAmostraemGeral.listavendedor}"
-						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
-						itemValue="#{vendedor}" />
-						<p:ajax listener="#{beanAmostraemGeral.filtragestor}" update=":form:gestor" />
-					</p:selectOneMenu>
 
-					<p:commandButton action="#{beanAmostraemGeral.filtrar()}"
+					<p:commandButton action="#{beanBonificacaoemGeral.filtrar()}"
 						value="Filtrar" icon="fa fa-check" update=":form:paineld"
 						styleClass="btn-primary" />
 
@@ -81,7 +61,7 @@
 				
 					<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
 						<p:dataTable id="venda" var="vendas"  scrollable="true"
-							value="#{beanAmostraemGeral.listavenda}" resizableColumns="true">
+							value="#{beanBonificacaoemGeral.listavenda}" resizableColumns="true">
 
 							<f:facet name="header">
 								<p:commandButton id="toggler" type="button" value="Colunas"
@@ -97,17 +77,17 @@
 								<h:outputText value="#{vendas.nomecliente}" />
 							</p:column>
 
-							<p:column  headerText="Amostra" sortBy="#{vendas.pedido}">
+							<p:column  headerText="Bonificação" sortBy="#{vendas.pedido}">
 								<h:outputText value="#{vendas.pedido}" />
 							</p:column>
 
-							<p:column  headerText="Data Amostra" sortBy="#{vendas.datapedido}">
+							<p:column  headerText="Data" sortBy="#{vendas.datapedido}">
 								<h:outputText value="#{vendas.datapedido}" >
 								<f:convertDateTime pattern="dd/MM/yyyy"/>
 								</h:outputText>
 							</p:column>
 
-							<p:column headerText="Vlr Total Amostra"
+							<p:column headerText="Vlr Total"
 								sortBy="#{vendas.valortotalpedido}">
 								<h:outputText value="#{vendas.valortotalpedido}">
 									<f:convertNumber type="currency" currencySymbol="R$" />
@@ -117,9 +97,9 @@
 							<p:column  headerText="#" >
 							
 							<p:commandButton icon="fa fa-eye"
-								action="#{beanAmostraemGeral.encaminha()}">
+								action="#{beanBonificacaoemGeral.encaminha()}">
 								<f:setPropertyActionListener value="#{vendas}"
-									target="#{beanAmostraemGeral.vendasEmGeral}" />
+									target="#{beanBonificacaoemGeral.vendasEmGeral}" />
 							</p:commandButton>
 							</p:column>
 							
@@ -127,7 +107,7 @@
 								<p:row>
 									<p:column colspan="4" style="text-align:right"
 										footerText="Total:" />
-									<p:column footerText="R$#{beanAmostraemGeral.valorTotal}" />
+									<p:column footerText="R$#{beanBonificacaoemGeral.valorTotal}" />
 								</p:row>
 							</p:columnGroup>
 							

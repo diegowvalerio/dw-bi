@@ -36,7 +36,7 @@
 		<adm:breadcrumb title="Amostras em Geral" />
 
 		<h:form id="form">
-				<p:panelGrid columns="9" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+				<p:panelGrid columns="5" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
                              layout="grid" styleClass="ui-fluid card" id="filtroscli">
 
 					<p:outputLabel value=" Data:  " for="data_grafico" />
@@ -50,26 +50,6 @@
 						value="#{beanAmostraemGeral.data_grafico2}" pattern="dd/MM/yyyy"
 						mask="true" required="true" readonlyInput="true">
 					</p:calendar>
-					
-					<p:outputLabel value="Gestor:" for="gestor" />
-					<p:selectOneMenu id="gestor" value="#{beanAmostraemGeral.gestor}"
-						converter="conversorGestor">
-						<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
-						<f:selectItems value="#{beanAmostraemGeral.listagestor}" var="gestor"
-							itemLabel="#{gestor.nomegestor}"
-							itemValue="#{gestor}" />
-					</p:selectOneMenu>
-					
-					<p:outputLabel value="Vendedor:" for="vendedor" />
-					<p:selectOneMenu id="vendedor"
-					value="#{beanAmostraemGeral.vendedor}"
-					converter="conversorVendedor">
-					<f:selectItem itemLabel="Selecionar" />
-					<f:selectItems value="#{beanAmostraemGeral.listavendedor}"
-						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
-						itemValue="#{vendedor}" />
-						<p:ajax listener="#{beanAmostraemGeral.filtragestor}" update=":form:gestor" />
-					</p:selectOneMenu>
 
 					<p:commandButton action="#{beanAmostraemGeral.filtrar()}"
 						value="Filtrar" icon="fa fa-check" update=":form:paineld"

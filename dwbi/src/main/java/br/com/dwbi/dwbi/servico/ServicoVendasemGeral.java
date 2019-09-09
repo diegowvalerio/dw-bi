@@ -21,5 +21,16 @@ public class ServicoVendasemGeral implements Serializable{
 	public List<VendasEmGeral> vendasemgeral(Date data1, Date data2, String vendedor1, String vendedor2){
 		return dao.vendasemgeral(data1, data2, vendedor1,vendedor2);
 	}
+	public List<VendasEmGeral> amostraemgeral(Date data1, Date data2, String vendedor1, String vendedor2){
+		return dao.amostraemgeral(data1, data2, vendedor1,vendedor2);
+	}
+	
+	public List<VendasEmGeral> bonificacaoemgeral(Date data1, Date data2, String vendedor1, String vendedor2){
+		return dao.bonificacaoemgeral(data1, data2, vendedor1,vendedor2);
+	}
+	
+	public List<VendasEmGeral> expositoremgeral(Date data1, Date data2, String vendedor1, String vendedor2){
+		return dao.expositoremgeral(data1, data2, vendedor1,vendedor2);
+	}
 	
 }

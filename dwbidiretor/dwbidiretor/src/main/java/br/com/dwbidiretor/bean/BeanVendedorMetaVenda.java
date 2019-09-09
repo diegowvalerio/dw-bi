@@ -266,4 +266,16 @@ public class BeanVendedorMetaVenda implements Serializable {
 		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
 	}
 
+	public void filtragestor() {
+		if (getVendedor() != null){
+			List<Gestor> listagestorf = new ArrayList<>();
+			gestor = new Gestor();
+			listagestorf = servicogestor.consultagestor(getVendedor().getCodigovendedor().toString(),getVendedor().getCodigovendedor().toString());
+			gestor = listagestorf.get(0);
+		}else{
+			//listagestor = new ArrayList<>();
+			gestor = new Gestor();
+			//listagestor = servicogestor.consultagestor(vendedorfiltrado,vendedorfiltrado2);
+		}
+	}
 }

@@ -142,7 +142,7 @@ public class BeanResumo implements Serializable {
 			vendedorfiltrado = vendedor.getCodigovendedor().toString();
 			vendedorfiltrado2 = vendedor.getCodigovendedor().toString();
 		}
-		
+		//listagestor = servicogestor.consultagestor(vendedorfiltrado,vendedorfiltrado2);
 		if (gestor == null){
 			gestorfiltrado = "0";
 			gestorfiltrado2 = "999999";
@@ -591,8 +591,16 @@ public class BeanResumo implements Serializable {
 	}
 
 	public void filtragestor() {
-		gestor = listagestor.get(0);
-
+		if (getVendedor() != null){
+			List<Gestor> listagestorf = new ArrayList<>();
+			gestor = new Gestor();
+			listagestorf = servicogestor.consultagestor(getVendedor().getCodigovendedor().toString(),getVendedor().getCodigovendedor().toString());
+			gestor = listagestorf.get(0);
+		}else{
+			//listagestor = new ArrayList<>();
+			gestor = new Gestor();
+			//listagestor = servicogestor.consultagestor(vendedorfiltrado,vendedorfiltrado2);
+		}
 	}
 
 }

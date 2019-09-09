@@ -36,7 +36,7 @@
 		<adm:breadcrumb title="Expositores em Geral" />
 
 		<h:form id="form">
-				<p:panelGrid columns="7" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+				<p:panelGrid columns="9" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
                              layout="grid" styleClass="ui-fluid card" id="filtroscli">
 
 					<p:outputLabel value=" Data:  " for="data_grafico" />
@@ -51,6 +51,15 @@
 						mask="true" required="true" readonlyInput="true">
 					</p:calendar>
 					
+					<p:outputLabel value="Gestor:" for="gestor" />
+					<p:selectOneMenu id="gestor" value="#{beanExpositoremGeral.gestor}"
+						converter="conversorGestor">
+						<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
+						<f:selectItems value="#{beanExpositoremGeral.listagestor}" var="gestor"
+							itemLabel="#{gestor.nomegestor}"
+							itemValue="#{gestor}" />
+					</p:selectOneMenu>
+					
 					<p:outputLabel value="Vendedor:" for="vendedor" />
 					<p:selectOneMenu id="vendedor"
 					value="#{beanExpositoremGeral.vendedor}"
@@ -59,6 +68,7 @@
 					<f:selectItems value="#{beanExpositoremGeral.listavendedor}"
 						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
 						itemValue="#{vendedor}" />
+						<p:ajax listener="#{beanExpositoremGeral.filtragestor}" update=":form:gestor" />
 					</p:selectOneMenu>
 
 					<p:commandButton action="#{beanExpositoremGeral.filtrar()}"

@@ -38,8 +38,54 @@ public class PedidoItem implements Serializable {
 	private Integer sige_qtde_expositor;
 	private Integer sige_qtde_troca;	
 
+	private Integer sige_vl_venda;
+	private Integer sige_vl_amostra;
+	private Integer sige_vl_bonificacao;
+	private Integer sige_vl_expositor;
+	private Integer sige_vl_troca;
+	
 	public PedidoItem() {
 		super();
+	}
+
+	public Integer getSige_vl_venda() {
+		return sige_vl_venda;
+	}
+
+	public void setSige_vl_venda(Integer sige_vl_venda) {
+		this.sige_vl_venda = sige_vl_venda;
+	}
+
+	public Integer getSige_vl_amostra() {
+		return sige_vl_amostra;
+	}
+
+	public void setSige_vl_amostra(Integer sige_vl_amostra) {
+		this.sige_vl_amostra = sige_vl_amostra;
+	}
+
+	public Integer getSige_vl_bonificacao() {
+		return sige_vl_bonificacao;
+	}
+
+	public void setSige_vl_bonificacao(Integer sige_vl_bonificacao) {
+		this.sige_vl_bonificacao = sige_vl_bonificacao;
+	}
+
+	public Integer getSige_vl_expositor() {
+		return sige_vl_expositor;
+	}
+
+	public void setSige_vl_expositor(Integer sige_vl_expositor) {
+		this.sige_vl_expositor = sige_vl_expositor;
+	}
+
+	public Integer getSige_vl_troca() {
+		return sige_vl_troca;
+	}
+
+	public void setSige_vl_troca(Integer sige_vl_troca) {
+		this.sige_vl_troca = sige_vl_troca;
 	}
 
 	public String getTipopedido() {

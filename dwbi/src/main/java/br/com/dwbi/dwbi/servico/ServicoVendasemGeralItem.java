@@ -22,5 +22,22 @@ public class ServicoVendasemGeralItem implements Serializable{
 		return dao.vendasemgeralitem(pedido);
 	}
 	
+	public List<VendasEmGeralItem> amostraemgeralitem(BigDecimal pedido){
+		return dao.amostraemgeralitem(pedido);
+	}
+	
+	public List<VendasEmGeralItem> bonificacaoemgeralitem(BigDecimal pedido){
+		return dao.bonificacaoemgeralitem(pedido);
+	}
+	
+	public List<VendasEmGeralItem> expositoremgeralitem(BigDecimal pedido){
+		return dao.expositoremgeralitem(pedido);
+	}
+	
+	public VendasEmGeralItem consultaitem(BigDecimal produto){
+		return dao.consultaitem(produto);
+	}
+	
+	
 	
 }

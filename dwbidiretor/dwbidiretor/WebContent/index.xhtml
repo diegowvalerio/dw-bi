@@ -67,7 +67,7 @@
 						<f:selectItems value="#{beanResumo.listavendedor}" var="vendedor"
 							itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
 							itemValue="#{vendedor}" />
-							<p:ajax listener="#{beanResumo.filtragestor}" update=":form:filtros" />
+							<p:ajax listener="#{beanResumo.filtragestor}" update=":form:gestor" />
 					</p:selectOneMenu>
 
 					<p:commandButton action="#{beanResumo.filtrar()}" value="Filtrar"

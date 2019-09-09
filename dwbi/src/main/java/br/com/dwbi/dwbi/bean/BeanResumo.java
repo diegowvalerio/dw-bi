@@ -47,6 +47,9 @@ public class BeanResumo implements Serializable {
 	@Inject
 	private ServicoVendasemGeral servico;
 	private List<VendasEmGeral> listavenda = new ArrayList<>();
+	private List<VendasEmGeral> listaamostra = new ArrayList<>();
+	private List<VendasEmGeral> listabonificacao = new ArrayList<>();
+	private List<VendasEmGeral> listaexpositor = new ArrayList<>();
 	
 	private ClientesNovos clientesNovos = new ClientesNovos();
 	@Inject
@@ -95,9 +98,17 @@ public class BeanResumo implements Serializable {
 			this.data_grafico2 = (Date) session.getAttribute("data2");
 			listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 			listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+			
+			listaamostra = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+			listabonificacao = servico.bonificacaoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+			listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 		} else {			
 			listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 			listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+			
+			listaamostra = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+			listabonificacao = servico.bonificacaoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+			listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 		}
 
 		session.removeAttribute("data1");
@@ -114,9 +125,37 @@ public class BeanResumo implements Serializable {
 			
 		
 		listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+		listaamostra = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+		listabonificacao = servico.bonificacaoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+		listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+		
 		listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 		/*gerar grafico*/
 		createAnimatedModels();
+	}
+
+	public List<VendasEmGeral> getListaamostra() {
+		return listaamostra;
+	}
+
+	public void setListaamostra(List<VendasEmGeral> listaamostra) {
+		this.listaamostra = listaamostra;
+	}
+
+	public List<VendasEmGeral> getListabonificacao() {
+		return listabonificacao;
+	}
+
+	public void setListabonificacao(List<VendasEmGeral> listabonificacao) {
+		this.listabonificacao = listabonificacao;
+	}
+
+	public List<VendasEmGeral> getListaexpositor() {
+		return listaexpositor;
+	}
+
+	public void setListaexpositor(List<VendasEmGeral> listaexpositor) {
+		this.listaexpositor = listaexpositor;
 	}
 
 	public BarChartModel getGraficometavenda() {
@@ -247,6 +286,39 @@ public class BeanResumo implements Serializable {
 		return "/pages/relatorios/clientesnovos/clientesnovos.xhtml";
 	}
 
+	/* dados amostraemgeral */
+	public String encaminha5() {
+		FacesContext fc = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
+		session.setAttribute("vendedor", this.vendedor);
+		session.setAttribute("data1", this.data_grafico);
+		session.setAttribute("data2", this.data_grafico2);
+
+		return "/pages/relatorios/vendaemgeral/amostraemgeral.xhtml";
+	}
+	
+	/* dados bonificacaoemgeral */
+	public String encaminha6() {
+		FacesContext fc = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
+		session.setAttribute("vendedor", this.vendedor);
+		session.setAttribute("data1", this.data_grafico);
+		session.setAttribute("data2", this.data_grafico2);
+
+		return "/pages/relatorios/vendaemgeral/bonificacaoemgeral.xhtml";
+	}
+	
+	/* dados expositoremgeral */
+	public String encaminha7() {
+		FacesContext fc = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
+		session.setAttribute("vendedor", this.vendedor);
+		session.setAttribute("data1", this.data_grafico);
+		session.setAttribute("data2", this.data_grafico2);
+
+		return "/pages/relatorios/vendaemgeral/expositoremgeral.xhtml";
+	}
+
 	/* pegar usuario conectado */
 	public String usuarioconectado() {
 		String nome;
@@ -270,6 +342,35 @@ public class BeanResumo implements Serializable {
 
 		return new DecimalFormat("###,###.###").format(total);
 	}
+	public String getValorTotalAmostra() {
+		float total = 0;
+
+		for (VendasEmGeral venda : getListaamostra()) {
+			total = total + venda.getValortotalpedido().floatValue();
+		}
+
+		return new DecimalFormat("###,###.###").format(total);
+	}
+	
+	public String getValorTotalBonificacao() {
+		float total = 0;
+
+		for (VendasEmGeral venda : getListabonificacao()) {
+			total = total + venda.getValortotalpedido().floatValue();
+		}
+
+		return new DecimalFormat("###,###.###").format(total);
+	}
+	
+	public String getValorTotalExpositor() {
+		float total = 0;
+
+		for (VendasEmGeral venda : getListaexpositor()) {
+			total = total + venda.getValortotalpedido().floatValue();
+		}
+
+		return new DecimalFormat("###,###.###").format(total);
+	}
 
 	// painel de resumo
 
@@ -282,7 +383,35 @@ public class BeanResumo implements Serializable {
 
 		return total;
 	}
+	public int getAmostradodia() {
+		int total = 0;
+
+		for (VendasEmGeral amostra : getListaamostra()) {
+			total++;
+		}
+
+		return total;
+	}
 	
+	public int getBonificacaododia() {
+		int total = 0;
+
+		for (VendasEmGeral bonificacao : getListabonificacao()) {
+			total++;
+		}
+
+		return total;
+	}
+	
+	public int getExpositordodia() {
+		int total = 0;
+
+		for (VendasEmGeral expositor : getListaexpositor()) {
+			total++;
+		}
+
+		return total;
+	}
 	
 	public int getTotalClientes() {
 		int total = 0;

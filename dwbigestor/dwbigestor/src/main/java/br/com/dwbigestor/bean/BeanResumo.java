@@ -286,7 +286,7 @@ public class BeanResumo implements Serializable {
 		return "/pages/relatorios/clientesnovos/clientesnovos.xhtml";
 	}
 	
-	/* dados clientesnovos */
+	/* dados metavendedor */
 	public String encaminha4() {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);

@@ -37,7 +37,7 @@
 
 		<h:form id="form">
 			
-					<p:panelGrid columns="7" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+					<p:panelGrid columns="9" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
                              layout="grid" styleClass="ui-fluid card" id="filtroscli">
 					<p:outputLabel value=" Data:  " for="data_grafico" />
 					<p:calendar locale="pt_BR" id="data_grafico"
@@ -50,6 +50,15 @@
 						value="#{beanClientesNovos.data_grafico2}" pattern="dd/MM/yyyy"
 						mask="true" required="true" readonlyInput="true">
 					</p:calendar>
+					
+					<p:outputLabel value="Gestor:" for="gestor" />
+					<p:selectOneMenu id="gestor" value="#{beanClientesNovos.gestor}"
+						converter="conversorGestor">
+						<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
+						<f:selectItems value="#{beanClientesNovos.listagestor}" var="gestor"
+							itemLabel="#{gestor.nomegestor}"
+							itemValue="#{gestor}" />
+					</p:selectOneMenu>
 						
 					<p:outputLabel value="Vendedor:" for="vendedor" />
 					<p:selectOneMenu id="vendedor"
@@ -59,6 +68,7 @@
 					<f:selectItems value="#{beanClientesNovos.listavendedor}"
 						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
 						itemValue="#{vendedor}" />
+						<p:ajax listener="#{beanClientesNovos.filtragestor}" update=":form:gestor" />
 					</p:selectOneMenu>
 					
 					<p:commandButton action="#{beanClientesNovos.filtrar()}"

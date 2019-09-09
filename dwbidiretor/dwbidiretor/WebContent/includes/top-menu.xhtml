@@ -6,15 +6,30 @@
                 xmlns:pe="http://primefaces.org/ui/extensions">
 
     <ul class="nav navbar-nav">
-
+		
        <li class="dropdown user user-menu">
-            <p:link href="/dwbidiretor/j_spring_security_logout">
+            <p:link href="#">
                 <i class="fa fa-user-circle"></i>
-                <span>Sair  -></span>
+                <span>#{beanSigeUsuario.usuarioconectado()}</span>
             </p:link>    
-        
+             
         </li>
         
-        </ul>
+       <li class="dropdown user user-menu">
+            <p:link href="/dwbidiretor/j_spring_security_logout">
+                <i class="fa fa-share"></i>
+                <span>Sair</span>
+            </p:link>    
+             
+        </li>	
+        
+        <li class="dropdown user user-menu">
+            <p:link href="/dwbidiretor/pages/relatorios/usuario/usuario.xhtml">
+                <i class="fa fa-key"></i>
+                <span>Senha</span>
+            </p:link>    
+             
+        </li>
+   </ul>
 
 </ui:composition>

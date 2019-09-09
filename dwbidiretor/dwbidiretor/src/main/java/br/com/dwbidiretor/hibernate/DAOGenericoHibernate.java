@@ -2,6 +2,7 @@ package br.com.dwbidiretor.hibernate;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Blob;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ import br.com.dwbidiretor.classe.VendasEmGeralItem;
 import br.com.dwbidiretor.classe.Vendedor;
 import br.com.dwbidiretor.classe.VendedorMetaVenda;
 import br.com.dwbidiretor.dao.DAOGenerico;
-import br.com.dwbidiretor.fabrica.EntityManagerProducer.Corporativo;
+import br.com.dwbidiretor.fabrica.EntityManagerProducerSige.Corporativo;
 
 public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 	private static final long serialVersionUID = 1L;
@@ -1129,7 +1130,9 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			+" sum(x.sige_qtde_amostra) sige_qtde_amostra, "
 			+" sum(x.sige_qtde_bonificacao) sige_qtde_bonificacao, "
 			+" sum(x.sige_qtde_expositor) sige_qtde_expositor, "
-			+" sum(x.sige_qtde_troca) sige_qtde_troca from( "
+			+" sum(x.sige_qtde_troca) sige_qtde_troca, "
+			+" resumo.sige_valor_venda, resumo.sige_valor_amostra, "
+			+" resumo.sige_valor_bonificacao,resumo.sige_valor_expositor, resumo.sige_valor_troca from( "
 			+" select g.Cod_cadastro,g.Cpf_Cgc,it.Cod_produto,r.ean, "
 			+" case when s.Cod_tipo_mv = 510 then it.Qtde_pri else 0 end as sige_qtde_venda, "
 			+" case when s.Cod_tipo_mv = 516 then it.Qtde_pri else 0 end as sige_qtde_amostra, "
@@ -1147,7 +1150,30 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			
 			+" and s.Cod_tipo_mv in ('510','512','515','516','517') "
 			+" and s.STATUS <> 'C' AND s.STATUS_CTB = 'S' )x "
-			+" group by x.Cod_cadastro, x.Cpf_Cgc, x.Cod_produto,x.ean ");
+			
+			+" inner join(select x.Cod_cliente, "
+			+" sum(x.sige_valor_venda) sige_valor_venda,  "
+			+" sum(x.sige_valor_amostra) sige_valor_amostra,  "
+			+" sum(x.sige_valor_bonificacao) sige_valor_bonificacao,  "
+			+" sum(x.sige_valor_expositor) sige_valor_expositor,  "
+			+" sum(x.sige_valor_troca) sige_valor_troca from ( "
+			+" select s.Cod_cli_for as cod_cliente, "
+			+" case when p.Cod_tipo_mv = 510 then cast(s.Valor_liquido as money) else 0 end as sige_valor_venda,  "
+			+" case when p.Cod_tipo_mv = 516 then cast(s.Valor_liquido as money) else 0 end as sige_valor_amostra,  "
+			+" case when p.Cod_tipo_mv = 512 then cast(s.Valor_liquido as money) else 0 end as sige_valor_bonificacao,  "
+			+" case when p.Cod_tipo_mv = 517 then cast(s.Valor_liquido as money) else 0 end as sige_valor_expositor,  "
+			+" case when p.Cod_tipo_mv = 515 then cast(s.Valor_liquido as money) else 0 end as sige_valor_troca  "
+			+" from tbsaidas s left join tbsaidas p on p.Chave_fato = s.Chave_fato_orig_un "
+			+" left join tbTipoMvEstoque tp on tp.cod_tipo_mv = p.cod_tipo_mv "
+			+" left join ( select max(s2.chave_fato) chave, s2.Chave_fato_orig_un from tbsaidas s2  "
+			+" group by s2.Chave_fato_orig_un) s22 on s22.Chave_fato_orig_un = s.Chave_fato "
+			+" left join tbsaidas s2 on s2.Chave_fato_orig_un = s.Chave_fato and s2.Chave_fato = s22.chave "
+			+" where s.Cod_tipo_mv in ('520','523','527')and p.Cod_tipo_mv in ('510','512','515','516','517') "
+			+" and s.STATUS <> 'C'AND s.STATUS_CTB = 'S')x group by x.cod_cliente)resumo on resumo.cod_cliente = x.Cod_cadastro "
+
+			+" group by x.Cod_cadastro, x.Cpf_Cgc, x.Cod_produto,x.ean,resumo.sige_valor_venda, resumo.sige_valor_expositor, "
+			+" resumo.sige_valor_amostra,resumo.sige_valor_bonificacao, resumo.sige_valor_troca ");
+
 			List<Object[]> listasige = querySige.getResultList();
 			
 			for (Object[] rowsige : listasige) {
@@ -1158,11 +1184,29 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				BigDecimal expositor = (BigDecimal) rowsige[7];
 				BigDecimal troca = (BigDecimal) rowsige[8];
 				
+				BigDecimal vl_venda = (BigDecimal) rowsige[9];	
+				BigDecimal vl_venda2 = vl_venda.setScale(2, RoundingMode.FLOOR);
+				
+				BigDecimal vl_amostra = (BigDecimal) rowsige[10];
+				BigDecimal vl_amostra2 = vl_amostra.setScale(2, RoundingMode.FLOOR);
+				BigDecimal vl_bonificacao = (BigDecimal) rowsige[11];
+				BigDecimal vl_bonificacao2 = vl_bonificacao.setScale(2, RoundingMode.FLOOR);
+				BigDecimal vl_expositor = (BigDecimal) rowsige[12];
+				BigDecimal vl_expositor2 = vl_expositor.setScale(2, RoundingMode.FLOOR);
+				BigDecimal vl_troca = (BigDecimal) rowsige[13];
+				BigDecimal vl_troca2 = vl_troca.setScale(2, RoundingMode.FLOOR);
+				
 				pedidoitem.setSige_qtde_venda(venda.intValueExact());
 				pedidoitem.setSige_qtde_amostra(amostra.intValueExact());
 				pedidoitem.setSige_qtde_bonificacao(bonificacao.intValueExact());
 				pedidoitem.setSige_qtde_expositor(expositor.intValueExact());
 				pedidoitem.setSige_qtde_troca(troca.intValueExact());
+				
+				pedidoitem.setSige_vl_venda(vl_venda2.intValue());
+				pedidoitem.setSige_vl_amostra(vl_amostra2.intValue());
+				pedidoitem.setSige_vl_bonificacao(vl_bonificacao2.intValue());
+				pedidoitem.setSige_vl_expositor(vl_expositor2.intValue());
+				pedidoitem.setSige_vl_troca(vl_troca2.intValue());
 			}
 			
 			list.add(pedidoitem);
