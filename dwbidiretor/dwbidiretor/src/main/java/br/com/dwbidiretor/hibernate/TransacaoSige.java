@@ -8,7 +8,6 @@ import java.lang.annotation.Target;
 import javax.interceptor.InterceptorBinding;
 
 @InterceptorBinding
-@EntityManagerProducer$Corporativo
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface TransacaoSige {

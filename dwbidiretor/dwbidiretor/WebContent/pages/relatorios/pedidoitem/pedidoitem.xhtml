@@ -51,8 +51,89 @@
 			</p:panelGrid>
 			<div class="box box-primary">
 				<div style="overflow: scroll; width: 100%; overflow: auto">
-					<h:panelGrid columns="10" id="paineld1" style="width:100%">
+					<h:panelGrid columns="1" id="paineld2" style="width:100%" title="Acumulado">
+						
+            			<div class="box-body table-responsive no-padding">
+              			<p:dataTable id="acumulado" var="vendas" scrollable="true"
+							value="#{beanPedidoItem.pedidoitem}" resizableColumns="true">
+						
+						<p:columnGroup type="header" >
+								<p:row>
+									<p:column colspan="7" headerText="Acumulado Seven" style="border: 1px solid"/>
+									<p:column colspan="5" headerText="Acumulado Sige" style="border: 1px solid"/>
+								</p:row>
+								<p:row>
 
+									<p:column colspan="1" headerText="Venda"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Amostra" style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Amostra Paga"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Bonificação"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Expositor"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Troca"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Negociações"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Venda"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Amostra"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Bonificação"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Expositor"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Troca" style="border: 1px solid; text-align: Left"/>
+								</p:row>
+							</p:columnGroup>
+							<p:column style="border: 1px solid">
+								<h:outputText value="#{vendas.qtdevenda}" ><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+							
+							<p:column  style="border: 1px solid">
+								<h:outputText value="#{vendas.qtdeamostra}" ><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+							
+							<p:column style="border: 1px solid">
+								<h:outputText value="#{vendas.qtdeamostrapaga}"><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+							
+							<p:column style="border: 1px solid">
+								<h:outputText value="#{vendas.qtdebonificacao}" ><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+							
+							<p:column  style="border: 1px solid">
+								<h:outputText value="#{vendas.qtdeexpositor}" ><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+							
+							<p:column style="border: 1px solid">
+								<h:outputText value="#{vendas.qtdetroca}" ><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+							
+							<p:column  style="border: 1px solid">
+								<h:outputText value="#{vendas.qtdenegociacoescomerciais}" ><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+
+							<p:column style="border: 1px solid">
+								<h:outputText value="#{vendas.sige_vl_venda}"><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+							
+							<p:column style="border: 1px solid">
+								<h:outputText value="#{vendas.sige_vl_amostra}" ><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+							
+							<p:column  style="border: 1px solid">
+								<h:outputText value="#{vendas.sige_vl_bonificacao}" ><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+							
+							<p:column style="border: 1px solid">
+								<h:outputText value="#{vendas.sige_vl_expositor}"><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+							
+							<p:column style="border: 1px solid">
+								<h:outputText value="#{vendas.sige_vl_troca}"><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+							
+						</p:dataTable>
+            		</div>            		
+					</h:panelGrid>
+					
+					<p:separator></p:separator>
+					<h:panelGrid columns="10" id="paineld1" style="width:100%" title="Detalhes do Pedido">
+								 					
 						<p:outputLabel value="Pedido: " />
 						<h:outputText value="#{beanPedidoItem.pedidoitem.pedido}" />
 
@@ -67,16 +148,14 @@
 
 						<p:outputLabel value="Tipo: " />
 						<h:outputText value="#{beanPedidoItem.pedidoitem.tipopedido}" />
-
-					</h:panelGrid>
-					<p:separator />
-
+						
+					</h:panelGrid>					
 					<h:panelGrid columns="1" id="paineld" columnClasses="left,right"
 						width="100%">
 						<p:dataTable id="venda" var="vendas" scrollable="true"
 							value="#{beanPedidoItem.listapedidoitem}" resizableColumns="true">
 
-							<p:columnGroup type="header" id="group5">
+							<p:columnGroup type="header" id="group5" >
 								<p:row>
 									<p:column colspan="3" headerText="Itens do Pedido" style="border: 1px solid"/>
 									<p:column colspan="7" headerText="Histórico Seven" style="border: 1px solid"/>
@@ -177,55 +256,6 @@
 						</p:dataTable>
 					</h:panelGrid>
 					<p:separator />
-					
-					<h:panelGrid columns="1" id="paineld2" style="width:100%" title="Acumulado">
-					<table border="1">
-						<thead>
-    						<tr>
-    							<td colspan="12" style="width:100%">Acumulado</td>
-    						</tr>
-						</thead>
-						<tbody>
-    						<tr>
-        						<th colspan="7">Seven</th>
-        						<th colspan="5">Sige</th>
-    						</tr>
-    						<tr>
-        						<td>Venda</td>
-        						<td>Amostra</td>
-        						<td>Amostra Paga</td>
-        						<td>Bonificação</td>
-        						<td>Expositor</td>
-        						<td>Troca</td>
-        						<td>Negociações</td>
-        						
-        						<td>Venda</td>
-        						<td>Amostra</td>
-        						<td>Bonificação</td>
-        						<td>Expositor</td>
-        						<td>Troca</td>
-        						
-    						</tr>
-    						
-    						<tr>
-        						<td>Venda</td>
-        						<td>Amostra</td>
-        						<td>Amostra Paga</td>
-        						<td>Bonificação</td>
-        						<td>Expositor</td>
-        						<td>Troca</td>
-        						<td>Negociações</td>
-        						
-        						<td><h:outputText value="#{beanPedidoItem.pedidoitem.sige_vl_venda}" /></td>
-        						<td><h:outputText value="#{beanPedidoItem.pedidoitem.sige_vl_amostra}" /></td>
-        						<td><h:outputText value="#{beanPedidoItem.pedidoitem.sige_vl_bonificacao}" /></td>
-        						<td><h:outputText value="#{beanPedidoItem.pedidoitem.sige_vl_expositor}" /></td>
-        						<td><h:outputText value="#{beanPedidoItem.pedidoitem.sige_vl_troca}" /></td>
-        						
-    						</tr>
-						</tbody>
-						</table>
-					</h:panelGrid>
 					
 				</div>
 			</div>

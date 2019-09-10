@@ -10,7 +10,7 @@ import javax.interceptor.InvocationContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-import br.com.dwbidiretor.servico.EntityManagerProducer$Corporativo;
+import br.com.dwbidiretor.fabrica.EntityManagerProducerSige.Corporativo;
 
 
 @Priority(Interceptor.Priority.APPLICATION)
@@ -20,11 +20,11 @@ public class TransacaoInterceptorSige implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Inject
-	@EntityManagerProducer$Corporativo
+	@Corporativo
 	private  EntityManager manager;
 
 	@AroundInvoke
-	@EntityManagerProducer$Corporativo
+	@Corporativo
 	public Object invoke(InvocationContext context) throws Exception {
 		EntityTransaction transaction = manager.getTransaction();
 		boolean owner = false;
