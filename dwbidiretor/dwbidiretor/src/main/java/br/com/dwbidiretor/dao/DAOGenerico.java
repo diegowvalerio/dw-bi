@@ -59,6 +59,8 @@ public interface DAOGenerico<E> {
 	
 	public List<VendedorMetaVenda> vendedormetavenda(String vendedor1, String vendedor2, String gestor1, String gestor2);
 	
+	public List<VendasEmGeral> faturamentoemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2);
+	
 	public List<PedidoItem> pedidoitem(BigDecimal pedido);
 	
 }

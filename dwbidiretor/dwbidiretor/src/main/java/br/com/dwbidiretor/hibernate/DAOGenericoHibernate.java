@@ -1025,6 +1025,75 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		
 	}
 	
+	//FATURAMENTO de venda
+		public List<VendasEmGeral> faturamentoemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
+			List<VendasEmGeral> list = new ArrayList<>();
+			
+			SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+			String dataFormatada = formato.format(data1);
+			String dataFormatada2 = formato.format(data2);
+
+			javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+					// "SELECT * FROM("
+							" select " 
+							+ " CI.CADCFTVID AS CLIENTE, " 
+							+ " CI.NOME_CADCFTV AS NOME_CLIENTE, "
+							+ " p.NR_NOTA_PEDIDOVENDA nota, " 
+							+ " P.DT_FATURAMENTO_PEDIDOVENDA AS DATAfaturamento, "
+							+ " p.vl_totalprod_pedidovenda, " 
+							+ " pg.nome_formapagto as prazo, "
+							+ " t.desc_tipo_pedido as tipo_pedido, " 
+							+ " CF.tipooperacao_cfop, " 
+							+ " p.status_pedidovenda, "
+							+ " v.NOME_CADCFTV nome_vendedor "
+							+ " from pedidovenda p "
+							+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
+							+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID "
+							+ " inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid "
+							+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid "
+							+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+							//+ " inner join roteiro r on r.roteiroid = p.roteiroid "
+							//+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
+							//+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+							+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
+							+ " where p.status_pedidovenda in ('FATURADO') "
+							+ " AND CF.tipooperacao_cfop = 'VENDA' "
+							//+ " AND t.desc_tipo_pedido = 'VENDA' "
+							+ " and p.DT_FATURAMENTO_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
+							+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+							+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+							+ " ORDER BY P.NR_NOTA_PEDIDOVENDA  ");
+
+			List<Object[]> lista = query.getResultList();
+			
+			
+
+			for (Object[] row : lista) {
+				VendasEmGeral vendasEmGeral = new VendasEmGeral();
+				
+				String nota = (String) row[2];
+				Integer notr = Integer.valueOf(nota);
+				BigDecimal notag = new BigDecimal(notr.intValue());
+
+				vendasEmGeral.setCodigocliente((BigDecimal) row[0]);
+				vendasEmGeral.setNomecliente((String) row[1] );
+				vendasEmGeral.setPedido(notag);
+				vendasEmGeral.setDatapedido((Date) row[3] );
+				vendasEmGeral.setValortotalpedido((BigDecimal) row[4] );
+				vendasEmGeral.setPrazo((String) row[5] );
+				vendasEmGeral.setTipopedido((String) row[6] );
+				vendasEmGeral.setTipooperacaocfop((String) row[7] );
+				vendasEmGeral.setStatuspedido((String) row[8] );
+				vendasEmGeral.setNomevendedor((String) row[9] );
+				
+				
+				
+				list.add(vendasEmGeral);
+			}
+
+			return list;
+		}
+	
 	//pedidoitem seven e sige
 	public List<PedidoItem> pedidoitem(BigDecimal pedido) {
 		List<PedidoItem> list = new ArrayList<>();
@@ -1055,7 +1124,15 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+" 0 sige_qtde_amostra, "
 				+" 0 sige_qtde_bonificacao, "
 				+" 0 sige_qtde_expositor, "
-				+" 0 sige_qtde_troca "
+				+" 0 sige_qtde_troca, "
+				
+				+" ACUMULADO.VL_venda, "
+				+" ACUMULADO.VL_amostra, "
+				+" ACUMULADO.VL_amostrapaga, "
+				+" ACUMULADO.VL_bonificacao, " 
+				+" ACUMULADO.VL_expositor, " 
+				+" ACUMULADO.VL_troca, "
+				+" ACUMULADO.VL_negociacoescomerciais "
 
 				+" from pedidovenda p "
 				+" inner join pedidovenda_item it on it.pedidovendaid = p.pedidovendaid "
@@ -1089,6 +1166,21 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+" where  p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
 				+" )resumo group by  resumo.cadcftvid, resumo.produtoid) hist  "
 				+" on hist.cadcftvid = p.cadcftvid and hist.produtoid = it.produtoid "
+				
+				+"LEFT JOIN( "
+				+" SELECT X.CLIENTE, sum(X.VL_venda)VL_venda, sum(X.VL_amostra)VL_amostra, sum(X.VL_amostrapaga)VL_amostrapaga,  "
+				+" sum(X.VL_bonificacao)VL_bonificacao, sum(X.VL_expositor)VL_expositor, sum(X.VL_troca)VL_troca,  "
+				+" sum(X.VL_negociacoescomerciais)VL_negociacoescomerciais FROM(select CI.CADCFTVID AS CLIENTE,  "
+				+" case when CF.tipooperacao_cfop = 'VENDA' then p.vl_totalprod_pedidovenda  else 0 end as VL_venda,  "
+				+" case when p.tipopedidoid  = 4 and CF.tipooperacao_cfop <> 'VENDA' then p.vl_totalprod_pedidovenda else 0 end as VL_amostra,  "
+				+" case when p.tipopedidoid  = 6 and CF.tipooperacao_cfop <> 'VENDA' then p.vl_totalprod_pedidovenda else 0 end as VL_amostrapaga, " 
+				+" case when p.tipopedidoid  = 3 and CF.tipooperacao_cfop <> 'VENDA' then p.vl_totalprod_pedidovenda else 0 end as VL_bonificacao,  "
+				+" case when p.tipopedidoid  = 5 and CF.tipooperacao_cfop <> 'VENDA' then p.vl_totalprod_pedidovenda else 0 end as VL_expositor,  "
+				+" case when p.tipopedidoid  = 2 and CF.tipooperacao_cfop <> 'VENDA' then p.vl_totalprod_pedidovenda else 0 end as VL_troca,  "
+				+" case when p.tipopedidoid  = 13 and CF.tipooperacao_cfop <> 'VENDA' then p.vl_totalprod_pedidovenda else 0 end as VL_negociacoescomerciais  "
+				+" from pedidovenda p INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+				+" where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO')) X GROUP BY X.CLIENTE)ACUMULADO "
+				+" ON ACUMULADO.CLIENTE = p.cadcftvid "
 
 				+" where p.pedidovendaid= " +pedido);
 				
@@ -1117,6 +1209,14 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			pedidoitem.setQtdeexpositor((BigDecimal) row[15]);
 			pedidoitem.setQtdetroca((BigDecimal) row[16]);
 			pedidoitem.setQtdenegociacoescomerciais((BigDecimal) row[17]);
+			
+			pedidoitem.setVlvenda((BigDecimal) row[23]);
+			pedidoitem.setVlamostra((BigDecimal) row[24]);
+			pedidoitem.setVlamostrapaga((BigDecimal) row[25]);
+			pedidoitem.setVlbonificacao((BigDecimal) row[26]);
+			pedidoitem.setVlexpositor((BigDecimal) row[27]);
+			pedidoitem.setVltroca((BigDecimal) row[28]);
+			pedidoitem.setVlnegociacoescomerciais((BigDecimal) row[29]);
 			
 			//sige
 			String cliente =  String.valueOf((BigDecimal) row[4]);

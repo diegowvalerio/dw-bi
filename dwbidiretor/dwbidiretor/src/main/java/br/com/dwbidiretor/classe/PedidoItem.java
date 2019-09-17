@@ -44,8 +44,72 @@ public class PedidoItem implements Serializable {
 	private Integer sige_vl_expositor;
 	private Integer sige_vl_troca;
 	
+	private BigDecimal vlvenda;
+	private BigDecimal vlamostra;
+	private BigDecimal vlamostrapaga;
+	private BigDecimal vlbonificacao;
+	private BigDecimal vlexpositor;
+	private BigDecimal vltroca;
+	private BigDecimal vlnegociacoescomerciais;
+	
 	public PedidoItem() {
 		super();
+	}
+
+	public BigDecimal getVlvenda() {
+		return vlvenda;
+	}
+
+	public void setVlvenda(BigDecimal vlvenda) {
+		this.vlvenda = vlvenda;
+	}
+
+	public BigDecimal getVlamostra() {
+		return vlamostra;
+	}
+
+	public void setVlamostra(BigDecimal vlamostra) {
+		this.vlamostra = vlamostra;
+	}
+
+	public BigDecimal getVlamostrapaga() {
+		return vlamostrapaga;
+	}
+
+	public void setVlamostrapaga(BigDecimal vlamostrapaga) {
+		this.vlamostrapaga = vlamostrapaga;
+	}
+
+	public BigDecimal getVlbonificacao() {
+		return vlbonificacao;
+	}
+
+	public void setVlbonificacao(BigDecimal vlbonificacao) {
+		this.vlbonificacao = vlbonificacao;
+	}
+
+	public BigDecimal getVlexpositor() {
+		return vlexpositor;
+	}
+
+	public void setVlexpositor(BigDecimal vlexpositor) {
+		this.vlexpositor = vlexpositor;
+	}
+
+	public BigDecimal getVltroca() {
+		return vltroca;
+	}
+
+	public void setVltroca(BigDecimal vltroca) {
+		this.vltroca = vltroca;
+	}
+
+	public BigDecimal getVlnegociacoescomerciais() {
+		return vlnegociacoescomerciais;
+	}
+
+	public void setVlnegociacoescomerciais(BigDecimal vlnegociacoescomerciais) {
+		this.vlnegociacoescomerciais = vlnegociacoescomerciais;
 	}
 
 	public Integer getSige_vl_venda() {
