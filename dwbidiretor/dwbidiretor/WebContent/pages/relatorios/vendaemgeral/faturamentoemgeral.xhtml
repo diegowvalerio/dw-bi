@@ -79,7 +79,7 @@
 			<div class="box box-primary" >
 				<div style="overflow:scroll;width:100%;overflow:auto">
 				
-					<h:panelGrid columns="5" id="paineld" columnClasses="left,right" width="100%">
+					<h:panelGrid columns="6" id="paineld" columnClasses="left,right" width="100%">
 						<p:dataTable id="venda" var="vendas"  scrollable="true"
 							value="#{beanFaturamentoemGeral.listavenda}" resizableColumns="true">
 
@@ -88,6 +88,10 @@
 									icon="fa fa-bars" />
 								<p:columnToggler datasource="venda" trigger="toggler" />
 							</f:facet>
+							
+							<p:column headerText="Tipo" sortBy="#{vendas.tipopedido}">
+								<h:outputText value="#{vendas.tipopedido}" />
+							</p:column>
 							
 							<p:column headerText="Vendedor" sortBy="#{vendas.nomevendedor}">
 								<h:outputText value="#{vendas.nomevendedor}" />

@@ -30,7 +30,7 @@ http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 			</user-service>
 			-->
 			<jdbc-user-service data-source-ref="dataSource" 
-				users-by-username-query="select c.CADCFTVID as USERNAME, c.CNPJCPF_CADCFTV AS PASSWORD, 'true' as ENABLE from cadcftv c where c.STATUS_USUARIO = 'ATIVO' and c.cadcftvid =?"
+				users-by-username-query="select c.CADCFTVID as USERNAME, c.CNPJCPF_CADCFTV AS PASSWORD, 'true' as ENABLE from cadcftv c where c.ATIVO_CADCFTV = 'SIM' and c.cadcftvid =?"
 				authorities-by-username-query="select c.CADCFTVID as USERNAME, 'ADM' AS AUTHORITY from cadcftv c where c.cadcftvid =?"
 			 />
 		</authentication-provider>
