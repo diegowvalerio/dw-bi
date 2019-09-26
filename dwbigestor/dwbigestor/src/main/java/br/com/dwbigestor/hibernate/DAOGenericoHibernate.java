@@ -135,7 +135,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 	}
 	//venda por grupo e subgrupo
 	public List<VendaGrupoSubGrupoProdutoQuantidadeValor> vendaGrupoSubGrupoProdutoQuantidadeValor(Date data1,
-			Date data2) {
+			Date data2,String vendedor1, String vendedor2) {
 		List<VendaGrupoSubGrupoProdutoQuantidadeValor> list = new ArrayList<>();
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 		String dataFormatada = formato.format(data1);
@@ -157,6 +157,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " WHERE p.status_pedidovenda in ('IMPORTADO','ABERTO','BLOQUEADO','PARCIAL') "
 						+ " AND CF.tipooperacao_cfop = 'VENDA' "+ " AND V2.GESTORID = G.GESTORID "
 						+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
+						+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 						+ " group by sub.NOME_SUBGRUPOPRODUTO " + " order by sub.NOME_SUBGRUPOPRODUTO ");
 
 		List<Object[]> lista = query.getResultList();

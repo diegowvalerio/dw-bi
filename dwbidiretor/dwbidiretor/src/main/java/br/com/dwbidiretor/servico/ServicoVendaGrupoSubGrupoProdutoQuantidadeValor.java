@@ -18,8 +18,8 @@ public class ServicoVendaGrupoSubGrupoProdutoQuantidadeValor implements Serializ
 	private DAOVendaGrupoSubGrupoProdutoQuantidadeValor dao;
 	
 	
-	public List<VendaGrupoSubGrupoProdutoQuantidadeValor> vendaGrupoSubGrupoProdutoQuantidadeValor(Date data1, Date data2){
-		return dao.vendaGrupoSubGrupoProdutoQuantidadeValor(data1, data2);
+	public List<VendaGrupoSubGrupoProdutoQuantidadeValor> vendaGrupoSubGrupoProdutoQuantidadeValor(Date data1, Date data2,String vendedor1, String vendedor2, String gestor1, String gestor2){
+		return dao.vendaGrupoSubGrupoProdutoQuantidadeValor(data1, data2, vendedor1,  vendedor2,  gestor1,  gestor2);
 	}
 	
 }

@@ -27,7 +27,7 @@ public interface DAOGenerico<E> {
 	
 	public List<VendaAnoMes> vendaanomes();
 	
-	public List<VendaGrupoSubGrupoProdutoQuantidadeValor> vendaGrupoSubGrupoProdutoQuantidadeValor(Date data1, Date data2);
+	public List<VendaGrupoSubGrupoProdutoQuantidadeValor> vendaGrupoSubGrupoProdutoQuantidadeValor(Date data1, Date data2,String vendedor1, String vendedor2);
 	
 	public List<VendasEmGeral> vendasemgeral(Date data1, Date data2, String vendedor1, String vendedor2);
 	

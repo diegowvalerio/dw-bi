@@ -37,12 +37,52 @@
 		<adm:breadcrumb title="Mapa em Geral" />
 		
 		<h:form id="form">
+			<p:panelGrid columns="5" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+               layout="grid" styleClass="ui-fluid card" id="filtroscli">
+					
+					<p:outputLabel value="Gestor:" for="gestor" />
+					<p:selectOneMenu id="gestor" value="#{beanMapa.gestor}"
+						converter="conversorGestor">
+						<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
+						<f:selectItems value="#{beanMapa.listagestor}" var="gestor"
+							itemLabel="#{gestor.nomegestor}"
+							itemValue="#{gestor}" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="Vendedor:" for="vendedor" />
+					<p:selectOneMenu id="vendedor"
+					value="#{beanMapa.vendedor}"
+					converter="conversorVendedor">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanMapa.listavendedor}"
+						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
+						itemValue="#{vendedor}" />
+						<p:ajax listener="#{beanMapa.filtragestor}" update=":form:gestor" />
+					</p:selectOneMenu>
 
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjAL7XsvNZ0WYfnV7AvD56HbPflHfFkVY" type="text/javascript"/>
-			<div class="box box-primary" >
-				<p:gmap center="-17.632169048521153 , -52.20644599463935"  zoom="3" type="ROADMAP"  style="width:100%;height:500px"  model="#{beanMapa.simpleModel}"/>
-				<h:messages id="msgerro"></h:messages>	
-			</div>
+					<p:commandButton action="#{beanMapa.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld"
+						styleClass="btn-primary" />
+
+				</p:panelGrid>
+				<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
+				
+					<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjAL7XsvNZ0WYfnV7AvD56HbPflHfFkVY" type="text/javascript"/>
+					<div class="box box-primary" >
+						<p:gmap center="-17.632169048521153 , -52.20644599463935"  zoom="3" type="ROADMAP"  style="width:100%;height:500px"  model="#{beanMapa.simpleModel}">
+							<p:ajax event="overlaySelect" listener="#{beanMapa.onMarkerSelect}" />
+ 
+       						<p:gmapInfoWindow id="infoWindow">
+           					 <p:outputPanel style="text-align: center; display: block; margin: auto">
+                    		<br />
+                   			<h:outputText value="#{beanMapa.marker.title}" />
+ 
+            </p:outputPanel>
+        </p:gmapInfoWindow>
+						</p:gmap>
+						<h:messages id="msgerro"></h:messages>	
+					</div>
+				</h:panelGrid>
 		</h:form>
 
 	</ui:define>

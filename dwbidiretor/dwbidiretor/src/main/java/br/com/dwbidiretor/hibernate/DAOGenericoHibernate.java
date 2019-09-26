@@ -26,6 +26,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.dwbidiretor.classe.ClientesNovos;
 import br.com.dwbidiretor.classe.Gestor;
+import br.com.dwbidiretor.classe.Mapa;
 import br.com.dwbidiretor.classe.MetaVenda;
 import br.com.dwbidiretor.classe.PedidoItem;
 import br.com.dwbidiretor.classe.VendaAnoMes;
@@ -142,7 +143,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 	}
 	//venda por grupo e subgrupo
 	public List<VendaGrupoSubGrupoProdutoQuantidadeValor> vendaGrupoSubGrupoProdutoQuantidadeValor(Date data1,
-			Date data2) {
+			Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
 		List<VendaGrupoSubGrupoProdutoQuantidadeValor> list = new ArrayList<>();
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 		String dataFormatada = formato.format(data1);
@@ -159,9 +160,13 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
 						+ " inner join subgrupoproduto sub on sub.subgrupoprodutoid = pr.subgrupoprodutoid "
 						+ " inner join GRUPOPRODUTO gru on gru.GRUPOPRODUTOID = sub.GRUPOPRODUTOID "
-						+ " WHERE p.status_pedidovenda in ('IMPORTADO','ABERTO','BLOQUEADO','PARCIAL') "
+						+ " WHERE p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
 						+ " AND CF.tipooperacao_cfop = 'VENDA' "
 						+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
+						
+						+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+						+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+						
 						+ " group by sub.NOME_SUBGRUPOPRODUTO " + " order by sub.NOME_SUBGRUPOPRODUTO ");
 
 		List<Object[]> lista = query.getResultList();
@@ -1314,5 +1319,89 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		return list;
 		
 	}
+	
+	
+	//mapa de pedidos
+			public List<Mapa> mapa(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
+				List<Mapa> list = new ArrayList<>();
+				
+				SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+				String dataFormatada = formato.format(data1);
+				String dataFormatada2 = formato.format(data2);
+
+				javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+								" select " 
+								+ " clt.vendedorid1,  "
+								+ " vw.apelido_cadcftv as nome_vendedor , "
+								+ " v.cadcftvid, "
+								+ " c.apelido_cadcftv , "
+								+ " CI.NOME_CIDADE, "
+								+ " CI.UF_CIDADE, "
+								+ " v.tipo_endcadcftv, "
+								+ " v.end_endcadcftv, "
+								+ " v.bairro_endcadcftv, "
+								+ " v.cep_endcadcftv, "
+								+ " v.nro_endcadcftv, "
+								+ " V.latitude, v.longitude, "
+								+ " x.dt as ultima_compra, "
+								+ " r.NOME_REGIAO "
+
+								+ " from CADCFTV c "
+								+ " INNER JOIN CLIENTE CLt ON CLt.CADCFTVID = C.CADCFTVID "
+								+ " inner join CADCFTV vw on vw.cadcftvid = clt.vendedorid1 "
+
+								+ " LEFT join  "
+								+ " ( "
+								+ " SELECT  max(v.endcadcftvid) endid, V.CADCFTVID,CI.UF_CIDADE, ci.nome_cidade FROM ENDCADCFTV V "
+								+ " INNER JOIN CIDADE CI ON CI.CIDADEID = V.CIDADEID "
+								+ " GROUP BY V.CADCFTVID, CI.UF_CIDADE, ci.nome_cidade "
+								+ " ) EN ON EN.CADCFTVID = C.CADCFTVID "
+
+								+ " inner join ENDCADCFTV V on v.cadcftvid = c.cadcftvid and v.endcadcftvid = en.endid "
+								+ " INNER JOIN CIDADE CI ON CI.CIDADEID = V.CIDADEID "
+
+								+ " inner join regiao r on r.REGIAOID = CLt.REGIAOID "
+
+								+ " left join "
+								+ " (select max(dt_pedidovenda) as dt, cadcftvid from pedidovenda "
+								+ " where status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') GROUP BY cadcftvid "
+								+ " )x on x.cadcftvid = c.cadcftvid "
+								
+								+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = vw.cadcftvid "
+								+ " where C.funcao_principal_cadcftv = 'CLIENTE' "
+								+ " and vw.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+								+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+
+								+ " order by  "
+								+ " clt.vendedorid1 desc " );
+
+				List<Object[]> lista = query.getResultList();
+				
+				
+
+				for (Object[] row : lista) {
+					Mapa mapa = new Mapa();
+					
+					mapa.setVendedor((BigDecimal) row[0]);
+					mapa.setNomevendedor((String) row[1]);
+					mapa.setCliente((BigDecimal) row[2]);
+					mapa.setNomecliente((String) row[3]);
+					
+					mapa.setCidade((String) row[4]);
+					mapa.setUf((String) row[5]);
+					mapa.setEndereco((String) row[7]);
+					mapa.setBairro((String) row[8]);
+					mapa.setCep((String) row[9]);
+					mapa.setNumero((String) row[10]);
+					
+					mapa.setLatitude((BigDecimal) row[11]);
+					mapa.setLongitude((BigDecimal) row[12]);
+					mapa.setUltimacompra((Date) row[13]);
+
+					list.add(mapa);
+				}
+
+				return list;
+			}
 	
 }
