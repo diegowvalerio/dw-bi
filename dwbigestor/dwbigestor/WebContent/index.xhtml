@@ -33,6 +33,18 @@
 	</ui:define>
 
 	<ui:define name="body">
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-149134751-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-149134751-1');
+</script>
+
+	
 		<adm:breadcrumb title="Resumo" />
 		<h:form id="form">
 			<section class="content">
@@ -97,7 +109,7 @@
 								class="ion ion-stats-bars"></i></span>
 
 							<div class="info-box-content">
-								<span class="info-box-text">Valor</span> <span
+								<span class="info-box-text">Valor Venda</span> <span
 									class="info-box-number"><h:outputText
 										value="#{beanResumo.valorTotal}" /></span>
 

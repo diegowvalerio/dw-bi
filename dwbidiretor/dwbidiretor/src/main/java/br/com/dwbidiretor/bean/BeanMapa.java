@@ -71,9 +71,9 @@ public class BeanMapa implements Serializable {
 		
 		simpleModel = new DefaultMapModel();
         //Shared coordinates
-        LatLng coord1 = new LatLng(-7.6377836, -72.6717370);
+        LatLng coord1 = new LatLng(-23.010324, -53.193782);
         //Basic marker
-        simpleModel.addOverlay(new Marker(coord1, "MARCHEZAN METAIS"));
+        simpleModel.addOverlay(new Marker(coord1, "MARCHEZAN METAIS","","https://maps.google.com/mapfiles/ms/micons/red-dot.png"));
 	
 	}
 	
@@ -100,14 +100,17 @@ public class BeanMapa implements Serializable {
 		
 		listamapa = servico.mapa(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
 		for (Mapa mapa : getListamapa()) {
+			LatLng coord = new LatLng(-23.010324, -53.193782);
+	        //Basic marker
+	        simpleModel.addOverlay(new Marker(coord, "MARCHEZAN METAIS","","https://maps.google.com/mapfiles/ms/micons/red-dot.png"));
 			
 	        //Shared coordinates
 	        LatLng coord1 = new LatLng(mapa.getLatitude().doubleValue(), mapa.getLongitude().doubleValue());
 	        //Basic marker
-	        simpleModel.addOverlay(new Marker(coord1, "CLIENTE: "+mapa.getNomecliente()+", ENDEREÇO: "+mapa.getEndereco()+", BAIRRO: "+mapa.getBairro()+
-	        		", "+mapa.getNumero()+", CEP: "+mapa.getCep()+", CIDADE/UF: "+mapa.getCidade()+"-"+mapa.getUf()+", DATA ULTIMA COMPRA: "+mapa.getUltimacompra(),"",
+	        simpleModel.addOverlay(new Marker(coord1, "CLIENTE: "+mapa.getCliente()+"-"+mapa.getNomecliente()+", ENDEREÇO: "+mapa.getEndereco()+", BAIRRO: "+mapa.getBairro()+
+	        		", "+mapa.getNumero()+", CEP: "+mapa.getCep()+", CIDADE/UF: "+mapa.getCidade()+"-"+mapa.getUf()+", DATA ULTIMA COMPRA: "+mapa.getUltimacompra()+
+	        		", VENDEDOR: "+mapa.getVendedor()+"-"+mapa.getNomevendedor(),"",
 	        		"https://maps.google.com/mapfiles/ms/micons/blue-dot.png"));
-	        
 		}
 	}
 	
