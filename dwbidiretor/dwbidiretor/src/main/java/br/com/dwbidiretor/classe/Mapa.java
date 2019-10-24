@@ -26,7 +26,7 @@ public class Mapa implements Serializable {
 	private BigDecimal latitude;
 	private BigDecimal longitude;
 	
-	private Date ultimacompra;
+	private String ultimacompra;
 	
 	public Mapa() {
 		super();
@@ -128,11 +128,11 @@ public class Mapa implements Serializable {
 		this.longitude = longitude;
 	}
 
-	public Date getUltimacompra() {
+	public String getUltimacompra() {
 		return ultimacompra;
 	}
 
-	public void setUltimacompra(Date ultimacompra) {
+	public void setUltimacompra(String ultimacompra) {
 		this.ultimacompra = ultimacompra;
 	}
 

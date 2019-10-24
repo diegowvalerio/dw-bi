@@ -15,6 +15,7 @@ import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
+import org.primefaces.model.map.Polygon;
 
 import br.com.dwbidiretor.classe.Gestor;
 import br.com.dwbidiretor.classe.Mapa;
@@ -99,11 +100,13 @@ public class BeanMapa implements Serializable {
 		simpleModel = new DefaultMapModel();
 		
 		listamapa = servico.mapa(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
+		
+		LatLng coord = new LatLng(-23.010324, -53.193782);
+        //Basic marker
+        simpleModel.addOverlay(new Marker(coord, "MARCHEZAN METAIS","","https://maps.google.com/mapfiles/ms/micons/red-dot.png"));
+        
 		for (Mapa mapa : getListamapa()) {
-			LatLng coord = new LatLng(-23.010324, -53.193782);
-	        //Basic marker
-	        simpleModel.addOverlay(new Marker(coord, "MARCHEZAN METAIS","","https://maps.google.com/mapfiles/ms/micons/red-dot.png"));
-			
+			 			
 	        //Shared coordinates
 	        LatLng coord1 = new LatLng(mapa.getLatitude().doubleValue(), mapa.getLongitude().doubleValue());
 	        //Basic marker
@@ -112,6 +115,7 @@ public class BeanMapa implements Serializable {
 	        		", VENDEDOR: "+mapa.getVendedor()+"-"+mapa.getNomevendedor(),"",
 	        		"https://maps.google.com/mapfiles/ms/micons/blue-dot.png"));
 		}
+		
 	}
 	
 	public void filtragestor() {

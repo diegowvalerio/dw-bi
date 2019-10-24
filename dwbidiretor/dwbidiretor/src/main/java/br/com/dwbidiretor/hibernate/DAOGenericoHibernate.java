@@ -6,6 +6,8 @@ import java.math.RoundingMode;
 import java.sql.Blob;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -1316,6 +1318,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			
 			list.add(pedidoitem);
 		}
+		
+		Collections.sort(list, Comparator.comparing(PedidoItem::getSige_vl_venda, Comparator.nullsLast(Integer::compareTo)));
 		return list;
 		
 	}
@@ -1343,7 +1347,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 								+ " v.cep_endcadcftv, "
 								+ " v.nro_endcadcftv, "
 								+ " V.latitude, v.longitude, "
-								+ " x.dt as ultima_compra, "
+								+ " to_char(x.dt,'dd/mm/yyyy') as ultima_compra, "
 								+ " r.NOME_REGIAO "
 
 								+ " from CADCFTV c "
@@ -1396,7 +1400,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 					
 					mapa.setLatitude((BigDecimal) row[11]);
 					mapa.setLongitude((BigDecimal) row[12]);
-					mapa.setUltimacompra((Date) row[13]);
+					mapa.setUltimacompra((String) row[13]);
 
 					list.add(mapa);
 				}

@@ -30,7 +30,7 @@ http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 			</user-service>
 			-->
 			<jdbc-user-service data-source-ref="dataSource" 
-				users-by-username-query="select usuario as USERNAME, senha as PASSWORD,'true' as ENABLE from dwbi_login where usuario = ?"
+				users-by-username-query="select usuario as USERNAME,senha as PASSWORD, CASE WHEN ATIVO = 'SIM' THEN 'true' ELSE 'false'end as ENABLE from dwbi_login where tipo='DIRETOR' AND usuario = ?"
 				authorities-by-username-query="select usuario as USERNAME, 'ADM' AS AUTHORITY from dwbi_login where usuario = ?"
 			 />
 		</authentication-provider>
