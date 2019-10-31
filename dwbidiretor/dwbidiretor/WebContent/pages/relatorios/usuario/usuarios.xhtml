@@ -1,0 +1,112 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+       Acesso Usuário
+    </ui:define>
+
+	<ui:define name="description">
+       Acesso Usuário ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Acesso Usuário" />
+
+		<h:form id="form">
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					
+					<p:dataTable id="UsuarioTable" widgetVar="UsuarioTable" 
+						value="#{beanSigeUsuarioAcesso.lista}" var="usuario" rowIndexVar="rowIndex">
+						
+						<p:column headerText="#" width="3%">
+       					 <h:outputLabel value="#{rowIndex+1}" />
+   						</p:column>
+
+						<p:column headerText="Id" style="text-align:right" width="3%" visible="false">
+						<h:outputLabel value="#{usuario.idlogin}" />
+						</p:column>
+						<p:column headerText="Usuário" sortBy="#{usuario.usuario}" filterBy="#{usuario.usuario}" filterMatchMode="exact">
+						<h:outputLabel value="#{usuario.usuario}" />
+						</p:column>
+						
+						<p:column headerText="Ativo" sortBy="#{usuario.ativo}" filterBy="#{usuario.ativo}">
+						<h:outputLabel value="#{usuario.ativo}" />
+						</p:column>
+						<p:column headerText="Tipo" sortBy="#{usuario.tipo}" filterBy="#{usuario.tipo}">
+						<h:outputLabel value="#{usuario.tipo}" />
+						</p:column>
+						
+						<p:column width="15%" headerText="Operações"
+							style="text-align:center">
+
+							<p:commandButton  oncomplete="PF('dialog').show();"  
+								update=":form:painelDados" icon="fa fa-edit">
+								<f:setPropertyActionListener value="#{usuario}"
+									target="#{beanSigeUsuarioAcesso.sigeusuario}" />
+									<p:ajax update=":form:painelDados"/>
+							</p:commandButton>
+
+						</p:column>
+
+
+					</p:dataTable>
+				</div>
+			</div>
+			<p:dialog id="dlg" header="Editar Usuário" widgetVar="dialog"
+					 responsive="true" modal="true" resizable="true" position="center" onShow="position='center'">
+					<p:panelGrid id="painelDados" columns="2">
+						
+        				
+        				<p:outputLabel value="Nome:" for="nome" />
+						<p:inputText id="nome" value="#{beanSigeUsuarioAcesso.sigeusuario.usuario}" readonly="true" />
+
+						<p:outputLabel value="Senha: " for="senha" />
+						<p:password id="senha" value="#{beanSigeUsuarioAcesso.sigeusuario.senha}" redisplay="true" />
+						
+						<p:outputLabel value="Ativo:" for="ativo" />
+						<p:selectOneMenu id="ativo" value="#{beanSigeUsuarioAcesso.sigeusuario.ativo}" >
+							<f:selectItem itemLabel="Selecione" itemValue="" noSelectionOption="false"/>
+            				<f:selectItem itemLabel="Ativo" itemValue="SIM" />
+            				<f:selectItem itemLabel="Inativo" itemValue="NAO" />
+        				</p:selectOneMenu>
+						
+						<p:outputLabel value="Tipo:" for="tipo" />
+						<p:selectOneMenu id="tipo" value="#{beanSigeUsuarioAcesso.sigeusuario.tipo}" >
+							<f:selectItem itemLabel="Selecione" itemValue="" noSelectionOption="false"/>
+            				<f:selectItem itemLabel="Diretor" itemValue="DIRETOR" />
+            				<f:selectItem itemLabel="Vendedor" itemValue="VENDEDOR" />
+            				<f:selectItem itemLabel="Gestor" itemValue="GESTOR" />
+        				</p:selectOneMenu>
+										
+					</p:panelGrid>
+					<p:commandButton icon="fa fa-check" styleClass="btn-primary"
+						action="#{beanSigeUsuarioAcesso.salvar()}" ajax="false" />
+				</p:dialog>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

@@ -16,6 +16,8 @@ public class SigeUsuario implements Serializable {
 	private Integer idlogin;
 	private String usuario;
 	private String senha;
+	private String ativo;
+	private String tipo;
 
 	public SigeUsuario() {
 		super();
@@ -43,6 +45,22 @@ public class SigeUsuario implements Serializable {
 
 	public void setSenha(String senha) {
 		this.senha = senha;
+	}
+
+	public String getAtivo() {
+		return ativo;
+	}
+
+	public void setAtivo(String ativo) {
+		this.ativo = ativo;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
 
 	@Override

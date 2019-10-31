@@ -21,7 +21,7 @@ import br.com.dwbidiretor.servico.ServicoSigeUsuario;
 
 @Named
 @ViewScoped
-public class BeanSigeUsuario implements Serializable {
+public class BeanSigeUsuarioAcesso implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private SigeUsuario sigeusuario = new SigeUsuario();
@@ -33,26 +33,12 @@ public class BeanSigeUsuario implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		lista = servico.consultar();
+		lista = servico.consultaracesso();
 	}
 	
 	public void salvar(){
-		servico.alterar(sigeusuario);
-		lista = servico.consultar();
-	}
-
-	/* pegar usuario conectado */
-	public String usuarioconectado() {
-		String nome;
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-		if (principal instanceof UserDetails) {
-			nome = ((UserDetails) principal).getUsername();
-		} else {
-			nome = principal.toString();
-		}
-		// System.out.println(nome);
-		return nome;
+		servico.alteraracesso(sigeusuario);
+		lista = servico.consultaracesso();
 	}
 
 	public SigeUsuario getSigeusuario() {

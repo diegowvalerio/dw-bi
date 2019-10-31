@@ -16,4 +16,7 @@ public interface DAOSIGEGenerico<E> {
 	
 	public List<SigeUsuario> consultar();
 	
+	//liberação de acesso
+	public E alteraracesso(E e);
+	public List<SigeUsuario> consultaracesso();
 }

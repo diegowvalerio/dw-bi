@@ -28,6 +28,14 @@ public class ServicoSigeUsuario implements Serializable{
 		return dao.consultar();
 	}
 	
+	public List<SigeUsuario> consultaracesso(){
+		return dao.consultaracesso();
+	}
+	
+	public SigeUsuario alteraracesso(SigeUsuario e){
+		return dao.alteraracesso(e);
+	}
+	
 	
 	public void salvar(SigeUsuario usuario){
 		dao.salvar(usuario);

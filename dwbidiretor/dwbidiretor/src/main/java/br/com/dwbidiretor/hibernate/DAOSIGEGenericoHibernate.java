@@ -115,4 +115,47 @@ public class DAOSIGEGenericoHibernate<E> implements DAOSIGEGenerico<E>, Serializ
 		return list;
 	}
 	
+	//liberação
+	@Override
+	public E alteraracesso(E e) {
+		List<SigeUsuario> list = new ArrayList<>();
+		javax.persistence.Query query2 = (javax.persistence.Query) manager.createNativeQuery(
+				// "SELECT * FROM("
+				" update dwbi_login set senha = '"+ ((SigeUsuario) e).getSenha() +"', ativo = '"+ ((SigeUsuario) e).getAtivo() +"', tipo = '"+ ((SigeUsuario) e).getTipo() +"' where usuario = '"+ ((SigeUsuario) e).getUsuario() +"' and idlogin = '"+ ((SigeUsuario) e).getIdlogin() +"'   "
+				+" SELECT idlogin,usuario,senha from dwbi_login where usuario = '"+ usuarioconectado() +"'");
+		try {
+			query2.getResultList();
+		} catch (Exception e2) {
+			System.out.println(e2);
+		}
+		
+		
+		return e;
+	}
+	
+	//consulta acessos
+	@Override
+	public List<SigeUsuario> consultaracesso() {
+		List<SigeUsuario> list = new ArrayList<>();
+
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				// "SELECT * FROM("
+				" SELECT idlogin,usuario,senha,ativo,tipo from dwbi_login order by idlogin");
+		// query.setParameter("vendedorlogado", usuarioconectado());
+		List<Object[]> lista = query.getResultList();
+
+		for (Object[] row : lista) {
+			SigeUsuario sigeusuario = new SigeUsuario();
+
+			sigeusuario.setIdlogin((Integer) row[0]);
+			sigeusuario.setUsuario((String) row[1]);
+			sigeusuario.setSenha((String) row[2]);
+			sigeusuario.setAtivo((String) row[3]);
+			sigeusuario.setTipo((String) row[4]);
+			list.add(sigeusuario);
+
+		}
+		
+		return list;
+	}
 }
