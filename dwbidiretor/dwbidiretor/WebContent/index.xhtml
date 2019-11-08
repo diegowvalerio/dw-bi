@@ -251,6 +251,30 @@
 					
 					<div class="col-md-3 col-sm-6 col-xs-12">
 						<div class="info-box ">
+							<span class="info-box-icon bg-lighten-4"><i
+								class="fa fa-magic"></i></span>
+
+							<div class="info-box-content">
+								<span class="info-box-text">Brindes</span> <span
+									class="info-box-number"><h:outputText
+										value="#{beanResumo.brindedodia}" /></span>
+
+								<div class="progress">
+									<div class="progress-bar" style="width: 100%"></div>
+								</div>
+								<span class="progress-description"> <h:commandLink
+										action="#{beanResumo.encaminha9()}"
+										styleClass="fa fa-arrow-circle-right small-box-footer"
+										value="  R$ #{beanResumo.valorTotalBrinde}" />
+								</span>
+							</div>
+							<!-- /.info-box-content -->
+						</div>
+						<!-- /.info-box -->
+					</div>
+					
+					<div class="col-md-3 col-sm-6 col-xs-12">
+						<div class="info-box ">
 							<span class="info-box-icon bg-blue">
 							<i class="fa fa-tags"></i></span>
 
@@ -272,6 +296,33 @@
 						</div>
 						<!-- /.info-box -->
 					</div>
+					
+					<div class="col-md-3 col-sm-6 col-xs-12">
+						<div class="info-box ">
+							<span class="info-box-icon bg-olive"><i
+								class="fa fa-paper-plane"></i></span>
+
+							<div class="info-box-content">
+								<span class="info-box-text">Investimento</span> <span
+									class="info-box-number"><h:outputText
+										value="  R$ #{beanResumo.valorTotalSobFaturado}" /></span>
+
+								<div class="progress">
+									<p:progressBar value="#{beanResumo.percentualSobFaturado}"
+										styleClass="animated" global="false" style="background-color:red"/>
+								</div>
+								
+								<span class="progress-description"> <h:commandLink
+										action="#{beanResumo.encaminha10()}"
+										styleClass="fa fa-arrow-circle-right small-box-footer"
+										value=" Sobre Faturado:  #{beanResumo.percentualSobFaturado} %" />
+								</span>
+							</div>
+							<!-- /.info-box-content -->
+						</div>
+						<!-- /.info-box -->
+					</div>
+				
 					
 				</div>
 				<p:separator />

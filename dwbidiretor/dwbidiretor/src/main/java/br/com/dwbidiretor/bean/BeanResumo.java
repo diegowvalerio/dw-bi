@@ -52,6 +52,8 @@ public class BeanResumo implements Serializable {
 	private List<VendasEmGeral> listaamostra = new ArrayList<>();
 	private List<VendasEmGeral> listabonificacao = new ArrayList<>();
 	private List<VendasEmGeral> listaexpositor = new ArrayList<>();
+	private List<VendasEmGeral> listabrinde = new ArrayList<>();
+	private List<VendasEmGeral> listainvestimento = new ArrayList<>();
 	private List<VendasEmGeral> listafaturamento = new ArrayList<>();
 	
 	private ClientesNovos clientesNovos = new ClientesNovos();
@@ -116,6 +118,8 @@ public class BeanResumo implements Serializable {
 			listaamostra = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
 			listabonificacao = servico.bonificacaoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
 			listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
+			listabrinde = servico.brindeemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
+			listainvestimento = servico.investimentooemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
 			listafaturamento = servico.faturamentoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
 			
 			listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
@@ -124,6 +128,8 @@ public class BeanResumo implements Serializable {
 			listaamostra = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
 			listabonificacao = servico.bonificacaoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
 			listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
+			listabrinde = servico.brindeemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
+			listainvestimento = servico.investimentooemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
 			listafaturamento = servico.faturamentoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
 			
 			listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
@@ -159,6 +165,8 @@ public class BeanResumo implements Serializable {
 		listaamostra = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
 		listabonificacao = servico.bonificacaoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
 		listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
+		listabrinde = servico.brindeemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
+		listainvestimento = servico.investimentooemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
 		listafaturamento = servico.faturamentoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
 		
 		listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
@@ -333,6 +341,22 @@ public class BeanResumo implements Serializable {
 		this.listaexpositor = listaexpositor;
 	}
 
+	public List<VendasEmGeral> getListabrinde() {
+		return listabrinde;
+	}
+
+	public void setListabrinde(List<VendasEmGeral> listabrinde) {
+		this.listabrinde = listabrinde;
+	}
+
+	public List<VendasEmGeral> getListainvestimento() {
+		return listainvestimento;
+	}
+
+	public void setListainvestimento(List<VendasEmGeral> listainvestimento) {
+		this.listainvestimento = listainvestimento;
+	}
+
 	/* dados vendaemgeral */
 	public String encaminha2() {
 		FacesContext fc = FacesContext.getCurrentInstance();
@@ -413,6 +437,31 @@ public class BeanResumo implements Serializable {
 
 		return "/pages/relatorios/vendaemgeral/faturamentoemgeral.xhtml";
 	}
+	
+	/* dados faturamento emgeral */
+	public String encaminha9() {
+		FacesContext fc = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
+		session.setAttribute("vendedor", this.vendedor);
+		session.setAttribute("gestor", this.gestor);
+		session.setAttribute("data1", this.data_grafico);
+		session.setAttribute("data2", this.data_grafico2);
+
+		return "/pages/relatorios/vendaemgeral/brindeemgeral.xhtml";
+	}
+	
+	/* dados investimento emgeral */
+	public String encaminha10() {
+		FacesContext fc = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
+		session.setAttribute("vendedor", this.vendedor);
+		session.setAttribute("gestor", this.gestor);
+		session.setAttribute("data1", this.data_grafico);
+		session.setAttribute("data2", this.data_grafico2);
+
+		return "/pages/relatorios/vendaemgeral/investimentoemgeral.xhtml";
+	}
+	
 	/* pegar usuario conectado */
 	public String usuarioconectado() {
 		String nome;
@@ -456,6 +505,16 @@ public class BeanResumo implements Serializable {
 		return new DecimalFormat("###,###.###").format(total);
 	}
 	
+	public String getValorTotalBrinde() {
+		float total = 0;
+
+		for (VendasEmGeral venda : getListabrinde()) {
+			total = total + venda.getValortotalpedido().floatValue();
+		}
+
+		return new DecimalFormat("###,###.###").format(total);
+	}
+	
 	public String getValorTotalExpositor() {
 		float total = 0;
 
@@ -464,6 +523,43 @@ public class BeanResumo implements Serializable {
 		}
 
 		return new DecimalFormat("###,###.###").format(total);
+	}
+	
+	public String getValorTotalSobFaturado() {
+		float total = 0;
+		
+		for (VendasEmGeral venda : getListainvestimento()) {
+			total = total + venda.getValortotalpedido().floatValue();
+		}
+
+		return new DecimalFormat("###,###.###").format(total);
+	}
+	
+	public float getPercentualSobFaturado() {
+		
+		float total = 0;
+		
+		float total2 = 0;
+		
+		for (VendasEmGeral venda : getListainvestimento()) {
+			total = total + venda.getValortotalpedido().floatValue();
+		}
+		
+		for (VendasEmGeral faturamento : getListafaturamento()) {
+			total2 = total2 + faturamento.getValortotalpedido().floatValue();
+		}
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(total2 == 0){
+			total2 = 1;
+			atingido = 100;
+		}else{
+			atingido = (total / total2)*100;
+		}
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+
 	}
 	
 	public String getValorTotalFaturamento() {
@@ -511,6 +607,16 @@ public class BeanResumo implements Serializable {
 		int total = 0;
 
 		for (VendasEmGeral expositor : getListaexpositor()) {
+			total++;
+		}
+
+		return total;
+	}
+	
+	public int getBrindedodia() {
+		int total = 0;
+
+		for (VendasEmGeral expositor : getListabrinde()) {
 			total++;
 		}
 

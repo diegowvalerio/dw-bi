@@ -28,11 +28,21 @@ public class VendasEmGeral implements Serializable {
 	private String tipooperacaocfop;
 	private String statuspedido;
 	private String nomevendedor;
+	
+	private Date dataliberadogestor;
 
 		
 
 	public VendasEmGeral() {
 		super();
+	}
+
+	public Date getDataliberadogestor() {
+		return dataliberadogestor;
+	}
+
+	public void setDataliberadogestor(Date dataliberadogestor) {
+		this.dataliberadogestor = dataliberadogestor;
 	}
 
 	public BigDecimal getCodigocliente() {

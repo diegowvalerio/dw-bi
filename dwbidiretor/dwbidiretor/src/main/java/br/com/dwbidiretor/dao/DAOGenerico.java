@@ -48,6 +48,14 @@ public interface DAOGenerico<E> {
 	
 	public List<VendasEmGeralItem> expositoremgeralitem(BigDecimal pedido);
 	
+	public List<VendasEmGeral> brindeemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2);
+	
+	public List<VendasEmGeralItem> brindeemgeralitem(BigDecimal pedido);
+	
+	public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2);
+	
+	public List<VendasEmGeralItem> investimentoemgeralitem(BigDecimal pedido);
+	
 	public List<ClientesNovos> clientesnovos(Date data1, Date data2,String vendedor1, String vendedor2, String gestor1, String gestor2);
 	
 	public List<Vendedor> consultavendedor();
