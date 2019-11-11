@@ -177,6 +177,7 @@
 						<!-- /.info-box -->
 					</div>
 					<p:separator />
+					
 					<div class="col-md-3 col-sm-6 col-xs-12">
 						<div class="info-box ">
 							<span class="info-box-icon bg-lime"><i
@@ -194,6 +195,30 @@
 										action="#{beanResumo.encaminha5()}"
 										styleClass="fa fa-arrow-circle-right small-box-footer"
 										value="  R$ #{beanResumo.valorTotalAmostra}" />
+								</span>
+							</div>
+							<!-- /.info-box-content -->
+						</div>
+						<!-- /.info-box -->
+					</div>
+					
+					<div class="col-md-3 col-sm-6 col-xs-12">
+						<div class="info-box ">
+							<span class="info-box-icon bg-olive"><i
+								class="fa fa-shopping-bag"></i></span>
+
+							<div class="info-box-content">
+								<span class="info-box-text">Amostras Pagas</span> <span
+									class="info-box-number"><h:outputText
+										value="#{beanResumo.amostraPagadodia}" /></span>
+
+								<div class="progress">
+									<div class="progress-bar" style="width: 100%"></div>
+								</div>
+								<span class="progress-description"> <h:commandLink
+										action="#{beanResumo.encaminha12()}"
+										styleClass="fa fa-arrow-circle-right small-box-footer"
+										value="  R$ #{beanResumo.valorTotalAmostraPaga}" />
 								</span>
 							</div>
 							<!-- /.info-box-content -->
@@ -272,6 +297,55 @@
 						</div>
 						<!-- /.info-box -->
 					</div>
+					
+						<div class="col-md-3 col-sm-6 col-xs-12">
+						<div class="info-box ">
+							<span class="info-box-icon bg-black"><i
+								class="fa fa-retweet"></i></span>
+
+							<div class="info-box-content">
+								<span class="info-box-text">Troca Defeito</span> <span
+									class="info-box-number"><h:outputText
+										value="#{beanResumo.trocaDefeitododia}" /></span>
+
+								<div class="progress">
+									<div class="progress-bar" style="width: 100%"></div>
+								</div>
+								<span class="progress-description"> <h:commandLink
+										action="#{beanResumo.encaminha11()}"
+										styleClass="fa fa-arrow-circle-right small-box-footer"
+										value="  R$ #{beanResumo.valorTotalTrocaDefeito}" />
+								</span>
+							</div>
+							<!-- /.info-box-content -->
+						</div>
+						<!-- /.info-box -->
+					</div>
+					
+					<div class="col-md-3 col-sm-6 col-xs-12">
+						<div class="info-box ">
+							<span class="info-box-icon bg-fuchsia"><i
+								class="fa fa-retweet"></i></span>
+
+							<div class="info-box-content">
+								<span class="info-box-text">Troca Negociações</span> <span
+									class="info-box-number"><h:outputText
+										value="#{beanResumo.trocaNegociododia}" /></span>
+
+								<div class="progress">
+									<div class="progress-bar" style="width: 100%"></div>
+								</div>
+								<span class="progress-description"> <h:commandLink
+										action="#{beanResumo.encaminha12()}"
+										styleClass="fa fa-arrow-circle-right small-box-footer"
+										value="  R$ #{beanResumo.valorTotalTrocaNegocio}" />
+								</span>
+							</div>
+							<!-- /.info-box-content -->
+						</div>
+						<!-- /.info-box -->
+					</div>
+					
 					
 					<div class="col-md-3 col-sm-6 col-xs-12">
 						<div class="info-box ">

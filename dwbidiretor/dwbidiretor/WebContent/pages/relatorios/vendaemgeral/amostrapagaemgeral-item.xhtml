@@ -1,0 +1,162 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Amostras Pagas em Geral
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Amostras Pagas em Geral" />
+
+		<h:form id="form">
+			<div class="box box-primary">
+				<div class="box-header with-border">
+
+					<p:commandButton icon="fa fa-mail-reply-all"
+						action="#{beanAmostrapagaemGeralItem.encaminha()}">
+					</p:commandButton>
+
+					<h:panelGrid columns="10" id="paineld1" style="width:100%">
+
+						<p:outputLabel value="Amostra " />
+						<h:outputText
+							value="#{beanAmostrapagaemGeralItem.vendasEmGeral.pedido}" />
+
+						<p:outputLabel value="Cliente: " />
+						<h:outputText
+							value="#{beanAmostrapagaemGeralItem.vendasEmGeral.nomecliente}" />
+
+						<p:outputLabel value="Data: " />
+						<h:outputText
+							value="#{beanAmostrapagaemGeralItem.vendasEmGeral.datapedido}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+
+						<p:outputLabel value="Prazo: " />
+						<h:outputText value="#{beanAmostrapagaemGeralItem.vendasEmGeral.prazo}" />
+
+						<p:outputLabel value="Status: " />
+						<h:outputText
+							value="#{beanAmostrapagaemGeralItem.vendasEmGeral.statuspedido}" />
+
+
+
+
+					</h:panelGrid>
+					<p:separator />
+
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right"
+						style="width:100%">
+						<p:dataTable id="venda" var="vendas"
+							value="#{beanAmostrapagaemGeralItem.listavendaitems}">
+
+							<f:facet name="header">
+								<p:commandButton id="toggler" type="button" value="Colunas"
+									icon="pi pi-align-justify" />
+								<p:columnToggler datasource="venda" trigger="toggler" />
+							</f:facet>
+
+							<p:column width="9%" headerText="Produto"
+								sortBy="#{vendas.codigoproduto}">
+								<h:outputText value="#{vendas.codigoproduto}" />
+							</p:column>
+
+							<p:column headerText="Descrição" sortBy="#{vendas.nomeproduto}">
+								<h:outputText value="#{vendas.nomeproduto}" />
+							</p:column>
+
+							<p:column width="10%" headerText="Vrl Unit."
+								sortBy="#{vendas.valorunitarioproduto}">
+								<h:outputText value="#{vendas.valorunitarioproduto}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+
+							<p:column width="6%" headerText="Qtde"
+								sortBy="#{vendas.quantidadeproduto}">
+								<h:outputText value="#{vendas.quantidadeproduto}" />
+							</p:column>
+
+							<p:column width="13%" headerText="Vlr Total Item"
+								sortBy="#{vendas.valortotalproduto}">
+								<h:outputText value="#{vendas.valortotalproduto}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+
+							<p:column width="12%" headerText="Data Nota"
+								sortBy="#{vendas.datanota}" visible="false">
+								<h:outputText value="#{vendas.datanota}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column width="9%" headerText="Nº Nota" sortBy="#{vendas.nota}"
+								visible="false">
+								<h:outputText value="#{vendas.nota}" />
+							</p:column>
+
+							<p:column width="12%" headerText="Status Nota"
+								sortBy="#{vendas.statusnota}" visible="false">
+								<h:outputText value="#{vendas.statusnota}" />
+							</p:column>
+
+							<p:column width="5%" headerText="#">
+								<p:commandButton oncomplete="PF('dlg').show();" icon="fa fa-eye" update=":foto">
+									<f:setPropertyActionListener value="#{vendas}"
+										target="#{beanAmostrapagaemGeralItem.vendasEmGeralitem}" />
+								</p:commandButton>
+							</p:column>
+
+							<p:columnGroup type="footer">
+								<p:row>
+									<p:column colspan="3" style="text-align:right"
+										footerText="Total:" />
+									<p:column footerText="#{beanAmostrapagaemGeralItem.qtdeTotal}" />
+
+									<p:column footerText="R$#{beanAmostrapagaemGeralItem.valorTotal}" />
+								</p:row>
+							</p:columnGroup>
+
+						</p:dataTable>
+					</h:panelGrid>
+				</div>
+			</div>
+		
+		</h:form>
+		<p:dialog header="Imagem do Produto" widgetVar="dlg" modal="true" draggable="false">
+			<h:panelGrid columns="1" id="foto" >
+				<p:graphicImage value="#{beanAmostrapagaemGeralItem.imagem()}" id="img" cache="false"  width="230px" height="230px"/>
+			</h:panelGrid>
+		</p:dialog>
+	</ui:define>
+
+</ui:composition>
