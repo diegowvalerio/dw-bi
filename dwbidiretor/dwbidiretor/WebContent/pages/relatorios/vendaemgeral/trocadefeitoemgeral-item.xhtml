@@ -41,31 +41,31 @@
 				<div class="box-header with-border">
 
 					<p:commandButton icon="fa fa-mail-reply-all"
-						action="#{beanTrocadefeitoemGeralItem.encaminha()}">
+						action="#{beanTrocaDefeitoemGeralItem.encaminha()}">
 					</p:commandButton>
 
 					<h:panelGrid columns="10" id="paineld1" style="width:100%">
 
 						<p:outputLabel value="Troca " />
 						<h:outputText
-							value="#{beanTrocadefeitoemGeralItem.vendasEmGeral.pedido}" />
+							value="#{beanTrocaDefeitoemGeralItem.vendasEmGeral.pedido}" />
 
 						<p:outputLabel value="Cliente: " />
 						<h:outputText
-							value="#{beanTrocadefeitoemGeralItem.vendasEmGeral.nomecliente}" />
+							value="#{beanTrocaDefeitoemGeralItem.vendasEmGeral.nomecliente}" />
 
 						<p:outputLabel value="Data: " />
 						<h:outputText
-							value="#{beanTrocadefeitoemGeralItem.vendasEmGeral.datapedido}">
+							value="#{beanTrocaDefeitoemGeralItem.vendasEmGeral.datapedido}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
 
 						<p:outputLabel value="Prazo: " />
-						<h:outputText value="#{beanTrocadefeitoemGeralItem.vendasEmGeral.prazo}" />
+						<h:outputText value="#{beanTrocaDefeitoemGeralItem.vendasEmGeral.prazo}" />
 
 						<p:outputLabel value="Status: " />
 						<h:outputText
-							value="#{beanTrocadefeitoemGeralItem.vendasEmGeral.statuspedido}" />
+							value="#{beanTrocaDefeitoemGeralItem.vendasEmGeral.statuspedido}" />
 
 
 
@@ -76,7 +76,7 @@
 					<h:panelGrid columns="1" id="paineld" columnClasses="left,right"
 						style="width:100%">
 						<p:dataTable id="venda" var="vendas"
-							value="#{beanTrocadefeitoemGeralItem.listavendaitems}">
+							value="#{beanTrocaDefeitoemGeralItem.listavendaitems}">
 
 							<f:facet name="header">
 								<p:commandButton id="toggler" type="button" value="Colunas"
@@ -132,7 +132,7 @@
 							<p:column width="5%" headerText="#">
 								<p:commandButton oncomplete="PF('dlg').show();" icon="fa fa-eye" update=":foto">
 									<f:setPropertyActionListener value="#{vendas}"
-										target="#{beanTrocadefeitoemGeralItem.vendasEmGeralitem}" />
+										target="#{beanTrocaDefeitoemGeralItem.vendasEmGeralitem}" />
 								</p:commandButton>
 							</p:column>
 
@@ -140,9 +140,9 @@
 								<p:row>
 									<p:column colspan="3" style="text-align:right"
 										footerText="Total:" />
-									<p:column footerText="#{beanTrocadefeitoemGeralItem.qtdeTotal}" />
+									<p:column footerText="#{beanTrocaDefeitoemGeralItem.qtdeTotal}" />
 
-									<p:column footerText="R$#{beanTrocadefeitoemGeralItem.valorTotal}" />
+									<p:column footerText="R$#{beanTrocaDefeitoemGeralItem.valorTotal}" />
 								</p:row>
 							</p:columnGroup>
 
@@ -154,7 +154,7 @@
 		</h:form>
 		<p:dialog header="Imagem do Produto" widgetVar="dlg" modal="true" draggable="false">
 			<h:panelGrid columns="1" id="foto" >
-				<p:graphicImage value="#{beanTrocadefeitoemGeralItem.imagem()}" id="img" cache="false"  width="230px" height="230px"/>
+				<p:graphicImage value="#{beanTrocaDefeitoemGeralItem.imagem()}" id="img" cache="false"  width="230px" height="230px"/>
 			</h:panelGrid>
 		</p:dialog>
 	</ui:define>

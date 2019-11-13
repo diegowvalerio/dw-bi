@@ -496,7 +496,7 @@ public class BeanResumo implements Serializable {
 		session.setAttribute("data1", this.data_grafico);
 		session.setAttribute("data2", this.data_grafico2);
 
-		return "/pages/relatorios/vendaemgeral/investimentoemgeral.xhtml";
+		return "/pages/relatorios/vendaemgeral/investimentovendedor.xhtml";
 	}
 	
 	/* dados investimento emgeral */
@@ -626,11 +626,12 @@ public class BeanResumo implements Serializable {
 	
 	public String getValorTotalSobFaturado() {
 		float total = 0;
+	
 		
 		for (VendasEmGeral venda : getListainvestimento()) {
 			total = total + venda.getValortotalpedido().floatValue();
 		}
-
+		
 		return new DecimalFormat("###,###.###").format(total);
 	}
 	

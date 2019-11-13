@@ -29,6 +29,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.dwbidiretor.classe.ClientesNovos;
 import br.com.dwbidiretor.classe.Gestor;
+import br.com.dwbidiretor.classe.InvestimentoVendedor;
 import br.com.dwbidiretor.classe.Mapa;
 import br.com.dwbidiretor.classe.MetaVenda;
 import br.com.dwbidiretor.classe.PedidoItem;
@@ -512,7 +513,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 								//+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
 								+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
 								+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
-								+ " AND CF.tipooperacao_cfop <> 'VENDA' "
+								+ " AND CF.tipooperacao_cfop = 'VENDA' "
 								+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
 								+ " and p.TIPOPEDIDOID = 6 and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 								+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
@@ -920,10 +921,169 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						}
 						return list;
 						
-					}
+}
+
+//pedidos de investimento vendedor
+public List<InvestimentoVendedor> investimentovendedor(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
+	List<InvestimentoVendedor> list = new ArrayList<>();
+		
+	SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+	String dataFormatada3 = formato.format(data2);
+	
+	//ajuste de data para bater certo
+		Calendar cal = Calendar.getInstance(); 
+		cal.setTime(data2); 
+		cal.add(Calendar.DATE, 1);
+		data2 = cal.getTime();
+								
+	
+	String dataFormatada = formato.format(data1);
+	String dataFormatada2 = formato.format(data2);
+	
+
+	javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+			" select investimento.vendedor, "
+			+ " investimento.nome_vendedor, "
+			+ " geral.vlgeralfaturado, "
+			+ " NVL(fat.vlfaturado,0) as vlfaturado, "
+
+			+ " NVL(sum(investimento.amostra),0)+NVL(sum(investimento.bonificacao),0)+NVL(sum(investimento.expositor),0) + "
+			+ " NVL(sum(investimento.brinde),0)+NVL(sum(investimento.trocadefeito),0)+NVL(sum(investimento.trocanegocio),0) as  totalinvestido, "
+
+			+ " NVL(((NVL(sum(investimento.amostra),0)+NVL(sum(investimento.bonificacao),0)+NVL(sum(investimento.expositor),0) + "
+			+ " NVL(sum(investimento.brinde),0)+NVL(sum(investimento.trocadefeito),0)+NVL(sum(investimento.trocanegocio),0))/fat.vlfaturado)*100 ,0) as pcinvestidovendedor, "
+
+
+			+ " ((NVL(sum(investimento.amostra),0)+NVL(sum(investimento.bonificacao),0)+NVL(sum(investimento.expositor),0) + "
+			+ " NVL(sum(investimento.brinde),0)+NVL(sum(investimento.trocadefeito),0)+NVL(sum(investimento.trocanegocio),0))/geral.vlgeralfaturado)*100 as pcinvestidogeral, "
+
+			+ " NVL(sum(investimento.amostra),0) as vlamostra, "
+			+ " (NVL(sum(investimento.amostra),0) / fat.vlfaturado )*100 as pcamostra, "
+
+			+ " NVL(sum(investimento.bonificacao),0) as vlbonificacao, "
+			+ " NVL((NVL(sum(investimento.bonificacao),0) / fat.vlfaturado )*100 ,0) as pcbonificacao, "
+
+			+ " NVL(sum(investimento.expositor),0) as vlexpositor, "
+			+ " NVL((NVL(sum(investimento.expositor),0) / fat.vlfaturado )*100 ,0) as pcexpositor, "
+
+			+ " NVL(sum(investimento.brinde),0) as vlbrinde, "
+			+ " NVL((NVL(sum(investimento.brinde),0) / fat.vlfaturado )*100 ,0) as pcbrinde, "
+
+			+ " NVL(sum(investimento.trocadefeito),0) as vltrocadefeito, "
+			+ " NVL((NVL(sum(investimento.trocadefeito),0) / fat.vlfaturado )*100 ,0) as pctrocadefeito, "
+
+			+ " NVL(sum(investimento.trocanegocio),0) as vltrocanegocio, "
+			+ " NVL((NVL(sum(investimento.trocanegocio),0) / fat.vlfaturado )*100 ,0) as pctrocanegocio "
+
+			+ " from( "
+			+ " select "
+			+ " v.cadcftvid as vendedor, "
+			+ " v.NOME_CADCFTV as nome_vendedor , "
+			+ " case when p.TIPOPEDIDOID = 4 then p.vl_totalprod_pedidovenda end as amostra,   "
+			+ " case when p.TIPOPEDIDOID = 3 then p.vl_totalprod_pedidovenda end as bonificacao,  "
+			+ " case when p.TIPOPEDIDOID = 5  then p.vl_totalprod_pedidovenda end as expositor,  "
+			+ " case when p.TIPOPEDIDOID = 14 then p.vl_totalprod_pedidovenda end as brinde,  "
+			+ " case when p.TIPOPEDIDOID = 13 then p.vl_totalprod_pedidovenda end as trocanegocio,  "
+			+ " case when p.TIPOPEDIDOID = 2 then p.vl_totalprod_pedidovenda end as trocadefeito "
+
+			+ " from pedidovenda p  "
+			+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID  "
+			+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID  "
+			+ " inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid  "
+			+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid  "
+			+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+			+ " inner join roteiro r on r.roteiroid = p.roteiroid  "
+			+ " inner join TIPO_PEDIDO_ROTEIRO tr on tr.ROTEIROID = r.ROTEIROID and tr.TIPOPEDIDOID = p.TIPOPEDIDOID "
+			+ " inner join ( "
+			+ " select max(rp.ROTEIROPEDIDOID) r,rp.pedidovendaid, min(trunc(rp.DT_ROTEIRO_PEDIDO)) as DT_ROTEIRO_PEDIDO from ROTEIRO_PEDIDO rp "
+			+ " inner join pedidovenda p on p.pedidovendaid = rp.pedidovendaid "
+			+ " inner join TIPO_PEDIDO_ROTEIRO tr on tr.ROTEIROID = rp.ROTEIROID and tr.TIPOPEDIDOID = p.TIPOPEDIDOID "
+			+ " where tr.ORDEM_ROTEIRO > 3 group by rp.pedidovendaid "
+			+ " ) liberado on liberado.pedidovendaid = p.pedidovendaid "
+
+			+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID  "
+			+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO')  "
+			+ " AND CF.tipooperacao_cfop <> 'VENDA'  "
+			
+			+ " and liberado.DT_ROTEIRO_PEDIDO between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
+			+ " and p.TIPOPEDIDOID in (4,3,5,14,13,2) and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " '  "
+			+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " '  "
+			+ " and tr.ORDEM_ROTEIRO > 3 "
+			+ " )investimento "
+
+		
+			+ " left join ( "
+			+ "  select "
+			+ " sum(p.vl_totalprod_pedidovenda) as vlfaturado,  "
+			+ " V.CADCFTVID as vendedor "
+			+ " from pedidovenda p  "
+			+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID  "
+			+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID  "
+			+ " inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid  "
+			+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid  "
+			+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+			+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID  "
+			+ " where p.status_pedidovenda in ('FATURADO')  "
+			+ " AND CF.tipooperacao_cfop = 'VENDA'  "
+			+ " and p.DT_FATURAMENTO_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada3 + " ' " 
+			+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " '  "
+			+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2  + " '  "
+			+ " group by V.CADCFTVID ) fat on fat.vendedor = investimento.vendedor "
+			
+			+ " inner join ( "
+			+ "  select "
+			+ " sum(p.vl_totalprod_pedidovenda) as vlgeralfaturado  "
+			+ " from pedidovenda p  "
+			+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID  "
+			+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID  "
+			+ " inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid  "
+			+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid  "
+			+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+			+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID  "
+			+ " where p.status_pedidovenda in ('FATURADO')  "
+			+ " AND CF.tipooperacao_cfop = 'VENDA'  "
+			+ " and p.DT_FATURAMENTO_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada3 + " ' " 
+			+ " ORDER BY P.NR_NOTA_PEDIDOVENDA )geral on geral.vlgeralfaturado is not null "
+
+			+ " group by  "
+			+ " geral.vlgeralfaturado, "
+			+ " fat.vlfaturado, "
+			+ " investimento.vendedor, "
+			+ " investimento.nome_vendedor ");
+
+	List<Object[]> lista = query.getResultList();
+								
+	for (Object[] row : lista) {
+		InvestimentoVendedor vendasEmGeral = new InvestimentoVendedor();
+		
+		vendasEmGeral.setVendedor((BigDecimal) row[0]);
+		vendasEmGeral.setNomevendedor((String) row[1] );
+		vendasEmGeral.setVlgeralfaturado((BigDecimal) row[2] );
+		vendasEmGeral.setVlvendedorfaturado((BigDecimal) row[3] );
+		vendasEmGeral.setVltotalinvestido((BigDecimal) row[4] );
+		vendasEmGeral.setPcinvestidovendedor((BigDecimal) row[5] );
+		vendasEmGeral.setPcinvestidogeral((BigDecimal) row[6] );
+		vendasEmGeral.setVlamostra((BigDecimal) row[7] );
+		vendasEmGeral.setPcamostra((BigDecimal) row[8] );
+		vendasEmGeral.setVlbonificacao((BigDecimal) row[9] );
+		vendasEmGeral.setPcbonificacao((BigDecimal) row[10] );
+		vendasEmGeral.setVlexpositor((BigDecimal) row[11] );
+		vendasEmGeral.setPcexpositor((BigDecimal) row[12] );
+		vendasEmGeral.setVlbrinde((BigDecimal) row[13] );
+		vendasEmGeral.setPcbrinde((BigDecimal) row[14] );
+		vendasEmGeral.setVltrocadefeito((BigDecimal) row[15] );
+		vendasEmGeral.setPctrocadefeito((BigDecimal) row[16] );
+		vendasEmGeral.setVltrocanegocio((BigDecimal) row[17] );
+		vendasEmGeral.setPctrocanegocio((BigDecimal) row[18] );
+									
+		list.add(vendasEmGeral);
+	}
+
+	return list;
+}
 
 		//pedidos de bonifica��o
-		public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
+public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
 					List<VendasEmGeral> list = new ArrayList<>();
 					
 					//ajuste de data para bater certo
@@ -958,10 +1118,10 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 									+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
 									+ " inner join roteiro r on r.roteiroid = p.roteiroid "
 									+ " inner join TIPO_PEDIDO_ROTEIRO tr on tr.ROTEIROID = r.ROTEIROID and tr.TIPOPEDIDOID = p.TIPOPEDIDOID "
-									+ " inner join (select max(rp.ROTEIROPEDIDOID) r,rp.pedidovendaid, trunc(rp.DT_ROTEIRO_PEDIDO) DT_ROTEIRO_PEDIDO from ROTEIRO_PEDIDO rp "
+									+ " inner join (select max(rp.ROTEIROPEDIDOID) r,rp.pedidovendaid, min(trunc(rp.DT_ROTEIRO_PEDIDO)) as DT_ROTEIRO_PEDIDO from ROTEIRO_PEDIDO rp "
 									+ " inner join pedidovenda p on p.pedidovendaid = rp.pedidovendaid "
 									+ " inner join TIPO_PEDIDO_ROTEIRO tr on tr.ROTEIROID = rp.ROTEIROID and tr.TIPOPEDIDOID = p.TIPOPEDIDOID "
-									+ " where tr.ORDEM_ROTEIRO = 4 group by rp.pedidovendaid,trunc(rp.DT_ROTEIRO_PEDIDO) "
+									+ " where tr.ORDEM_ROTEIRO >3 group by rp.pedidovendaid "
 									+ " ) liberado on liberado.pedidovendaid = p.pedidovendaid "
 									+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
 									+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "

@@ -7,6 +7,7 @@ import java.util.List;
 
 import br.com.dwbidiretor.classe.ClientesNovos;
 import br.com.dwbidiretor.classe.Gestor;
+import br.com.dwbidiretor.classe.InvestimentoVendedor;
 import br.com.dwbidiretor.classe.Mapa;
 import br.com.dwbidiretor.classe.MetaVenda;
 import br.com.dwbidiretor.classe.PedidoItem;
@@ -67,6 +68,8 @@ public interface DAOGenerico<E> {
 	public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2);
 	
 	public List<VendasEmGeralItem> investimentoemgeralitem(BigDecimal pedido);
+	
+	public List<InvestimentoVendedor> investimentovendedor(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2);
 	
 	public List<ClientesNovos> clientesnovos(Date data1, Date data2,String vendedor1, String vendedor2, String gestor1, String gestor2);
 	

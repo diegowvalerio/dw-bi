@@ -41,37 +41,37 @@
 
 					<p:outputLabel value=" Data:  " for="data_grafico" />
 					<p:calendar locale="pt_BR" id="data_grafico"
-						value="#{beanTrocadefeitoemGeral.data_grafico}" pattern="dd/MM/yyyy"
+						value="#{beanTrocaDefeitoemGeral.data_grafico}" pattern="dd/MM/yyyy"
 						mask="true" required="true" readonlyInput="true">
 					</p:calendar>
 
 					<p:outputLabel value=" Até:  " for="data_grafico2" />
 					<p:calendar locale="pt_BR" id="data_grafico2"
-						value="#{beanTrocadefeitoemGeral.data_grafico2}" pattern="dd/MM/yyyy"
+						value="#{beanTrocaDefeitoemGeral.data_grafico2}" pattern="dd/MM/yyyy"
 						mask="true" required="true" readonlyInput="true">
 					</p:calendar>
 					
 					<p:outputLabel value="Gestor:" for="gestor" />
-					<p:selectOneMenu id="gestor" value="#{beanTrocadefeitoemGeral.gestor}"
+					<p:selectOneMenu id="gestor" value="#{beanTrocaDefeitoemGeral.gestor}"
 						converter="conversorGestor">
 						<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
-						<f:selectItems value="#{beanTrocadefeitoemGeral.listagestor}" var="gestor"
+						<f:selectItems value="#{beanTrocaDefeitoemGeral.listagestor}" var="gestor"
 							itemLabel="#{gestor.nomegestor}"
 							itemValue="#{gestor}" />
 					</p:selectOneMenu>
 					
 					<p:outputLabel value="Vendedor:" for="vendedor" />
 					<p:selectOneMenu id="vendedor"
-					value="#{beanTrocadefeitoemGeral.vendedor}"
+					value="#{beanTrocaDefeitoemGeral.vendedor}"
 					converter="conversorVendedor">
 					<f:selectItem itemLabel="Selecionar" />
-					<f:selectItems value="#{beanTrocadefeitoemGeral.listavendedor}"
+					<f:selectItems value="#{beanTrocaDefeitoemGeral.listavendedor}"
 						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
 						itemValue="#{vendedor}" />
-						<p:ajax listener="#{beanTrocadefeitoemGeral.filtragestor}" update=":form:gestor" />
+						<p:ajax listener="#{beanTrocaDefeitoemGeral.filtragestor}" update=":form:gestor" />
 					</p:selectOneMenu>
 
-					<p:commandButton action="#{beanTrocadefeitoemGeral.filtrar()}"
+					<p:commandButton action="#{beanTrocaDefeitoemGeral.filtrar()}"
 						value="Filtrar" icon="fa fa-check" update=":form:paineld"
 						styleClass="btn-primary" />
 
@@ -81,7 +81,7 @@
 				
 					<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
 						<p:dataTable id="venda" var="vendas"  scrollable="true"
-							value="#{beanTrocadefeitoemGeral.listavenda}" resizableColumns="true">
+							value="#{beanTrocaDefeitoemGeral.listavenda}" resizableColumns="true">
 
 							<f:facet name="header">
 								<p:commandButton id="toggler" type="button" value="Colunas"
@@ -117,9 +117,9 @@
 							<p:column  headerText="#" >
 							
 							<p:commandButton icon="fa fa-eye"
-								action="#{beanTrocadefeitoemGeral.encaminha()}">
+								action="#{beanTrocaDefeitoemGeral.encaminha()}">
 								<f:setPropertyActionListener value="#{vendas}"
-									target="#{beanTrocadefeitoemGeral.vendasEmGeral}" />
+									target="#{beanTrocaDefeitoemGeral.vendasEmGeral}" />
 							</p:commandButton>
 							</p:column>
 							
@@ -127,7 +127,7 @@
 								<p:row>
 									<p:column colspan="4" style="text-align:right"
 										footerText="Total:" />
-									<p:column footerText="R$#{beanTrocadefeitoemGeral.valorTotal}" />
+									<p:column footerText="R$#{beanTrocaDefeitoemGeral.valorTotal}" />
 								</p:row>
 							</p:columnGroup>
 							
