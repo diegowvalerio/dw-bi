@@ -113,9 +113,9 @@ public class BeanTrocaNegocioemGeral implements Serializable {
 		if ((Date) session.getAttribute("data1") != null) {
 			this.data_grafico = (Date) session.getAttribute("data1");
 			this.data_grafico2 = (Date) session.getAttribute("data2");
-			listavenda = servico.trocadefeitoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
+			listavenda = servico.trocanegocioemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
 		} else {			
-			listavenda = servico.trocadefeitoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
+			listavenda = servico.trocanegocioemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
 		}
 
 		session.removeAttribute("data1");
@@ -141,7 +141,7 @@ public class BeanTrocaNegocioemGeral implements Serializable {
 			gestorfiltrado = gestor.getGestorid().toString();
 			gestorfiltrado2 = gestor.getGestorid().toString();
 		}
-		listavenda = servico.trocadefeitoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
+		listavenda = servico.trocanegocioemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
 	}
 
 	public Gestor getGestor() {
@@ -263,7 +263,7 @@ public class BeanTrocaNegocioemGeral implements Serializable {
 		session.setAttribute("data1", this.data_grafico);
 		session.setAttribute("data2", this.data_grafico2);
 
-		return "trocadefeitoemgeral-item";
+		return "trocanegocioemgeral-item";
 	}
 
 	/* dados vendaemgeral */
@@ -274,7 +274,7 @@ public class BeanTrocaNegocioemGeral implements Serializable {
 		session.setAttribute("data1", this.data_grafico);
 		session.setAttribute("data2", this.data_grafico2);
 
-		return "/pages/relatorios/vendaemgeral/trocadefeitoemgeral.xhtml";
+		return "/pages/relatorios/vendaemgeral/trocanegocioemgeral.xhtml";
 	}
 
 	/* pegar usuario conectado */
