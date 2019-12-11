@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import br.com.dwbidiretor.classe.AnaliseClientePedido;
+import br.com.dwbidiretor.classe.Cliente;
 import br.com.dwbidiretor.classe.ClientesNovos;
 import br.com.dwbidiretor.classe.Gestor;
 import br.com.dwbidiretor.classe.InvestimentoVendedor;
@@ -75,6 +77,8 @@ public interface DAOGenerico<E> {
 	
 	public List<Vendedor> consultavendedor();
 	
+	public List<Cliente> consultacliente(String palavra);
+	
 	public List<Gestor> consultagestor(String vendedor1, String vendedor2);
 	
 	public VendasEmGeralItem consultaitem(BigDecimal produto);
@@ -88,5 +92,7 @@ public interface DAOGenerico<E> {
 	public List<PedidoItem> pedidoitem(BigDecimal pedido);
 	
 	public List<Mapa> mapa(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2);
+	
+	public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, BigDecimal cliente, BigDecimal pedido);
 	
 }

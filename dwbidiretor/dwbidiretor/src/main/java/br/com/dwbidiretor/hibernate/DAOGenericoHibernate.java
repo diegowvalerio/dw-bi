@@ -27,6 +27,8 @@ import org.hibernate.sql.JoinType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import br.com.dwbidiretor.classe.AnaliseClientePedido;
+import br.com.dwbidiretor.classe.Cliente;
 import br.com.dwbidiretor.classe.ClientesNovos;
 import br.com.dwbidiretor.classe.Gestor;
 import br.com.dwbidiretor.classe.InvestimentoVendedor;
@@ -1763,6 +1765,38 @@ public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String ve
 		return list;
 	}
 	
+public List<Cliente> consultacliente(String palavra) {
+		List<Cliente> list = new ArrayList<>();
+
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+						" SELECT " 
+						+ " V.CADCFTVID cliente, " 
+						+ " v.NOME_CADCFTV nome_cliente, "
+						+ " v.CNPJCPF_CADCFTV cnpj_cpf "  
+						
+						+ " from cadcftv v "
+						//+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  " + usuarioconectado()
+						//+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+						+ " INNER JOIN CLIENTE V2 ON V2.CADCFTVID = V.CADCFTVID "						
+						+ " WHERE v.ATIVO_CADCFTV = 'SIM' AND v.FUNCAO_PRINCIPAL_CADCFTV = 'CLIENTE' "
+						+ " and (v.nome_cadcftv like '%"+palavra+"%' or v.cadcftvid like '%"+palavra+"%') "
+						+ " order by v.cadcftvid ");
+
+		List<Object[]> lista = query.getResultList();
+
+		for (Object[] row : lista) {
+			Cliente cliente = new Cliente();
+
+			cliente.setCodigocliente((BigDecimal) row[0]);
+			cliente.setNomecliente((String) row[1]);
+			cliente.setCpfcnpj((String) row[2]);
+			
+			
+			list.add(cliente);
+		}
+		return list;
+}
+	
 	public List<Gestor> consultagestor(String vendedor1, String vendedor2) {
 		List<Gestor> list = new ArrayList<>();
 
@@ -2012,6 +2046,99 @@ public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String ve
 			return list;
 		}
 	
+public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, BigDecimal cliente, BigDecimal pedido) {
+	List<AnaliseClientePedido> list = new ArrayList<>();
+	
+	SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+	String dataFormatada = formato.format(data1);
+	String dataFormatada2 = formato.format(data2);
+	
+	javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+			     " select "
+				+" c.CADCFTVID CLIENTE, "
+				+" c.NOME_CADCFTV, "
+				+" PEDIDO.PEDIDOVENDAID as PEDIDOINDIVIDUAL, "
+				+" PEDIDO.VLPEDIDO, "
+				+" PEDIDO.tipo_pedido, "
+				+" PEDIDO.FASE_ATUAL, "
+				+" PEDIDO.STATUS, "
+				+" PEDIDOS.PEDIDOVENDAID, "
+				+" PEDIDOS.VL_VENDA, "
+				+" PEDIDOS.VL_AMOSTRA, "
+				+" PEDIDOS.VL_AMOSTRAPAGA, "
+				+" PEDIDOS.VL_BONIFICACAO, "
+				+" PEDIDOS.VL_EXPOSITOR, "
+				+" PEDIDOS.VL_BRINDE, "
+				+" PEDIDOS.VL_TROCA, "
+				+" PEDIDOS.VL_NEGOCIACOESCOMERCIAIS, "
+				+" PEDIDOS.STATUS_PEDIDOVENDA "
+				+" from cadcftv c "
+				+" inner join cliente cl on cl.CADCFTVID = c.CADCFTVID "
+				+" LEFT JOIN( "
+				+" SELECT  "
+				+" P.CADCFTVID, "
+				+" P.PEDIDOVENDAID, "
+				+" P.VL_TOTALPROD_PEDIDOVENDA as VLPEDIDO, "
+				+" P.DT_PEDIDOVENDA , "
+				+" p.STATUS_PEDIDOVENDA as STATUS, "
+				+" t.desc_tipo_pedido as tipo_pedido, "
+				+" ro.DESC_ROTEIRO as fase_atual "
+				+" FROM PEDIDOVENDA P "
+				+" inner join roteiro ro on ro.ROTEIROID = p.roteiroid  "
+				+" inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid  "
+				+" WHERE p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+				+" )PEDIDO ON PEDIDO.CADCFTVID = C.CADCFTVID "
+				+" AND PEDIDO.PEDIDOVENDAID = " + pedido
+				+" LEFT JOIN( "
+				+" SELECT "
+				+" P.CADCFTVID, "
+				+" P.PEDIDOVENDAID, P.DT_PEDIDOVENDA AS DT,"
+				+" p.STATUS_PEDIDOVENDA, "
+				+" case when CF.tipooperacao_cfop = 'VENDA' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_venda,  "
+				+" case when p.tipopedidoid  = 4 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_amostra,  "
+				+" case when p.tipopedidoid  = 6 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_amostrapaga,  "
+				+" case when p.tipopedidoid  = 3 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_bonificacao,  "
+				+" case when p.tipopedidoid  = 5 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_expositor,  "
+				+" case when p.tipopedidoid  = 14 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_brinde,  "
+				+" case when p.tipopedidoid  = 2 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_troca,  "
+				+" case when p.tipopedidoid  = 13 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_negociacoescomerciais  "
+				+" FROM PEDIDOVENDA P INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+				+" WHERE p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+				+" AND P.PEDIDOVENDAID <> " + pedido
+				+" )PEDIDOS ON PEDIDOS.CADCFTVID = c.CADCFTVID "
+				+" AND PEDIDOS.DT BETWEEN ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
+				+" where c.FUNCAO_PRINCIPAL_CADCFTV = 'CLIENTE' "
+				+" AND C.CADCFTVID = " + cliente
+				+" ORDER BY PEDIDOS.PEDIDOVENDAID ");
+	List<Object[]> lista = query.getResultList();
+
+	for (Object[] row : lista) {
+		AnaliseClientePedido analiseClientePedido = new AnaliseClientePedido();
+		
+		analiseClientePedido.setCodigocliente((BigDecimal) row[0]);
+		analiseClientePedido.setNomecliente((String) row[1]);
+		analiseClientePedido.setPedidoindividual((BigDecimal) row[2] );
+		analiseClientePedido.setVlpedido((BigDecimal) row[3] );
+		analiseClientePedido.setTipopedido((String) row[4]);
+		analiseClientePedido.setFaseatual((String) row[5]);
+		analiseClientePedido.setStatus((String) row[6]);
+		
+		analiseClientePedido.setPedido((BigDecimal) row[7] );
+		analiseClientePedido.setVlvenda((BigDecimal) row[8] );
+		analiseClientePedido.setVlamostra((BigDecimal) row[9] );
+		analiseClientePedido.setVlamostrapaga((BigDecimal) row[10] );
+		analiseClientePedido.setVlbonificacao((BigDecimal) row[11] );
+		analiseClientePedido.setVlexpositor((BigDecimal) row[12] );
+		analiseClientePedido.setVlbrinde((BigDecimal) row[13] );
+		analiseClientePedido.setVltroca((BigDecimal) row[14] );
+		analiseClientePedido.setVlnegociacoescomerciais((BigDecimal) row[15] );
+		analiseClientePedido.setStatuspedido((String) row[16]);
+		
+		list.add(analiseClientePedido);
+	}
+	
+	return list;
+}
 	//pedidoitem seven e sige
 	public List<PedidoItem> pedidoitem(BigDecimal pedido) {
 		List<PedidoItem> list = new ArrayList<>();

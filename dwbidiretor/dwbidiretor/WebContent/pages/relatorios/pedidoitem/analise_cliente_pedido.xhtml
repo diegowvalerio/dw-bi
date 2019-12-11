@@ -1,0 +1,267 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Analise Pedido
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Analise Pedido" />
+
+		<h:form id="form">
+			<p:panelGrid columns="9"
+				columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+				layout="grid" styleClass="ui-fluid card" id="filtroscli">
+				
+				<p:outputLabel value="Cliente" for="cliente" />
+						<h:panelGroup>
+							<p:autoComplete id="cliente" 
+								value="#{beanAnaliseClientePedido.cliente}"
+								completeMethod="#{beanAnaliseClientePedido.completaCliente}" var="c"
+								itemLabel="#{c.nomecliente}" itemValue="#{c}" forceSelection="true"
+								converter="conversorCliente" />
+							<p:watermark value="Digite Nome ou Código" for="cliente"></p:watermark>
+						</h:panelGroup>
+					
+				<p:outputLabel value=" Data:  " for="data_grafico" />
+					<p:calendar locale="pt_BR" id="data_grafico"
+						value="#{beanAnaliseClientePedido.data_grafico}" pattern="dd/MM/yyyy"
+						mask="true" required="true" readonlyInput="true">
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico2" />
+					<p:calendar locale="pt_BR" id="data_grafico2"
+						value="#{beanAnaliseClientePedido.data_grafico2}" pattern="dd/MM/yyyy"
+						mask="true" required="true" readonlyInput="true">
+					</p:calendar>
+					
+					<p:outputLabel value=" Pedido:  " for="pedidofiltrado" />
+					<p:inputText id="pedidofiltrado"
+					value="#{beanAnaliseClientePedido.pedidofiltrado}" required="true" />
+
+				<p:commandButton action="#{beanAnaliseClientePedido.filtrar()}"
+					value="Filtrar" icon="fa fa-check"
+					update=":form:paineld :form:paineld2" styleClass="btn-primary" />
+
+			</p:panelGrid>
+			<div class="box box-primary">
+				<div style="overflow: scroll; width: 100%; overflow: auto">
+					<h:panelGrid columns="1" id="paineld2" style="width:100%" title="Acumulado">
+						
+            			<div class="box-body table-responsive no-padding">
+              			<p:dataTable id="acumulado" var="vendas" scrollable="true" 
+							value="#{beanAnaliseClientePedido.analiseClientePedido}" resizableColumns="true">
+						
+						<p:columnGroup type="header" >
+								<p:row>
+									<p:column colspan="5" headerText="Dados do Pedido" style="border: 1px solid"/>
+									<p:column colspan="8" headerText="Acumulado Seven" style="border: 1px solid"/>
+									<p:column colspan="5" headerText="Acumulado Sige" style="border: 1px solid"/>
+								</p:row>
+								<p:row>
+									<p:column colspan="1" headerText="Nº Pedido"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Vl Pedido"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Tipo"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Fase"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Status"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Venda"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Amostra" style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Amostra Paga"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Bonificação"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Expositor"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Brinde"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Troca"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Negociações"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Venda"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Amostra"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Bonificação"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Expositor"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Troca" style="border: 1px solid; text-align: Left"/>
+								</p:row>
+							</p:columnGroup>
+							<p:column style="border: 1px solid">
+								<h:outputText value="#{vendas.pedidoindividual}" ></h:outputText>
+							</p:column>
+							
+							<p:column  style="border: 1px solid">
+								<h:outputText value="#{vendas.vlpedido}" ><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+							
+							<p:column style="border: 1px solid">
+								<h:outputText value="#{vendas.tipopedido}"></h:outputText>
+							</p:column>
+							
+							<p:column style="border: 1px solid">
+								<h:outputText value="#{vendas.faseatual}" ></h:outputText>
+							</p:column>
+							
+							<p:column style="border: 1px solid">
+								<h:outputText value="#{vendas.status}" ></h:outputText>
+							</p:column>
+							
+							<p:column style="border: 1px solid">
+								<h:outputText value="#{vendas.acvlvenda}" ><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+							
+							<p:column  style="border: 1px solid">
+								<h:outputText value="#{vendas.acvlamostra}" ><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+							
+							<p:column style="border: 1px solid">
+								<h:outputText value="#{vendas.acvlamostrapaga}"><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+							
+							<p:column style="border: 1px solid">
+								<h:outputText value="#{vendas.acvlbonificacao}" ><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+							
+							<p:column  style="border: 1px solid">
+								<h:outputText value="#{vendas.acvlexpositor}" ><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+							
+							<p:column  style="border: 1px solid">
+								<h:outputText value="#{vendas.acvlbrinde}" ><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+							
+							<p:column style="border: 1px solid">
+								<h:outputText value="#{vendas.acvltroca}" ><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+							
+							<p:column  style="border: 1px solid">
+								<h:outputText value="#{vendas.acvlnegociacoescomerciais}" ><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+
+							<p:column style="border: 1px solid">
+								<h:outputText value="0.0"></h:outputText>
+							</p:column>
+							
+							<p:column style="border: 1px solid">
+								<h:outputText value="0.0" ></h:outputText>
+							</p:column>
+							
+							<p:column  style="border: 1px solid">
+								<h:outputText value="0.0" ></h:outputText>
+							</p:column>
+							
+							<p:column style="border: 1px solid">
+								<h:outputText value="0.0"></h:outputText>
+							</p:column>
+							
+							<p:column style="border: 1px solid">
+								<h:outputText value="0.0"></h:outputText>
+							</p:column>
+							
+						</p:dataTable>
+            		</div>            		
+					</h:panelGrid>
+					
+					<p:separator></p:separator>					
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right"
+						width="100%">
+						<p:dataTable id="venda" var="vendas" scrollable="true"
+							value="#{beanAnaliseClientePedido.listaAnaliseClientePedido}" resizableColumns="true">
+
+							<p:columnGroup type="header" id="group5" >
+								<p:row>
+									<p:column colspan="9" headerText="Histórico de Pedidos" style="border: 1px solid"/>
+																		
+								</p:row>
+								<p:row>
+									<p:column colspan="1" headerText="Código" style="border: 1px solid; text-align: Left"/>									
+									<p:column colspan="1" headerText="Venda"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Amostra" style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Amostra Paga"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Bonificação"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Expositor"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Brinde"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Troca"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Negociações"  style="border: 1px solid; text-align: Left"/>
+									
+								</p:row>
+							</p:columnGroup>
+							
+							
+							<p:column headerText="Cod." sortBy="#{vendas.pedido}">
+								<h:outputText value="#{vendas.pedido}" />
+							</p:column>
+
+							<p:column headerText="Qtde Venda Seven"
+								sortBy="#{vendas.vlvenda}">
+								<h:outputText value="#{vendas.vlvenda}"><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column headerText="Qtde Amostra Seven"
+								sortBy="#{vendas.vlamostra}">
+								<h:outputText value="#{vendas.vlamostra}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column headerText="Qtde Amostra Paga Seven"
+								sortBy="#{vendas.vlamostrapaga}">
+								<h:outputText value="#{vendas.vlamostrapaga}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column headerText="Qtde Bonificação Seven"
+								sortBy="#{vendas.vlbonificacao}">
+								<h:outputText value="#{vendas.vlbonificacao}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+														
+							<p:column headerText="Qtde Expositor Seven"
+								sortBy="#{vendas.vlexpositor}">
+								<h:outputText value="#{vendas.vlexpositor}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column headerText="Qtde Brinde Seven"
+								sortBy="#{vendas.vlbrinde}">
+								<h:outputText value="#{vendas.vlbrinde}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column headerText="Qtde Troca Seven"
+								sortBy="#{vendas.vltroca}">
+								<h:outputText value="#{vendas.vltroca}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column headerText="Qtde Negociações Seven"
+								sortBy="#{vendas.vlnegociacoescomerciais}">
+								<h:outputText value="#{vendas.vlnegociacoescomerciais}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>										
+
+						</p:dataTable>
+					</h:panelGrid>
+					<p:separator />
+					
+				</div>
+			</div>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
