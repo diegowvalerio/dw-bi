@@ -25,7 +25,7 @@
 	</ui:define>
 
 	<ui:define name="title">
-        Analise Pedido
+        Analise Cliente x Pedido
     </ui:define>
 
 	<ui:define name="description">
@@ -53,13 +53,13 @@
 				<p:outputLabel value=" Data:  " for="data_grafico" />
 					<p:calendar locale="pt_BR" id="data_grafico"
 						value="#{beanAnaliseClientePedido.data_grafico}" pattern="dd/MM/yyyy"
-						mask="true" required="true" readonlyInput="true">
+						mask="true" required="true" >
 					</p:calendar>
 
 					<p:outputLabel value=" Até:  " for="data_grafico2" />
 					<p:calendar locale="pt_BR" id="data_grafico2"
 						value="#{beanAnaliseClientePedido.data_grafico2}" pattern="dd/MM/yyyy"
-						mask="true" required="true" readonlyInput="true">
+						mask="true" required="true" >
 					</p:calendar>
 					
 					<p:outputLabel value=" Pedido:  " for="pedidofiltrado" />
@@ -82,8 +82,7 @@
 						<p:columnGroup type="header" >
 								<p:row>
 									<p:column colspan="5" headerText="Dados do Pedido" style="border: 1px solid"/>
-									<p:column colspan="8" headerText="Acumulado Seven" style="border: 1px solid"/>
-									<p:column colspan="5" headerText="Acumulado Sige" style="border: 1px solid"/>
+									<p:column colspan="8" headerText="Total" style="border: 1px solid"/>
 								</p:row>
 								<p:row>
 									<p:column colspan="1" headerText="Nº Pedido"  style="border: 1px solid; text-align: Left"/>
@@ -101,11 +100,6 @@
 									<p:column colspan="1" headerText="Troca"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Negociações"  style="border: 1px solid; text-align: Left"/>
 									
-									<p:column colspan="1" headerText="Venda"  style="border: 1px solid; text-align: Left"/>
-									<p:column colspan="1" headerText="Amostra"  style="border: 1px solid; text-align: Left"/>
-									<p:column colspan="1" headerText="Bonificação"  style="border: 1px solid; text-align: Left"/>
-									<p:column colspan="1" headerText="Expositor"  style="border: 1px solid; text-align: Left"/>
-									<p:column colspan="1" headerText="Troca" style="border: 1px solid; text-align: Left"/>
 								</p:row>
 							</p:columnGroup>
 							<p:column style="border: 1px solid">
@@ -159,26 +153,6 @@
 							<p:column  style="border: 1px solid">
 								<h:outputText value="#{vendas.acvlnegociacoescomerciais}" ><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
 							</p:column>
-
-							<p:column style="border: 1px solid">
-								<h:outputText value="0.0"></h:outputText>
-							</p:column>
-							
-							<p:column style="border: 1px solid">
-								<h:outputText value="0.0" ></h:outputText>
-							</p:column>
-							
-							<p:column  style="border: 1px solid">
-								<h:outputText value="0.0" ></h:outputText>
-							</p:column>
-							
-							<p:column style="border: 1px solid">
-								<h:outputText value="0.0"></h:outputText>
-							</p:column>
-							
-							<p:column style="border: 1px solid">
-								<h:outputText value="0.0"></h:outputText>
-							</p:column>
 							
 						</p:dataTable>
             		</div>            		
@@ -187,15 +161,17 @@
 					<p:separator></p:separator>					
 					<h:panelGrid columns="1" id="paineld" columnClasses="left,right"
 						width="100%">
-						<p:dataTable id="venda" var="vendas" scrollable="true"
+						<p:dataTable id="venda" var="vendas" scrollable="true" rowIndexVar="rowIndex"
 							value="#{beanAnaliseClientePedido.listaAnaliseClientePedido}" resizableColumns="true">
 
 							<p:columnGroup type="header" id="group5" >
 								<p:row>
-									<p:column colspan="9" headerText="Histórico de Pedidos" style="border: 1px solid"/>
+									<p:column colspan="11" headerText="Histórico de Pedidos" style="border: 1px solid"/>
 																		
 								</p:row>
 								<p:row>
+									<p:column width="3%" colspan="1" headerText="#" style="border: 1px solid; text-align: Left"/>
+								    <p:column colspan="1" headerText="Origem" style="border: 1px solid; text-align: Left"/>	
 									<p:column colspan="1" headerText="Código" style="border: 1px solid; text-align: Left"/>									
 									<p:column colspan="1" headerText="Venda"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Amostra" style="border: 1px solid; text-align: Left"/>
@@ -209,6 +185,11 @@
 								</p:row>
 							</p:columnGroup>
 							
+							<p:column headerText="#" width="3%">
+       						 <h:outputLabel value="#{rowIndex+1}" />
+   							</p:column>
+   							
+							<p:column ><h:outputText value="#{vendas.origem}" /></p:column>
 							
 							<p:column headerText="Cod." sortBy="#{vendas.pedido}">
 								<h:outputText value="#{vendas.pedido}" />

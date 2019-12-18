@@ -19,6 +19,7 @@ public class AnaliseClientePedido implements Serializable {
 	private String tipopedido;
 	private String faseatual;
 	private String status;
+	private String origem;
 	
 	private BigDecimal pedido;
 	private BigDecimal vlvenda;
@@ -48,6 +49,14 @@ public class AnaliseClientePedido implements Serializable {
 	
 	public AnaliseClientePedido() {
 		super();
+	}
+
+	public String getOrigem() {
+		return origem;
+	}
+
+	public void setOrigem(String origem) {
+		this.origem = origem;
 	}
 
 	public BigDecimal getAcvlvenda() {

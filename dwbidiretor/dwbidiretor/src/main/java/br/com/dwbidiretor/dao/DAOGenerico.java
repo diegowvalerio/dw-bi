@@ -93,6 +93,6 @@ public interface DAOGenerico<E> {
 	
 	public List<Mapa> mapa(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2);
 	
-	public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, BigDecimal cliente, BigDecimal pedido);
+	public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, BigDecimal cliente,String cnpj, BigDecimal pedido);
 	
 }

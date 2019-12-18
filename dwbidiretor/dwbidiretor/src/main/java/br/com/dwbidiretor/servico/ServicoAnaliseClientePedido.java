@@ -20,8 +20,8 @@ public class ServicoAnaliseClientePedido implements Serializable{
 	private DAOAnaliseClientePedido dao;
 	
 	
-	public List<AnaliseClientePedido> analiseClientePedidos(Date data1, Date data2, BigDecimal cliente ,BigDecimal pedido){
-		return dao.analiseclientepedido(data1, data2, cliente, pedido);
+	public List<AnaliseClientePedido> analiseClientePedidos(Date data1, Date data2, BigDecimal cliente ,String cnpj,BigDecimal pedido){
+		return dao.analiseclientepedido(data1, data2, cliente, cnpj, pedido);
 	}
 	
 }

@@ -2046,12 +2046,16 @@ public List<Cliente> consultacliente(String palavra) {
 			return list;
 		}
 	
-public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, BigDecimal cliente, BigDecimal pedido) {
+public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, BigDecimal cliente, String cnpj, BigDecimal pedido) {
 	List<AnaliseClientePedido> list = new ArrayList<>();
 	
 	SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 	String dataFormatada = formato.format(data1);
 	String dataFormatada2 = formato.format(data2);
+	
+	SimpleDateFormat formato2 = new SimpleDateFormat("yyyy-MM-dd");
+	String SdataFormatada = formato2.format(data1);
+	String SdataFormatada2 = formato2.format(data2);
 	
 	javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
 			     " select "
@@ -2063,15 +2067,15 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 				+" PEDIDO.FASE_ATUAL, "
 				+" PEDIDO.STATUS, "
 				+" PEDIDOS.PEDIDOVENDAID, "
-				+" PEDIDOS.VL_VENDA, "
-				+" PEDIDOS.VL_AMOSTRA, "
-				+" PEDIDOS.VL_AMOSTRAPAGA, "
-				+" PEDIDOS.VL_BONIFICACAO, "
-				+" PEDIDOS.VL_EXPOSITOR, "
-				+" PEDIDOS.VL_BRINDE, "
-				+" PEDIDOS.VL_TROCA, "
-				+" PEDIDOS.VL_NEGOCIACOESCOMERCIAIS, "
-				+" PEDIDOS.STATUS_PEDIDOVENDA "
+				+" NVL(PEDIDOS.VL_VENDA,0) VL_VENDA, "
+				+" NVL(PEDIDOS.VL_AMOSTRA,0) VL_AMOSTRA, "
+				+" NVL(PEDIDOS.VL_AMOSTRAPAGA,0) VL_AMOSTRAPAGA, "
+				+" NVL(PEDIDOS.VL_BONIFICACAO,0) VL_BONIFICACAO, "
+				+" NVL(PEDIDOS.VL_EXPOSITOR,0) VL_EXPOSITOR, "
+				+" NVL(PEDIDOS.VL_BRINDE,0) VL_BRINDE, "
+				+" NVL(PEDIDOS.VL_TROCA,0) VL_TROCA, "
+				+" NVL(PEDIDOS.VL_NEGOCIACOESCOMERCIAIS,0) VL_NEGOCIACOESCOMERCIAIS, "
+				+" PEDIDOS.STATUS_PEDIDOVENDA, c.cnpjcpf_cadcftv as cpfcnpj"
 				+" from cadcftv c "
 				+" inner join cliente cl on cl.CADCFTVID = c.CADCFTVID "
 				+" LEFT JOIN( "
@@ -2111,18 +2115,21 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 				+" AND C.CADCFTVID = " + cliente
 				+" ORDER BY PEDIDOS.PEDIDOVENDAID ");
 	List<Object[]> lista = query.getResultList();
-
+	if(lista.size()>0){
 	for (Object[] row : lista) {
+		
 		AnaliseClientePedido analiseClientePedido = new AnaliseClientePedido();
 		
 		analiseClientePedido.setCodigocliente((BigDecimal) row[0]);
 		analiseClientePedido.setNomecliente((String) row[1]);
+		
 		analiseClientePedido.setPedidoindividual((BigDecimal) row[2] );
 		analiseClientePedido.setVlpedido((BigDecimal) row[3] );
 		analiseClientePedido.setTipopedido((String) row[4]);
 		analiseClientePedido.setFaseatual((String) row[5]);
 		analiseClientePedido.setStatus((String) row[6]);
 		
+		analiseClientePedido.setOrigem("SEVEN");
 		analiseClientePedido.setPedido((BigDecimal) row[7] );
 		analiseClientePedido.setVlvenda((BigDecimal) row[8] );
 		analiseClientePedido.setVlamostra((BigDecimal) row[9] );
@@ -2135,7 +2142,57 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 		analiseClientePedido.setStatuspedido((String) row[16]);
 		
 		list.add(analiseClientePedido);
-	}
+	}}
+	
+	javax.persistence.Query querySige = (javax.persistence.Query) managerSige.createNativeQuery(
+			"select s.Cod_cli_for as cod_cliente, g.Nome_cadastro, s.Num_docto as pedido, "
+			+" case when p.Cod_tipo_mv = 510 then cast(s.Valor_liquido as money) else 0 end as sige_valor_venda,   "
+			+" case when p.Cod_tipo_mv = 516 then cast(s.Valor_liquido as money) else 0 end as sige_valor_amostra,   "
+			+" case when p.Cod_tipo_mv = 512 then cast(s.Valor_liquido as money) else 0 end as sige_valor_bonificacao,  " 
+			+" case when p.Cod_tipo_mv = 517 then cast(s.Valor_liquido as money) else 0 end as sige_valor_expositor,   "
+			+" case when p.Cod_tipo_mv = 515 then cast(s.Valor_liquido as money) else 0 end as sige_valor_troca  , 'Fechado' as Status "
+			+" from tbsaidas s left join tbsaidas p on p.Chave_fato = s.Chave_fato_orig_un  "
+			+" inner join tbCadastroGeral g on g.Cod_cadastro = s.Cod_cli_for "
+			+" left join tbTipoMvEstoque tp on tp.cod_tipo_mv = p.cod_tipo_mv  "
+			+" left join ( select max(s2.chave_fato) chave, s2.Chave_fato_orig_un from tbsaidas s2   "
+			+" group by s2.Chave_fato_orig_un) s22 on s22.Chave_fato_orig_un = s.Chave_fato  "
+			+" left join tbsaidas s2 on s2.Chave_fato_orig_un = s.Chave_fato and s2.Chave_fato = s22.chave  "
+			+" where s.Cod_tipo_mv in ('520','523','527')and p.Cod_tipo_mv in ('510','512','515','516','517')  "
+			+" and s.STATUS <> 'C'AND s.STATUS_CTB = 'S' and p.Status<>'C' "
+
+			+" and (s.Cod_cli_for = " + cliente + " or g.Cpf_Cgc = '" + cnpj + "') "
+			+" and p.Data_v1 between ' " + SdataFormatada + " ' and ' " + SdataFormatada2 + " ' ");
+	List<Object[]> listasige = querySige.getResultList();
+	if(listasige.size()>0){
+	for (Object[] rowsige : listasige) {
+		AnaliseClientePedido analiseClientePedido = new AnaliseClientePedido();
+		
+		int scliente = (Integer) rowsige[0];
+		int spedido = (Integer) rowsige[2];
+		
+		analiseClientePedido.setCodigocliente(new BigDecimal(scliente));
+		analiseClientePedido.setNomecliente((String) rowsige[1]);
+		
+		analiseClientePedido.setPedidoindividual(new BigDecimal(0));
+		analiseClientePedido.setVlpedido(new BigDecimal(0));
+		analiseClientePedido.setTipopedido("");
+		analiseClientePedido.setFaseatual("");
+		analiseClientePedido.setStatus("");
+		
+		analiseClientePedido.setOrigem("SIGE");
+		analiseClientePedido.setPedido(new BigDecimal(spedido));
+		analiseClientePedido.setVlvenda((BigDecimal) rowsige[3] );
+		analiseClientePedido.setVlamostra((BigDecimal) rowsige[4] );
+		analiseClientePedido.setVlamostrapaga(new BigDecimal(0) );
+		analiseClientePedido.setVlbonificacao((BigDecimal) rowsige[5] );
+		analiseClientePedido.setVlexpositor((BigDecimal) rowsige[6] );
+		analiseClientePedido.setVlbrinde(new BigDecimal(0) );
+		analiseClientePedido.setVltroca((BigDecimal) rowsige[7] );
+		analiseClientePedido.setVlnegociacoescomerciais(new BigDecimal(0) );
+		analiseClientePedido.setStatuspedido((String) rowsige[8]);
+		
+		list.add(analiseClientePedido);	
+	}}
 	
 	return list;
 }

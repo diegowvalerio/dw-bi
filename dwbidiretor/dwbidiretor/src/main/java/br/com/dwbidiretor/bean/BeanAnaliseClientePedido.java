@@ -50,7 +50,7 @@ public class BeanAnaliseClientePedido implements Serializable {
 			
 		}else{
 			BigDecimal p =  new BigDecimal(pedidofiltrado);
-			listaAnaliseClientePedido = servico.analiseClientePedidos(data_grafico, data_grafico2, cliente.getCodigocliente(), p);
+			listaAnaliseClientePedido = servico.analiseClientePedidos(data_grafico, data_grafico2, cliente.getCodigocliente(),cliente.getCpfcnpj(), p);
 			if(listaAnaliseClientePedido.size() > 0){
 			analiseClientePedido = listaAnaliseClientePedido.get(0);
 			float tvenda = 0; float tamosta =0; float tamostrapaga=0;
