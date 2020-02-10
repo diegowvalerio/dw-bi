@@ -54,6 +54,8 @@ public class BeanClientesNovos implements Serializable {
 	private String vendedorfiltrado2;
 	private String gestorfiltrado;
 	private String gestorfiltrado2;
+	private String clientefiltrado;
+	private String clientefiltrado2;
 
 	@PostConstruct
 	public void init() {
@@ -107,9 +109,9 @@ public class BeanClientesNovos implements Serializable {
 		if ((Date) session.getAttribute("data1") != null) {
 			data_grafico = (Date) session.getAttribute("data1");
 			data_grafico2 = (Date) session.getAttribute("data2");
-			lista = servico.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
+			lista = servico.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, clientefiltrado, clientefiltrado2);
 		} else {			
-			lista = servico.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
+			lista = servico.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, clientefiltrado, clientefiltrado2);
 		}
 
 		session.removeAttribute("data1");
@@ -137,7 +139,23 @@ public class BeanClientesNovos implements Serializable {
 			gestorfiltrado = gestor.getGestorid().toString();
 			gestorfiltrado2 = gestor.getGestorid().toString();
 		}
-		lista = servico.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
+		lista = servico.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, clientefiltrado, clientefiltrado2);
+	}
+
+	public String getClientefiltrado() {
+		return clientefiltrado;
+	}
+
+	public void setClientefiltrado(String clientefiltrado) {
+		this.clientefiltrado = clientefiltrado;
+	}
+
+	public String getClientefiltrado2() {
+		return clientefiltrado2;
+	}
+
+	public void setClientefiltrado2(String clientefiltrado2) {
+		this.clientefiltrado2 = clientefiltrado2;
 	}
 
 	public Gestor getGestor() {

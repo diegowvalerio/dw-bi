@@ -18,8 +18,12 @@ public class ServicoInvestimentoVendedor implements Serializable{
 	private DAOInvestimentoVendedor dao;
 	
 	
-	public List<InvestimentoVendedor> investimentovendedor(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2){
-		return dao.investimentovendedor(data1, data2, vendedor1,vendedor2, gestor1, gestor2);
+	public List<InvestimentoVendedor> investimentovendedor(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2){
+		return dao.investimentovendedor(data1, data2, vendedor1,vendedor2, gestor1, gestor2, cliente1,  cliente2);
+	}
+	
+	public List<InvestimentoVendedor> investimentovendedor_2(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2){
+		return dao.investimentovendedor_2(data1, data2, vendedor1,vendedor2, gestor1, gestor2, cliente1,  cliente2);
 	}
 	
 }

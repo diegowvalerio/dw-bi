@@ -37,7 +37,7 @@
 		<adm:breadcrumb title="Resumo" />
 		<h:form id="form">
 			<section class="content">
-				<p:panelGrid columns="9" id="filtros"
+				<p:panelGrid columns="8" id="filtros"
 					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 					layout="grid" styleClass="ui-fluid card">
 					<p:outputLabel value=" Data:  " for="data_grafico" />
@@ -70,6 +70,16 @@
 							itemValue="#{vendedor}" />
 							<p:ajax listener="#{beanResumo.filtragestor}" update=":form:gestor" />
 					</p:selectOneMenu>
+					
+					<p:outputLabel value="Cliente" for="cliente" />
+						<h:panelGroup>
+							<p:autoComplete id="cliente" 
+								value="#{beanResumo.cliente}"
+								completeMethod="#{beanResumo.completaCliente}" var="c"
+								itemLabel="#{c.nomecliente}" itemValue="#{c}" forceSelection="true"
+								converter="conversorCliente" />
+							<p:watermark value="Digite Nome ou Código" for="cliente"></p:watermark>
+						</h:panelGroup>
 
 					<p:commandButton action="#{beanResumo.filtrar()}" value="Filtrar"
 						icon="fa fa-check" update=":form" styleClass="btn-primary" />
@@ -371,13 +381,15 @@
 						<!-- /.info-box -->
 					</div>
 					
+					<p:separator />
+					
 					<div class="col-md-3 col-sm-6 col-xs-12">
 						<div class="info-box ">
 							<span class="info-box-icon bg-olive"><i
 								class="fa fa-paper-plane"></i></span>
 
 							<div class="info-box-content">
-								<span class="info-box-text">Investimento</span> <span
+								<span class="info-box-text">Investimento (TOTAL)</span> <span
 									class="info-box-number"><h:outputText
 										value="  R$ #{beanResumo.valorTotalSobFaturado}" /></span>
 
@@ -390,6 +402,32 @@
 										action="#{beanResumo.encaminha10()}"
 										styleClass="fa fa-arrow-circle-right small-box-footer"
 										value=" Sobre Faturado:  #{beanResumo.percentualSobFaturado} %" />
+								</span>
+							</div>
+							<!-- /.info-box-content -->
+						</div>
+						<!-- /.info-box -->
+					</div>
+					
+					<div class="col-md-3 col-sm-6 col-xs-12">
+						<div class="info-box ">
+							<span class="info-box-icon bg-olive"><i
+								class="fa fa-paper-plane"></i></span>
+
+							<div class="info-box-content">
+								<span class="info-box-text">Investimento (- TROCA DEFEITO)</span> <span
+									class="info-box-number"><h:outputText
+										value="  R$ #{beanResumo.valorTotalSobFaturado_2}" /></span>
+
+								<div class="progress">
+									<p:progressBar value="#{beanResumo.percentualSobFaturado_2}"
+										styleClass="animated" global="false" style="background-color:red"/>
+								</div>
+								
+								<span class="progress-description"> <h:commandLink
+										action="#{beanResumo.encaminha14()}"
+										styleClass="fa fa-arrow-circle-right small-box-footer"
+										value=" Sobre Faturado:  #{beanResumo.percentualSobFaturado_2} %" />
 								</span>
 							</div>
 							<!-- /.info-box-content -->

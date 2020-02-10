@@ -149,7 +149,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 	}
 	//venda por grupo e subgrupo
 	public List<VendaGrupoSubGrupoProdutoQuantidadeValor> vendaGrupoSubGrupoProdutoQuantidadeValor(Date data1,
-			Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
+			Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
 		List<VendaGrupoSubGrupoProdutoQuantidadeValor> list = new ArrayList<>();
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 		String dataFormatada = formato.format(data1);
@@ -170,6 +170,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " AND CF.tipooperacao_cfop = 'VENDA' "
 						+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
 						
+						
+						+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
 						+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 						+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 						
@@ -191,7 +193,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		return list;
 	}
 	//pedidos de venda
-	public List<VendasEmGeral> vendasemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
+	public List<VendasEmGeral> vendasemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
 		List<VendasEmGeral> list = new ArrayList<>();
 		
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -224,6 +226,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
 						+ " AND CF.tipooperacao_cfop = 'VENDA' "
 						+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
+						+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
 						+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 						+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 						+ " ORDER BY P.PEDIDOVENDAID  ");
@@ -337,7 +340,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 	}
 	
 	//pedidos de amostra
-	public List<VendasEmGeral> amostraemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
+	public List<VendasEmGeral> amostraemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
 			List<VendasEmGeral> list = new ArrayList<>();
 			
 			SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -371,6 +374,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 							+ " AND CF.tipooperacao_cfop <> 'VENDA' "
 							+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
 							+ " and p.TIPOPEDIDOID = 4 and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+							+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
 							+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 							+ " ORDER BY P.PEDIDOVENDAID  ");
 
@@ -484,7 +488,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		}
 		
 		//pedidos de amostra
-		public List<VendasEmGeral> amostrapagaemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
+		public List<VendasEmGeral> amostrapagaemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
 				List<VendasEmGeral> list = new ArrayList<>();
 				
 				SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -518,6 +522,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 								+ " AND CF.tipooperacao_cfop = 'VENDA' "
 								+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
 								+ " and p.TIPOPEDIDOID = 6 and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+								+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
 								+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 								+ " ORDER BY P.PEDIDOVENDAID  ");
 
@@ -632,7 +637,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 
 			
 	//pedidos de troca defeito
-	public List<VendasEmGeral> trocadefeitoemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
+	public List<VendasEmGeral> trocadefeitoemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
 			List<VendasEmGeral> list = new ArrayList<>();
 				
 				SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -666,6 +671,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 								+ " AND CF.tipooperacao_cfop <> 'VENDA' "
 								+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
 								+ " and p.TIPOPEDIDOID = 2 and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+								+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
 								+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 								+ " ORDER BY P.PEDIDOVENDAID  ");
 
@@ -779,7 +785,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			}
 
 			//pedidos de troca defeito
-			public List<VendasEmGeral> trocanegocioemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
+			public List<VendasEmGeral> trocanegocioemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
 					List<VendasEmGeral> list = new ArrayList<>();
 						
 						SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -812,6 +818,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 										+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
 										+ " AND CF.tipooperacao_cfop <> 'VENDA' "
 										+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
+										+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
 										+ " and p.TIPOPEDIDOID = 13 and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 										+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 										+ " ORDER BY P.PEDIDOVENDAID  ");
@@ -926,7 +933,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 }
 
 //pedidos de investimento vendedor
-public List<InvestimentoVendedor> investimentovendedor(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
+public List<InvestimentoVendedor> investimentovendedor(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
 	List<InvestimentoVendedor> list = new ArrayList<>();
 		
 	SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -1010,6 +1017,7 @@ public List<InvestimentoVendedor> investimentovendedor(Date data1, Date data2, S
 			+ " and liberado.DT_ROTEIRO_PEDIDO between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
 			+ " and p.TIPOPEDIDOID in (4,3,5,14,13,2) and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " '  "
 			+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " '  "
+			+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
 			+ " and tr.ORDEM_ROTEIRO > 3 "
 			+ " )investimento "
 
@@ -1030,6 +1038,7 @@ public List<InvestimentoVendedor> investimentovendedor(Date data1, Date data2, S
 			+ " and p.DT_FATURAMENTO_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada3 + " ' " 
 			+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " '  "
 			+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2  + " '  "
+			+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
 			+ " group by V.CADCFTVID ) fat on fat.vendedor = investimento.vendedor "
 			
 			+ " inner join ( "
@@ -1083,9 +1092,241 @@ public List<InvestimentoVendedor> investimentovendedor(Date data1, Date data2, S
 
 	return list;
 }
+//investimento vendedor modelo 2
+public List<InvestimentoVendedor> investimentovendedor_2(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
+	List<InvestimentoVendedor> list = new ArrayList<>();
+		
+	SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+	String dataFormatada3 = formato.format(data2);
+	
+	//ajuste de data para bater certo
+		Calendar cal = Calendar.getInstance(); 
+		cal.setTime(data2); 
+		cal.add(Calendar.DATE, 1);
+		data2 = cal.getTime();
+								
+	
+	String dataFormatada = formato.format(data1);
+	String dataFormatada2 = formato.format(data2);
+	
+
+	javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+			" select investimento.vendedor, "
+			+ " investimento.nome_vendedor, "
+			+ " geral.vlgeralfaturado, "
+			+ " NVL(fat.vlfaturado,0) as vlfaturado, "
+
+			+ " NVL(sum(investimento.amostra),0)+NVL(sum(investimento.bonificacao),0)+NVL(sum(investimento.expositor),0) + "
+			+ " NVL(sum(investimento.brinde),0)+NVL(sum(investimento.trocanegocio),0) as  totalinvestido, "
+
+			+ " NVL(((NVL(sum(investimento.amostra),0)+NVL(sum(investimento.bonificacao),0)+NVL(sum(investimento.expositor),0) + "
+			+ " NVL(sum(investimento.brinde),0)+NVL(sum(investimento.trocanegocio),0))/fat.vlfaturado)*100 ,0) as pcinvestidovendedor, "
+
+
+			+ " ((NVL(sum(investimento.amostra),0)+NVL(sum(investimento.bonificacao),0)+NVL(sum(investimento.expositor),0) + "
+			+ " NVL(sum(investimento.brinde),0)+NVL(sum(investimento.trocanegocio),0))/geral.vlgeralfaturado)*100 as pcinvestidogeral, "
+
+			+ " NVL(sum(investimento.amostra),0) as vlamostra, "
+			+ " (NVL(sum(investimento.amostra),0) / fat.vlfaturado )*100 as pcamostra, "
+
+			+ " NVL(sum(investimento.bonificacao),0) as vlbonificacao, "
+			+ " NVL((NVL(sum(investimento.bonificacao),0) / fat.vlfaturado )*100 ,0) as pcbonificacao, "
+
+			+ " NVL(sum(investimento.expositor),0) as vlexpositor, "
+			+ " NVL((NVL(sum(investimento.expositor),0) / fat.vlfaturado )*100 ,0) as pcexpositor, "
+
+			+ " NVL(sum(investimento.brinde),0) as vlbrinde, "
+			+ " NVL((NVL(sum(investimento.brinde),0) / fat.vlfaturado )*100 ,0) as pcbrinde, "
+
+			+ " NVL(sum(investimento.trocanegocio),0) as vltrocanegocio, "
+			+ " NVL((NVL(sum(investimento.trocanegocio),0) / fat.vlfaturado )*100 ,0) as pctrocanegocio "
+
+			+ " from( "
+			+ " select "
+			+ " v.cadcftvid as vendedor, "
+			+ " v.NOME_CADCFTV as nome_vendedor , "
+			+ " case when p.TIPOPEDIDOID = 4 then p.vl_totalprod_pedidovenda end as amostra,   "
+			+ " case when p.TIPOPEDIDOID = 3 then p.vl_totalprod_pedidovenda end as bonificacao,  "
+			+ " case when p.TIPOPEDIDOID = 5  then p.vl_totalprod_pedidovenda end as expositor,  "
+			+ " case when p.TIPOPEDIDOID = 14 then p.vl_totalprod_pedidovenda end as brinde,  "
+			+ " case when p.TIPOPEDIDOID = 13 then p.vl_totalprod_pedidovenda end as trocanegocio "
+			
+
+			+ " from pedidovenda p  "
+			+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID  "
+			+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID  "
+			+ " inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid  "
+			+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid  "
+			+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+			+ " inner join roteiro r on r.roteiroid = p.roteiroid  "
+			+ " inner join TIPO_PEDIDO_ROTEIRO tr on tr.ROTEIROID = r.ROTEIROID and tr.TIPOPEDIDOID = p.TIPOPEDIDOID "
+			+ " inner join ( "
+			+ " select max(rp.ROTEIROPEDIDOID) r,rp.pedidovendaid, min(trunc(rp.DT_ROTEIRO_PEDIDO)) as DT_ROTEIRO_PEDIDO from ROTEIRO_PEDIDO rp "
+			+ " inner join pedidovenda p on p.pedidovendaid = rp.pedidovendaid "
+			+ " inner join TIPO_PEDIDO_ROTEIRO tr on tr.ROTEIROID = rp.ROTEIROID and tr.TIPOPEDIDOID = p.TIPOPEDIDOID "
+			+ " where tr.ORDEM_ROTEIRO > 3 group by rp.pedidovendaid "
+			+ " ) liberado on liberado.pedidovendaid = p.pedidovendaid "
+
+			+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID  "
+			+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO')  "
+			+ " AND CF.tipooperacao_cfop <> 'VENDA'  "
+			
+			+ " and liberado.DT_ROTEIRO_PEDIDO between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
+			+ " and p.TIPOPEDIDOID in (4,3,5,14,13) and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " '  "
+			+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " '  "
+			+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
+			+ " and tr.ORDEM_ROTEIRO > 3 "
+			+ " )investimento "
+
+		
+			+ " left join ( "
+			+ "  select "
+			+ " sum(p.vl_totalprod_pedidovenda) as vlfaturado,  "
+			+ " V.CADCFTVID as vendedor "
+			+ " from pedidovenda p  "
+			+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID  "
+			+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID  "
+			+ " inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid  "
+			+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid  "
+			+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+			+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID  "
+			+ " where p.status_pedidovenda in ('FATURADO')  "
+			+ " AND CF.tipooperacao_cfop = 'VENDA'  "
+			+ " and p.DT_FATURAMENTO_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada3 + " ' " 
+			+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " '  "
+			+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2  + " '  "
+			+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
+			+ " group by V.CADCFTVID ) fat on fat.vendedor = investimento.vendedor "
+			
+			+ " inner join ( "
+			+ "  select "
+			+ " sum(p.vl_totalprod_pedidovenda) as vlgeralfaturado  "
+			+ " from pedidovenda p  "
+			+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID  "
+			+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID  "
+			+ " inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid  "
+			+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid  "
+			+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+			+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID  "
+			+ " where p.status_pedidovenda in ('FATURADO')  "
+			+ " AND CF.tipooperacao_cfop = 'VENDA'  "
+			+ " and p.DT_FATURAMENTO_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada3 + " ' " 
+			+ " ORDER BY P.NR_NOTA_PEDIDOVENDA )geral on geral.vlgeralfaturado is not null "
+
+			+ " group by  "
+			+ " geral.vlgeralfaturado, "
+			+ " fat.vlfaturado, "
+			+ " investimento.vendedor, "
+			+ " investimento.nome_vendedor ");
+
+	List<Object[]> lista = query.getResultList();
+								
+	for (Object[] row : lista) {
+		InvestimentoVendedor vendasEmGeral = new InvestimentoVendedor();
+		
+		vendasEmGeral.setVendedor((BigDecimal) row[0]);
+		vendasEmGeral.setNomevendedor((String) row[1] );
+		vendasEmGeral.setVlgeralfaturado((BigDecimal) row[2] );
+		vendasEmGeral.setVlvendedorfaturado((BigDecimal) row[3] );
+		vendasEmGeral.setVltotalinvestido((BigDecimal) row[4] );
+		vendasEmGeral.setPcinvestidovendedor((BigDecimal) row[5] );
+		vendasEmGeral.setPcinvestidogeral((BigDecimal) row[6] );
+		vendasEmGeral.setVlamostra((BigDecimal) row[7] );
+		vendasEmGeral.setPcamostra((BigDecimal) row[8] );
+		vendasEmGeral.setVlbonificacao((BigDecimal) row[9] );
+		vendasEmGeral.setPcbonificacao((BigDecimal) row[10] );
+		vendasEmGeral.setVlexpositor((BigDecimal) row[11] );
+		vendasEmGeral.setPcexpositor((BigDecimal) row[12] );
+		vendasEmGeral.setVlbrinde((BigDecimal) row[13] );
+		vendasEmGeral.setPcbrinde((BigDecimal) row[14] );
+		vendasEmGeral.setVltrocanegocio((BigDecimal) row[15] );
+		vendasEmGeral.setPctrocanegocio((BigDecimal) row[16] );
+									
+		list.add(vendasEmGeral);
+	}
+
+	return list;
+}
+//investimento modelo 2
+public List<VendasEmGeral> investimentoemgeral_2(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
+	List<VendasEmGeral> list = new ArrayList<>();
+	
+	//ajuste de data para bater certo
+	Calendar cal = Calendar.getInstance(); 
+	cal.setTime(data2); 
+	cal.add(Calendar.DATE, 1);
+	data2 = cal.getTime();
+	
+	SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+	String dataFormatada = formato.format(data1);
+	String dataFormatada2 = formato.format(data2);
+
+	javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+			// "SELECT * FROM("
+					" select " 
+					+ " CI.CADCFTVID AS CLIENTE, " 
+					+ " CI.NOME_CADCFTV AS NOME_CLIENTE, "
+					+ " p.pedidovendaid pedido, " 
+					+ " P.DT_PEDIDOVENDA AS DATAPEDIDO, "
+					+ " p.vl_totalprod_pedidovenda, " 
+					+ " pg.nome_formapagto as prazo, "
+					+ " t.desc_tipo_pedido as tipo_pedido, " 
+					+ " CF.tipooperacao_cfop, " 
+					+ " p.status_pedidovenda, "
+					+ " v.NOME_CADCFTV nome_vendedor, "
+					+ " liberado.DT_ROTEIRO_PEDIDO "
+					+ " from pedidovenda p "
+					+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
+					+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID "
+					+ " inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid "
+					+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid "
+					+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+					+ " inner join roteiro r on r.roteiroid = p.roteiroid "
+					+ " inner join TIPO_PEDIDO_ROTEIRO tr on tr.ROTEIROID = r.ROTEIROID and tr.TIPOPEDIDOID = p.TIPOPEDIDOID "
+					+ " inner join (select max(rp.ROTEIROPEDIDOID) r,rp.pedidovendaid, min(trunc(rp.DT_ROTEIRO_PEDIDO)) as DT_ROTEIRO_PEDIDO from ROTEIRO_PEDIDO rp "
+					+ " inner join pedidovenda p on p.pedidovendaid = rp.pedidovendaid "
+					+ " inner join TIPO_PEDIDO_ROTEIRO tr on tr.ROTEIROID = rp.ROTEIROID and tr.TIPOPEDIDOID = p.TIPOPEDIDOID "
+					+ " where tr.ORDEM_ROTEIRO >3 group by rp.pedidovendaid "
+					+ " ) liberado on liberado.pedidovendaid = p.pedidovendaid "
+					+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
+					+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+					+ " AND CF.tipooperacao_cfop <> 'VENDA' "
+					+ " and liberado.DT_ROTEIRO_PEDIDO between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
+					+ " and p.TIPOPEDIDOID in (4,3,5,14,13) and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+					+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+					+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
+					+ " and tr.ORDEM_ROTEIRO > 3 "
+					+ " ORDER BY P.PEDIDOVENDAID  ");
+
+	List<Object[]> lista = query.getResultList();
+	
+	
+
+	for (Object[] row : lista) {
+		VendasEmGeral vendasEmGeral = new VendasEmGeral();
+
+		vendasEmGeral.setCodigocliente((BigDecimal) row[0]);
+		vendasEmGeral.setNomecliente((String) row[1] );
+		vendasEmGeral.setPedido((BigDecimal) row[2] );
+		vendasEmGeral.setDatapedido((Date) row[3] );
+		vendasEmGeral.setValortotalpedido((BigDecimal) row[4] );
+		vendasEmGeral.setPrazo((String) row[5] );
+		vendasEmGeral.setTipopedido((String) row[6] );
+		vendasEmGeral.setTipooperacaocfop((String) row[7] );
+		vendasEmGeral.setStatuspedido((String) row[8] );
+		vendasEmGeral.setNomevendedor((String) row[9] );
+		vendasEmGeral.setDataliberadogestor((Date) row[10] );
+		
+		
+		
+		list.add(vendasEmGeral);
+	}
+
+	return list;
+}
 
 		//pedidos de bonifica��o
-public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
+public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
 					List<VendasEmGeral> list = new ArrayList<>();
 					
 					//ajuste de data para bater certo
@@ -1131,6 +1372,7 @@ public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String ve
 									+ " and liberado.DT_ROTEIRO_PEDIDO between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
 									+ " and p.TIPOPEDIDOID in (4,3,5,14,13,2) and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 									+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+									+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
 									+ " and tr.ORDEM_ROTEIRO > 3 "
 									+ " ORDER BY P.PEDIDOVENDAID  ");
 
@@ -1160,7 +1402,7 @@ public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String ve
 
 					return list;
 				}
-			
+
 		//detalhes do pedido de investimento
 		public List<VendasEmGeralItem> investimentoemgeralitem(BigDecimal pedido) {
 		List<VendasEmGeralItem> list = new ArrayList<>();
@@ -1218,7 +1460,7 @@ public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String ve
 
 									+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
 									+ " AND CF.tipooperacao_cfop <> 'VENDA' "
-									+ " and p.TIPOPEDIDOID in (4,3,5,14,2,13) and p.pedidovendaid = ' " + pedido + " ' " 
+									+ " and p.pedidovendaid = ' " + pedido + " ' " 
 									+ " and tr.ORDEM_ROTEIRO > 3 "
 									+ " ORDER BY P.PEDIDOVENDAID  ");
 					List<Object[]> lista2 = query2.getResultList();
@@ -1246,7 +1488,7 @@ public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String ve
 				}
 		
 	//pedidos de bonifica��o
-	public List<VendasEmGeral> bonificacaoemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
+	public List<VendasEmGeral> bonificacaoemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
 				List<VendasEmGeral> list = new ArrayList<>();
 				
 				SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -1281,6 +1523,7 @@ public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String ve
 								+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
 								+ " and p.TIPOPEDIDOID = 3 and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 								+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+								+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
 								+ " ORDER BY P.PEDIDOVENDAID  ");
 
 				List<Object[]> lista = query.getResultList();
@@ -1392,7 +1635,7 @@ public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String ve
 			}
 
 	//pedidos de amostra
-		public List<VendasEmGeral> expositoremgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
+		public List<VendasEmGeral> expositoremgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
 				List<VendasEmGeral> list = new ArrayList<>();
 				
 				SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -1427,6 +1670,7 @@ public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String ve
 								+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
 								+ " and p.TIPOPEDIDOID = 5 and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 								+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+								+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
 								+ " ORDER BY P.PEDIDOVENDAID  ");
 
 				List<Object[]> lista = query.getResultList();
@@ -1539,7 +1783,7 @@ public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String ve
 			}
 
 			//pedidos de amostra
-			public List<VendasEmGeral> brindeemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
+			public List<VendasEmGeral> brindeemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
 					List<VendasEmGeral> list = new ArrayList<>();
 					
 					SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -1574,6 +1818,7 @@ public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String ve
 									+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
 									+ " and p.TIPOPEDIDOID = 14 and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 									+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+									+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
 									+ " ORDER BY P.PEDIDOVENDAID  ");
 
 					List<Object[]> lista = query.getResultList();
@@ -1686,7 +1931,7 @@ public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String ve
 				}
 
 	//clientes cadastrados no periodo
-	public List<ClientesNovos> clientesnovos(Date data1,Date data2,String vendedor1, String vendedor2, String gestor1, String gestor2) {
+	public List<ClientesNovos> clientesnovos(Date data1,Date data2,String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
 		List<ClientesNovos> list = new ArrayList<>();
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 		String dataFormatada = formato.format(data1);
@@ -1978,7 +2223,7 @@ public List<Cliente> consultacliente(String palavra) {
 	}
 	
 	//FATURAMENTO de venda
-		public List<VendasEmGeral> faturamentoemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
+		public List<VendasEmGeral> faturamentoemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
 			List<VendasEmGeral> list = new ArrayList<>();
 			
 			SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -2014,6 +2259,7 @@ public List<Cliente> consultacliente(String palavra) {
 							+ " and p.DT_FATURAMENTO_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
 							+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 							+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+							+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
 							+ " ORDER BY P.NR_NOTA_PEDIDOVENDA  ");
 
 			List<Object[]> lista = query.getResultList();

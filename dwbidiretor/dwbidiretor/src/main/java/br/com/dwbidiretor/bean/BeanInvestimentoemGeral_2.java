@@ -32,7 +32,7 @@ import br.com.dwbidiretor.servico.ServicoVendedor;
 
 @Named
 @ViewScoped
-public class BeanFaturamentoemGeral implements Serializable {
+public class BeanInvestimentoemGeral_2 implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private VendasEmGeral vendasEmGeral = new VendasEmGeral();
@@ -51,7 +51,7 @@ public class BeanFaturamentoemGeral implements Serializable {
 	@Inject
 	private ServicoGestor servicogestor;
 	private List<Gestor> listagestor = new ArrayList<>();
-	
+
 	//filtro cliente
 	private Cliente cliente = new Cliente();
 	@Inject
@@ -143,9 +143,9 @@ public class BeanFaturamentoemGeral implements Serializable {
 		if ((Date) session.getAttribute("data1") != null) {
 			this.data_grafico = (Date) session.getAttribute("data1");
 			this.data_grafico2 = (Date) session.getAttribute("data2");
-			listavenda = servico.faturamentoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, clientefiltrado, clientefiltrado2);
+			listavenda = servico.investimentooemgeral_2(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, clientefiltrado, clientefiltrado2);
 		} else {			
-			listavenda = servico.faturamentoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, clientefiltrado, clientefiltrado2);
+			listavenda = servico.investimentooemgeral_2(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, clientefiltrado, clientefiltrado2);
 		}
 
 		session.removeAttribute("data1");
@@ -153,6 +153,7 @@ public class BeanFaturamentoemGeral implements Serializable {
 		session.removeAttribute("vendedor");
 		session.removeAttribute("gestor");
 		session.removeAttribute("cliente");
+
 	}
 	
 	public void filtrar(){
@@ -182,7 +183,7 @@ public class BeanFaturamentoemGeral implements Serializable {
 			clientefiltrado2 = cliente.getCodigocliente().toString();
 		}
 		
-		listavenda = servico.faturamentoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, clientefiltrado, clientefiltrado2);
+		listavenda = servico.investimentooemgeral_2(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, clientefiltrado, clientefiltrado2);
 	}
 	public List<Cliente> completaCliente(String nome) {
 		String n = nome.toUpperCase();
@@ -339,7 +340,7 @@ public class BeanFaturamentoemGeral implements Serializable {
 		session.setAttribute("data1", this.data_grafico);
 		session.setAttribute("data2", this.data_grafico2);
 
-		return "vendaemgeral-item";
+		return "investimentoemgeral-item";
 	}
 
 	/* dados vendaemgeral */
@@ -350,7 +351,7 @@ public class BeanFaturamentoemGeral implements Serializable {
 		session.setAttribute("data1", this.data_grafico);
 		session.setAttribute("data2", this.data_grafico2);
 
-		return "/pages/relatorios/vendaemgeral/vendaemgeral.xhtml";
+		return "/pages/relatorios/vendaemgeral/investimentoemgeral.xhtml";
 	}
 
 	/* pegar usuario conectado */

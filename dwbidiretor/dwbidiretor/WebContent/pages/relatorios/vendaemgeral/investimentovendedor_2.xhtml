@@ -1,0 +1,201 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Investimentos Vendedor
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Investimentos Vendedor" />
+
+		<h:form id="form">
+				<p:panelGrid columns="9" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
+
+					<p:outputLabel value=" Data:  " for="data_grafico" />
+					<p:calendar locale="pt_BR" id="data_grafico"
+						value="#{beanInvestimentoVendedor_2.data_grafico}" pattern="dd/MM/yyyy"
+						mask="true" required="true" readonlyInput="true">
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico2" />
+					<p:calendar locale="pt_BR" id="data_grafico2"
+						value="#{beanInvestimentoVendedor_2.data_grafico2}" pattern="dd/MM/yyyy"
+						mask="true" required="true" readonlyInput="true">
+					</p:calendar>
+					
+					<p:outputLabel value="Gestor:" for="gestor" />
+					<p:selectOneMenu id="gestor" value="#{beanInvestimentoVendedor_2.gestor}"
+						converter="conversorGestor">
+						<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
+						<f:selectItems value="#{beanInvestimentoVendedor_2.listagestor}" var="gestor"
+							itemLabel="#{gestor.nomegestor}"
+							itemValue="#{gestor}" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="Vendedor:" for="vendedor" />
+					<p:selectOneMenu id="vendedor"
+					value="#{beanInvestimentoVendedor_2.vendedor}"
+					converter="conversorVendedor">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanInvestimentoVendedor_2.listavendedor}"
+						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
+						itemValue="#{vendedor}" />
+						<p:ajax listener="#{beanInvestimentoVendedor_2.filtragestor}" update=":form:gestor" />
+					</p:selectOneMenu>
+
+					<p:commandButton action="#{beanInvestimentoVendedor_2.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld"
+						styleClass="btn-primary" />
+
+				</p:panelGrid>
+			<div class="box box-primary" >
+				<div style="overflow:scroll;width:100%;overflow:auto">
+				
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
+						<p:dataTable id="venda" var="vendas" 
+							value="#{beanInvestimentoVendedor_2.listainvestimentovendedor}" resizableColumns="true">
+
+							<f:facet name="header">
+								<p:commandButton id="toggler" type="button" value="Colunas"
+									icon="fa fa-bars" />
+								<p:columnToggler datasource="venda" trigger="toggler" />
+							</f:facet>
+							
+							<p:column headerText="Vendedor" sortBy="#{vendas.nomevendedor}">
+								<h:outputText value="#{vendas.nomevendedor}" />
+							</p:column>
+							
+							
+							<p:column  headerText="% Faturado Geral" sortBy="#{vendas.pcinvestidogeral}" >
+								<h:outputText value="#{vendas.pcinvestidogeral}" 
+								style="font-weight:bold">
+									<f:convertNumber type="currency" currencySymbol="%" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Total Investido"
+								sortBy="#{vendas.vltotalinvestido}">
+								<h:outputText value="#{vendas.vltotalinvestido}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Faturado Vendedor"
+								sortBy="#{vendas.vlvendedorfaturado}">
+								<h:outputText value="#{vendas.vlvendedorfaturado}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column  headerText="% Faturado Vendedor" sortBy="#{vendas.pcinvestidovendedor}" >
+								<h:outputText value="#{vendas.pcinvestidovendedor}" 
+								style="font-weight:bold">
+									<f:convertNumber type="currency" currencySymbol="%" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Amostra"
+								sortBy="#{vendas.vlamostra}">
+								<h:outputText value="#{vendas.vlamostra}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+								<br></br>
+								<h:outputText value="#{vendas.pcamostra}" 
+								style="font-weight:bold">
+									<f:convertNumber type="currency" currencySymbol="%" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Bonificação"
+								sortBy="#{vendas.vlbonificacao}">
+								<h:outputText value="#{vendas.vlbonificacao}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+								<br></br>
+								<h:outputText value="#{vendas.pcbonificacao}" 
+								style="font-weight:bold">
+									<f:convertNumber type="currency" currencySymbol="%" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Expositor"
+								sortBy="#{vendas.vlexpositor}">
+								<h:outputText value="#{vendas.vlexpositor}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+								<br></br>
+								<h:outputText value="#{vendas.pcexpositor}" 
+								style="font-weight:bold">
+									<f:convertNumber type="currency" currencySymbol="%" />
+								</h:outputText>
+							</p:column>
+														
+							<p:column headerText="Troca Negocios"
+								sortBy="#{vendas.vltrocanegocio}">
+								<h:outputText value="#{vendas.vltrocanegocio}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+								<br></br>
+								<h:outputText value="#{vendas.pctrocanegocio}" 
+								style="font-weight:bold">
+									<f:convertNumber type="currency" currencySymbol="%" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Brindes"
+								sortBy="#{vendas.vlbrinde}">
+								<h:outputText value="#{vendas.vlbrinde}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+								<br></br>
+								<h:outputText value="#{vendas.pcbrinde}" 
+								style="font-weight:bold">
+									<f:convertNumber type="currency" currencySymbol="%" />
+								</h:outputText>
+							</p:column>
+							
+							<p:columnGroup type="footer">
+								<p:row>
+									<p:column colspan="2" style="text-align:right"
+										footerText="Total Investido:" />
+									<p:column footerText="R$#{beanInvestimentoVendedor_2.valorTotalInvestido}" />
+								</p:row>
+							</p:columnGroup>
+							
+						</p:dataTable>
+					</h:panelGrid>
+					</div>
+				</div>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
