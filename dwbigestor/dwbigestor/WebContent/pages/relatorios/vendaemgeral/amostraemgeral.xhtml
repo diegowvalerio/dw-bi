@@ -36,7 +36,7 @@
 		<adm:breadcrumb title="Amostras em Geral" />
 
 		<h:form id="form">
-				<p:panelGrid columns="7" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+				<p:panelGrid columns="6" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
                              layout="grid" styleClass="ui-fluid card" id="filtroscli">
 
 					<p:outputLabel value=" Data:  " for="data_grafico" />
@@ -60,6 +60,16 @@
 						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
 						itemValue="#{vendedor}" />
 					</p:selectOneMenu>
+					
+					<p:outputLabel value="Cliente" for="cliente" />
+						<h:panelGroup>
+							<p:autoComplete id="cliente" 
+								value="#{beanAmostraemGeral.cliente}"
+								completeMethod="#{beanAmostraemGeral.completaCliente}" var="c"
+								itemLabel="#{c.nomecliente}" itemValue="#{c}" forceSelection="true"
+								converter="conversorCliente" />
+							<p:watermark value="Digite Nome ou Código" for="cliente"></p:watermark>
+						</h:panelGroup>
 
 					<p:commandButton action="#{beanAmostraemGeral.filtrar()}"
 						value="Filtrar" icon="fa fa-check" update=":form:paineld"

@@ -36,7 +36,7 @@
 		<adm:breadcrumb title="Investimentos em Geral" />
 
 		<h:form id="form">
-				<p:panelGrid columns="9" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+				<p:panelGrid columns="8" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
                              layout="grid" styleClass="ui-fluid card" id="filtroscli">
 
 					<p:outputLabel value=" Data:  " for="data_grafico" />
@@ -70,6 +70,16 @@
 						itemValue="#{vendedor}" />
 						<p:ajax listener="#{beanInvestimentoemGeral_2.filtragestor}" update=":form:gestor" />
 					</p:selectOneMenu>
+					
+					<p:outputLabel value="Cliente" for="cliente" />
+						<h:panelGroup>
+							<p:autoComplete id="cliente" 
+								value="#{beanInvestimentoemGeral_2.cliente}"
+								completeMethod="#{beanInvestimentoemGeral_2.completaCliente}" var="c"
+								itemLabel="#{c.nomecliente}" itemValue="#{c}" forceSelection="true"
+								converter="conversorCliente" />
+							<p:watermark value="Digite Nome ou Código" for="cliente"></p:watermark>
+						</h:panelGroup>
 
 					<p:commandButton action="#{beanInvestimentoemGeral_2.filtrar()}"
 						value="Filtrar" icon="fa fa-check" update=":form:paineld"

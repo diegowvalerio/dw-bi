@@ -1,7 +1,6 @@
 package br.com.dwbigestor.servico;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;

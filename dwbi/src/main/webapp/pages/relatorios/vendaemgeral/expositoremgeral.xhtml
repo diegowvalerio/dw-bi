@@ -36,20 +36,30 @@
 		<adm:breadcrumb title="Expositores em Geral" />
 
 		<h:form id="form">
-				<p:panelGrid columns="5" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+				<p:panelGrid columns="4" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
                              layout="grid" styleClass="ui-fluid card" id="filtroscli">
 
 					<p:outputLabel value=" Data:  " for="data_grafico" />
 					<p:calendar locale="pt_BR" id="data_grafico"
 						value="#{beanExpositoremGeral.data_grafico}" pattern="dd/MM/yyyy"
-						mask="true" required="true" readonlyInput="true">
+						mask="true" required="true" >
 					</p:calendar>
 
 					<p:outputLabel value=" Até:  " for="data_grafico2" />
 					<p:calendar locale="pt_BR" id="data_grafico2"
 						value="#{beanExpositoremGeral.data_grafico2}" pattern="dd/MM/yyyy"
-						mask="true" required="true" readonlyInput="true">
+						mask="true" required="true" >
 					</p:calendar>
+					
+					<p:outputLabel value="Cliente" for="cliente" />
+						<h:panelGroup>
+							<p:autoComplete id="cliente" 
+								value="#{beanExpositoremGeral.cliente}"
+								completeMethod="#{beanExpositoremGeral.completaCliente}" var="c"
+								itemLabel="#{c.nomecliente}" itemValue="#{c}" forceSelection="true"
+								converter="conversorCliente" />
+							<p:watermark value="Digite Nome ou Código" for="cliente"></p:watermark>
+						</h:panelGroup>
 
 					<p:commandButton action="#{beanExpositoremGeral.filtrar()}"
 						value="Filtrar" icon="fa fa-check" update=":form:paineld"

@@ -20,6 +20,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import br.com.dwbigestor.classe.Cliente;
+import br.com.dwbigestor.servico.ServicoCliente;
 import br.com.dwbigestor.classe.VendasEmGeral;
 import br.com.dwbigestor.classe.VendasEmGeralItem;
 import br.com.dwbigestor.classe.Vendedor;
@@ -41,6 +43,12 @@ public class BeanAmostraemGeral implements Serializable {
 	private ServicoVendedor servicovendedor;
 	private List<Vendedor> listavendedor = new ArrayList<>();
 	private Vendedor vendedor = new Vendedor();
+	
+	//filtro cliente
+	private Cliente cliente = new Cliente();
+	@Inject
+	private ServicoCliente servicocliente;
+	private List<Cliente> listacliente = new ArrayList<>();
 
 	private String vendedorlogado;
 
@@ -49,6 +57,8 @@ public class BeanAmostraemGeral implements Serializable {
 	
 	private String vendedorfiltrado;
 	private String vendedorfiltrado2;
+	private String clientefiltrado;
+	private String clientefiltrado2;
 
 	@PostConstruct
 	public void init() {
@@ -75,17 +85,40 @@ public class BeanAmostraemGeral implements Serializable {
 			vendedorfiltrado = vendedor.getCodigovendedor().toString();
 			vendedorfiltrado2 = vendedor.getCodigovendedor().toString();
 		}
+		
+		//verifica filtro cliente
+		if (session.getAttribute("cliente") != null){
+			cliente = (Cliente) session.getAttribute("cliente");
+			if (cliente == null){
+				clientefiltrado = "0";
+				clientefiltrado2 = "999999";
+				
+			}else{
+				clientefiltrado = cliente.getCodigocliente().toString();
+				clientefiltrado2 = cliente.getCodigocliente().toString();
+			}
+		}
+		if (cliente.getCodigocliente() == null){
+			clientefiltrado = "0";
+			clientefiltrado2 = "999999";
+			
+		}else{
+			clientefiltrado = cliente.getCodigocliente().toString();
+			clientefiltrado2 = cliente.getCodigocliente().toString();
+		}//fim filtro cliente	
+		
 		if ((Date) session.getAttribute("data1") != null) {
 			this.data_grafico = (Date) session.getAttribute("data1");
 			this.data_grafico2 = (Date) session.getAttribute("data2");
-			listavenda = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+			listavenda = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 		} else {			
-			listavenda = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+			listavenda = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 		}
 
 		session.removeAttribute("data1");
 		session.removeAttribute("data2");
 		session.removeAttribute("vendedor");
+		session.removeAttribute("cliente");
 
 	}
 	
@@ -98,9 +131,54 @@ public class BeanAmostraemGeral implements Serializable {
 			vendedorfiltrado = vendedor.getCodigovendedor().toString();
 			vendedorfiltrado2 = vendedor.getCodigovendedor().toString();
 		}
-		listavenda = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+		
+		if (cliente == null){
+			clientefiltrado = "0";
+			clientefiltrado2 = "999999";
+			
+		}else{
+			clientefiltrado = cliente.getCodigocliente().toString();
+			clientefiltrado2 = cliente.getCodigocliente().toString();
+		}
+		
+		listavenda = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+	}
+	public List<Cliente> completaCliente(String nome) {
+		String n = nome.toUpperCase();
+		return servicocliente.consultacliente(n);
+	}
+	
+	public Cliente getCliente() {
+		return cliente;
 	}
 
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	public List<Cliente> getListacliente() {
+		return listacliente;
+	}
+
+	public void setListacliente(List<Cliente> listacliente) {
+		this.listacliente = listacliente;
+	}
+
+	public String getClientefiltrado() {
+		return clientefiltrado;
+	}
+
+	public void setClientefiltrado(String clientefiltrado) {
+		this.clientefiltrado = clientefiltrado;
+	}
+
+	public String getClientefiltrado2() {
+		return clientefiltrado2;
+	}
+
+	public void setClientefiltrado2(String clientefiltrado2) {
+		this.clientefiltrado2 = clientefiltrado2;
+	}
 	public List<Vendedor> getListavendedor() {
 		return listavendedor;
 	}
@@ -195,7 +273,7 @@ public class BeanAmostraemGeral implements Serializable {
 	public String encaminha2() {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
-		// session.setAttribute("vendaGeral", this.vendasEmGeral);
+		session.setAttribute("cliente", this.cliente);
 		session.setAttribute("data1", this.data_grafico);
 		session.setAttribute("data2", this.data_grafico2);
 

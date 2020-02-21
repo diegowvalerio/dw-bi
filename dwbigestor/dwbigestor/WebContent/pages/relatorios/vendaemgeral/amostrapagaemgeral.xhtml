@@ -1,0 +1,142 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Amostras Pagas em Geral
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Amostras Pagas em Geral" />
+
+		<h:form id="form">
+				<p:panelGrid columns="6" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
+
+					<p:outputLabel value=" Data:  " for="data_grafico" />
+					<p:calendar locale="pt_BR" id="data_grafico"
+						value="#{beanAmostraPagaemGeral.data_grafico}" pattern="dd/MM/yyyy"
+						mask="true" required="true" readonlyInput="true">
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico2" />
+					<p:calendar locale="pt_BR" id="data_grafico2"
+						value="#{beanAmostraPagaemGeral.data_grafico2}" pattern="dd/MM/yyyy"
+						mask="true" required="true" readonlyInput="true">
+					</p:calendar>
+					
+					<p:outputLabel value="Vendedor:" for="vendedor" />
+					<p:selectOneMenu id="vendedor"
+					value="#{beanAmostraPagaemGeral.vendedor}"
+					converter="conversorVendedor">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanAmostraPagaemGeral.listavendedor}"
+						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
+						itemValue="#{vendedor}" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="Cliente" for="cliente" />
+						<h:panelGroup>
+							<p:autoComplete id="cliente" 
+								value="#{beanAmostraPagaemGeral.cliente}"
+								completeMethod="#{beanAmostraPagaemGeral.completaCliente}" var="c"
+								itemLabel="#{c.nomecliente}" itemValue="#{c}" forceSelection="true"
+								converter="conversorCliente" />
+							<p:watermark value="Digite Nome ou Código" for="cliente"></p:watermark>
+						</h:panelGroup>
+
+					<p:commandButton action="#{beanAmostraPagaemGeral.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld"
+						styleClass="btn-primary" />
+
+				</p:panelGrid>
+			<div class="box box-primary" >
+				<div style="overflow:scroll;width:100%;overflow:auto">
+				
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
+						<p:dataTable id="venda" var="vendas"  scrollable="true"
+							value="#{beanAmostraPagaemGeral.listavenda}" resizableColumns="true">
+
+							<f:facet name="header">
+								<p:commandButton id="toggler" type="button" value="Colunas"
+									icon="fa fa-bars" />
+								<p:columnToggler datasource="venda" trigger="toggler" />
+							</f:facet>
+							
+							<p:column headerText="Vendedor" sortBy="#{vendas.nomevendedor}">
+								<h:outputText value="#{vendas.nomevendedor}" />
+							</p:column>
+							
+							<p:column headerText="Cliente" sortBy="#{vendas.nomecliente}">
+								<h:outputText value="#{vendas.nomecliente}" />
+							</p:column>
+
+							<p:column  headerText="Amostra Paga" sortBy="#{vendas.pedido}">
+								<h:outputText value="#{vendas.pedido}" />
+							</p:column>
+
+							<p:column  headerText="Data Amostra Paga" sortBy="#{vendas.datapedido}">
+								<h:outputText value="#{vendas.datapedido}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Vlr Total Amostra Paga"
+								sortBy="#{vendas.valortotalpedido}">
+								<h:outputText value="#{vendas.valortotalpedido}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column  headerText="#" >
+							
+							<p:commandButton icon="fa fa-eye"
+								action="#{beanAmostraPagaemGeral.encaminha()}">
+								<f:setPropertyActionListener value="#{vendas}"
+									target="#{beanAmostraPagaemGeral.vendasEmGeral}" />
+							</p:commandButton>
+							</p:column>
+							
+							<p:columnGroup type="footer">
+								<p:row>
+									<p:column colspan="4" style="text-align:right"
+										footerText="Total:" />
+									<p:column footerText="R$#{beanAmostraPagaemGeral.valorTotal}" />
+								</p:row>
+							</p:columnGroup>
+							
+						</p:dataTable>
+					</h:panelGrid>
+					</div>
+				</div>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

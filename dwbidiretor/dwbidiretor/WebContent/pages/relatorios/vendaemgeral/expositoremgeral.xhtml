@@ -70,6 +70,16 @@
 						itemValue="#{vendedor}" />
 						<p:ajax listener="#{beanExpositoremGeral.filtragestor}" update=":form:gestor" />
 					</p:selectOneMenu>
+					
+					<p:outputLabel value="Cliente" for="cliente" />
+						<h:panelGroup>
+							<p:autoComplete id="cliente" 
+								value="#{beanExpositoremGeral.cliente}"
+								completeMethod="#{beanExpositoremGeral.completaCliente}" var="c"
+								itemLabel="#{c.nomecliente}" itemValue="#{c}" forceSelection="true"
+								converter="conversorCliente" />
+							<p:watermark value="Digite Nome ou Código" for="cliente"></p:watermark>
+						</h:panelGroup>
 
 					<p:commandButton action="#{beanExpositoremGeral.filtrar()}"
 						value="Filtrar" icon="fa fa-check" update=":form:paineld"

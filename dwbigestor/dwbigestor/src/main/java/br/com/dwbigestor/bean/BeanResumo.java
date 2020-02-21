@@ -27,12 +27,14 @@ import org.primefaces.model.chart.ChartSeries;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import br.com.dwbigestor.classe.Cliente;
 import br.com.dwbigestor.classe.ClientesNovos;
 import br.com.dwbigestor.classe.MetaVenda;
 import br.com.dwbigestor.classe.VendaAnoMes;
 import br.com.dwbigestor.classe.VendasEmGeral;
 import br.com.dwbigestor.classe.VendasEmGeralItem;
 import br.com.dwbigestor.classe.Vendedor;
+import br.com.dwbigestor.servico.ServicoCliente;
 import br.com.dwbigestor.servico.ServicoClientesNovos;
 import br.com.dwbigestor.servico.ServicoMetaVenda;
 import br.com.dwbigestor.servico.ServicoVendasemGeral;
@@ -50,16 +52,27 @@ public class BeanResumo implements Serializable {
 	private List<VendasEmGeral> listaamostra = new ArrayList<>();
 	private List<VendasEmGeral> listabonificacao = new ArrayList<>();
 	private List<VendasEmGeral> listaexpositor = new ArrayList<>();
+	private List<VendasEmGeral> listabrinde = new ArrayList<>();
+	private List<VendasEmGeral> listaamostrapaga = new ArrayList<>();
+	private List<VendasEmGeral> listatrocadefeito = new ArrayList<>();
+	private List<VendasEmGeral> listatrocanegocio = new ArrayList<>();
 	
 	private ClientesNovos clientesNovos = new ClientesNovos();
 	@Inject
 	private ServicoClientesNovos servicoclientes;
 	private List<ClientesNovos> listaclientes = new ArrayList<>();
 	
+	
 	private Vendedor vendedor = new Vendedor();
 	@Inject
 	private ServicoVendedor servicovendedor;
 	private List<Vendedor> listavendedor = new ArrayList<>();
+	
+	//filtro cliente
+	private Cliente cliente = new Cliente();
+	@Inject
+	private ServicoCliente servicocliente;
+	private List<Cliente> listacliente = new ArrayList<>();
 	
 	/*grafico metavenda*/
 	private BarChartModel graficometavenda;
@@ -75,6 +88,8 @@ public class BeanResumo implements Serializable {
 	
 	private String vendedorfiltrado;
 	private String vendedorfiltrado2;
+	private String clientefiltrado;
+	private String clientefiltrado2;
 
 	@PostConstruct
 	public void init() {
@@ -90,29 +105,44 @@ public class BeanResumo implements Serializable {
 		vendedorfiltrado = "0";
 		vendedorfiltrado2 = "999999";
 		
+		clientefiltrado = "0";
+		clientefiltrado2 = "999999";
+		
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
 				.getRequest();
 		HttpSession session = (HttpSession) request.getSession();
 		if ((Date) session.getAttribute("data1") != null) {
 			this.data_grafico = (Date) session.getAttribute("data1");
 			this.data_grafico2 = (Date) session.getAttribute("data2");
-			listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
-			listaamostra = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
-			listabonificacao = servico.bonificacaoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
-			listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+			listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+			listaamostra = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+			listabonificacao = servico.bonificacaoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+			listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+			listabrinde = servico.brindeemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2,clientefiltrado, clientefiltrado2);
+			
+			listaamostrapaga = servico.amostrapagaemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+			listatrocadefeito = servico.trocadefeitoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+			listatrocanegocio = servico.trocanegocioemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 			
 			listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 		} else {			
-			listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
-			listaamostra = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
-			listabonificacao = servico.bonificacaoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
-			listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+			listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+			listaamostra = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+			listabonificacao = servico.bonificacaoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+			listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+			listabrinde = servico.brindeemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2,clientefiltrado, clientefiltrado2);
+			
+			listaamostrapaga = servico.amostrapagaemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+			listatrocadefeito = servico.trocadefeitoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+			listatrocanegocio = servico.trocanegocioemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 			
 			listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 		}
 
 		session.removeAttribute("data1");
 		session.removeAttribute("data2");
+		session.removeAttribute("vendedor");
+		session.removeAttribute("cliente");
 		
 		/*gerar grafico*/
 		createAnimatedModels();
@@ -127,14 +157,97 @@ public class BeanResumo implements Serializable {
 			vendedorfiltrado = vendedor.getCodigovendedor().toString();
 			vendedorfiltrado2 = vendedor.getCodigovendedor().toString();
 		}
-		listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
-		listaamostra = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
-		listabonificacao = servico.bonificacaoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
-		listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
+		
+		if (cliente == null){
+			clientefiltrado = "0";
+			clientefiltrado2 = "999999";
+			
+		}else{
+			clientefiltrado = cliente.getCodigocliente().toString();
+			clientefiltrado2 = cliente.getCodigocliente().toString();
+		}
+		
+		listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+		listaamostra = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+		listabonificacao = servico.bonificacaoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+		listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+		listabrinde = servico.brindeemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2,clientefiltrado, clientefiltrado2);
+		
+		listaamostrapaga = servico.amostrapagaemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+		listatrocadefeito = servico.trocadefeitoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+		listatrocanegocio = servico.trocanegocioemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 		
 		listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2);
 		/*gerar grafico*/
 		createAnimatedModels();
+	}
+	public List<Cliente> completaCliente(String nome) {
+		String n = nome.toUpperCase();
+		return servicocliente.consultacliente(n);
+	}
+	
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	public List<Cliente> getListacliente() {
+		return listacliente;
+	}
+
+	public void setListacliente(List<Cliente> listacliente) {
+		this.listacliente = listacliente;
+	}
+
+	public String getClientefiltrado() {
+		return clientefiltrado;
+	}
+
+	public void setClientefiltrado(String clientefiltrado) {
+		this.clientefiltrado = clientefiltrado;
+	}
+
+	public String getClientefiltrado2() {
+		return clientefiltrado2;
+	}
+
+	public void setClientefiltrado2(String clientefiltrado2) {
+		this.clientefiltrado2 = clientefiltrado2;
+	}
+	
+	public List<VendasEmGeral> getListabrinde() {
+		return listabrinde;
+	}
+
+	public void setListabrinde(List<VendasEmGeral> listabrinde) {
+		this.listabrinde = listabrinde;
+	}
+
+	public List<VendasEmGeral> getListaamostrapaga() {
+		return listaamostrapaga;
+	}
+
+	public void setListaamostrapaga(List<VendasEmGeral> listaamostrapaga) {
+		this.listaamostrapaga = listaamostrapaga;
+	}
+
+	public List<VendasEmGeral> getListatrocadefeito() {
+		return listatrocadefeito;
+	}
+
+	public void setListatrocadefeito(List<VendasEmGeral> listatrocadefeito) {
+		this.listatrocadefeito = listatrocadefeito;
+	}
+
+	public List<VendasEmGeral> getListatrocanegocio() {
+		return listatrocanegocio;
+	}
+
+	public void setListatrocanegocio(List<VendasEmGeral> listatrocanegocio) {
+		this.listatrocanegocio = listatrocanegocio;
 	}
 
 	public BarChartModel getGraficometavenda() {
@@ -327,6 +440,50 @@ public class BeanResumo implements Serializable {
 
 		return "/pages/relatorios/vendaemgeral/expositoremgeral.xhtml";
 	}
+	
+	public String encaminha9() {
+		FacesContext fc = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
+		session.setAttribute("cliente", this.cliente);
+		session.setAttribute("vendedor", this.vendedor);
+		session.setAttribute("data1", this.data_grafico);
+		session.setAttribute("data2", this.data_grafico2);
+
+		return "/pages/relatorios/vendaemgeral/brindeemgeral.xhtml";
+	}
+	
+	public String encaminha11() {
+		FacesContext fc = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
+		session.setAttribute("cliente", this.cliente);
+		session.setAttribute("vendedor", this.vendedor);
+		session.setAttribute("data1", this.data_grafico);
+		session.setAttribute("data2", this.data_grafico2);
+
+		return "/pages/relatorios/vendaemgeral/trocadefeitoemgeral.xhtml";
+	}
+	
+	public String encaminha12() {
+		FacesContext fc = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
+		session.setAttribute("cliente", this.cliente);
+		session.setAttribute("vendedor", this.vendedor);
+		session.setAttribute("data1", this.data_grafico);
+		session.setAttribute("data2", this.data_grafico2);
+
+		return "/pages/relatorios/vendaemgeral/trocanegocioemgeral.xhtml";
+	}
+	
+	public String encaminha13() {
+		FacesContext fc = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
+		session.setAttribute("cliente", this.cliente);
+		session.setAttribute("vendedor", this.vendedor);
+		session.setAttribute("data1", this.data_grafico);
+		session.setAttribute("data2", this.data_grafico2);
+
+		return "/pages/relatorios/vendaemgeral/amostrapagaemgeral.xhtml";
+	}
 
 	/* pegar usuario conectado */
 	public String usuarioconectado() {
@@ -361,10 +518,49 @@ public class BeanResumo implements Serializable {
 		return new DecimalFormat("###,###.###").format(total);
 	}
 	
+	public String getValorTotalAmostraPaga() {
+		float total = 0;
+
+		for (VendasEmGeral venda : getListaamostrapaga()) {
+			total = total + venda.getValortotalpedido().floatValue();
+		}
+
+		return new DecimalFormat("###,###.###").format(total);
+	}
+	
+	public String getValorTotalTrocaDefeito() {
+		float total = 0;
+
+		for (VendasEmGeral venda : getListatrocadefeito()) {
+			total = total + venda.getValortotalpedido().floatValue();
+		}
+
+		return new DecimalFormat("###,###.###").format(total);
+	}
+	public String getValorTotalTrocaNegocio() {
+		float total = 0;
+
+		for (VendasEmGeral venda : getListatrocanegocio()) {
+			total = total + venda.getValortotalpedido().floatValue();
+		}
+
+		return new DecimalFormat("###,###.###").format(total);
+	}
+	
 	public String getValorTotalBonificacao() {
 		float total = 0;
 
 		for (VendasEmGeral venda : getListabonificacao()) {
+			total = total + venda.getValortotalpedido().floatValue();
+		}
+
+		return new DecimalFormat("###,###.###").format(total);
+	}
+	
+	public String getValorTotalBrinde() {
+		float total = 0;
+
+		for (VendasEmGeral venda : getListabrinde()) {
 			total = total + venda.getValortotalpedido().floatValue();
 		}
 
@@ -401,6 +597,34 @@ public class BeanResumo implements Serializable {
 
 		return total;
 	}
+	public int getAmostraPagadodia() {
+		int total = 0;
+
+		for (VendasEmGeral amostra : getListaamostrapaga()) {
+			total++;
+		}
+
+		return total;
+	}
+	public int getTrocaDefeitododia() {
+		int total = 0;
+
+		for (VendasEmGeral amostra : getListatrocadefeito()) {
+			total++;
+		}
+
+		return total;
+	}	
+	
+	public int getTrocaNegociododia() {
+		int total = 0;
+
+		for (VendasEmGeral amostra : getListatrocanegocio()) {
+			total++;
+		}
+
+		return total;
+	}
 	
 	public int getBonificacaododia() {
 		int total = 0;
@@ -416,6 +640,16 @@ public class BeanResumo implements Serializable {
 		int total = 0;
 
 		for (VendasEmGeral expositor : getListaexpositor()) {
+			total++;
+		}
+
+		return total;
+	}
+	
+	public int getBrindedodia() {
+		int total = 0;
+
+		for (VendasEmGeral expositor : getListabrinde()) {
 			total++;
 		}
 

@@ -18,19 +18,33 @@ public class ServicoVendasemGeral implements Serializable{
 	private DAOVendasemGeral dao;
 	
 	
-	public List<VendasEmGeral> vendasemgeral(Date data1, Date data2, String vendedor1, String vendedor2){
-		return dao.vendasemgeral(data1, data2, vendedor1,vendedor2);
+	public List<VendasEmGeral> vendasemgeral(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2){
+		return dao.vendasemgeral(data1, data2, vendedor1,vendedor2, cliente1, cliente2);
 	}
-	public List<VendasEmGeral> amostraemgeral(Date data1, Date data2, String vendedor1, String vendedor2){
-		return dao.amostraemgeral(data1, data2, vendedor1,vendedor2);
-	}
-	
-	public List<VendasEmGeral> bonificacaoemgeral(Date data1, Date data2, String vendedor1, String vendedor2){
-		return dao.bonificacaoemgeral(data1, data2, vendedor1,vendedor2);
+	public List<VendasEmGeral> amostraemgeral(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2){
+		return dao.amostraemgeral(data1, data2, vendedor1,vendedor2, cliente1, cliente2);
 	}
 	
-	public List<VendasEmGeral> expositoremgeral(Date data1, Date data2, String vendedor1, String vendedor2){
-		return dao.expositoremgeral(data1, data2, vendedor1,vendedor2);
+	public List<VendasEmGeral> bonificacaoemgeral(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2){
+		return dao.bonificacaoemgeral(data1, data2, vendedor1,vendedor2, cliente1, cliente2);
+	}
+	
+	public List<VendasEmGeral> expositoremgeral(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2){
+		return dao.expositoremgeral(data1, data2, vendedor1,vendedor2, cliente1, cliente2);
+	}
+	
+	public List<VendasEmGeral> brindeemgeral(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2){
+		return dao.brindeemgeral(data1, data2, vendedor1,vendedor2, cliente1,  cliente2);
+	}
+	public List<VendasEmGeral> trocadefeitoemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String cliente1, String cliente2){
+		return dao.trocadefeitoemgeral(data1, data2, vendedor1,vendedor2, cliente1,  cliente2);
+	}
+	public List<VendasEmGeral> trocanegocioemgeral(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2){
+		return dao.trocanegocioemgeral(data1, data2, vendedor1,vendedor2,  cliente1,  cliente2);
+	}
+	
+	public List<VendasEmGeral> amostrapagaemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String cliente1, String cliente2){
+		return dao.amostrapagaemgeral(data1, data2, vendedor1,vendedor2, cliente1,  cliente2);
 	}
 	
 }
