@@ -757,9 +757,12 @@ public class BeanResumo implements Serializable {
 		NumberFormat formatarFloat= new DecimalFormat("0.00");
 		formatarFloat.setMaximumFractionDigits(2);
 		
-		
 		atingido = (totalv / totalm)*100;
-		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+		if (totalm > 0){
+			return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+		}else{
+			return Float.parseFloat(formatarFloat.format(0).replace(",", "."));
+		}
 	}
 
 

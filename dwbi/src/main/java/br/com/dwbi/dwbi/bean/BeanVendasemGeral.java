@@ -67,6 +67,7 @@ public class BeanVendasemGeral implements Serializable {
 		vendedorfiltrado = "0";
 		vendedorfiltrado2 = "999999";
 		
+
 		//verifica filtro cliente
 		if (session.getAttribute("cliente") != null){
 			cliente = (Cliente) session.getAttribute("cliente");
@@ -78,14 +79,9 @@ public class BeanVendasemGeral implements Serializable {
 				clientefiltrado = cliente.getCodigocliente().toString();
 				clientefiltrado2 = cliente.getCodigocliente().toString();
 			}
-		}
-		if (cliente.getCodigocliente() == null){
+		}else{
 			clientefiltrado = "0";
 			clientefiltrado2 = "999999";
-			
-		}else{
-			clientefiltrado = cliente.getCodigocliente().toString();
-			clientefiltrado2 = cliente.getCodigocliente().toString();
 		}//fim filtro cliente
 		
 		if ((Date) session.getAttribute("data1") != null) {
@@ -107,13 +103,14 @@ public class BeanVendasemGeral implements Serializable {
 		vendedorfiltrado = "0";
 		vendedorfiltrado2 = "999999";
 		
-		if (cliente == null){
-			clientefiltrado = "0";
-			clientefiltrado2 = "999999";
-			
-		}else{
+		if (cliente != null){
 			clientefiltrado = cliente.getCodigocliente().toString();
 			clientefiltrado2 = cliente.getCodigocliente().toString();
+			
+			
+		}else{
+			clientefiltrado = "0";
+			clientefiltrado2 = "999999";
 		}
 		
 		listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);

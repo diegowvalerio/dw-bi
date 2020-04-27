@@ -751,7 +751,12 @@ public class BeanResumo implements Serializable {
 		
 		
 		atingido = (totalv / totalm)*100;
-		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+		if (totalm > 0){
+			return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+		}else{
+			return Float.parseFloat(formatarFloat.format(0).replace(",", "."));
+		}
+		
 	}
 
 }
