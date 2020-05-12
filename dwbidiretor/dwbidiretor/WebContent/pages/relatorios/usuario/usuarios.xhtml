@@ -69,6 +69,12 @@
 									target="#{beanSigeUsuarioAcesso.sigeusuario}" />
 									<p:ajax update=":form:painelDados"/>
 							</p:commandButton>
+							
+							<p:commandButton icon="fa fa-eye"
+								action="#{beanSigeUsuarioAcesso.encaminha()}">
+								<f:setPropertyActionListener value="#{usuario}"
+									target="#{beanSigeUsuarioAcesso.sigeusuario}" />
+							</p:commandButton>
 
 						</p:column>
 

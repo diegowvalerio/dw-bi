@@ -11,11 +11,11 @@
 			</p:link></li>
 		
 	
-	<li class="treeview"><a href="#"> <i class="fa fa-th-list"></i>
+	<li class="treeview"><p:link href="#" rendered="#{beanControleAcesso.acesso('diretor_relatorios')}"> <i class="fa fa-th-list"></i>
 			<span>Relatórios</span> <span class="pull-right-container"> <i
 				class="fa fa-angle-left pull-right"></i>
 		</span>
-	</a>	
+	</p:link>>	
 		<ul class="treeview-menu">
 		
 		<li><p:link href="/dwbidiretor/pages/relatorios/vendaanomes/vendaanomes.xhtml">
@@ -79,35 +79,50 @@
 		</ul>	
 	</li>
 	
-	<li><p:link href="https://drive.google.com/drive/folders/1fmqqtljyMauTlm0euwIyf_rDh4SgCBaN?usp=sharing" >
+	<li><p:link href="https://drive.google.com/drive/folders/1fmqqtljyMauTlm0euwIyf_rDh4SgCBaN?usp=sharing" rendered="#{beanControleAcesso.acesso('diretor_arquivos')}">
 					<i class="fa fa-folder"></i>
 					<span>Arquivos</span>
 				</p:link>
 		</li>
 		
-	<li><p:link href="/dwbidiretor/pages/relatorios/pedidoitem/pedidoitem.xhtml" >
+	<li><p:link href="/dwbidiretor/pages/relatorios/pedidoitem/pedidoitem.xhtml" rendered="#{beanControleAcesso.acesso('diretor_analisepedido')}">
 					<i class="fa fa-folder"></i>
 					<span>Análise Pedido</span>
 				</p:link>
 		</li>
-		<li><p:link href="/dwbidiretor/pages/relatorios/pedidoitem/analise_cliente_pedido.xhtml" >
+		<li><p:link href="/dwbidiretor/pages/relatorios/pedidoitem/analise_cliente_pedido.xhtml"  rendered="#{beanControleAcesso.acesso('diretor_analiseclientepedido')}">
 					<i class="fa fa-folder"></i>
 					<span>Análise Cliente/Pedido</span>
 				</p:link>
 		</li>
 	
-		<li><p:link href="/dwbidiretor/pages/relatorios/mapas/mapa.xhtml" >
+		<li><p:link href="/dwbidiretor/pages/relatorios/mapas/mapa.xhtml" rendered="#{beanControleAcesso.acesso('diretor_mapa')}">
 					<i class="fa fa-folder"></i>
 					<span>Mapa</span>
 				</p:link>
 		</li>
 		
-		<li><p:link href="/dwbidiretor/pages/relatorios/usuario/usuarios.xhtml" >
+		<li class="treeview"><p:link href="#" rendered="#{beanControleAcesso.acesso('diretor_sistemabi')}"> <i class="fa fa-th-list"></i>
+		<span>Sistema BI</span> <span class="pull-right-container"> 
+		<i class="fa fa-angle-left pull-right"></i>
+		</span>
+		</p:link>	
+		
+		<ul class="treeview-menu">
+		
+		<li><p:link href="/dwbidiretor/pages/relatorios/usuario/usuarios.xhtml" rendered="#{beanControleAcesso.acesso('diretor_sistemabi_acessousuarios')}">
 					<i class="fa fa-folder"></i>
 					<span>Acesso Usuários</span>
 				</p:link>
 		</li>
 		
+		<li><p:link href="/dwbidiretor/pages/relatorios/usuario/modulo.xhtml" rendered="#{beanControleAcesso.acesso('diretor_sistemabi_modulosbi')}">
+					<i class="fa fa-folder"></i>
+					<span>Módulos BI</span>
+				</p:link>
+		</li>
+	</ul>	
+	</li>
 		
 	</ul>
 </ui:composition>

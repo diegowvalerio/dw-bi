@@ -37,7 +37,7 @@
 		<adm:breadcrumb title="Resumo" />
 		<h:form id="form">
 			<section class="content">
-				<p:panelGrid columns="8" id="filtros"
+				<p:panelGrid columns="8" id="filtros" rendered="#{beanControleAcesso.acesso('diretor_inicio_filtros')}"
 					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 					layout="grid" styleClass="ui-fluid card">
 					<p:outputLabel value=" Data:  " for="data_grafico" />
@@ -86,8 +86,10 @@
 				</p:panelGrid>
 
 				<p:separator />
-
-				<div class="row">
+				
+				<p:panelGrid id="resumo" rendered="#{beanControleAcesso.acesso('diretor_inicio_resumo')}" >
+								
+				<div class="row" >
 					<div class="col-md-3 col-sm-6 col-xs-12">
 						<div class="info-box ">
 							<span class="info-box-icon bg-teal"><i
@@ -437,8 +439,10 @@
 				
 					
 				</div>
+				</p:panelGrid>
+				
 				<p:separator />
-				<h:panelGrid columns="1" id="painelmetavenda"
+				<h:panelGrid columns="1" id="painelmetavenda" rendered="#{beanControleAcesso.acesso('diretor_inicio_metavenda')}"
 					columnClasses="left,right" style="width:100%">
                                  
 					<p:chart id="graficometavenda" type="bar" model="#{beanResumo.graficometavenda}" />

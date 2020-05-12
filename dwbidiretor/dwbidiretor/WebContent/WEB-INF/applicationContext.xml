@@ -11,6 +11,7 @@ http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 	<http pattern="/negado.xhtml" security="none" />
 	<http pattern="/javax.faces.resource/**" security="none" />
 	<http pattern="/reset/**" security="none" />
+	
 	<http auto-config="true" use-expressions="true">
 		<intercept-url pattern="/**" access="hasRole('ADM')"/> 
 		<access-denied-handler error-page="/negado.xhtml" />

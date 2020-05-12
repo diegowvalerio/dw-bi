@@ -56,5 +56,13 @@ public class BeanSigeUsuarioAcesso implements Serializable {
 	public void setLista(List<SigeUsuario> lista) {
 		this.lista = lista;
 	}
+	
+	public String encaminha() {
+		FacesContext fc = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
+		session.setAttribute("sigeusuario", this.sigeusuario);
+
+		return "acesso-modulo";
+	}
 
 }

@@ -29,6 +29,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.microsoft.sqlserver.jdbc.SQLServerException;
 
+import br.com.dwbidiretor.classe.SigeAcesso;
+import br.com.dwbidiretor.classe.SigeModulo;
 import br.com.dwbidiretor.classe.SigeUsuario;
 import br.com.dwbidiretor.classe.VendaAnoMes;
 import br.com.dwbidiretor.dao.DAOSIGEGenerico;
@@ -157,5 +159,127 @@ public class DAOSIGEGenericoHibernate<E> implements DAOSIGEGenerico<E>, Serializ
 		}
 		
 		return list;
+	}
+	
+	//cadastrar modulo
+	@Override
+	public E salvar_modulo(E e) {
+		//List<SigeUsuario> list = new ArrayList<>();
+		javax.persistence.Query query2 = (javax.persistence.Query) manager.createNativeQuery(
+				// "SELECT * FROM("
+				" INSERT INTO dwbi_acesso_modulo(descricao,identificacao) VALUES ('"+ ((SigeModulo) e).getDescricao() +"', '"+ ((SigeModulo) e).getIdentificacao() +"')  "
+				+" SELECT idlogin,usuario,senha from dwbi_login where usuario = '"+ usuarioconectado() +"'");
+		try {
+			query2.getResultList();
+		} catch (Exception e2) {
+			System.out.println(e2);
+		}
+		
+		
+		return e;
+	}
+	
+	//alterar modulo
+	@Override
+	public E alterar_modulo(E e) {
+		//List<SigeModulo> list = new ArrayList<>();
+		javax.persistence.Query query2 = (javax.persistence.Query) manager.createNativeQuery(
+				// "SELECT * FROM("
+				" update dwbi_acesso_modulo set descricao = '"+ ((SigeModulo) e).getDescricao() +"', identificacao = '"+ ((SigeModulo) e).getIdentificacao() +"' where idmodulo = '"+ ((SigeModulo) e).getIdmodulo() +"'   "
+				+" SELECT idlogin,usuario,senha from dwbi_login where usuario = '"+ usuarioconectado() +"'");
+		try {
+			query2.getResultList();
+		} catch (Exception e2) {
+			System.out.println(e2);
+		}
+		
+		
+		return e;
+	}
+	
+	//consultar modulos
+	@Override
+	public List<SigeModulo> consultarmodulo() {
+		List<SigeModulo> list = new ArrayList<>();
+
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				" SELECT idmodulo,descricao,identificacao from dwbi_acesso_modulo order by idmodulo");
+
+		List<Object[]> lista = query.getResultList();
+
+		for (Object[] row : lista) {
+			SigeModulo sigeModulo = new SigeModulo();
+
+			sigeModulo.setIdmodulo((Integer) row[0]);
+			sigeModulo.setDescricao((String) row[1]);
+			sigeModulo.setIdentificacao((String) row[2]);
+			list.add(sigeModulo);
+
+		}
+		
+		return list;
+	}
+	
+	//consultar acessos
+	@Override
+	public List<SigeAcesso> consultar_acesso(Integer idlogin) {
+		List<SigeAcesso> list = new ArrayList<>();
+
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				" SELECT DWA.IDACESSO, DWA.IDLOGIN,DWA.IDMODULO, dwm.descricao,dwm.identificacao,DWA.ACESSO FROM DWBI_ACESSO DWA "
+				+ " INNER JOIN dwbi_acesso_modulo dwm on dwm.idmodulo = dwa.idmodulo  where dwa.idlogin = " +idlogin );
+
+		List<Object[]> lista = query.getResultList();
+
+		for (Object[] row : lista) {
+			SigeAcesso sigeacesso = new SigeAcesso();
+
+			sigeacesso.setIdacesso((Integer) row[0]);
+			sigeacesso.setIdlogin((Integer) row[1]);
+			sigeacesso.setIdmodulo((Integer) row[2]);
+			sigeacesso.setDescricao((String) row[3]);
+			sigeacesso.setIdentificacao((String) row[4]);
+			sigeacesso.setAcesso((String) row[5]);
+			list.add(sigeacesso);
+
+		}
+		
+		return list;
+	}
+	
+	//cadastrar acessos modulo
+	@Override
+	public E salvar_acesso(E e) {
+
+		javax.persistence.Query query2 = (javax.persistence.Query) manager.createNativeQuery(
+				// "SELECT * FROM("
+				" INSERT INTO dwbi_acesso (idlogin,idmodulo, acesso) VALUES ('"+ ((SigeAcesso) e).getIdlogin() +"', '"+ ((SigeAcesso) e).getIdmodulo() +"', '"+ ((SigeAcesso) e).getAcesso() +"' )  "
+				+" SELECT idlogin,usuario,senha from dwbi_login where usuario = '"+ usuarioconectado() +"'");
+		try {
+			query2.getResultList();
+		} catch (Exception e2) {
+			System.out.println(e2);
+		}
+		
+		
+		return e;
+	}
+	
+	//excluir acessos modulo
+	@Override
+	public E excluir_acesso(E e) {
+
+		javax.persistence.Query query2 = (javax.persistence.Query) manager.createNativeQuery(
+				// "SELECT * FROM("
+				" delete from dwbi_acesso where idlogin = '"+ ((SigeAcesso) e).getIdlogin() +"' and idmodulo= '"+ ((SigeAcesso) e).getIdmodulo() +"' and idacesso= '"+ ((SigeAcesso) e).getIdacesso() +"' "
+				+" SELECT idlogin,usuario,senha from dwbi_login where usuario = '"+ usuarioconectado() +"'");
+		try {
+			query2.getResultList();
+		} catch (Exception e2) {
+			System.out.println(e2);
+		}
+		
+		
+		return e;
 	}
 }

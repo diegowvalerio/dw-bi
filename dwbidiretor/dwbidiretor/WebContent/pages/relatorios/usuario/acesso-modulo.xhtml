@@ -1,0 +1,120 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Acesso Módulos
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Acesso Módulos" />
+
+		<h:form id="form">
+			<div class="box box-primary">
+				<div class="box-header with-border">
+
+					<h:panelGrid columns="4" id="paineld1" style="width:100%">
+
+						<p:outputLabel value="Usuário :" />
+						<h:outputText
+							value="#{beanSigeUsuarioAcessoModulo.sigeusuario.usuario}" />
+
+						<p:outputLabel value="Tipo :" />
+						<h:outputText
+							value="#{beanSigeUsuarioAcessoModulo.sigeusuario.tipo}" />
+
+					</h:panelGrid>
+					<p:separator />
+					
+					<p:commandButton oncomplete="PF('dialogCad').show();" 
+						update=":form:painelDadosCad"
+						icon="fa fa-plus" value="Novo"
+						styleClass="btn-primary" />
+					
+
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right"
+						style="width:100%">
+						<p:dataTable id="acesso" var="acessos"
+							value="#{beanSigeUsuarioAcessoModulo.lista_acesso}">
+
+							<p:column width="9%" headerText="Id Módulo"
+								sortBy="#{acessos.idmodulo}">
+								<h:outputText value="#{acessos.idmodulo}" />
+							</p:column>
+
+							<p:column headerText="Descrição" sortBy="#{acessos.descricao}">
+								<h:outputText value="#{acessos.descricao}" />
+							</p:column>
+							
+							<p:column headerText="Identificação" sortBy="#{acessos.identificacao}">
+								<h:outputText value="#{acessos.identificacao}" />
+							</p:column>
+							
+							<p:column width="15%" headerText="#"
+							style="text-align:center">
+							
+							<p:commandButton icon="fa fa-trash" update=":form:paineld1"
+								action="#{beanSigeUsuarioAcessoModulo.excluir()}">
+								<f:setPropertyActionListener value="#{acessos}"
+									target="#{beanSigeUsuarioAcessoModulo.sigeAcesso}" />
+							</p:commandButton>
+
+						</p:column>
+
+						</p:dataTable>
+					</h:panelGrid>
+				</div>
+			</div>
+			
+			<p:dialog id="dlgcad" header="Novo Módulo" widgetVar="dialogCad"
+					 responsive="true" modal="true" resizable="true" position="center" onShow="position='center'">
+					<p:panelGrid id="painelDadosCad" columns="2">
+						
+        				<p:outputLabel value="Módulo" for="modulo" />
+							<p:selectOneMenu id="modulo"
+								value="#{beanSigeUsuarioAcessoModulo.sigeModulo}"
+								converter="conversorSigeModulo">
+								<f:selectItem itemLabel="Selecionar" noSelectionOption="true" />
+								<f:selectItems value="#{beanSigeUsuarioAcessoModulo.lista_modulo}"
+									var="modulos"
+									itemLabel="#{modulos.descricao} / #{modulos.identificacao}"
+									itemValue="#{modulos}" />
+							</p:selectOneMenu>
+										
+					</p:panelGrid>
+					<p:commandButton icon="fa fa-check" styleClass="btn-primary"
+						action="#{beanSigeUsuarioAcessoModulo.salvar()}" ajax="false" />
+				</p:dialog>
+		
+		</h:form>
+		
+		
+	</ui:define>
+</ui:composition>

@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -16,31 +18,45 @@ import javax.servlet.http.HttpSession;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import br.com.dwbidiretor.classe.SigeAcesso;
 import br.com.dwbidiretor.classe.SigeUsuario;
+import br.com.dwbidiretor.servico.ServicoSigeAcesso;
 import br.com.dwbidiretor.servico.ServicoSigeUsuario;
 
-@Named
-@ViewScoped
-public class BeanSigeUsuario implements Serializable {
+@ManagedBean
+@SessionScoped
+public class BeanControleAcesso implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private SigeUsuario sigeusuario = new SigeUsuario();
+	private SigeAcesso sigeAcesso = new SigeAcesso();
 	
 	@Inject
 	private ServicoSigeUsuario servico;
 	private List<SigeUsuario> lista = new ArrayList<>();
-
+	
+	@Inject
+	private ServicoSigeAcesso servicoAcesso;
+	private List<SigeAcesso> listaacesso = new ArrayList<>();
 
 	@PostConstruct
 	public void init() { 
 		lista = servico.consultar();
+		sigeusuario = lista.get(0);
+		
+		listaacesso= servicoAcesso.consultar_acesso(sigeusuario.getIdlogin());
 	}
 	
-	public void salvar(){
-		servico.alterar(sigeusuario);
-		lista = servico.consultar();
+	public boolean acesso(String tipo){
+		boolean t = false;
+		for (SigeAcesso acesso : listaacesso) {
+			if (acesso.getIdentificacao().equals(tipo)){
+				t = true;
+			}	
+		}
+		return t;
 	}
-
+	
 	/* pegar usuario conectado */
 	public String usuarioconectado() {
 		String nome;
@@ -69,6 +85,22 @@ public class BeanSigeUsuario implements Serializable {
 
 	public void setLista(List<SigeUsuario> lista) {
 		this.lista = lista;
+	}
+
+	public SigeAcesso getSigeAcesso() {
+		return sigeAcesso;
+	}
+
+	public void setSigeAcesso(SigeAcesso sigeAcesso) {
+		this.sigeAcesso = sigeAcesso;
+	}
+
+	public List<SigeAcesso> getListaacesso() {
+		return listaacesso;
+	}
+
+	public void setListaacesso(List<SigeAcesso> listaacesso) {
+		this.listaacesso = listaacesso;
 	}
 
 }
