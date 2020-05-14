@@ -73,6 +73,14 @@ public class BeanAnaliseClientePedido implements Serializable {
 			analiseClientePedido.setAcvlbrinde(new BigDecimal(tbrinde));
 			analiseClientePedido.setAcvltroca(new BigDecimal(ttroca));
 			analiseClientePedido.setAcvlnegociacoescomerciais(new BigDecimal(tnegocios));
+			
+			analiseClientePedido.setPcamostra(new BigDecimal((tamosta/tvenda)*100));
+			analiseClientePedido.setPcamostrapaga(new BigDecimal((tamostrapaga/tvenda)*100));
+			analiseClientePedido.setPcbonificacao(new BigDecimal((tbonificacao/tvenda)*100));
+			analiseClientePedido.setPcexpositor(new BigDecimal((texpositor/tvenda)*100));
+			analiseClientePedido.setPcbrinde(new BigDecimal((tbrinde/tvenda)*100));
+			analiseClientePedido.setPctroca(new BigDecimal((ttroca/tvenda)*100));
+			analiseClientePedido.setPcnegociacoescomerciais(new BigDecimal((tnegocios/tvenda)*100));
 			}
 		}
 	 }

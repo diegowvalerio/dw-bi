@@ -47,6 +47,14 @@ public class AnaliseClientePedido implements Serializable {
 	private BigDecimal acvltroca;
 	private BigDecimal acvlnegociacoescomerciais;
 	
+	private BigDecimal pcamostra;
+	private BigDecimal pcamostrapaga;
+	private BigDecimal pcbonificacao;
+	private BigDecimal pcexpositor;
+	private BigDecimal pcbrinde;
+	private BigDecimal pctroca;
+	private BigDecimal pcnegociacoescomerciais;
+	
 	public AnaliseClientePedido() {
 		super();
 	}
@@ -297,6 +305,62 @@ public class AnaliseClientePedido implements Serializable {
 
 	public void setSige_vltroca(Integer sige_vltroca) {
 		this.sige_vltroca = sige_vltroca;
+	}
+
+	public BigDecimal getPcamostra() {
+		return pcamostra;
+	}
+
+	public void setPcamostra(BigDecimal pcamostra) {
+		this.pcamostra = pcamostra;
+	}
+
+	public BigDecimal getPcamostrapaga() {
+		return pcamostrapaga;
+	}
+
+	public void setPcamostrapaga(BigDecimal pcamostrapaga) {
+		this.pcamostrapaga = pcamostrapaga;
+	}
+
+	public BigDecimal getPcbonificacao() {
+		return pcbonificacao;
+	}
+
+	public void setPcbonificacao(BigDecimal pcbonificacao) {
+		this.pcbonificacao = pcbonificacao;
+	}
+
+	public BigDecimal getPcexpositor() {
+		return pcexpositor;
+	}
+
+	public void setPcexpositor(BigDecimal pcexpositor) {
+		this.pcexpositor = pcexpositor;
+	}
+
+	public BigDecimal getPcbrinde() {
+		return pcbrinde;
+	}
+
+	public void setPcbrinde(BigDecimal pcbrinde) {
+		this.pcbrinde = pcbrinde;
+	}
+
+	public BigDecimal getPctroca() {
+		return pctroca;
+	}
+
+	public void setPctroca(BigDecimal pctroca) {
+		this.pctroca = pctroca;
+	}
+
+	public BigDecimal getPcnegociacoescomerciais() {
+		return pcnegociacoescomerciais;
+	}
+
+	public void setPcnegociacoescomerciais(BigDecimal pcnegociacoescomerciais) {
+		this.pcnegociacoescomerciais = pcnegociacoescomerciais;
 	}
 	
 }

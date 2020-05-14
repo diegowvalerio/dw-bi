@@ -2574,14 +2574,15 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 			
 			javax.persistence.Query querySige = (javax.persistence.Query) managerSige.createNativeQuery(
 			" select x.Cod_cadastro,x.Cpf_Cgc,x.Cod_produto,x.Ean, "
-			+" sum(x.sige_qtde_venda) sige_qtde_venda, "
-			+" sum(x.sige_qtde_amostra) sige_qtde_amostra, "
-			+" sum(x.sige_qtde_bonificacao) sige_qtde_bonificacao, "
-			+" sum(x.sige_qtde_expositor) sige_qtde_expositor, "
-			+" sum(x.sige_qtde_troca) sige_qtde_troca, "
+			+" isnull(sum(x.sige_qtde_venda),0) sige_qtde_venda, "
+			+" isnull(sum(x.sige_qtde_amostra),0) sige_qtde_amostra, "
+			+" isnull(sum(x.sige_qtde_bonificacao),0) sige_qtde_bonificacao, "
+			+" isnull(sum(x.sige_qtde_expositor),0) sige_qtde_expositor, "
+			+" isnull(sum(x.sige_qtde_troca),0) sige_qtde_troca, "
 			+" resumo.sige_valor_venda, resumo.sige_valor_amostra, "
 			+" resumo.sige_valor_bonificacao,resumo.sige_valor_expositor, resumo.sige_valor_troca from( "
-			+" select g.Cod_cadastro,g.Cpf_Cgc,it.Cod_produto,r.ean, "
+			+" select g.cod_cadastro,g.Cpf_Cgc,s.* from tbCadastroGeral g left join( "
+			+" select g.Cod_cadastro c1 ,g.Cpf_Cgc cp,it.Cod_produto,r.ean, "
 			+" case when s.Cod_tipo_mv = 510 then it.Qtde_pri else 0 end as sige_qtde_venda, "
 			+" case when s.Cod_tipo_mv = 516 then it.Qtde_pri else 0 end as sige_qtde_amostra, "
 			+" case when s.Cod_tipo_mv = 512 then it.Qtde_pri else 0 end as sige_qtde_bonificacao, "
@@ -2593,11 +2594,10 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 			+" inner join tbCadastroGeral g on g.Cod_cadastro = s.Cod_cli_for "
 			+" inner join tbsaidas exp on exp.Chave_fato_orig_un = s.Chave_fato "
 
-			+" where (g.Cod_cadastro = " + cliente + " or g.Cpf_Cgc = '" + cnpj + "') "
-			+" and (it.cod_produto = " + produto + " or r.ean = '" + ean + "') "
+			+" where  (it.cod_produto = " + produto + " or r.ean = '" + ean + "') "
 			
 			+" and s.Cod_tipo_mv in ('510','512','515','516','517') "
-			+" and s.STATUS <> 'C' AND s.STATUS_CTB = 'S' )x "
+			+"  ) s on s.c1 = g.Cod_Cadastro where (g.Cod_cadastro = " + cliente + " or g.Cpf_Cgc = '" + cnpj + "')  )x  "
 			
 			+" inner join(select x.Cod_cliente, "
 			+" sum(x.sige_valor_venda) sige_valor_venda,  "
