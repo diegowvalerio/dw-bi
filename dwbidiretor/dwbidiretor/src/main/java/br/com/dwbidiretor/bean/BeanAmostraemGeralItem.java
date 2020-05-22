@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -24,12 +25,14 @@ import org.primefaces.model.StreamedContent;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import br.com.dwbidiretor.classe.Cliente;
 import br.com.dwbidiretor.classe.VendasEmGeral;
 import br.com.dwbidiretor.classe.VendasEmGeralItem;
+import br.com.dwbidiretor.servico.ServicoCliente;
 import br.com.dwbidiretor.servico.ServicoVendasemGeralItem;
 
-@ManagedBean
-@SessionScoped
+@Named
+@ViewScoped
 public class BeanAmostraemGeralItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -38,6 +41,12 @@ public class BeanAmostraemGeralItem implements Serializable {
 	@Inject
 	private ServicoVendasemGeralItem servico;
 	private List<VendasEmGeralItem> listavendaitems = new ArrayList<>();
+	
+	//filtro cliente
+	private Cliente cliente = new Cliente();
+	@Inject
+	private ServicoCliente servicocliente;
+	private List<Cliente> listacliente = new ArrayList<>();
 
 	private String vendedorlogado;
 	private Date data_grafico = new Date();
@@ -52,12 +61,31 @@ public class BeanAmostraemGeralItem implements Serializable {
 		this.data_grafico = (Date) session.getAttribute("data1");
 		this.data_grafico2 = (Date) session.getAttribute("data2");
 		this.vendasEmGeral = (VendasEmGeral) session.getAttribute("vendaGeral");
+		//if (session.getAttribute("vendaGeral") != null){
+			this.listavendaitems = servico.amostraemgeralitem(this.vendasEmGeral.getPedido());
+		//}
 		session.removeAttribute("vendaGeral");
 		session.removeAttribute("data1");
 		session.removeAttribute("data2");
+		
+		
 
-		this.listavendaitems = servico.amostraemgeralitem(this.vendasEmGeral.getPedido());
+	}
 
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	public List<Cliente> getListacliente() {
+		return listacliente;
+	}
+
+	public void setListacliente(List<Cliente> listacliente) {
+		this.listacliente = listacliente;
 	}
 
 	public String getVendedorlogado() {
@@ -120,10 +148,22 @@ public class BeanAmostraemGeralItem implements Serializable {
 		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
 		session.setAttribute("data1", this.data_grafico);
 		session.setAttribute("data2", this.data_grafico2);
-
-		return "amostraemgeral";
+		
+		if (!session.getAttribute("clientefiltrado").equals("0")){
+		listacliente = completaCliente(vendasEmGeral.getNomecliente().toString());
+		this.cliente = listacliente.get(0);
+		session.setAttribute("cliente", this.cliente);
+		}
+		
+		
+		return "amostraemgeral.xhtml";
 	}
 
+	public List<Cliente> completaCliente(String nome) {
+		String n = nome.toUpperCase();
+		return servicocliente.consultacliente(n);
+	}
+	
 	public String getValorTotal() {
 		float total = 0;
 

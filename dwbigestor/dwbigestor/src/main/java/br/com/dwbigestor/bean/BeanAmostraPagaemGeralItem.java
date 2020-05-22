@@ -28,8 +28,8 @@ import br.com.dwbigestor.classe.VendasEmGeral;
 import br.com.dwbigestor.classe.VendasEmGeralItem;
 import br.com.dwbigestor.servico.ServicoVendasemGeralItem;
 
-@ManagedBean
-@SessionScoped
+@Named
+@ViewScoped
 public class BeanAmostraPagaemGeralItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 

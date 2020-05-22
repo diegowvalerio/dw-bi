@@ -2321,7 +2321,7 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 				+" NVL(PEDIDOS.VL_BRINDE,0) VL_BRINDE, "
 				+" NVL(PEDIDOS.VL_TROCA,0) VL_TROCA, "
 				+" NVL(PEDIDOS.VL_NEGOCIACOESCOMERCIAIS,0) VL_NEGOCIACOESCOMERCIAIS, "
-				+" PEDIDOS.STATUS_PEDIDOVENDA, c.cnpjcpf_cadcftv as cpfcnpj"
+				+" PEDIDOS.STATUS_PEDIDOVENDA, c.cnpjcpf_cadcftv as cpfcnpj, PEDIDOS.DT "
 				+" from cadcftv c "
 				+" inner join cliente cl on cl.CADCFTVID = c.CADCFTVID "
 				+" LEFT JOIN( "
@@ -2386,6 +2386,7 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 		analiseClientePedido.setVltroca((BigDecimal) row[14] );
 		analiseClientePedido.setVlnegociacoescomerciais((BigDecimal) row[15] );
 		analiseClientePedido.setStatuspedido((String) row[16]);
+		analiseClientePedido.setDatapedido((Date) row[18] );
 		
 		list.add(analiseClientePedido);
 	}}
@@ -2396,7 +2397,7 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 			+" case when p.Cod_tipo_mv = 516 then cast(s.Valor_liquido as money) else 0 end as sige_valor_amostra,   "
 			+" case when p.Cod_tipo_mv = 512 then cast(s.Valor_liquido as money) else 0 end as sige_valor_bonificacao,  " 
 			+" case when p.Cod_tipo_mv = 517 then cast(s.Valor_liquido as money) else 0 end as sige_valor_expositor,   "
-			+" case when p.Cod_tipo_mv = 515 then cast(s.Valor_liquido as money) else 0 end as sige_valor_troca  , 'Fechado' as Status "
+			+" case when p.Cod_tipo_mv = 515 then cast(s.Valor_liquido as money) else 0 end as sige_valor_troca  , 'Fechado' as Status , p.Data_v1 "
 			+" from tbsaidas s left join tbsaidas p on p.Chave_fato = s.Chave_fato_orig_un  "
 			+" inner join tbCadastroGeral g on g.Cod_cadastro = s.Cod_cli_for "
 			+" left join tbTipoMvEstoque tp on tp.cod_tipo_mv = p.cod_tipo_mv  "
@@ -2436,6 +2437,7 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 		analiseClientePedido.setVltroca((BigDecimal) rowsige[7] );
 		analiseClientePedido.setVlnegociacoescomerciais(new BigDecimal(0) );
 		analiseClientePedido.setStatuspedido((String) rowsige[8]);
+		analiseClientePedido.setDatapedido((Date) rowsige[9] );
 		
 		list.add(analiseClientePedido);	
 	}}

@@ -184,12 +184,14 @@
 
 							<div class="info-box-content">
 								<span class="info-box-text">Amostras</span> <span
-									class="info-box-number"><h:outputText
+									class="info-box-text"><h:outputText
 										value="#{beanResumo.amostradodia}" /></span>
 
-								<div class="progress">
-									<div class="progress-bar" style="width: 100%"></div>
-								</div>
+								<span class="progress-description" style="text-align:right"> 
+									<h:outputText 
+									value="#{beanResumo.percentualSobPedido_Amostra} %"/>
+								</span>
+								
 								<span class="progress-description"> <h:commandLink
 										action="#{beanResumo.encaminha5()}"
 										styleClass="fa fa-arrow-circle-right small-box-footer"
@@ -208,12 +210,14 @@
 
 							<div class="info-box-content">
 								<span class="info-box-text">Amostras Pagas</span> <span
-									class="info-box-number"><h:outputText
+									class="info-box-text"><h:outputText
 										value="#{beanResumo.amostraPagadodia}" /></span>
 
-								<div class="progress">
-									<div class="progress-bar" style="width: 100%"></div>
-								</div>
+								<span class="progress-description" style="text-align:right"> 
+									<h:outputText 
+									value="#{beanResumo.percentualSobPedido_AmostraPaga} %"/>
+								</span>
+								
 								<span class="progress-description"> <h:commandLink
 										action="#{beanResumo.encaminha13()}"
 										styleClass="fa fa-arrow-circle-right small-box-footer"
@@ -232,12 +236,14 @@
 
 							<div class="info-box-content">
 								<span class="info-box-text">Bonificações</span> <span
-									class="info-box-number"><h:outputText
+									class="info-box-text"><h:outputText
 										value="#{beanResumo.bonificacaododia}" /></span>
 
-								<div class="progress">
-									<div class="progress-bar" style="width: 100%"></div>
-								</div>
+								<span class="progress-description" style="text-align:right"> 
+									<h:outputText 
+									value="#{beanResumo.percentualSobPedido_Bonificacao} %"/>
+								</span>
+								
 								<span class="progress-description"> <h:commandLink
 										action="#{beanResumo.encaminha6()}"
 										styleClass="fa fa-arrow-circle-right small-box-footer"
@@ -256,12 +262,14 @@
 
 							<div class="info-box-content">
 								<span class="info-box-text">Expositores</span> <span
-									class="info-box-number"><h:outputText
+									class="info-box-text"><h:outputText
 										value="#{beanResumo.expositordodia}" /></span>
 
-								<div class="progress">
-									<div class="progress-bar" style="width: 100%"></div>
-								</div>
+								<span class="progress-description" style="text-align:right"> 
+									<h:outputText 
+									value="#{beanResumo.percentualSobPedido_Expositor} %"/>
+								</span>
+								
 								<span class="progress-description"> <h:commandLink
 										action="#{beanResumo.encaminha7()}"
 										styleClass="fa fa-arrow-circle-right small-box-footer"
@@ -280,12 +288,14 @@
 
 							<div class="info-box-content">
 								<span class="info-box-text">Brindes</span> <span
-									class="info-box-number"><h:outputText
+									class="info-box-text"><h:outputText
 										value="#{beanResumo.brindedodia}" /></span>
 
-								<div class="progress">
-									<div class="progress-bar" style="width: 100%"></div>
-								</div>
+								<span class="progress-description" style="text-align:right"> 
+									<h:outputText 
+									value="#{beanResumo.percentualSobPedido_Brinde} %"/>
+								</span>
+								
 								<span class="progress-description"> <h:commandLink
 										action="#{beanResumo.encaminha9()}"
 										styleClass="fa fa-arrow-circle-right small-box-footer"
@@ -304,12 +314,14 @@
 
 							<div class="info-box-content">
 								<span class="info-box-text">Troca Defeito</span> <span
-									class="info-box-number"><h:outputText
+									class="info-box-text"><h:outputText
 										value="#{beanResumo.trocaDefeitododia}" /></span>
 
-								<div class="progress">
-									<div class="progress-bar" style="width: 100%"></div>
-								</div>
+								<span class="progress-description" style="text-align:right"> 
+									<h:outputText 
+									value="#{beanResumo.percentualSobPedido_TrocaDefeito} %"/>
+								</span>
+								
 								<span class="progress-description"> <h:commandLink
 										action="#{beanResumo.encaminha11()}"
 										styleClass="fa fa-arrow-circle-right small-box-footer"
@@ -328,12 +340,14 @@
 
 							<div class="info-box-content">
 								<span class="info-box-text">Troca Negociações</span> <span
-									class="info-box-number"><h:outputText
+									class="info-box-text"><h:outputText
 										value="#{beanResumo.trocaNegociododia}" /></span>
 
-								<div class="progress">
-									<div class="progress-bar" style="width: 100%"></div>
-								</div>
+								<span class="progress-description" style="text-align:right"> 
+									<h:outputText 
+									value="#{beanResumo.percentualSobPedido_TrocaNegocio} %"/>
+								</span>
+								
 								<span class="progress-description"> <h:commandLink
 										action="#{beanResumo.encaminha12()}"
 										styleClass="fa fa-arrow-circle-right small-box-footer"

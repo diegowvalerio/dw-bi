@@ -342,6 +342,7 @@ public class BeanAmostraPagaemGeral implements Serializable {
 		session.setAttribute("vendaGeral", this.vendasEmGeral);
 		session.setAttribute("data1", this.data_grafico);
 		session.setAttribute("data2", this.data_grafico2);
+		session.setAttribute("clientefiltrado", this.clientefiltrado);
 
 		return "amostrapagaemgeral-item";
 	}

@@ -28,8 +28,9 @@ import br.com.dwbi.classe.VendasEmGeral;
 import br.com.dwbi.classe.VendasEmGeralItem;
 import br.com.dwbi.dwbi.servico.ServicoVendasemGeralItem;
 
-@ManagedBean
-@SessionScoped
+
+@Named
+@ViewScoped
 public class BeanAmostraemGeralItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 

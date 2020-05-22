@@ -208,11 +208,12 @@
 
 							<p:columnGroup type="header" id="group5" >
 								<p:row>
-									<p:column colspan="11" headerText="Histórico de Pedidos" style="border: 1px solid"/>
+									<p:column colspan="12" headerText="Histórico de Pedidos" style="border: 1px solid"/>
 																		
 								</p:row>
 								<p:row>
 									<p:column width="3%" colspan="1" headerText="#" style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Data" style="border: 1px solid; text-align: Left"/>	
 								    <p:column colspan="1" headerText="Origem" style="border: 1px solid; text-align: Left"/>	
 									<p:column colspan="1" headerText="Código" style="border: 1px solid; text-align: Left"/>									
 									<p:column colspan="1" headerText="Venda"  style="border: 1px solid; text-align: Left"/>
@@ -229,6 +230,12 @@
 							
 							<p:column headerText="#" width="3%">
        						 <h:outputLabel value="#{rowIndex+1}" />
+   							</p:column>
+   							
+   							<p:column >
+   							<h:outputText value="#{vendas.datapedido}" >
+   								<f:convertDateTime pattern="dd/MM/yyyy" />
+   							</h:outputText>
    							</p:column>
    							
 							<p:column ><h:outputText value="#{vendas.origem}" /></p:column>

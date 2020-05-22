@@ -129,13 +129,6 @@
 								<h:outputText value="#{vendas.statusnota}" />
 							</p:column>
 
-							<p:column width="5%" headerText="#">
-								<p:commandButton oncomplete="PF('dlg').show();" icon="fa fa-eye" update=":foto">
-									<f:setPropertyActionListener value="#{vendas}"
-										target="#{beanAmostraemGeralItem.vendasEmGeralitem}" />
-								</p:commandButton>
-							</p:column>
-
 							<p:columnGroup type="footer">
 								<p:row>
 									<p:column colspan="3" style="text-align:right"

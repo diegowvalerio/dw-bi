@@ -24,12 +24,14 @@ import org.primefaces.model.StreamedContent;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import br.com.dwbidiretor.classe.Cliente;
 import br.com.dwbidiretor.classe.VendasEmGeral;
 import br.com.dwbidiretor.classe.VendasEmGeralItem;
+import br.com.dwbidiretor.servico.ServicoCliente;
 import br.com.dwbidiretor.servico.ServicoVendasemGeralItem;
 
-@ManagedBean
-@SessionScoped
+@Named
+@ViewScoped
 public class BeanTrocaNegocioemGeralItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -38,6 +40,12 @@ public class BeanTrocaNegocioemGeralItem implements Serializable {
 	@Inject
 	private ServicoVendasemGeralItem servico;
 	private List<VendasEmGeralItem> listavendaitems = new ArrayList<>();
+	
+	//filtro cliente
+	private Cliente cliente = new Cliente();
+	@Inject
+	private ServicoCliente servicocliente;
+	private List<Cliente> listacliente = new ArrayList<>();
 
 	private String vendedorlogado;
 	private Date data_grafico = new Date();
@@ -115,11 +123,23 @@ public class BeanTrocaNegocioemGeralItem implements Serializable {
 	}
 
 	/* voltar para vendaemgeral */
+	public List<Cliente> completaCliente(String nome) {
+		String n = nome.toUpperCase();
+		return servicocliente.consultacliente(n);
+	}
+	
 	public String encaminha() {
+
 		FacesContext fc = FacesContext.getCurrentInstance();
 		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
 		session.setAttribute("data1", this.data_grafico);
 		session.setAttribute("data2", this.data_grafico2);
+
+		if (!session.getAttribute("clientefiltrado").equals("0")){
+			listacliente = completaCliente(vendasEmGeral.getNomecliente().toString());
+			this.cliente = listacliente.get(0);
+			session.setAttribute("cliente", this.cliente);
+		}
 
 		return "trocanegocioemgeral";
 	}

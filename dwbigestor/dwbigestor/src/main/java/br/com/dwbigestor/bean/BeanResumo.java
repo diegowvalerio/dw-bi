@@ -667,6 +667,195 @@ public class BeanResumo implements Serializable {
 		return total;
 	}
 	
+public float getPercentualSobPedido_Amostra() {
+		
+		float tvenda = 0;
+		
+		float tamostra = 0;
+		
+		for (VendasEmGeral venda : getListavenda()) {
+			tvenda = tvenda + venda.getValortotalpedido().floatValue();
+		}
+		
+		for (VendasEmGeral amostra : getListaamostra()) {
+			tamostra = tamostra + amostra.getValortotalpedido().floatValue();
+		}
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(tamostra == 0){
+			tamostra = 1;
+			atingido = 100;
+		}else{
+			atingido = (tamostra / tvenda )*100;
+		}
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+
+	}
+	
+	public float getPercentualSobPedido_AmostraPaga() {
+		
+		float tvenda = 0;
+		
+		float tamostrapaga = 0;
+		
+		for (VendasEmGeral venda : getListavenda()) {
+			tvenda = tvenda + venda.getValortotalpedido().floatValue();
+		}
+		
+		for (VendasEmGeral amostra : getListaamostrapaga()) {
+			tamostrapaga = tamostrapaga + amostra.getValortotalpedido().floatValue();
+		}
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(tamostrapaga == 0){
+			tamostrapaga = 1;
+			atingido = 100;
+		}else{
+			atingido = (tamostrapaga / tvenda )*100;
+		}
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+
+	}
+
+	public float getPercentualSobPedido_Bonificacao() {
+		
+		float tvenda = 0;
+		
+		float tbonificacao = 0;
+		
+		for (VendasEmGeral venda : getListavenda()) {
+			tvenda = tvenda + venda.getValortotalpedido().floatValue();
+		}
+		
+		for (VendasEmGeral bonificacao : getListabonificacao()) {
+			tbonificacao = tbonificacao + bonificacao.getValortotalpedido().floatValue();
+		}
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(tbonificacao == 0){
+			tbonificacao = 1;
+			atingido = 100;
+		}else{
+			atingido = (tbonificacao / tvenda )*100;
+		}
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+
+	}
+	
+	public float getPercentualSobPedido_Expositor() {
+		
+		float tvenda = 0;
+		
+		float texpositor = 0;
+		
+		for (VendasEmGeral venda : getListavenda()) {
+			tvenda = tvenda + venda.getValortotalpedido().floatValue();
+		}
+		
+		for (VendasEmGeral expositor : getListaexpositor()) {
+			texpositor = texpositor + expositor.getValortotalpedido().floatValue();
+		}
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(texpositor == 0){
+			texpositor = 1;
+			atingido = 100;
+		}else{
+			atingido = (texpositor / tvenda )*100;
+		}
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+
+	}
+	
+	public float getPercentualSobPedido_Brinde() {
+		
+		float tvenda = 0;
+		
+		float tbrinde = 0;
+		
+		for (VendasEmGeral venda : getListavenda()) {
+			tvenda = tvenda + venda.getValortotalpedido().floatValue();
+		}
+		
+		for (VendasEmGeral brinde : getListabrinde()) {
+			tbrinde = tbrinde + brinde.getValortotalpedido().floatValue();
+		}
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(tbrinde == 0){
+			tbrinde = 1;
+			atingido = 100;
+		}else{
+			atingido = (tbrinde / tvenda )*100;
+		}
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+
+	}
+
+	public float getPercentualSobPedido_TrocaDefeito() {
+		
+		float tvenda = 0;
+		
+		float tdefeito = 0;
+		
+		for (VendasEmGeral venda : getListavenda()) {
+			tvenda = tvenda + venda.getValortotalpedido().floatValue();
+		}
+		
+		for (VendasEmGeral defeito : getListatrocadefeito()) {
+			tdefeito = tdefeito + defeito.getValortotalpedido().floatValue();
+		}
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(tdefeito == 0){
+			tdefeito = 1;
+			atingido = 100;
+		}else{
+			atingido = (tdefeito / tvenda )*100;
+		}
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+
+	}
+	
+	public float getPercentualSobPedido_TrocaNegocio() {
+		
+		float tvenda = 0;
+		
+		float tnegocio = 0;
+		
+		for (VendasEmGeral venda : getListavenda()) {
+			tvenda = tvenda + venda.getValortotalpedido().floatValue();
+		}
+		
+		for (VendasEmGeral negocio : getListatrocanegocio()) {
+			tnegocio = tnegocio + negocio.getValortotalpedido().floatValue();
+		}
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(tnegocio == 0){
+			tnegocio = 1;
+			atingido = 100;
+		}else{
+			atingido = (tnegocio / tvenda )*100;
+		}
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+
+	}
+	
 	public void createAnimatedModels() {
 		Calendar hoje = Calendar.getInstance();
 		

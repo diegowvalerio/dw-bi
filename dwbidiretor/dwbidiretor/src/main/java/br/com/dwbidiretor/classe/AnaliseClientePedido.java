@@ -3,6 +3,7 @@ package br.com.dwbidiretor.classe;
 import java.io.Serializable;
 import java.lang.String;
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.*;
 
@@ -22,6 +23,7 @@ public class AnaliseClientePedido implements Serializable {
 	private String origem;
 	
 	private BigDecimal pedido;
+	private Date datapedido;
 	private BigDecimal vlvenda;
 	private BigDecimal vlamostra;
 	private BigDecimal vlamostrapaga;
@@ -57,6 +59,14 @@ public class AnaliseClientePedido implements Serializable {
 	
 	public AnaliseClientePedido() {
 		super();
+	}
+
+	public Date getDatapedido() {
+		return datapedido;
+	}
+
+	public void setDatapedido(Date datapedido) {
+		this.datapedido = datapedido;
 	}
 
 	public String getOrigem() {
