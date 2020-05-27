@@ -16,7 +16,7 @@ import javax.persistence.PersistenceUnit;
 public class EntityManagerProducer implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	@PersistenceUnit
+	@PersistenceUnit(unitName="crudPU")
 	private EntityManagerFactory factory;
 	
 	@Produces @RequestScoped

@@ -61,4 +61,6 @@ public class ServicoVendasemGeral implements Serializable{
 		return dao.investimentoemgeral_2(data1, data2, vendedor1,vendedor2, gestor1, gestor2, cliente1,  cliente2);
 	}
 	
+	
+	
 }

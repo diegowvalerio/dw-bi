@@ -1,0 +1,249 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+       Dados Cliente
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Dados Cliente" />
+
+		<h:form id="form">
+			<p:panelGrid columns="8"
+				columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+				layout="grid" styleClass="ui-fluid card" id="filtroscli">
+				
+				<p:outputLabel value=" Data:  " for="data_grafico" />
+					<p:calendar locale="pt_BR" id="data_grafico"
+						value="#{beanDadosCliente.data_grafico}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico2" />
+					<p:calendar locale="pt_BR" id="data_grafico2"
+						value="#{beanDadosCliente.data_grafico2}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+
+					<p:outputLabel value="Gestor:" for="gestor" />
+					<p:selectOneMenu id="gestor" value="#{beanDadosCliente.gestor}"
+						converter="conversorGestor">
+						<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
+						<f:selectItems value="#{beanDadosCliente.listagestor}" var="gestor"
+							itemLabel="#{gestor.nomegestor}"
+							itemValue="#{gestor}" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="Vendedor:" for="vendedor" />
+					<p:selectOneMenu id="vendedor" value="#{beanDadosCliente.vendedor}"
+						converter="conversorVendedor">
+						<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
+						<f:selectItems value="#{beanDadosCliente.listavendedor}" var="vendedor"
+							itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
+							itemValue="#{vendedor}" />
+							<p:ajax listener="#{beanDadosCliente.filtragestor}" update=":form:gestor" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="Cliente" for="cliente" />
+						<h:panelGroup>
+							<p:autoComplete id="cliente" 
+								value="#{beanDadosCliente.cliente}"
+								completeMethod="#{beanDadosCliente.completaCliente}" var="c"
+								itemLabel="#{c.nomecliente}" itemValue="#{c}" forceSelection="true"
+								converter="conversorCliente" />
+							<p:watermark value="Digite Nome ou Código" for="cliente"></p:watermark>
+						</h:panelGroup>
+
+					<p:commandButton action="#{beanDadosCliente.filtrar()}" value="Filtrar"
+						icon="fa fa-check" update=":form:paineld" styleClass="btn-primary" />
+
+			</p:panelGrid>
+			<div class="box box-primary">
+				<div style="overflow: scroll; width: 100%; overflow: auto">
+				
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right"
+						width="100%">
+						<p:dataTable id="venda" var="vendas" scrollable="true" rowIndexVar="rowIndex" 
+							value="#{beanDadosCliente.listavenda}" resizableColumns="true">
+
+							<p:columnGroup type="header" id="group5" >
+								<p:row>
+									<p:column colspan="8" headerText="Dados dos Clientes" style="border: 1px solid"/>
+									<p:column colspan="2" headerText="Venda" style="border: 1px solid"/>
+									<p:column colspan="2" headerText="Amostra" style="border: 1px solid"/>
+									<p:column colspan="2" headerText="Amostra Paga" style="border: 1px solid"/>
+									<p:column colspan="2" headerText="Bonificação" style="border: 1px solid"/>
+									<p:column colspan="2" headerText="Expositor" style="border: 1px solid"/>
+									<p:column colspan="2" headerText="Brinde" style="border: 1px solid"/>
+									<p:column colspan="2" headerText="Troca" style="border: 1px solid"/>
+									<p:column colspan="2" headerText="Negociações" style="border: 1px solid"/>
+																		
+								</p:row>
+								<p:row>
+									<p:column colspan="1" headerText="Cód." style="border: 1px solid; text-align: Left"/>	
+								    <p:column colspan="1" headerText="Vendedor" style="border: 1px solid; text-align: Left"/>	
+									<p:column colspan="1" headerText="Cód." style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Cliente" style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Endereço" style="border: 1px solid; text-align: Left"/>	
+									<p:column colspan="1" headerText="Cidade" style="border: 1px solid; text-align: Left"/>	
+									<p:column colspan="1" headerText="CEP" style="border: 1px solid; text-align: Left"/>	
+									<p:column colspan="1" headerText="UF" style="border: 1px solid; text-align: Left"/>						
+									<p:column colspan="1" headerText="Total Geral"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Periodo"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Total Geral"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Periodo"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Total Geral"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Periodo"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Total Geral"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Periodo"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Total Geral"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Periodo"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Total Geral"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Periodo"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Total Geral"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Periodo"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Total Geral"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Periodo"  style="border: 1px solid; text-align: Left"/>
+									
+								</p:row>
+							</p:columnGroup>
+							
+							<p:column >
+								<h:outputText value="#{vendas.codigovendedor}"/>
+							</p:column>
+							
+							<p:column >
+								<h:outputText value="#{vendas.nomevendedor}"/>
+							</p:column>
+							
+							<p:column >
+								<h:outputText value="#{vendas.codigocliente}"/>
+							</p:column>
+							
+							<p:column >
+								<h:outputText value="#{vendas.nomecliente}"/>
+							</p:column>
+							
+							<p:column >
+								<h:outputText value="#{vendas.endereco}"/>
+							</p:column>
+							
+							<p:column >
+								<h:outputText value="#{vendas.cidade}"/>
+							</p:column>
+							
+							<p:column >
+								<h:outputText value="#{vendas.cep}"/>
+							</p:column>
+							
+							<p:column >
+								<h:outputText value="#{vendas.uf}"/>
+							</p:column>
+							
+							<p:column>
+								<h:outputText value="#{vendas.acvlvenda}"><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column>
+								<h:outputText value="#{vendas.vlvenda}"><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column>
+								<h:outputText value="#{vendas.acvlamostra}"><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column>
+								<h:outputText value="#{vendas.vlamostra}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column>
+								<h:outputText value="#{vendas.acvlamostrapaga}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column>
+								<h:outputText value="#{vendas.vlamostrapaga}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column>
+								<h:outputText value="#{vendas.acvlbonificacao}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column>
+								<h:outputText value="#{vendas.vlbonificacao}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column>
+								<h:outputText value="#{vendas.acvlexpositor}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+														
+							<p:column>
+								<h:outputText value="#{vendas.vlexpositor}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column>
+								<h:outputText value="#{vendas.acvlbrinde}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column>
+								<h:outputText value="#{vendas.vlbrinde}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column>
+								<h:outputText value="#{vendas.acvltroca}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column>
+								<h:outputText value="#{vendas.vltroca}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column>
+								<h:outputText value="#{vendas.acvlnegociacoescomerciais}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>	
+							
+							<p:column>
+								<h:outputText value="#{vendas.vlnegociacoescomerciais}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>										
+
+						</p:dataTable>
+						
+						<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="venda" fileName="dadoscliente" pageOnly="true"/>
+						</h:commandLink>
+						
+					</h:panelGrid>
+					<p:separator />
+					
+				</div>
+			</div>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

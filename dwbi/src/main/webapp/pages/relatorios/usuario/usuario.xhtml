@@ -66,13 +66,13 @@
 					</p:dataTable>
 				</div>
 			</div>
-			<p:dialog id="dlg" header="Editar Usuário" widgetVar="dialog"
-					 responsive="true" resizable="true" position="center" onShow="position='center'">
+			<p:dialog id="dlg" header="Editar Usuário" widgetVar="dialog" 
+					 responsive="true"  resizable="true" position="center" onShow="position='center'">
 					<p:panelGrid id="painelDados" columns="2" >
 						
         				
         				<p:outputLabel value="Nome:" for="nome" />
-						<p:inputText id="nome" value="#{beanSigeUsuario.sigeusuario.usuario}" readonly="true"  disabled="true"/>
+						<p:inputText id="nome" value="#{beanSigeUsuario.sigeusuario.usuario}" readonly="true" disabled="true"/>
 
 						<p:outputLabel value="Senha: " for="senha" />
 						<p:password id="senha" value="#{beanSigeUsuario.sigeusuario.senha}" redisplay="true" />

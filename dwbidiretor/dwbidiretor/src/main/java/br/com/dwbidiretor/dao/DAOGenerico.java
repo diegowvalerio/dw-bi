@@ -8,6 +8,7 @@ import java.util.List;
 import br.com.dwbidiretor.classe.AnaliseClientePedido;
 import br.com.dwbidiretor.classe.Cliente;
 import br.com.dwbidiretor.classe.ClientesNovos;
+import br.com.dwbidiretor.classe.DadosCliente;
 import br.com.dwbidiretor.classe.Gestor;
 import br.com.dwbidiretor.classe.InvestimentoVendedor;
 import br.com.dwbidiretor.classe.Mapa;
@@ -98,5 +99,7 @@ public interface DAOGenerico<E> {
 	public List<Mapa> mapa(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2);
 	
 	public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, BigDecimal cliente,String cnpj, BigDecimal pedido);
+	
+	public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2);
 	
 }
