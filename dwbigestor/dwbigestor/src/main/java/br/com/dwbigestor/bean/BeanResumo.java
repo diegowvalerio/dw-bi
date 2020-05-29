@@ -90,6 +90,16 @@ public class BeanResumo implements Serializable {
 	private String vendedorfiltrado2;
 	private String clientefiltrado;
 	private String clientefiltrado2;
+	
+	//totais por tipo de pedido
+	private float tot_amostra;
+	private float tot_amostrapaga;
+	private float tot_bonificacao;
+	private float tot_expositor;
+	private float tot_brinde;
+	private float tot_trocadefeito;
+	private float tot_trocanegocio;
+	private float tot_venda;
 
 	@PostConstruct
 	public void init() {
@@ -377,6 +387,70 @@ public class BeanResumo implements Serializable {
 		this.listaexpositor = listaexpositor;
 	}
 
+	public float getTot_amostra() {
+		return tot_amostra;
+	}
+
+	public void setTot_amostra(float tot_amostra) {
+		this.tot_amostra = tot_amostra;
+	}
+
+	public float getTot_amostrapaga() {
+		return tot_amostrapaga;
+	}
+
+	public void setTot_amostrapaga(float tot_amostrapaga) {
+		this.tot_amostrapaga = tot_amostrapaga;
+	}
+
+	public float getTot_bonificacao() {
+		return tot_bonificacao;
+	}
+
+	public void setTot_bonificacao(float tot_bonificacao) {
+		this.tot_bonificacao = tot_bonificacao;
+	}
+
+	public float getTot_expositor() {
+		return tot_expositor;
+	}
+
+	public void setTot_expositor(float tot_expositor) {
+		this.tot_expositor = tot_expositor;
+	}
+
+	public float getTot_brinde() {
+		return tot_brinde;
+	}
+
+	public void setTot_brinde(float tot_brinde) {
+		this.tot_brinde = tot_brinde;
+	}
+
+	public float getTot_trocadefeito() {
+		return tot_trocadefeito;
+	}
+
+	public void setTot_trocadefeito(float tot_trocadefeito) {
+		this.tot_trocadefeito = tot_trocadefeito;
+	}
+
+	public float getTot_trocanegocio() {
+		return tot_trocanegocio;
+	}
+
+	public void setTot_trocanegocio(float tot_trocanegocio) {
+		this.tot_trocanegocio = tot_trocanegocio;
+	}
+
+	public float getTot_venda() {
+		return tot_venda;
+	}
+
+	public void setTot_venda(float tot_venda) {
+		this.tot_venda = tot_venda;
+	}
+
 	/* dados vendaemgeral */
 	public String encaminha2() {
 		FacesContext fc = FacesContext.getCurrentInstance();
@@ -501,82 +575,109 @@ public class BeanResumo implements Serializable {
 
 	public String getValorTotal() {
 		float total = 0;
-
+		tot_venda = 0;
 		for (VendasEmGeral venda : getListavenda()) {
 			total = total + venda.getValortotalpedido().floatValue();
 		}
-
-		return new DecimalFormat("###,###.###").format(total);
+		tot_venda = total;
+		return new DecimalFormat("###,###.##").format(total);
 	}
 	public String getValorTotalAmostra() {
 		float total = 0;
-
+		tot_amostra = 0;
 		for (VendasEmGeral venda : getListaamostra()) {
 			total = total + venda.getValortotalpedido().floatValue();
 		}
-
-		return new DecimalFormat("###,###.###").format(total);
+		tot_amostra = total;
+		return new DecimalFormat("###,###.##").format(total);
 	}
 	
 	public String getValorTotalAmostraPaga() {
 		float total = 0;
-
+		tot_amostrapaga = 0;
 		for (VendasEmGeral venda : getListaamostrapaga()) {
 			total = total + venda.getValortotalpedido().floatValue();
 		}
-
-		return new DecimalFormat("###,###.###").format(total);
+		tot_amostrapaga = total;
+		return new DecimalFormat("###,###.##").format(total);
 	}
 	
 	public String getValorTotalTrocaDefeito() {
 		float total = 0;
-
+		tot_trocadefeito = 0;
 		for (VendasEmGeral venda : getListatrocadefeito()) {
 			total = total + venda.getValortotalpedido().floatValue();
 		}
-
-		return new DecimalFormat("###,###.###").format(total);
+		tot_trocadefeito = total;
+		return new DecimalFormat("###,###.##").format(total);
 	}
 	public String getValorTotalTrocaNegocio() {
 		float total = 0;
-
+		tot_trocanegocio = 0;
 		for (VendasEmGeral venda : getListatrocanegocio()) {
 			total = total + venda.getValortotalpedido().floatValue();
 		}
-
+		tot_trocanegocio = total;
 		return new DecimalFormat("###,###.###").format(total);
 	}
 	
 	public String getValorTotalBonificacao() {
 		float total = 0;
-
+		tot_bonificacao = 0;
 		for (VendasEmGeral venda : getListabonificacao()) {
 			total = total + venda.getValortotalpedido().floatValue();
 		}
-
-		return new DecimalFormat("###,###.###").format(total);
+		tot_bonificacao = total;
+		return new DecimalFormat("###,###.##").format(total);
 	}
 	
 	public String getValorTotalBrinde() {
 		float total = 0;
-
+		tot_brinde = 0;
 		for (VendasEmGeral venda : getListabrinde()) {
 			total = total + venda.getValortotalpedido().floatValue();
 		}
-
-		return new DecimalFormat("###,###.###").format(total);
+		tot_brinde = total;
+		return new DecimalFormat("###,###.##").format(total);
 	}
 	
 	public String getValorTotalExpositor() {
 		float total = 0;
-
+		tot_expositor = 0;
 		for (VendasEmGeral venda : getListaexpositor()) {
 			total = total + venda.getValortotalpedido().floatValue();
 		}
-
-		return new DecimalFormat("###,###.###").format(total);
+		tot_expositor = total;
+		return new DecimalFormat("###,###.##").format(total);
 	}
 	// painel de resumo
+	
+	public String getTotalInvestimento_Entrada_Pedido() {
+		float total = 0;
+		total = tot_expositor + tot_amostra + tot_amostrapaga + tot_bonificacao + tot_trocanegocio + tot_brinde;
+		
+		return new DecimalFormat("###,###.##").format(total);
+	}
+	
+	public float getPercentual_investimento_entrada_pedido() {		
+		float total = 0;
+		total = tot_expositor + tot_amostra + tot_amostrapaga + tot_bonificacao + tot_trocanegocio + tot_brinde;
+		if(tot_venda ==0){
+			tot_venda = 1;
+		}
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(total == 0){
+			total = 1;
+			atingido = 100;
+		}else{
+			atingido = (total / tot_venda )*100;
+		}
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+
+	}
 
 	public int getPedidododia() {
 		int total = 0;
@@ -676,7 +777,9 @@ public float getPercentualSobPedido_Amostra() {
 		for (VendasEmGeral venda : getListavenda()) {
 			tvenda = tvenda + venda.getValortotalpedido().floatValue();
 		}
-		
+		if(tvenda ==0){
+			tvenda = 1;
+		}
 		for (VendasEmGeral amostra : getListaamostra()) {
 			tamostra = tamostra + amostra.getValortotalpedido().floatValue();
 		}
@@ -703,7 +806,9 @@ public float getPercentualSobPedido_Amostra() {
 		for (VendasEmGeral venda : getListavenda()) {
 			tvenda = tvenda + venda.getValortotalpedido().floatValue();
 		}
-		
+		if(tvenda ==0){
+			tvenda = 1;
+		}
 		for (VendasEmGeral amostra : getListaamostrapaga()) {
 			tamostrapaga = tamostrapaga + amostra.getValortotalpedido().floatValue();
 		}
@@ -730,7 +835,9 @@ public float getPercentualSobPedido_Amostra() {
 		for (VendasEmGeral venda : getListavenda()) {
 			tvenda = tvenda + venda.getValortotalpedido().floatValue();
 		}
-		
+		if(tvenda ==0){
+			tvenda = 1;
+		}
 		for (VendasEmGeral bonificacao : getListabonificacao()) {
 			tbonificacao = tbonificacao + bonificacao.getValortotalpedido().floatValue();
 		}
@@ -757,7 +864,9 @@ public float getPercentualSobPedido_Amostra() {
 		for (VendasEmGeral venda : getListavenda()) {
 			tvenda = tvenda + venda.getValortotalpedido().floatValue();
 		}
-		
+		if(tvenda ==0){
+			tvenda = 1;
+		}
 		for (VendasEmGeral expositor : getListaexpositor()) {
 			texpositor = texpositor + expositor.getValortotalpedido().floatValue();
 		}
@@ -784,7 +893,9 @@ public float getPercentualSobPedido_Amostra() {
 		for (VendasEmGeral venda : getListavenda()) {
 			tvenda = tvenda + venda.getValortotalpedido().floatValue();
 		}
-		
+		if(tvenda ==0){
+			tvenda = 1;
+		}
 		for (VendasEmGeral brinde : getListabrinde()) {
 			tbrinde = tbrinde + brinde.getValortotalpedido().floatValue();
 		}
@@ -811,7 +922,9 @@ public float getPercentualSobPedido_Amostra() {
 		for (VendasEmGeral venda : getListavenda()) {
 			tvenda = tvenda + venda.getValortotalpedido().floatValue();
 		}
-		
+		if(tvenda ==0){
+			tvenda = 1;
+		}
 		for (VendasEmGeral defeito : getListatrocadefeito()) {
 			tdefeito = tdefeito + defeito.getValortotalpedido().floatValue();
 		}
@@ -837,6 +950,9 @@ public float getPercentualSobPedido_Amostra() {
 		
 		for (VendasEmGeral venda : getListavenda()) {
 			tvenda = tvenda + venda.getValortotalpedido().floatValue();
+		}
+		if(tvenda ==0){
+			tvenda = 1;
 		}
 		
 		for (VendasEmGeral negocio : getListatrocanegocio()) {
@@ -928,7 +1044,7 @@ public float getPercentualSobPedido_Amostra() {
 			}
 		}
 
-		return new DecimalFormat("###,###.###").format(total);
+		return new DecimalFormat("###,###.##").format(total);
 	}
 	
 	public float getMetaAtingida() {

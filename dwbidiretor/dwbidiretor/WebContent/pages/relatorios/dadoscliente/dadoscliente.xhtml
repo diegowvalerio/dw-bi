@@ -95,7 +95,7 @@
 
 							<p:columnGroup type="header" id="group5" >
 								<p:row>
-									<p:column colspan="8" headerText="Dados dos Clientes" style="border: 1px solid"/>
+									<p:column colspan="9" headerText="Dados dos Clientes" style="border: 1px solid"/>
 									<p:column colspan="2" headerText="Venda" style="border: 1px solid"/>
 									<p:column colspan="2" headerText="Amostra" style="border: 1px solid"/>
 									<p:column colspan="2" headerText="Amostra Paga" style="border: 1px solid"/>
@@ -112,6 +112,7 @@
 									<p:column colspan="1" headerText="Cód." style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Cliente" style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Endereço" style="border: 1px solid; text-align: Left"/>	
+									<p:column colspan="1" headerText="N°" style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Cidade" style="border: 1px solid; text-align: Left"/>	
 									<p:column colspan="1" headerText="CEP" style="border: 1px solid; text-align: Left"/>	
 									<p:column colspan="1" headerText="UF" style="border: 1px solid; text-align: Left"/>						
@@ -153,6 +154,10 @@
 							
 							<p:column >
 								<h:outputText value="#{vendas.endereco}"/>
+							</p:column>
+							
+							<p:column >
+								<h:outputText value="#{vendas.numeroendereco}"/>
 							</p:column>
 							
 							<p:column >

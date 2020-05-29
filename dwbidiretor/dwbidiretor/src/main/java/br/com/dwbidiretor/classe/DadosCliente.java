@@ -16,6 +16,7 @@ public class DadosCliente implements Serializable {
 	private BigDecimal codigocliente;
 	private String nomecliente;
 	private String endereco;
+	private String numeroendereco;
 	private String cidade;
 	private String cep;
 	private String uf;
@@ -40,6 +41,14 @@ public class DadosCliente implements Serializable {
 	
 	public DadosCliente() {
 		super();
+	}
+
+	public String getNumeroendereco() {
+		return numeroendereco;
+	}
+
+	public void setNumeroendereco(String numeroendereco) {
+		this.numeroendereco = numeroendereco;
 	}
 
 	public BigDecimal getAcvlvenda() {

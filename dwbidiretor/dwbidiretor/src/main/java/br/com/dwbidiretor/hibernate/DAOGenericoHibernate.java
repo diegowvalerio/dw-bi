@@ -2704,7 +2704,7 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
  	+" geral.VL_EXPOSITOR total_EXPOSITOR,  "
  	+" geral.VL_BRINDE total_BRINDE,  "
  	+" geral.VL_TROCA total_TROCA,  "
- 	+" geral.VL_NEGOCIACOESCOMERCIAIS total_NEGOCIACOESCOMERCIAIS "
+ 	+" geral.VL_NEGOCIACOESCOMERCIAIS total_NEGOCIACOESCOMERCIAIS, en.NRO_ENDCADCFTV numeroendereco "
  
  	+" from cadcftv c  "
  	+" inner join cliente cl on cl.CADCFTVID = c.CADCFTVID  "
@@ -2712,7 +2712,7 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
  	+" INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = v.cadcftvid "
  	
  	+" LEFT join ( "
- 	+" SELECT V.CADCFTVID,CI.UF_CIDADE, ci.nome_cidade, V.END_ENDCADCFTV, V.CEP_ENDCADCFTV FROM ENDCADCFTV V "
+ 	+" SELECT V.CADCFTVID,CI.UF_CIDADE, ci.nome_cidade, V.END_ENDCADCFTV, V.CEP_ENDCADCFTV, V.NRO_ENDCADCFTV FROM ENDCADCFTV V "
  	+" inner join( "
  	+" SELECT max(ENDCADCFTVID) d , CADCFTVID cod FROM ENDCADCFTV  "
  	+" group by cadcftvid "
@@ -2781,7 +2781,7 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
  	+" PEDIDOS.VL_AMOSTRAPAGA,  PEDIDOS.VL_BONIFICACAO,  PEDIDOS.VL_EXPOSITOR,  PEDIDOS.VL_BRINDE,  "
  	+" PEDIDOS.VL_TROCA,  PEDIDOS.VL_NEGOCIACOESCOMERCIAIS, geral.VL_VENDA , geral.VL_AMOSTRA,  "
  	+" geral.VL_AMOSTRAPAGA,  geral.VL_BONIFICACAO,  geral.VL_EXPOSITOR,  geral.VL_BRINDE,  "
- 	+" geral.VL_TROCA,  geral.VL_NEGOCIACOESCOMERCIAIS ");
+ 	+" geral.VL_TROCA,  geral.VL_NEGOCIACOESCOMERCIAIS, en.NRO_ENDCADCFTV ");
 	List<Object[]> lista = query.getResultList();
 		
 	for (Object[] row : lista) {
@@ -2813,6 +2813,8 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 		dadoscliente.setAcvlbrinde((BigDecimal) row[22] );
 		dadoscliente.setAcvltroca((BigDecimal) row[23] );
 		dadoscliente.setAcvlnegociacoescomerciais((BigDecimal) row[24] );
+		
+		dadoscliente.setNumeroendereco((String) row[25]);
 		
 		list.add(dadoscliente);
 	}

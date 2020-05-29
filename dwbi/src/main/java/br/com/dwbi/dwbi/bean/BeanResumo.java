@@ -498,7 +498,7 @@ public class BeanResumo implements Serializable {
 			total = total + venda.getValortotalpedido().floatValue();
 		}
 
-		return new DecimalFormat("###,###.###").format(total);
+		return new DecimalFormat("###,###.##").format(total);
 	}
 	public String getValorTotalAmostra() {
 		float total = 0;
@@ -507,7 +507,7 @@ public class BeanResumo implements Serializable {
 			total = total + venda.getValortotalpedido().floatValue();
 		}
 
-		return new DecimalFormat("###,###.###").format(total);
+		return new DecimalFormat("###,###.##").format(total);
 	}
 	
 	public String getValorTotalAmostraPaga() {
@@ -517,7 +517,7 @@ public class BeanResumo implements Serializable {
 			total = total + venda.getValortotalpedido().floatValue();
 		}
 
-		return new DecimalFormat("###,###.###").format(total);
+		return new DecimalFormat("###,###.##").format(total);
 	}
 	
 	public String getValorTotalTrocaDefeito() {
@@ -527,7 +527,7 @@ public class BeanResumo implements Serializable {
 			total = total + venda.getValortotalpedido().floatValue();
 		}
 
-		return new DecimalFormat("###,###.###").format(total);
+		return new DecimalFormat("###,###.##").format(total);
 	}
 	public String getValorTotalTrocaNegocio() {
 		float total = 0;
@@ -536,7 +536,7 @@ public class BeanResumo implements Serializable {
 			total = total + venda.getValortotalpedido().floatValue();
 		}
 
-		return new DecimalFormat("###,###.###").format(total);
+		return new DecimalFormat("###,###.##").format(total);
 	}
 	
 	public String getValorTotalBonificacao() {
@@ -546,7 +546,7 @@ public class BeanResumo implements Serializable {
 			total = total + venda.getValortotalpedido().floatValue();
 		}
 
-		return new DecimalFormat("###,###.###").format(total);
+		return new DecimalFormat("###,###.##").format(total);
 	}
 	
 	public String getValorTotalBrinde() {
@@ -556,7 +556,7 @@ public class BeanResumo implements Serializable {
 			total = total + venda.getValortotalpedido().floatValue();
 		}
 
-		return new DecimalFormat("###,###.###").format(total);
+		return new DecimalFormat("###,###.##").format(total);
 	}
 	
 	public String getValorTotalExpositor() {
@@ -566,7 +566,7 @@ public class BeanResumo implements Serializable {
 			total = total + venda.getValortotalpedido().floatValue();
 		}
 
-		return new DecimalFormat("###,###.###").format(total);
+		return new DecimalFormat("###,###.##").format(total);
 	}
 
 	// painel de resumo
@@ -731,7 +731,7 @@ public class BeanResumo implements Serializable {
 			}
 		}
 
-		return new DecimalFormat("###,###.###").format(total);
+		return new DecimalFormat("###,###.##").format(total);
 	}
 	
 	public float getMetaAtingida() {

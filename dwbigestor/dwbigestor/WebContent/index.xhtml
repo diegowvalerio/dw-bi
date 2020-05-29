@@ -36,6 +36,7 @@
 	
 		<adm:breadcrumb title="Resumo" />
 		<h:form id="form">
+		<span class="info-box-text">Dados a partir de : 01/04/2018</span>
 			<section class="content">
 				<p:panelGrid columns="6"
 					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
@@ -352,6 +353,29 @@
 										action="#{beanResumo.encaminha12()}"
 										styleClass="fa fa-arrow-circle-right small-box-footer"
 										value="  R$ #{beanResumo.valorTotalTrocaNegocio}" />
+								</span>
+							</div>
+							<!-- /.info-box-content -->
+						</div>
+						<!-- /.info-box -->
+					</div>
+					
+					<div class="col-md-3 col-sm-6 col-xs-12">
+						<div class="info-box ">
+							<span class="info-box-icon bg-purple">
+							<i class="fa fa-paper-plane"></i></span>
+
+							<div class="info-box-content">
+								<span class="info-box-text">Total Investimento</span> <span
+									class="info-box-number"><h:outputText
+										value="#{beanResumo.totalInvestimento_Entrada_Pedido}"/>
+								</span>
+
+								<div class="progress">
+									<div class="progress-bar" style="width: 100%"></div>
+								</div>
+								<span class="progress-description"> <h:outputText
+										value="#{beanResumo.percentual_investimento_entrada_pedido}" />%
 								</span>
 							</div>
 							<!-- /.info-box-content -->
