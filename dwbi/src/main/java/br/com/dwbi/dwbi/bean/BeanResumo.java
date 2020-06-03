@@ -570,7 +570,103 @@ public class BeanResumo implements Serializable {
 	}
 
 	// painel de resumo
+	public String getTotalInvestimento_Entrada_Pedido() {
+		//totais por tipo de pedido
+		float tot_amostra = 0;
+		float tot_amostrapaga= 0;
+		float tot_bonificacao= 0;
+		float tot_expositor= 0;
+		float tot_brinde= 0;
+		float tot_trocanegocio= 0;
+		
+		for (VendasEmGeral amostra : getListaamostra()) {
+			tot_amostra = tot_amostra + amostra.getValortotalpedido().floatValue();
+		}
+		
+		for (VendasEmGeral amostrapaga : getListaamostrapaga()) {
+			tot_amostrapaga = tot_amostrapaga + amostrapaga.getValortotalpedido().floatValue();
+		}
+		
+		for (VendasEmGeral trocanegocio : getListatrocanegocio()) {
+			tot_trocanegocio = tot_trocanegocio + trocanegocio.getValortotalpedido().floatValue();
+		}
+		
+		for (VendasEmGeral bonificacao : getListabonificacao()) {
+			tot_bonificacao = tot_bonificacao + bonificacao.getValortotalpedido().floatValue();
+		}
 
+		for (VendasEmGeral brinde : getListabrinde()) {
+			tot_brinde = tot_brinde + brinde.getValortotalpedido().floatValue();
+		}
+		
+		for (VendasEmGeral expositor : getListaexpositor()) {
+			tot_expositor = tot_expositor + expositor.getValortotalpedido().floatValue();
+		}
+		
+		float total = 0;
+		total = tot_expositor + tot_amostra + tot_amostrapaga + tot_bonificacao + tot_trocanegocio + tot_brinde;
+		
+		return new DecimalFormat("###,###.##").format(total);
+	}
+	
+	public float getPercentual_investimento_entrada_pedido() {	
+		//totais por tipo de pedido
+		float tot_venda = 0;
+		float tot_amostra = 0;
+		float tot_amostrapaga= 0;
+		float tot_bonificacao= 0;
+		float tot_expositor= 0;
+		float tot_brinde= 0;
+		float tot_trocanegocio= 0;
+		
+		for (VendasEmGeral amostra : getListaamostra()) {
+			tot_amostra = tot_amostra + amostra.getValortotalpedido().floatValue();
+		}
+		
+		for (VendasEmGeral amostrapaga : getListaamostrapaga()) {
+			tot_amostrapaga = tot_amostrapaga + amostrapaga.getValortotalpedido().floatValue();
+		}
+		
+		for (VendasEmGeral trocanegocio : getListatrocanegocio()) {
+			tot_trocanegocio = tot_trocanegocio + trocanegocio.getValortotalpedido().floatValue();
+		}
+		
+		for (VendasEmGeral bonificacao : getListabonificacao()) {
+			tot_bonificacao = tot_bonificacao + bonificacao.getValortotalpedido().floatValue();
+		}
+
+		for (VendasEmGeral brinde : getListabrinde()) {
+			tot_brinde = tot_brinde + brinde.getValortotalpedido().floatValue();
+		}
+		
+		for (VendasEmGeral expositor : getListaexpositor()) {
+			tot_expositor = tot_expositor + expositor.getValortotalpedido().floatValue();
+		}
+		
+		for (VendasEmGeral venda : getListavenda()) {
+			tot_venda = tot_venda + venda.getValortotalpedido().floatValue();
+		}
+		
+		float total = 0;
+		total = tot_expositor + tot_amostra + tot_amostrapaga + tot_bonificacao + tot_trocanegocio + tot_brinde;
+		if(tot_venda ==0){
+			tot_venda = 1;
+		}
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(total == 0){
+			total = 1;
+			atingido = 100;
+		}else{
+			atingido = (total / tot_venda )*100;
+		}
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+
+	}
+		
+		
 	public int getPedidododia() {
 		int total = 0;
 
@@ -658,6 +754,211 @@ public class BeanResumo implements Serializable {
 
 		return total;
 	}
+	
+public float getPercentualSobPedido_Amostra() {
+		
+		float tvenda = 0;
+		
+		float tamostra = 0;
+		
+		for (VendasEmGeral venda : getListavenda()) {
+			tvenda = tvenda + venda.getValortotalpedido().floatValue();
+		}
+		if(tvenda ==0){
+			tvenda = 1;
+		}
+		for (VendasEmGeral amostra : getListaamostra()) {
+			tamostra = tamostra + amostra.getValortotalpedido().floatValue();
+		}
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(tamostra == 0){
+			tamostra = 1;
+			atingido = 100;
+		}else{
+			atingido = (tamostra / tvenda )*100;
+		}
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+
+	}
+	
+	public float getPercentualSobPedido_AmostraPaga() {
+		
+		float tvenda = 0;
+		
+		float tamostrapaga = 0;
+		
+		for (VendasEmGeral venda : getListavenda()) {
+			tvenda = tvenda + venda.getValortotalpedido().floatValue();
+		}
+		if(tvenda ==0){
+			tvenda = 1;
+		}
+		for (VendasEmGeral amostra : getListaamostrapaga()) {
+			tamostrapaga = tamostrapaga + amostra.getValortotalpedido().floatValue();
+		}
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(tamostrapaga == 0){
+			tamostrapaga = 1;
+			atingido = 100;
+		}else{
+			atingido = (tamostrapaga / tvenda )*100;
+		}
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+
+	}
+
+	public float getPercentualSobPedido_Bonificacao() {
+		
+		float tvenda = 0;
+		
+		float tbonificacao = 0;
+		
+		for (VendasEmGeral venda : getListavenda()) {
+			tvenda = tvenda + venda.getValortotalpedido().floatValue();
+		}
+		if(tvenda ==0){
+			tvenda = 1;
+		}
+		for (VendasEmGeral bonificacao : getListabonificacao()) {
+			tbonificacao = tbonificacao + bonificacao.getValortotalpedido().floatValue();
+		}
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(tbonificacao == 0){
+			tbonificacao = 1;
+			atingido = 100;
+		}else{
+			atingido = (tbonificacao / tvenda )*100;
+		}
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+
+	}
+	
+	public float getPercentualSobPedido_Expositor() {
+		
+		float tvenda = 0;
+		
+		float texpositor = 0;
+		
+		for (VendasEmGeral venda : getListavenda()) {
+			tvenda = tvenda + venda.getValortotalpedido().floatValue();
+		}
+		if(tvenda ==0){
+			tvenda = 1;
+		}
+		for (VendasEmGeral expositor : getListaexpositor()) {
+			texpositor = texpositor + expositor.getValortotalpedido().floatValue();
+		}
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(texpositor == 0){
+			texpositor = 1;
+			atingido = 100;
+		}else{
+			atingido = (texpositor / tvenda )*100;
+		}
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+
+	}
+	
+	public float getPercentualSobPedido_Brinde() {
+		
+		float tvenda = 0;
+		
+		float tbrinde = 0;
+		
+		for (VendasEmGeral venda : getListavenda()) {
+			tvenda = tvenda + venda.getValortotalpedido().floatValue();
+		}
+		if(tvenda ==0){
+			tvenda = 1;
+		}
+		for (VendasEmGeral brinde : getListabrinde()) {
+			tbrinde = tbrinde + brinde.getValortotalpedido().floatValue();
+		}
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(tbrinde == 0){
+			tbrinde = 1;
+			atingido = 100;
+		}else{
+			atingido = (tbrinde / tvenda )*100;
+		}
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+
+	}
+
+	public float getPercentualSobPedido_TrocaDefeito() {
+		
+		float tvenda = 0;
+		
+		float tdefeito = 0;
+		
+		for (VendasEmGeral venda : getListavenda()) {
+			tvenda = tvenda + venda.getValortotalpedido().floatValue();
+		}
+		if(tvenda ==0){
+			tvenda = 1;
+		}
+		for (VendasEmGeral defeito : getListatrocadefeito()) {
+			tdefeito = tdefeito + defeito.getValortotalpedido().floatValue();
+		}
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(tdefeito == 0){
+			tdefeito = 1;
+			atingido = 100;
+		}else{
+			atingido = (tdefeito / tvenda )*100;
+		}
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+
+	}
+	
+	public float getPercentualSobPedido_TrocaNegocio() {
+		
+		float tvenda = 0;
+		
+		float tnegocio = 0;
+		
+		for (VendasEmGeral venda : getListavenda()) {
+			tvenda = tvenda + venda.getValortotalpedido().floatValue();
+		}
+		if(tvenda ==0){
+			tvenda = 1;
+		}
+		
+		for (VendasEmGeral negocio : getListatrocanegocio()) {
+			tnegocio = tnegocio + negocio.getValortotalpedido().floatValue();
+		}
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(tnegocio == 0){
+			tnegocio = 1;
+			atingido = 100;
+		}else{
+			atingido = (tnegocio / tvenda )*100;
+		}
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+
+	}
+
 	
 	public void createAnimatedModels() {
 		Calendar hoje = Calendar.getInstance();

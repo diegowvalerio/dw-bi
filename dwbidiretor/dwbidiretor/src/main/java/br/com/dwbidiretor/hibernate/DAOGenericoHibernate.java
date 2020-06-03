@@ -2675,6 +2675,10 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 	SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 	String dataFormatada = formato.format(data1);
 	String dataFormatada2 = formato.format(data2);
+	
+	SimpleDateFormat formato2 = new SimpleDateFormat("yyyy-MM-dd");
+	String SdataFormatada = formato2.format(data1);
+	String SdataFormatada2 = formato2.format(data2);
 
 	javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
 	 " select "			
@@ -2688,23 +2692,23 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
  	+" en.CEP_ENDCADCFTV, "
  	+" en.uf_cidade, "
  
- 	+" PEDIDOS.VL_VENDA VL_VENDA, " 
- 	+" PEDIDOS.VL_AMOSTRA VL_AMOSTRA, " 
- 	+" PEDIDOS.VL_AMOSTRAPAGA VL_AMOSTRAPAGA, " 
- 	+" PEDIDOS.VL_BONIFICACAO VL_BONIFICACAO, " 
- 	+" PEDIDOS.VL_EXPOSITOR VL_EXPOSITOR, " 
- 	+" PEDIDOS.VL_BRINDE VL_BRINDE, " 
- 	+" PEDIDOS.VL_TROCA VL_TROCA, " 
- 	+" PEDIDOS.VL_NEGOCIACOESCOMERCIAIS VL_NEGOCIACOESCOMERCIAIS, "
+ 	+" NVL(PEDIDOS.VL_VENDA,0) VL_VENDA, " 
+ 	+" NVL(PEDIDOS.VL_AMOSTRA,0) VL_AMOSTRA, " 
+ 	+" NVL(PEDIDOS.VL_AMOSTRAPAGA,0) VL_AMOSTRAPAGA, " 
+ 	+" NVL(PEDIDOS.VL_BONIFICACAO,0) VL_BONIFICACAO, " 
+ 	+" NVL(PEDIDOS.VL_EXPOSITOR,0) VL_EXPOSITOR, " 
+ 	+" NVL(PEDIDOS.VL_BRINDE,0) VL_BRINDE, " 
+ 	+" NVL(PEDIDOS.VL_TROCA,0) VL_TROCA, " 
+ 	+" NVL(PEDIDOS.VL_NEGOCIACOESCOMERCIAIS,0) VL_NEGOCIACOESCOMERCIAIS, "
  
- 	+" geral.VL_VENDA total_VENDA, " 
- 	+" geral.VL_AMOSTRA total_AMOSTRA,  "
- 	+" geral.VL_AMOSTRAPAGA total_AMOSTRAPAGA,  "
- 	+" geral.VL_BONIFICACAO total_BONIFICACAO,  "
- 	+" geral.VL_EXPOSITOR total_EXPOSITOR,  "
- 	+" geral.VL_BRINDE total_BRINDE,  "
- 	+" geral.VL_TROCA total_TROCA,  "
- 	+" geral.VL_NEGOCIACOESCOMERCIAIS total_NEGOCIACOESCOMERCIAIS, en.NRO_ENDCADCFTV numeroendereco "
+ 	+" NVL(geral.VL_VENDA,0) total_VENDA, " 
+ 	+" NVL(geral.VL_AMOSTRA,0) total_AMOSTRA,  "
+ 	+" NVL(geral.VL_AMOSTRAPAGA,0) total_AMOSTRAPAGA,  "
+ 	+" NVL(geral.VL_BONIFICACAO,0) total_BONIFICACAO,  "
+ 	+" NVL(geral.VL_EXPOSITOR,0) total_EXPOSITOR,  "
+ 	+" NVL(geral.VL_BRINDE,0) total_BRINDE,  "
+ 	+" NVL(geral.VL_TROCA,0) total_TROCA,  "
+ 	+" NVL(geral.VL_NEGOCIACOESCOMERCIAIS,0) total_NEGOCIACOESCOMERCIAIS, en.NRO_ENDCADCFTV numeroendereco "
  
  	+" from cadcftv c  "
  	+" inner join cliente cl on cl.CADCFTVID = c.CADCFTVID  "
@@ -2815,6 +2819,119 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 		dadoscliente.setAcvlnegociacoescomerciais((BigDecimal) row[24] );
 		
 		dadoscliente.setNumeroendereco((String) row[25]);
+		
+		//sige
+		String cliente =  String.valueOf((BigDecimal) row[2]);
+		String cnpj = String.valueOf((String) row[4]);
+		javax.persistence.Query querySige = (javax.persistence.Query) managerSige.createNativeQuery(
+				" select "
+				+" g.Cod_Cadastro, "
+				+" total.tvenda, "
+				+" total.tamostra, "
+				+" total.tbonificacao, "
+				+" total.texpositor, "
+				+" total.ttroca, "
+
+				+" periodo.ttvenda, "
+				+" periodo.ttamostra, "
+				+" periodo.ttbonificacao, "
+				+" periodo.ttexpositor, "
+				+" periodo.tttroca "
+
+				+" from tbCadastroGeral g "
+
+				+" left join( "
+				+" select "
+				+" total.cod_cliente, "
+				+" isnull(SUM(total.sige_valor_venda),0) tvenda, "
+				+" isnull(SUM(total.sige_valor_amostra),0) tamostra, "
+				+" isnull(SUM(total.sige_valor_bonificacao),0) tbonificacao, "
+				+" isnull(SUM(total.sige_valor_expositor),0) texpositor, "
+				+" isnull(SUM(total.sige_valor_troca),0) ttroca "
+				+" from( "
+				+" select s.Cod_cli_for as cod_cliente, "
+				+" case when p.Cod_tipo_mv = 510 then cast(s.Valor_liquido as money) else 0 end as sige_valor_venda,   "
+				+" case when p.Cod_tipo_mv = 516 then cast(s.Valor_liquido as money) else 0 end as sige_valor_amostra,  " 
+				+" case when p.Cod_tipo_mv = 512 then cast(s.Valor_liquido as money) else 0 end as sige_valor_bonificacao, "  
+				+" case when p.Cod_tipo_mv = 517 then cast(s.Valor_liquido as money) else 0 end as sige_valor_expositor,   "
+				+" case when p.Cod_tipo_mv = 515 then cast(s.Valor_liquido as money) else 0 end as sige_valor_troca  , 'Fechado' as Status , p.Data_v1 "
+				+" from tbsaidas s left join tbsaidas p on p.Chave_fato = s.Chave_fato_orig_un  "
+				+" inner join tbCadastroGeral g on g.Cod_cadastro = s.Cod_cli_for "
+				+" left join tbTipoMvEstoque tp on tp.cod_tipo_mv = p.cod_tipo_mv  "
+				+" left join ( select max(s2.chave_fato) chave, s2.Chave_fato_orig_un from tbsaidas s2   "
+				+" group by s2.Chave_fato_orig_un) s22 on s22.Chave_fato_orig_un = s.Chave_fato  "
+				+" left join tbsaidas s2 on s2.Chave_fato_orig_un = s.Chave_fato and s2.Chave_fato = s22.chave  "
+				+" where s.Cod_tipo_mv in ('520','523','527')and p.Cod_tipo_mv in ('510','512','515','516','517') " 
+				+" and s.STATUS <> 'C'AND s.STATUS_CTB = 'S' and p.Status<>'C' )total group by total.cod_cliente "
+				+" )total on total.cod_cliente = g.cod_cadastro "
+
+				+" left join( "
+				+" select "
+				+" total.cod_cliente, "
+				+" isnull(SUM(total.sige_valor_venda),0) ttvenda, "
+				+" isnull(SUM(total.sige_valor_amostra),0) ttamostra, "
+				+" isnull(SUM(total.sige_valor_bonificacao),0) ttbonificacao, "
+				+" isnull(SUM(total.sige_valor_expositor),0) ttexpositor, "
+				+" isnull(SUM(total.sige_valor_troca),0) tttroca "
+				+" from( "
+				+" select s.Cod_cli_for as cod_cliente, "
+				+" case when p.Cod_tipo_mv = 510 then cast(s.Valor_liquido as money) else 0 end as sige_valor_venda,   "
+				+" case when p.Cod_tipo_mv = 516 then cast(s.Valor_liquido as money) else 0 end as sige_valor_amostra,  " 
+				+" case when p.Cod_tipo_mv = 512 then cast(s.Valor_liquido as money) else 0 end as sige_valor_bonificacao, "  
+				+" case when p.Cod_tipo_mv = 517 then cast(s.Valor_liquido as money) else 0 end as sige_valor_expositor,   "
+				+" case when p.Cod_tipo_mv = 515 then cast(s.Valor_liquido as money) else 0 end as sige_valor_troca  , 'Fechado' as Status , p.Data_v1 "
+				+" from tbsaidas s left join tbsaidas p on p.Chave_fato = s.Chave_fato_orig_un  "
+				+" inner join tbCadastroGeral g on g.Cod_cadastro = s.Cod_cli_for "
+				+" left join tbTipoMvEstoque tp on tp.cod_tipo_mv = p.cod_tipo_mv  "
+				+" left join ( select max(s2.chave_fato) chave, s2.Chave_fato_orig_un from tbsaidas s2 "  
+				+" group by s2.Chave_fato_orig_un) s22 on s22.Chave_fato_orig_un = s.Chave_fato  "
+				+" left join tbsaidas s2 on s2.Chave_fato_orig_un = s.Chave_fato and s2.Chave_fato = s22.chave "  
+				+" where s.Cod_tipo_mv in ('520','523','527')and p.Cod_tipo_mv in ('510','512','515','516','517')  " 
+				+" and s.STATUS <> 'C'AND s.STATUS_CTB = 'S' and p.Status<>'C' "
+				+" and p.Data_v1 between ' " + SdataFormatada + " ' and ' " + SdataFormatada2 + " ')total group by total.cod_cliente "
+				+" )periodo on periodo.cod_cliente = g.cod_cadastro "
+
+				+" where (g.Cod_Cadastro = " + cliente + " or g.Cpf_Cgc = '" + cnpj + "') ");
+		
+		List<Object[]> listasige = querySige.getResultList();
+		for (Object[] rowsige : listasige) {
+			BigDecimal venda = (BigDecimal) rowsige[1];
+			BigDecimal amostra = (BigDecimal) rowsige[2];
+			BigDecimal bonificacao = (BigDecimal) rowsige[3];
+			BigDecimal expositor = (BigDecimal) rowsige[4];
+			BigDecimal troca = (BigDecimal) rowsige[5];
+			
+			if(venda == null) {venda = new BigDecimal(0);}
+			if(amostra == null) {amostra = new BigDecimal(0);}
+			if(bonificacao == null) {bonificacao = new BigDecimal(0);}
+			if(expositor == null) {expositor = new BigDecimal(0);}
+			if(troca == null) {troca = new BigDecimal(0);}
+			
+			dadoscliente.setAcvlvenda(new BigDecimal(venda.doubleValue() + dadoscliente.getAcvlvenda().doubleValue()));
+			dadoscliente.setAcvlamostra(new BigDecimal(amostra.doubleValue() + dadoscliente.getAcvlamostra().doubleValue()));
+			dadoscliente.setAcvlbonificacao(new BigDecimal(bonificacao.doubleValue() + dadoscliente.getAcvlbonificacao().doubleValue()));
+			dadoscliente.setAcvlexpositor(new BigDecimal(expositor.doubleValue() + dadoscliente.getAcvlexpositor().doubleValue()));
+			dadoscliente.setAcvltroca(new BigDecimal(troca.doubleValue() + dadoscliente.getAcvltroca().doubleValue()));
+			
+			BigDecimal pvenda = (BigDecimal) rowsige[6];
+			BigDecimal pamostra = (BigDecimal) rowsige[7];
+			BigDecimal pbonificacao = (BigDecimal) rowsige[8];
+			BigDecimal pexpositor = (BigDecimal) rowsige[9];
+			BigDecimal ptroca = (BigDecimal) rowsige[10];
+			
+			if(pvenda == null) {pvenda = new BigDecimal(0);}
+			if(pamostra == null) {pamostra = new BigDecimal(0);}
+			if(pbonificacao == null) {pbonificacao = new BigDecimal(0);}
+			if(pexpositor == null) {pexpositor = new BigDecimal(0);}
+			if(ptroca == null) {ptroca = new BigDecimal(0);}
+			
+			dadoscliente.setVlvenda(new BigDecimal(pvenda.doubleValue()+dadoscliente.getVlvenda().doubleValue()) );
+			dadoscliente.setVlamostra(new BigDecimal(pamostra.doubleValue()+dadoscliente.getVlamostra().doubleValue()) );
+			dadoscliente.setVlbonificacao(new BigDecimal(pbonificacao.doubleValue()+dadoscliente.getVlbonificacao().doubleValue()) );
+			dadoscliente.setVlexpositor(new BigDecimal(pexpositor.doubleValue()+dadoscliente.getVlexpositor().doubleValue()) );
+			dadoscliente.setVltroca(new BigDecimal(ptroca.doubleValue()+dadoscliente.getVltroca().doubleValue()) );
+			
+		}
 		
 		list.add(dadoscliente);
 	}
