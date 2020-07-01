@@ -2483,7 +2483,10 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 				+" ACUMULADO.VL_bonificacao, " 
 				+" ACUMULADO.VL_expositor, " 
 				+" ACUMULADO.VL_troca, "
-				+" ACUMULADO.VL_negociacoescomerciais "
+				+" ACUMULADO.VL_negociacoescomerciais, "
+				
+				+" p.PC_COMISSAO1_PEDIDOVENDA percentual_comissao, "
+				+" lucro.lucropedido "
 
 				+" from pedidovenda p "
 				+" inner join pedidovenda_item it on it.pedidovendaid = p.pedidovendaid "
@@ -2491,6 +2494,18 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 				+" inner join cadcftv cli on cli.cadcftvid = p.CADCFTVID "
 				+" inner join roteiro ro on ro.ROTEIROID = p.roteiroid "
 				+" inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid "
+				
+				+" inner join( "
+				+" select "
+				+" it.pedidovendaid, "
+				+" sum(IT.vl_total_pedidovenda_item) totalitem, "
+				+" sum((pr.vl_custo_produto * it.qt_pedidovenda_item )) custo_total, "
+				+" sum(IT.vl_total_pedidovenda_item)-sum((pr.vl_custo_produto * it.qt_pedidovenda_item )) bruto, "
+				+" TRUNC(((sum(IT.vl_total_pedidovenda_item)-sum((pr.vl_custo_produto * it.qt_pedidovenda_item )))/sum(IT.vl_total_pedidovenda_item))*100,2) lucropedido "
+				+" from pedidovenda_item it "
+				+" inner join produto pr on pr.produtoid = it.produtoid "
+				+" group by it.pedidovendaid "
+				+" )lucro on lucro.pedidovendaid = p.pedidovendaid "
 
 				+" left join( "
 				+" select resumo.cadcftvid, resumo.produtoid, "
@@ -2568,6 +2583,9 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 			pedidoitem.setVlexpositor((BigDecimal) row[27]);
 			pedidoitem.setVltroca((BigDecimal) row[28]);
 			pedidoitem.setVlnegociacoescomerciais((BigDecimal) row[29]);
+			
+			pedidoitem.setPc_comissao((BigDecimal) row[30]);
+			pedidoitem.setPc_lucro_visao14((BigDecimal) row[31]);
 			
 			//sige
 			String cliente =  String.valueOf((BigDecimal) row[4]);

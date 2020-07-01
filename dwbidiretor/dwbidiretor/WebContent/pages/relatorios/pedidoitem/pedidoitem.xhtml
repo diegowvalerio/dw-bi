@@ -132,7 +132,7 @@
 					</h:panelGrid>
 					
 					<p:separator></p:separator>
-					<h:panelGrid columns="10" id="paineld1" style="width:100%" title="Detalhes do Pedido">
+					<h:panelGrid columns="14" id="paineld1" style="width:100%" title="Detalhes do Pedido">
 								 					
 						<p:outputLabel value="Pedido: " />
 						<h:outputText value="#{beanPedidoItem.pedidoitem.pedido}" />
@@ -148,6 +148,12 @@
 
 						<p:outputLabel value="Tipo: " />
 						<h:outputText value="#{beanPedidoItem.pedidoitem.tipopedido}" />
+						
+						<p:outputLabel value="Comissão: " />
+						<h:outputText value="#{beanPedidoItem.pedidoitem.pc_comissao} %" />
+						
+						<p:outputLabel value="Lucro(14) " />
+						<h:outputText value="#{beanPedidoItem.pedidoitem.pc_lucro_visao14} %" />
 						
 					</h:panelGrid>					
 					<h:panelGrid columns="1" id="paineld" columnClasses="left,right"

@@ -52,8 +52,27 @@ public class PedidoItem implements Serializable {
 	private BigDecimal vltroca;
 	private BigDecimal vlnegociacoescomerciais;
 	
+	private BigDecimal pc_comissao;
+	private BigDecimal pc_lucro_visao14;
+	
 	public PedidoItem() {
 		super();
+	}
+
+	public BigDecimal getPc_comissao() {
+		return pc_comissao;
+	}
+
+	public void setPc_comissao(BigDecimal pc_comissao) {
+		this.pc_comissao = pc_comissao;
+	}
+
+	public BigDecimal getPc_lucro_visao14() {
+		return pc_lucro_visao14;
+	}
+
+	public void setPc_lucro_visao14(BigDecimal pc_lucro_visao14) {
+		this.pc_lucro_visao14 = pc_lucro_visao14;
 	}
 
 	public BigDecimal getVlvenda() {
