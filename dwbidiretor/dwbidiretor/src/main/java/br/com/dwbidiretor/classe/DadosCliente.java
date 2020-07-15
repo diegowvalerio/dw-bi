@@ -39,8 +39,27 @@ public class DadosCliente implements Serializable {
 	private BigDecimal vltroca;
 	private BigDecimal vlnegociacoescomerciais;
 	
+	private BigDecimal acvlbonificacaoexpositor;
+	private BigDecimal vlbonificacaoexpositor;
+	
 	public DadosCliente() {
 		super();
+	}
+
+	public BigDecimal getAcvlbonificacaoexpositor() {
+		return acvlbonificacaoexpositor;
+	}
+
+	public void setAcvlbonificacaoexpositor(BigDecimal acvlbonificacaoexpositor) {
+		this.acvlbonificacaoexpositor = acvlbonificacaoexpositor;
+	}
+
+	public BigDecimal getVlbonificacaoexpositor() {
+		return vlbonificacaoexpositor;
+	}
+
+	public void setVlbonificacaoexpositor(BigDecimal vlbonificacaoexpositor) {
+		this.vlbonificacaoexpositor = vlbonificacaoexpositor;
 	}
 
 	public String getNumeroendereco() {

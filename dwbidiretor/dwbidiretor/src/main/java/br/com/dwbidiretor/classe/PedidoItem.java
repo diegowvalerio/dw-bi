@@ -55,8 +55,27 @@ public class PedidoItem implements Serializable {
 	private BigDecimal pc_comissao;
 	private BigDecimal pc_lucro_visao14;
 	
+	private BigDecimal qtdebonificacaoexpositor;
+	private BigDecimal vlbonificacaoexpositor;
+	
 	public PedidoItem() {
 		super();
+	}
+
+	public BigDecimal getQtdebonificacaoexpositor() {
+		return qtdebonificacaoexpositor;
+	}
+
+	public void setQtdebonificacaoexpositor(BigDecimal qtdebonificacaoexpositor) {
+		this.qtdebonificacaoexpositor = qtdebonificacaoexpositor;
+	}
+
+	public BigDecimal getVlbonificacaoexpositor() {
+		return vlbonificacaoexpositor;
+	}
+
+	public void setVlbonificacaoexpositor(BigDecimal vlbonificacaoexpositor) {
+		this.vlbonificacaoexpositor = vlbonificacaoexpositor;
 	}
 
 	public BigDecimal getPc_comissao() {

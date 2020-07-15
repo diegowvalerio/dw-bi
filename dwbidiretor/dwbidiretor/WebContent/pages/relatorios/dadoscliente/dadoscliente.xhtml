@@ -100,6 +100,7 @@
 									<p:column colspan="2" headerText="Amostra" style="border: 1px solid"/>
 									<p:column colspan="2" headerText="Amostra Paga" style="border: 1px solid"/>
 									<p:column colspan="2" headerText="Bonificação" style="border: 1px solid"/>
+									<p:column colspan="2" headerText="Bonificação Expositor" style="border: 1px solid"/>
 									<p:column colspan="2" headerText="Expositor" style="border: 1px solid"/>
 									<p:column colspan="2" headerText="Brinde" style="border: 1px solid"/>
 									<p:column colspan="2" headerText="Troca" style="border: 1px solid"/>
@@ -116,6 +117,8 @@
 									<p:column colspan="1" headerText="Cidade" style="border: 1px solid; text-align: Left"/>	
 									<p:column colspan="1" headerText="CEP" style="border: 1px solid; text-align: Left"/>	
 									<p:column colspan="1" headerText="UF" style="border: 1px solid; text-align: Left"/>						
+									<p:column colspan="1" headerText="Total Geral"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Periodo"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Total Geral"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Periodo"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Total Geral"  style="border: 1px solid; text-align: Left"/>
@@ -202,6 +205,14 @@
 							
 							<p:column>
 								<h:outputText value="#{vendas.vlbonificacao}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column>
+								<h:outputText value="#{vendas.acvlbonificacaoexpositor}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>
+							
+							<p:column>
+								<h:outputText value="#{vendas.vlbonificacaoexpositor}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
 							</p:column>
 							
 							<p:column>

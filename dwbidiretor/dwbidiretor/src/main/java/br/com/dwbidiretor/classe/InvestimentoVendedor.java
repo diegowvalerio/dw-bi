@@ -45,9 +45,32 @@ public class InvestimentoVendedor implements Serializable {
 	
 	private BigDecimal vltrocanegocio;
 	private BigDecimal pctrocanegocio;
+	
+	private BigDecimal vlbonificacaoexpositor;
+	private BigDecimal pcbonificacaoexpositor;
 
 	public InvestimentoVendedor() {
 		super();
+	}
+
+
+	public BigDecimal getVlbonificacaoexpositor() {
+		return vlbonificacaoexpositor;
+	}
+
+
+	public void setVlbonificacaoexpositor(BigDecimal vlbonificacaoexpositor) {
+		this.vlbonificacaoexpositor = vlbonificacaoexpositor;
+	}
+
+
+	public BigDecimal getPcbonificacaoexpositor() {
+		return pcbonificacaoexpositor;
+	}
+
+
+	public void setPcbonificacaoexpositor(BigDecimal pcbonificacaoexpositor) {
+		this.pcbonificacaoexpositor = pcbonificacaoexpositor;
 	}
 
 

@@ -54,12 +54,13 @@ public class BeanAnaliseClientePedido implements Serializable {
 			if(listaAnaliseClientePedido.size() > 0){
 			analiseClientePedido = listaAnaliseClientePedido.get(0);
 			float tvenda = 0; float tamosta =0; float tamostrapaga=0;
-			float tbonificacao =0; float texpositor =0; float tbrinde=0; float ttroca=0; float tnegocios = 0;
+			float tbonificacao =0; float tbonificacaoexpositor =0; float texpositor =0; float tbrinde=0; float ttroca=0; float tnegocios = 0;
 			for (AnaliseClientePedido venda : listaAnaliseClientePedido) {
 				tvenda = tvenda + venda.getVlvenda().floatValue();
 				tamosta = tamosta + venda.getVlamostra().floatValue();
 				tamostrapaga = tamostrapaga + venda.getVlamostrapaga().floatValue();
 				tbonificacao = tbonificacao + venda.getVlbonificacao().floatValue();
+				tbonificacaoexpositor = tbonificacaoexpositor + venda.getVlbonificacaoexpositor().floatValue();
 				texpositor = texpositor + venda.getVlexpositor().floatValue();
 				tbrinde = tbrinde + venda.getVlbrinde().floatValue();
 				ttroca = ttroca + venda.getVltroca().floatValue();
@@ -69,6 +70,7 @@ public class BeanAnaliseClientePedido implements Serializable {
 			analiseClientePedido.setAcvlamostra(new BigDecimal(tamosta));
 			analiseClientePedido.setAcvlamostrapaga(new BigDecimal(tamostrapaga));
 			analiseClientePedido.setAcvlbonificacao(new BigDecimal(tbonificacao));
+			analiseClientePedido.setAcvlbonificacaoexpositor(new BigDecimal(tbonificacaoexpositor));
 			analiseClientePedido.setAcvlexpositor(new BigDecimal(texpositor));
 			analiseClientePedido.setAcvlbrinde(new BigDecimal(tbrinde));
 			analiseClientePedido.setAcvltroca(new BigDecimal(ttroca));
@@ -77,6 +79,7 @@ public class BeanAnaliseClientePedido implements Serializable {
 			analiseClientePedido.setPcamostra(new BigDecimal((tamosta/tvenda)*100));
 			analiseClientePedido.setPcamostrapaga(new BigDecimal((tamostrapaga/tvenda)*100));
 			analiseClientePedido.setPcbonificacao(new BigDecimal((tbonificacao/tvenda)*100));
+			analiseClientePedido.setPcbonificacaoexpositor(new BigDecimal((tbonificacaoexpositor/tvenda)*100));
 			analiseClientePedido.setPcexpositor(new BigDecimal((texpositor/tvenda)*100));
 			analiseClientePedido.setPcbrinde(new BigDecimal((tbrinde/tvenda)*100));
 			analiseClientePedido.setPctroca(new BigDecimal((ttroca/tvenda)*100));

@@ -57,8 +57,36 @@ public class AnaliseClientePedido implements Serializable {
 	private BigDecimal pctroca;
 	private BigDecimal pcnegociacoescomerciais;
 	
+	private BigDecimal vlbonificacaoexpositor;
+	private BigDecimal acvlbonificacaoexpositor;
+	private BigDecimal pcbonificacaoexpositor;
+	
 	public AnaliseClientePedido() {
 		super();
+	}
+
+	public BigDecimal getVlbonificacaoexpositor() {
+		return vlbonificacaoexpositor;
+	}
+
+	public void setVlbonificacaoexpositor(BigDecimal vlbonificacaoexpositor) {
+		this.vlbonificacaoexpositor = vlbonificacaoexpositor;
+	}
+
+	public BigDecimal getAcvlbonificacaoexpositor() {
+		return acvlbonificacaoexpositor;
+	}
+
+	public void setAcvlbonificacaoexpositor(BigDecimal acvlbonificacaoexpositor) {
+		this.acvlbonificacaoexpositor = acvlbonificacaoexpositor;
+	}
+
+	public BigDecimal getPcbonificacaoexpositor() {
+		return pcbonificacaoexpositor;
+	}
+
+	public void setPcbonificacaoexpositor(BigDecimal pcbonificacaoexpositor) {
+		this.pcbonificacaoexpositor = pcbonificacaoexpositor;
 	}
 
 	public Date getDatapedido() {

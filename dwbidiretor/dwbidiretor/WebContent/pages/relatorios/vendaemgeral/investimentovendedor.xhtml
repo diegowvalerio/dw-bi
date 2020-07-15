@@ -156,6 +156,18 @@
 								</h:outputText>
 							</p:column>
 							
+							<p:column headerText="Bonificação Expositor"
+								sortBy="#{vendas.vlbonificacaoexpositor}">
+								<h:outputText value="#{vendas.vlbonificacaoexpositor}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+								<br></br>
+								<h:outputText value="#{vendas.pcbonificacaoexpositor}" 
+								style="font-weight:bold">
+									<f:convertNumber type="currency" currencySymbol="%" />
+								</h:outputText>
+							</p:column>
+							
 							<p:column headerText="Expositor"
 								sortBy="#{vendas.vlexpositor}">
 								<h:outputText value="#{vendas.vlexpositor}">

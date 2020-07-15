@@ -58,6 +58,10 @@ public interface DAOGenerico<E> {
 	
 	public List<VendasEmGeralItem> bonificacaoemgeralitem(BigDecimal pedido);
 	
+	public List<VendasEmGeral> bonificacaoexpositoremgeral(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2);
+	
+	public List<VendasEmGeralItem> bonificacaoexpositoremgeralitem(BigDecimal pedido);
+	
 	public List<VendasEmGeral> expositoremgeral(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2);
 	
 	public List<VendasEmGeralItem> expositoremgeralitem(BigDecimal pedido);

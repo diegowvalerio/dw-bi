@@ -957,14 +957,14 @@ public List<InvestimentoVendedor> investimentovendedor(Date data1, Date data2, S
 			+ " geral.vlgeralfaturado, "
 			+ " NVL(fat.vlfaturado,0) as vlfaturado, "
 
-			+ " NVL(sum(investimento.amostra),0)+NVL(sum(investimento.bonificacao),0)+NVL(sum(investimento.expositor),0) + "
+			+ " NVL(sum(investimento.amostra),0)+NVL(sum(investimento.bonificacao),0)+NVL(sum(investimento.bonificacaoexpositor),0)+NVL(sum(investimento.expositor),0) + "
 			+ " NVL(sum(investimento.brinde),0)+NVL(sum(investimento.trocadefeito),0)+NVL(sum(investimento.trocanegocio),0) as  totalinvestido, "
 
-			+ " NVL(((NVL(sum(investimento.amostra),0)+NVL(sum(investimento.bonificacao),0)+NVL(sum(investimento.expositor),0) + "
+			+ " NVL(((NVL(sum(investimento.amostra),0)+NVL(sum(investimento.bonificacao),0)+NVL(sum(investimento.bonificacaoexpositor),0)+NVL(sum(investimento.expositor),0) + "
 			+ " NVL(sum(investimento.brinde),0)+NVL(sum(investimento.trocadefeito),0)+NVL(sum(investimento.trocanegocio),0))/fat.vlfaturado)*100 ,0) as pcinvestidovendedor, "
 
 
-			+ " ((NVL(sum(investimento.amostra),0)+NVL(sum(investimento.bonificacao),0)+NVL(sum(investimento.expositor),0) + "
+			+ " ((NVL(sum(investimento.amostra),0)+NVL(sum(investimento.bonificacao),0)+NVL(sum(investimento.bonificacaoexpositor),0)+NVL(sum(investimento.expositor),0) + "
 			+ " NVL(sum(investimento.brinde),0)+NVL(sum(investimento.trocadefeito),0)+NVL(sum(investimento.trocanegocio),0))/geral.vlgeralfaturado)*100 as pcinvestidogeral, "
 
 			+ " NVL(sum(investimento.amostra),0) as vlamostra, "
@@ -983,7 +983,10 @@ public List<InvestimentoVendedor> investimentovendedor(Date data1, Date data2, S
 			+ " NVL((NVL(sum(investimento.trocadefeito),0) / fat.vlfaturado )*100 ,0) as pctrocadefeito, "
 
 			+ " NVL(sum(investimento.trocanegocio),0) as vltrocanegocio, "
-			+ " NVL((NVL(sum(investimento.trocanegocio),0) / fat.vlfaturado )*100 ,0) as pctrocanegocio "
+			+ " NVL((NVL(sum(investimento.trocanegocio),0) / fat.vlfaturado )*100 ,0) as pctrocanegocio, "
+			
+			+ " NVL(sum(investimento.bonificacaoexpositor),0) as vlbonificacaoexpositor, "
+			+ " NVL((NVL(sum(investimento.bonificacaoexpositor),0) / fat.vlfaturado )*100 ,0) as pcbonificacaoexpositor "
 
 			+ " from( "
 			+ " select "
@@ -994,7 +997,8 @@ public List<InvestimentoVendedor> investimentovendedor(Date data1, Date data2, S
 			+ " case when p.TIPOPEDIDOID = 5  then p.vl_totalprod_pedidovenda end as expositor,  "
 			+ " case when p.TIPOPEDIDOID = 14 then p.vl_totalprod_pedidovenda end as brinde,  "
 			+ " case when p.TIPOPEDIDOID = 13 then p.vl_totalprod_pedidovenda end as trocanegocio,  "
-			+ " case when p.TIPOPEDIDOID = 2 then p.vl_totalprod_pedidovenda end as trocadefeito "
+			+ " case when p.TIPOPEDIDOID = 2 then p.vl_totalprod_pedidovenda end as trocadefeito, "
+			+ " case when p.TIPOPEDIDOID = 16 then p.vl_totalprod_pedidovenda end as bonificacaoexpositor "
 
 			+ " from pedidovenda p  "
 			+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID  "
@@ -1016,7 +1020,7 @@ public List<InvestimentoVendedor> investimentovendedor(Date data1, Date data2, S
 			+ " AND CF.tipooperacao_cfop <> 'VENDA'  "
 			
 			+ " and liberado.DT_ROTEIRO_PEDIDO between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
-			+ " and p.TIPOPEDIDOID in (4,3,5,14,13,2) and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " '  "
+			+ " and p.TIPOPEDIDOID in (4,3,5,14,13,2,16) and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " '  "
 			+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " '  "
 			+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
 			+ " and tr.ORDEM_ROTEIRO > 3 "
@@ -1087,6 +1091,8 @@ public List<InvestimentoVendedor> investimentovendedor(Date data1, Date data2, S
 		vendasEmGeral.setPctrocadefeito((BigDecimal) row[16] );
 		vendasEmGeral.setVltrocanegocio((BigDecimal) row[17] );
 		vendasEmGeral.setPctrocanegocio((BigDecimal) row[18] );
+		vendasEmGeral.setVlbonificacaoexpositor((BigDecimal) row[19] );
+		vendasEmGeral.setPcbonificacaoexpositor((BigDecimal) row[20] );
 									
 		list.add(vendasEmGeral);
 	}
@@ -1117,14 +1123,14 @@ public List<InvestimentoVendedor> investimentovendedor_2(Date data1, Date data2,
 			+ " geral.vlgeralfaturado, "
 			+ " NVL(fat.vlfaturado,0) as vlfaturado, "
 
-			+ " NVL(sum(investimento.amostra),0)+NVL(sum(investimento.bonificacao),0)+NVL(sum(investimento.expositor),0) + "
+			+ " NVL(sum(investimento.amostra),0)+NVL(sum(investimento.bonificacao),0)+NVL(sum(investimento.bonificacaoexpositor),0)+NVL(sum(investimento.expositor),0) + "
 			+ " NVL(sum(investimento.brinde),0)+NVL(sum(investimento.trocanegocio),0) as  totalinvestido, "
 
-			+ " NVL(((NVL(sum(investimento.amostra),0)+NVL(sum(investimento.bonificacao),0)+NVL(sum(investimento.expositor),0) + "
+			+ " NVL(((NVL(sum(investimento.amostra),0)+NVL(sum(investimento.bonificacao),0)+NVL(sum(investimento.bonificacaoexpositor),0)+NVL(sum(investimento.expositor),0) + "
 			+ " NVL(sum(investimento.brinde),0)+NVL(sum(investimento.trocanegocio),0))/fat.vlfaturado)*100 ,0) as pcinvestidovendedor, "
 
 
-			+ " ((NVL(sum(investimento.amostra),0)+NVL(sum(investimento.bonificacao),0)+NVL(sum(investimento.expositor),0) + "
+			+ " ((NVL(sum(investimento.amostra),0)+NVL(sum(investimento.bonificacao),0)+NVL(sum(investimento.bonificacaoexpositor),0)+NVL(sum(investimento.expositor),0) + "
 			+ " NVL(sum(investimento.brinde),0)+NVL(sum(investimento.trocanegocio),0))/geral.vlgeralfaturado)*100 as pcinvestidogeral, "
 
 			+ " NVL(sum(investimento.amostra),0) as vlamostra, "
@@ -1140,7 +1146,10 @@ public List<InvestimentoVendedor> investimentovendedor_2(Date data1, Date data2,
 			+ " NVL((NVL(sum(investimento.brinde),0) / fat.vlfaturado )*100 ,0) as pcbrinde, "
 
 			+ " NVL(sum(investimento.trocanegocio),0) as vltrocanegocio, "
-			+ " NVL((NVL(sum(investimento.trocanegocio),0) / fat.vlfaturado )*100 ,0) as pctrocanegocio "
+			+ " NVL((NVL(sum(investimento.trocanegocio),0) / fat.vlfaturado )*100 ,0) as pctrocanegocio, "
+			
+			+ " NVL(sum(investimento.bonificacaoexpositor),0) as vlbonificacaoexpositor, "
+			+ " NVL((NVL(sum(investimento.bonificacaoexpositor),0) / fat.vlfaturado )*100 ,0) as pcbonificacaoexpositor "
 
 			+ " from( "
 			+ " select "
@@ -1150,7 +1159,8 @@ public List<InvestimentoVendedor> investimentovendedor_2(Date data1, Date data2,
 			+ " case when p.TIPOPEDIDOID = 3 then p.vl_totalprod_pedidovenda end as bonificacao,  "
 			+ " case when p.TIPOPEDIDOID = 5  then p.vl_totalprod_pedidovenda end as expositor,  "
 			+ " case when p.TIPOPEDIDOID = 14 then p.vl_totalprod_pedidovenda end as brinde,  "
-			+ " case when p.TIPOPEDIDOID = 13 then p.vl_totalprod_pedidovenda end as trocanegocio "
+			+ " case when p.TIPOPEDIDOID = 13 then p.vl_totalprod_pedidovenda end as trocanegocio, "
+			+ " case when p.TIPOPEDIDOID = 16 then p.vl_totalprod_pedidovenda end as bonificacaoexpositor "
 			
 
 			+ " from pedidovenda p  "
@@ -1173,7 +1183,7 @@ public List<InvestimentoVendedor> investimentovendedor_2(Date data1, Date data2,
 			+ " AND CF.tipooperacao_cfop <> 'VENDA'  "
 			
 			+ " and liberado.DT_ROTEIRO_PEDIDO between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
-			+ " and p.TIPOPEDIDOID in (4,3,5,14,13) and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " '  "
+			+ " and p.TIPOPEDIDOID in (4,3,5,14,13,16) and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " '  "
 			+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " '  "
 			+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
 			+ " and tr.ORDEM_ROTEIRO > 3 "
@@ -1242,6 +1252,8 @@ public List<InvestimentoVendedor> investimentovendedor_2(Date data1, Date data2,
 		vendasEmGeral.setPcbrinde((BigDecimal) row[14] );
 		vendasEmGeral.setVltrocanegocio((BigDecimal) row[15] );
 		vendasEmGeral.setPctrocanegocio((BigDecimal) row[16] );
+		vendasEmGeral.setVlbonificacaoexpositor((BigDecimal) row[17] );
+		vendasEmGeral.setPcbonificacaoexpositor((BigDecimal) row[18] );
 									
 		list.add(vendasEmGeral);
 	}
@@ -1293,7 +1305,7 @@ public List<VendasEmGeral> investimentoemgeral_2(Date data1, Date data2, String 
 					+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
 					+ " AND CF.tipooperacao_cfop <> 'VENDA' "
 					+ " and liberado.DT_ROTEIRO_PEDIDO between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
-					+ " and p.TIPOPEDIDOID in (4,3,5,14,13) and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+					+ " and p.TIPOPEDIDOID in (4,3,5,14,13,16) and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 					+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 					+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
 					+ " and tr.ORDEM_ROTEIRO > 3 "
@@ -1371,7 +1383,7 @@ public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String ve
 									+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
 									+ " AND CF.tipooperacao_cfop <> 'VENDA' "
 									+ " and liberado.DT_ROTEIRO_PEDIDO between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
-									+ " and p.TIPOPEDIDOID in (4,3,5,14,13,2) and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+									+ " and p.TIPOPEDIDOID in (4,3,5,14,13,2,16) and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 									+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 									+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
 									+ " and tr.ORDEM_ROTEIRO > 3 "
@@ -1634,6 +1646,150 @@ public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String ve
 				return list;
 				
 			}
+
+	public List<VendasEmGeral> bonificacaoexpositoremgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
+		List<VendasEmGeral> list = new ArrayList<>();
+		
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		String dataFormatada = formato.format(data1);
+		String dataFormatada2 = formato.format(data2);
+
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				// "SELECT * FROM("
+						" select " 
+						+ " CI.CADCFTVID AS CLIENTE, " 
+						+ " CI.NOME_CADCFTV AS NOME_CLIENTE, "
+						+ " p.pedidovendaid pedido, " 
+						+ " P.DT_PEDIDOVENDA AS DATAPEDIDO, "
+						+ " p.vl_totalprod_pedidovenda, " 
+						+ " pg.nome_formapagto as prazo, "
+						+ " t.desc_tipo_pedido as tipo_pedido, " 
+						+ " CF.tipooperacao_cfop, " 
+						+ " p.status_pedidovenda, "
+						+ " v.NOME_CADCFTV nome_vendedor "
+						+ " from pedidovenda p "
+						+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
+						+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID "
+						+ " inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid "
+						+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid "
+						+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+						+ " inner join roteiro r on r.roteiroid = p.roteiroid "
+						//+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
+						//+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+						+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
+						+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+						+ " AND CF.tipooperacao_cfop <> 'VENDA' "
+						+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
+						+ " and p.TIPOPEDIDOID = 16 and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+						+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+						+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
+						+ " ORDER BY P.PEDIDOVENDAID  ");
+
+		List<Object[]> lista = query.getResultList();
+		
+		
+
+		for (Object[] row : lista) {
+			VendasEmGeral vendasEmGeral = new VendasEmGeral();
+
+			vendasEmGeral.setCodigocliente((BigDecimal) row[0]);
+			vendasEmGeral.setNomecliente((String) row[1] );
+			vendasEmGeral.setPedido((BigDecimal) row[2] );
+			vendasEmGeral.setDatapedido((Date) row[3] );
+			vendasEmGeral.setValortotalpedido((BigDecimal) row[4] );
+			vendasEmGeral.setPrazo((String) row[5] );
+			vendasEmGeral.setTipopedido((String) row[6] );
+			vendasEmGeral.setTipooperacaocfop((String) row[7] );
+			vendasEmGeral.setStatuspedido((String) row[8] );
+			vendasEmGeral.setNomevendedor((String) row[9] );
+			
+			
+			
+			list.add(vendasEmGeral);
+		}
+
+		return list;
+	}
+	public List<VendasEmGeralItem> bonificacaoexpositoremgeralitem(BigDecimal pedido) {
+		List<VendasEmGeralItem> list = new ArrayList<>();
+					/*lista 2*/
+					javax.persistence.Query query2 = (javax.persistence.Query) manager.createNativeQuery(
+							// "SELECT * FROM("
+									" select " 
+									+ " CI.CADCFTVID AS CLIENTE, " 
+									+ " CI.NOME_CADCFTV AS NOME_CLIENTE, "
+									+ " p.pedidovendaid pedido, " 
+									+ " P.DT_PEDIDOVENDA AS DATAPEDIDO, "
+									+ " p.vl_totalprod_pedidovenda, " 
+									+ " pg.nome_formapagto as prazo, "
+									+ " t.desc_tipo_pedido as tipo_pedido, " 
+									+ " CF.tipooperacao_cfop, " 
+									+ " p.status_pedidovenda, "
+									+ " it.produtoid, " 
+									+ " it.ds_produto_pedidovenda_item, " 
+									+ " it.qt_pedidovenda_item, "
+									+ " IT.VL_UNIT_PEDIDOVENDA_ITEM, " 
+									+ " IT.vl_total_pedidovenda_item, "
+									+ " x1.NR_NOTA_PEDIDOVENDA,  " 
+									+ " x1.DT_SAIDA_PEDIDOVENDA,  "
+									+ " x1.STATUS_PEDIDOVENDA status_nota, " 
+									+ " IMG.IMAGEM_PRODUTO "
+									+ " from pedidovenda p "
+									+ " INNER JOIN PEDIDOVENDA_ITEM IT ON IT.PEDIDOVENDAID= P.PEDIDOVENDAID "
+									+ " LEFT JOIN PRODUTO_IMAGEM IMG ON IMG.PRODUTOID = IT.PRODUTOID "
+									+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
+									+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID "
+									+ " inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid "
+									+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid "
+									+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+									+ " inner join roteiro r on r.roteiroid = p.roteiroid "
+									//+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
+									//+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+									+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
+									+ " left join ( " 
+									+ " select " 
+									+ " nota.NR_NOTA_PEDIDOVENDA, " 
+									+ " nota.DT_SAIDA_PEDIDOVENDA,  "
+									+ " nota.STATUS_PEDIDOVENDA, " 
+									+ " it_nota.ORIGEM_PEDIDOVENDA_ITEM,  " 
+									+ " IT_nota.produtoid "
+									+ " from PEDIDOVENDA_ITEM IT_nota "
+									+ " inner join pedidovenda nota on nota.pedidovendaid = it_nota.pedidovendaid " 
+									+ " group by  "
+									+ " nota.NR_NOTA_PEDIDOVENDA, " 
+									+ " nota.DT_SAIDA_PEDIDOVENDA,  " 
+									+ " nota.STATUS_PEDIDOVENDA, "
+									+ " it_nota.ORIGEM_PEDIDOVENDA_ITEM , " 
+									+ " IT_nota.produtoid "
+									+ " ) x1 on x1.ORIGEM_PEDIDOVENDA_ITEM = IT.PEDIDOVENDAITEMID  and x1.produtoid = it.produtoid "
+
+									+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+									+ " AND CF.tipooperacao_cfop <> 'VENDA' "
+									+ " and p.TIPOPEDIDOID = 16 and p.pedidovendaid = ' " + pedido + " ' " 
+									+ " ORDER BY P.PEDIDOVENDAID  ");
+					List<Object[]> lista2 = query2.getResultList();
+					
+					for (Object[] row2 : lista2) {
+						
+							
+						VendasEmGeralItem vendasEmGeralItem = new VendasEmGeralItem();
+						
+						vendasEmGeralItem.setPedido((BigDecimal) row2[2] );
+						vendasEmGeralItem.setCodigoproduto((BigDecimal) row2[9] );
+						vendasEmGeralItem.setNomeproduto((String) row2[10] );
+						vendasEmGeralItem.setQuantidadeproduto((BigDecimal) row2[11] );
+						vendasEmGeralItem.setValorunitarioproduto((BigDecimal) row2[12] );
+						vendasEmGeralItem.setValortotalproduto((BigDecimal) row2[13] );
+						vendasEmGeralItem.setNota((String) row2[14] );
+						vendasEmGeralItem.setDatanota((Date) row2[15] );
+						vendasEmGeralItem.setStatusnota((String) row2[16] );
+						vendasEmGeralItem.setImagem((Blob) row2[17] );
+						
+						list.add(vendasEmGeralItem);
+					}
+					return list;
+					
+				}
 
 	//pedidos de amostra
 		public List<VendasEmGeral> expositoremgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
@@ -2322,7 +2478,8 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 				+" NVL(PEDIDOS.VL_BRINDE,0) VL_BRINDE, "
 				+" NVL(PEDIDOS.VL_TROCA,0) VL_TROCA, "
 				+" NVL(PEDIDOS.VL_NEGOCIACOESCOMERCIAIS,0) VL_NEGOCIACOESCOMERCIAIS, "
-				+" PEDIDOS.STATUS_PEDIDOVENDA, c.cnpjcpf_cadcftv as cpfcnpj, PEDIDOS.DT "
+				+" PEDIDOS.STATUS_PEDIDOVENDA, c.cnpjcpf_cadcftv as cpfcnpj, PEDIDOS.DT, "
+				+" NVL(PEDIDOS.VL_BONIFICACAOEXPOSITOR,0) VL_BONIFICACAOEXPOSITOR "
 				+" from cadcftv c "
 				+" inner join cliente cl on cl.CADCFTVID = c.CADCFTVID "
 				+" LEFT JOIN( "
@@ -2349,6 +2506,7 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 				+" case when p.tipopedidoid  = 4 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_amostra,  "
 				+" case when p.tipopedidoid  = 6 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_amostrapaga,  "
 				+" case when p.tipopedidoid  = 3 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_bonificacao,  "
+				+" case when p.tipopedidoid  = 16 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_bonificacaoexpositor,  "
 				+" case when p.tipopedidoid  = 5 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_expositor,  "
 				+" case when p.tipopedidoid  = 14 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_brinde,  "
 				+" case when p.tipopedidoid  = 2 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_troca,  "
@@ -2388,6 +2546,7 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 		analiseClientePedido.setVlnegociacoescomerciais((BigDecimal) row[15] );
 		analiseClientePedido.setStatuspedido((String) row[16]);
 		analiseClientePedido.setDatapedido((Date) row[18] );
+		analiseClientePedido.setVlbonificacaoexpositor((BigDecimal) row[19] );
 		
 		list.add(analiseClientePedido);
 	}}
@@ -2439,6 +2598,7 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 		analiseClientePedido.setVlnegociacoescomerciais(new BigDecimal(0) );
 		analiseClientePedido.setStatuspedido((String) rowsige[8]);
 		analiseClientePedido.setDatapedido((Date) rowsige[9] );
+		analiseClientePedido.setVlbonificacaoexpositor(new BigDecimal(0));
 		
 		list.add(analiseClientePedido);	
 	}}
@@ -2486,7 +2646,10 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 				+" ACUMULADO.VL_negociacoescomerciais, "
 				
 				+" p.PC_COMISSAO1_PEDIDOVENDA percentual_comissao, "
-				+" lucro.lucropedido "
+				+" lucro.lucropedido, "
+				
+				+" case when t.desc_tipo_pedido = 'BONIFICACAO PARA EXPOSITOR' then hist.qtde_bonificacaoexpositor - it.QT_PEDIDOVENDA_ITEM else hist.qtde_bonificacaoexpositor end as qtde_bonificacaoexpositor, "
+				+" ACUMULADO.VL_bonificacaoexpositor " 
 
 				+" from pedidovenda p "
 				+" inner join pedidovenda_item it on it.pedidovendaid = p.pedidovendaid "
@@ -2513,6 +2676,7 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 				+" sum(resumo.qtde_amostra)qtde_amostra, "
 				+" sum(resumo.qtde_amostrapaga)qtde_amostrapaga, "
 				+" sum(resumo.qtde_bonificacao)qtde_bonificacao, "
+				+" sum(resumo.qtde_bonificacaoexpositor)qtde_bonificacaoexpositor, "
 				+" sum(resumo.qtde_expositor)qtde_expositor, "
 				+" sum(resumo.qtde_troca)qtde_troca, "
 				+" sum(resumo.qtde_negociacoescomerciais)qtde_negociacoescomerciais "
@@ -2522,6 +2686,7 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 				+" case when p.tipopedidoid  = 4 then it.QT_PEDIDOVENDA_ITEM else 0 end as qtde_amostra, "
 				+" case when p.tipopedidoid  = 6 then it.QT_PEDIDOVENDA_ITEM else 0 end as qtde_amostrapaga, "
 				+" case when p.tipopedidoid  = 3 then it.QT_PEDIDOVENDA_ITEM else 0 end as qtde_bonificacao, "
+				+" case when p.tipopedidoid  = 16 then it.QT_PEDIDOVENDA_ITEM else 0 end as qtde_bonificacaoexpositor, "
 				+" case when p.tipopedidoid  = 5 then it.QT_PEDIDOVENDA_ITEM else 0 end as qtde_expositor, "
 				+" case when p.tipopedidoid  = 2 then it.QT_PEDIDOVENDA_ITEM else 0 end as qtde_troca, "
 				+" case when p.tipopedidoid  = 13 then it.QT_PEDIDOVENDA_ITEM else 0 end as qtde_negociacoescomerciais "
@@ -2535,12 +2700,13 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 				
 				+"LEFT JOIN( "
 				+" SELECT X.CLIENTE, sum(X.VL_venda)VL_venda, sum(X.VL_amostra)VL_amostra, sum(X.VL_amostrapaga)VL_amostrapaga,  "
-				+" sum(X.VL_bonificacao)VL_bonificacao, sum(X.VL_expositor)VL_expositor, sum(X.VL_troca)VL_troca,  "
+				+" sum(X.VL_bonificacao)VL_bonificacao, sum(X.VL_bonificacaoexpositor)VL_bonificacaoexpositor ,sum(X.VL_expositor)VL_expositor, sum(X.VL_troca)VL_troca,  "
 				+" sum(X.VL_negociacoescomerciais)VL_negociacoescomerciais FROM(select CI.CADCFTVID AS CLIENTE,  "
 				+" case when CF.tipooperacao_cfop = 'VENDA' then p.vl_totalprod_pedidovenda  else 0 end as VL_venda,  "
 				+" case when p.tipopedidoid  = 4 and CF.tipooperacao_cfop <> 'VENDA' then p.vl_totalprod_pedidovenda else 0 end as VL_amostra,  "
 				+" case when p.tipopedidoid  = 6 and CF.tipooperacao_cfop <> 'VENDA' then p.vl_totalprod_pedidovenda else 0 end as VL_amostrapaga, " 
 				+" case when p.tipopedidoid  = 3 and CF.tipooperacao_cfop <> 'VENDA' then p.vl_totalprod_pedidovenda else 0 end as VL_bonificacao,  "
+				+" case when p.tipopedidoid  = 16 and CF.tipooperacao_cfop <> 'VENDA' then p.vl_totalprod_pedidovenda else 0 end as VL_bonificacaoexpositor,  "
 				+" case when p.tipopedidoid  = 5 and CF.tipooperacao_cfop <> 'VENDA' then p.vl_totalprod_pedidovenda else 0 end as VL_expositor,  "
 				+" case when p.tipopedidoid  = 2 and CF.tipooperacao_cfop <> 'VENDA' then p.vl_totalprod_pedidovenda else 0 end as VL_troca,  "
 				+" case when p.tipopedidoid  = 13 and CF.tipooperacao_cfop <> 'VENDA' then p.vl_totalprod_pedidovenda else 0 end as VL_negociacoescomerciais  "
@@ -2586,6 +2752,9 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 			
 			pedidoitem.setPc_comissao((BigDecimal) row[30]);
 			pedidoitem.setPc_lucro_visao14((BigDecimal) row[31]);
+			
+			pedidoitem.setQtdebonificacaoexpositor((BigDecimal) row[32]);
+			pedidoitem.setVlbonificacaoexpositor((BigDecimal) row[33]);
 			
 			//sige
 			String cliente =  String.valueOf((BigDecimal) row[4]);
@@ -2726,7 +2895,10 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
  	+" NVL(geral.VL_EXPOSITOR,0) total_EXPOSITOR,  "
  	+" NVL(geral.VL_BRINDE,0) total_BRINDE,  "
  	+" NVL(geral.VL_TROCA,0) total_TROCA,  "
- 	+" NVL(geral.VL_NEGOCIACOESCOMERCIAIS,0) total_NEGOCIACOESCOMERCIAIS, en.NRO_ENDCADCFTV numeroendereco "
+ 	+" NVL(geral.VL_NEGOCIACOESCOMERCIAIS,0) total_NEGOCIACOESCOMERCIAIS, en.NRO_ENDCADCFTV numeroendereco, "
+ 	
+	+" NVL(PEDIDOS.VL_BONIFICACAOEXPOSITOR,0) VL_BONIFICACAOEXPOSITOR, " 
+	+" NVL(geral.VL_BONIFICACAOEXPOSITOR,0) total_BONIFICACAOEXPOSITOR  "
  
  	+" from cadcftv c  "
  	+" inner join cliente cl on cl.CADCFTVID = c.CADCFTVID  "
@@ -2749,6 +2921,7 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
  	+" sum(NVL(x.VL_AMOSTRA,0)) VL_AMOSTRA,  "
  	+" sum(NVL(x.VL_AMOSTRAPAGA,0)) VL_AMOSTRAPAGA,  "
  	+" sum(NVL(x.VL_BONIFICACAO,0)) VL_BONIFICACAO,  "
+ 	+" sum(NVL(x.VL_BONIFICACAOEXPOSITOR,0)) VL_BONIFICACAOEXPOSITOR,  "
  	+" sum(NVL(x.VL_EXPOSITOR,0)) VL_EXPOSITOR,  "
  	+" sum(NVL(x.VL_BRINDE,0)) VL_BRINDE,  "
  	+" sum(NVL(x.VL_TROCA,0)) VL_TROCA,  "
@@ -2758,6 +2931,7 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 	+" case when p.tipopedidoid  = 4 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_amostra,   "
 	+" case when p.tipopedidoid  = 6 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_amostrapaga,   "
 	+" case when p.tipopedidoid  = 3 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_bonificacao,   "
+	+" case when p.tipopedidoid  = 16 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_bonificacaoexpositor,   "
 	+" case when p.tipopedidoid  = 5 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_expositor,   "
 	+" case when p.tipopedidoid  = 14 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_brinde,  " 
 	+" case when p.tipopedidoid  = 2 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_troca,  " 
@@ -2775,6 +2949,7 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
  	+" sum(NVL(x.VL_AMOSTRA,0)) VL_AMOSTRA,  "
  	+" sum(NVL(x.VL_AMOSTRAPAGA,0)) VL_AMOSTRAPAGA,  "
  	+" sum(NVL(x.VL_BONIFICACAO,0)) VL_BONIFICACAO,  "
+ 	+" sum(NVL(x.VL_BONIFICACAOEXPOSITOR,0)) VL_BONIFICACAOEXPOSITOR,  "
  	+" sum(NVL(x.VL_EXPOSITOR,0)) VL_EXPOSITOR,  "
  	+" sum(NVL(x.VL_BRINDE,0)) VL_BRINDE,  "
  	+" sum(NVL(x.VL_TROCA,0)) VL_TROCA,  "
@@ -2784,6 +2959,7 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 	+" case when p.tipopedidoid  = 4 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_amostra,   "
 	+" case when p.tipopedidoid  = 6 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_amostrapaga,  " 
 	+" case when p.tipopedidoid  = 3 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_bonificacao,  " 
+	+" case when p.tipopedidoid  = 16 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_bonificacaoexpositor,  " 
 	+" case when p.tipopedidoid  = 5 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_expositor,   "
 	+" case when p.tipopedidoid  = 14 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_brinde,   "
 	+" case when p.tipopedidoid  = 2 and CF.tipooperacao_cfop <> 'VENDA'  then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as VL_troca,   "
@@ -2800,9 +2976,9 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 	
  	+" group by v.CADCFTVID, v.NOME_CADCFTV, c.CADCFTVID, c.NOME_CADCFTV, en.END_ENDCADCFTV, en.nome_cidade, "
  	+" en.CEP_ENDCADCFTV, en.uf_cidade, c.cnpjcpf_cadcftv, PEDIDOS.VL_VENDA , PEDIDOS.VL_AMOSTRA,  "
- 	+" PEDIDOS.VL_AMOSTRAPAGA,  PEDIDOS.VL_BONIFICACAO,  PEDIDOS.VL_EXPOSITOR,  PEDIDOS.VL_BRINDE,  "
+ 	+" PEDIDOS.VL_AMOSTRAPAGA,  PEDIDOS.VL_BONIFICACAO,PEDIDOS.VL_BONIFICACAOEXPOSITOR,  PEDIDOS.VL_EXPOSITOR,  PEDIDOS.VL_BRINDE,  "
  	+" PEDIDOS.VL_TROCA,  PEDIDOS.VL_NEGOCIACOESCOMERCIAIS, geral.VL_VENDA , geral.VL_AMOSTRA,  "
- 	+" geral.VL_AMOSTRAPAGA,  geral.VL_BONIFICACAO,  geral.VL_EXPOSITOR,  geral.VL_BRINDE,  "
+ 	+" geral.VL_AMOSTRAPAGA,  geral.VL_BONIFICACAO, geral.VL_BONIFICACAOEXPOSITOR,  geral.VL_EXPOSITOR,  geral.VL_BRINDE,  "
  	+" geral.VL_TROCA,  geral.VL_NEGOCIACOESCOMERCIAIS, en.NRO_ENDCADCFTV ");
 	List<Object[]> lista = query.getResultList();
 		
@@ -2837,6 +3013,9 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 		dadoscliente.setAcvlnegociacoescomerciais((BigDecimal) row[24] );
 		
 		dadoscliente.setNumeroendereco((String) row[25]);
+		
+		dadoscliente.setVlbonificacaoexpositor((BigDecimal) row[26] );
+		dadoscliente.setAcvlbonificacaoexpositor((BigDecimal) row[27] );
 		
 		//sige
 		String cliente =  String.valueOf((BigDecimal) row[2]);

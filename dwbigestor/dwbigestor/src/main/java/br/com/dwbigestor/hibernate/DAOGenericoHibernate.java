@@ -1200,6 +1200,152 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				
 			}
 
+	//pedidos de bonificação expositor
+		public List<VendasEmGeral> bonificacaoexpositoremgeral(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2) {
+					List<VendasEmGeral> list = new ArrayList<>();
+					
+					SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+					String dataFormatada = formato.format(data1);
+					String dataFormatada2 = formato.format(data2);
+
+					javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+							// "SELECT * FROM("
+									" select " 
+									+ " CI.CADCFTVID AS CLIENTE, " 
+									+ " CI.NOME_CADCFTV AS NOME_CLIENTE, "
+									+ " p.pedidovendaid pedido, " 
+									+ " P.DT_PEDIDOVENDA AS DATAPEDIDO, "
+									+ " p.vl_totalprod_pedidovenda, " 
+									+ " pg.nome_formapagto as prazo, "
+									+ " t.desc_tipo_pedido as tipo_pedido, " 
+									+ " CF.tipooperacao_cfop, " 
+									+ " p.status_pedidovenda, "
+									+ " v.NOME_CADCFTV nome_vendedor "
+									+ " from pedidovenda p "
+									+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
+									+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID "
+									+ " inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid "
+									+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid "
+									+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+									+ " inner join roteiro r on r.roteiroid = p.roteiroid "
+									+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
+									+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+									+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
+									+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+									+ " AND CF.tipooperacao_cfop <> 'VENDA' " + " AND V2.GESTORID = G.GESTORID "
+									+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
+									+ " and p.TIPOPEDIDOID = 16 and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+									+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
+									+ " ORDER BY P.PEDIDOVENDAID  ");
+
+					List<Object[]> lista = query.getResultList();
+					
+					
+
+					for (Object[] row : lista) {
+						VendasEmGeral vendasEmGeral = new VendasEmGeral();
+
+						vendasEmGeral.setCodigocliente((BigDecimal) row[0]);
+						vendasEmGeral.setNomecliente((String) row[1] );
+						vendasEmGeral.setPedido((BigDecimal) row[2] );
+						vendasEmGeral.setDatapedido((Date) row[3] );
+						vendasEmGeral.setValortotalpedido((BigDecimal) row[4] );
+						vendasEmGeral.setPrazo((String) row[5] );
+						vendasEmGeral.setTipopedido((String) row[6] );
+						vendasEmGeral.setTipooperacaocfop((String) row[7] );
+						vendasEmGeral.setStatuspedido((String) row[8] );
+						vendasEmGeral.setNomevendedor((String) row[9] );
+						
+						
+						
+						list.add(vendasEmGeral);
+					}
+
+					return list;
+				}
+			
+		//detalhes do pedido de bonificação expositor
+		public List<VendasEmGeralItem> bonificacaoexpositoremgeralitem(BigDecimal pedido) {
+		List<VendasEmGeralItem> list = new ArrayList<>();
+					/*lista 2*/
+					javax.persistence.Query query2 = (javax.persistence.Query) manager.createNativeQuery(
+							// "SELECT * FROM("
+									" select " 
+									+ " CI.CADCFTVID AS CLIENTE, " 
+									+ " CI.NOME_CADCFTV AS NOME_CLIENTE, "
+									+ " p.pedidovendaid pedido, " 
+									+ " P.DT_PEDIDOVENDA AS DATAPEDIDO, "
+									+ " p.vl_totalprod_pedidovenda, " 
+									+ " pg.nome_formapagto as prazo, "
+									+ " t.desc_tipo_pedido as tipo_pedido, " 
+									+ " CF.tipooperacao_cfop, " 
+									+ " p.status_pedidovenda, "
+									+ " it.produtoid, " 
+									+ " it.ds_produto_pedidovenda_item, " 
+									+ " it.qt_pedidovenda_item, "
+									+ " IT.VL_UNIT_PEDIDOVENDA_ITEM, " 
+									+ " IT.vl_total_pedidovenda_item, "
+									+ " x1.NR_NOTA_PEDIDOVENDA,  " 
+									+ " x1.DT_SAIDA_PEDIDOVENDA,  "
+									+ " x1.STATUS_PEDIDOVENDA status_nota, " 
+									+ " IMG.IMAGEM_PRODUTO "
+									+ " from pedidovenda p "
+									+ " INNER JOIN PEDIDOVENDA_ITEM IT ON IT.PEDIDOVENDAID= P.PEDIDOVENDAID "
+									+ " LEFT JOIN PRODUTO_IMAGEM IMG ON IMG.PRODUTOID = IT.PRODUTOID "
+									+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
+									+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID "
+									+ " inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid "
+									+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid "
+									+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+									+ " inner join roteiro r on r.roteiroid = p.roteiroid "
+									+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
+									+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+									+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
+									+ " left join ( " 
+									+ " select " 
+									+ " nota.NR_NOTA_PEDIDOVENDA, " 
+									+ " nota.DT_SAIDA_PEDIDOVENDA,  "
+									+ " nota.STATUS_PEDIDOVENDA, " 
+									+ " it_nota.ORIGEM_PEDIDOVENDA_ITEM,  " 
+									+ " IT_nota.produtoid "
+									+ " from PEDIDOVENDA_ITEM IT_nota "
+									+ " inner join pedidovenda nota on nota.pedidovendaid = it_nota.pedidovendaid " 
+									+ " group by  "
+									+ " nota.NR_NOTA_PEDIDOVENDA, " 
+									+ " nota.DT_SAIDA_PEDIDOVENDA,  " 
+									+ " nota.STATUS_PEDIDOVENDA, "
+									+ " it_nota.ORIGEM_PEDIDOVENDA_ITEM , " 
+									+ " IT_nota.produtoid "
+									+ " ) x1 on x1.ORIGEM_PEDIDOVENDA_ITEM = IT.PEDIDOVENDAITEMID  and x1.produtoid = it.produtoid "
+
+									+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+									+ " AND CF.tipooperacao_cfop <> 'VENDA' " + " and V2.GESTORID = G.GESTORID "
+									+ " and p.TIPOPEDIDOID = 16 and p.pedidovendaid = ' " + pedido + " ' " 
+									+ " ORDER BY P.PEDIDOVENDAID  ");
+					List<Object[]> lista2 = query2.getResultList();
+					
+					for (Object[] row2 : lista2) {
+						
+							
+						VendasEmGeralItem vendasEmGeralItem = new VendasEmGeralItem();
+						
+						vendasEmGeralItem.setPedido((BigDecimal) row2[2] );
+						vendasEmGeralItem.setCodigoproduto((BigDecimal) row2[9] );
+						vendasEmGeralItem.setNomeproduto((String) row2[10] );
+						vendasEmGeralItem.setQuantidadeproduto((BigDecimal) row2[11] );
+						vendasEmGeralItem.setValorunitarioproduto((BigDecimal) row2[12] );
+						vendasEmGeralItem.setValortotalproduto((BigDecimal) row2[13] );
+						vendasEmGeralItem.setNota((String) row2[14] );
+						vendasEmGeralItem.setDatanota((Date) row2[15] );
+						vendasEmGeralItem.setStatusnota((String) row2[16] );
+						vendasEmGeralItem.setImagem((Blob) row2[17] );
+						
+						list.add(vendasEmGeralItem);
+					}
+					return list;
+					
+				}
+
 	//pedidos de amostra
 		public List<VendasEmGeral> expositoremgeral(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2) {
 				List<VendasEmGeral> list = new ArrayList<>();

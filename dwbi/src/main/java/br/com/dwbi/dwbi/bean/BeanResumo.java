@@ -51,6 +51,7 @@ public class BeanResumo implements Serializable {
 	private List<VendasEmGeral> listavenda = new ArrayList<>();
 	private List<VendasEmGeral> listaamostra = new ArrayList<>();
 	private List<VendasEmGeral> listabonificacao = new ArrayList<>();
+	private List<VendasEmGeral> listabonificacaoexpositor = new ArrayList<>();
 	private List<VendasEmGeral> listaexpositor = new ArrayList<>();
 	private List<VendasEmGeral> listabrinde = new ArrayList<>();
 	private List<VendasEmGeral> listaamostrapaga = new ArrayList<>();
@@ -123,6 +124,7 @@ public class BeanResumo implements Serializable {
 
 			listaamostra = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 			listabonificacao = servico.bonificacaoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+			listabonificacaoexpositor = servico.bonificacaoexpositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 			listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 		} else {			
 			listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
@@ -135,6 +137,7 @@ public class BeanResumo implements Serializable {
 
 			listaamostra = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 			listabonificacao = servico.bonificacaoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+			listabonificacaoexpositor = servico.bonificacaoexpositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 			listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 		}
 
@@ -163,6 +166,7 @@ public class BeanResumo implements Serializable {
 		listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 		listaamostra = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 		listabonificacao = servico.bonificacaoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
+		listabonificacaoexpositor = servico.bonificacaoexpositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 		listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 		listabrinde = servico.brindeemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2,clientefiltrado, clientefiltrado2);
 		
@@ -179,6 +183,14 @@ public class BeanResumo implements Serializable {
 		return servicocliente.consultacliente(n);
 	}
 	
+	public List<VendasEmGeral> getListabonificacaoexpositor() {
+		return listabonificacaoexpositor;
+	}
+
+	public void setListabonificacaoexpositor(List<VendasEmGeral> listabonificacaoexpositor) {
+		this.listabonificacaoexpositor = listabonificacaoexpositor;
+	}
+
 	public Cliente getCliente() {
 		return cliente;
 	}
@@ -475,6 +487,18 @@ public class BeanResumo implements Serializable {
 
 		return "/pages/relatorios/vendaemgeral/amostrapagaemgeral.xhtml";
 	}
+	
+	/* dados bonificacaoemgeral */
+	public String encaminha14() {
+		FacesContext fc = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
+		session.setAttribute("vendedor", this.vendedor);
+		session.setAttribute("cliente", this.cliente);
+		session.setAttribute("data1", this.data_grafico);
+		session.setAttribute("data2", this.data_grafico2);
+
+		return "/pages/relatorios/vendaemgeral/bonificacaoexpositoremgeral.xhtml";
+	}
 
 
 	/* pegar usuario conectado */
@@ -549,6 +573,16 @@ public class BeanResumo implements Serializable {
 		return new DecimalFormat("###,###.##").format(total);
 	}
 	
+	public String getValorTotalBonificacaoExpositor() {
+		float total = 0;
+
+		for (VendasEmGeral venda : getListabonificacaoexpositor()) {
+			total = total + venda.getValortotalpedido().floatValue();
+		}
+
+		return new DecimalFormat("###,###.##").format(total);
+	}
+	
 	public String getValorTotalBrinde() {
 		float total = 0;
 
@@ -573,8 +607,9 @@ public class BeanResumo implements Serializable {
 	public String getTotalInvestimento_Entrada_Pedido() {
 		//totais por tipo de pedido
 		float tot_amostra = 0;
-		float tot_amostrapaga= 0;
+		//float tot_amostrapaga= 0;
 		float tot_bonificacao= 0;
+		float tot_bonificacaoexpositor= 0;
 		float tot_expositor= 0;
 		float tot_brinde= 0;
 		float tot_trocanegocio= 0;
@@ -583,9 +618,9 @@ public class BeanResumo implements Serializable {
 			tot_amostra = tot_amostra + amostra.getValortotalpedido().floatValue();
 		}
 		
-		for (VendasEmGeral amostrapaga : getListaamostrapaga()) {
-			tot_amostrapaga = tot_amostrapaga + amostrapaga.getValortotalpedido().floatValue();
-		}
+		//for (VendasEmGeral amostrapaga : getListaamostrapaga()) {
+		//	tot_amostrapaga = tot_amostrapaga + amostrapaga.getValortotalpedido().floatValue();
+		//}
 		
 		for (VendasEmGeral trocanegocio : getListatrocanegocio()) {
 			tot_trocanegocio = tot_trocanegocio + trocanegocio.getValortotalpedido().floatValue();
@@ -593,6 +628,10 @@ public class BeanResumo implements Serializable {
 		
 		for (VendasEmGeral bonificacao : getListabonificacao()) {
 			tot_bonificacao = tot_bonificacao + bonificacao.getValortotalpedido().floatValue();
+		}
+		
+		for (VendasEmGeral bonificacaoexpositor : getListabonificacaoexpositor()) {
+			tot_bonificacaoexpositor = tot_bonificacaoexpositor + bonificacaoexpositor.getValortotalpedido().floatValue();
 		}
 
 		for (VendasEmGeral brinde : getListabrinde()) {
@@ -604,7 +643,7 @@ public class BeanResumo implements Serializable {
 		}
 		
 		float total = 0;
-		total = tot_expositor + tot_amostra + tot_amostrapaga + tot_bonificacao + tot_trocanegocio + tot_brinde;
+		total = tot_expositor + tot_amostra + tot_bonificacaoexpositor + tot_bonificacao + tot_trocanegocio + tot_brinde;
 		
 		return new DecimalFormat("###,###.##").format(total);
 	}
@@ -613,8 +652,9 @@ public class BeanResumo implements Serializable {
 		//totais por tipo de pedido
 		float tot_venda = 0;
 		float tot_amostra = 0;
-		float tot_amostrapaga= 0;
+		//float tot_amostrapaga= 0;
 		float tot_bonificacao= 0;
+		float tot_bonificacaoexpositor= 0;
 		float tot_expositor= 0;
 		float tot_brinde= 0;
 		float tot_trocanegocio= 0;
@@ -623,9 +663,9 @@ public class BeanResumo implements Serializable {
 			tot_amostra = tot_amostra + amostra.getValortotalpedido().floatValue();
 		}
 		
-		for (VendasEmGeral amostrapaga : getListaamostrapaga()) {
+		/*for (VendasEmGeral amostrapaga : getListaamostrapaga()) {
 			tot_amostrapaga = tot_amostrapaga + amostrapaga.getValortotalpedido().floatValue();
-		}
+		}*/
 		
 		for (VendasEmGeral trocanegocio : getListatrocanegocio()) {
 			tot_trocanegocio = tot_trocanegocio + trocanegocio.getValortotalpedido().floatValue();
@@ -633,6 +673,10 @@ public class BeanResumo implements Serializable {
 		
 		for (VendasEmGeral bonificacao : getListabonificacao()) {
 			tot_bonificacao = tot_bonificacao + bonificacao.getValortotalpedido().floatValue();
+		}
+		
+		for (VendasEmGeral bonificacaoexpositor : getListabonificacaoexpositor()) {
+			tot_bonificacaoexpositor = tot_bonificacaoexpositor + bonificacaoexpositor.getValortotalpedido().floatValue();
 		}
 
 		for (VendasEmGeral brinde : getListabrinde()) {
@@ -648,7 +692,7 @@ public class BeanResumo implements Serializable {
 		}
 		
 		float total = 0;
-		total = tot_expositor + tot_amostra + tot_amostrapaga + tot_bonificacao + tot_trocanegocio + tot_brinde;
+		total = tot_expositor + tot_amostra + tot_bonificacaoexpositor + tot_bonificacao + tot_trocanegocio + tot_brinde;
 		if(tot_venda ==0){
 			tot_venda = 1;
 		}
@@ -719,6 +763,16 @@ public class BeanResumo implements Serializable {
 		int total = 0;
 
 		for (VendasEmGeral bonificacao : getListabonificacao()) {
+			total++;
+		}
+
+		return total;
+	}
+	
+	public int getBonificacaoExpositordodia() {
+		int total = 0;
+
+		for (VendasEmGeral bonificacao : getListabonificacaoexpositor()) {
 			total++;
 		}
 
@@ -826,6 +880,35 @@ public float getPercentualSobPedido_Amostra() {
 			tvenda = 1;
 		}
 		for (VendasEmGeral bonificacao : getListabonificacao()) {
+			tbonificacao = tbonificacao + bonificacao.getValortotalpedido().floatValue();
+		}
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(tbonificacao == 0){
+			tbonificacao = 1;
+			atingido = 100;
+		}else{
+			atingido = (tbonificacao / tvenda )*100;
+		}
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+
+	}
+	
+	public float getPercentualSobPedido_BonificacaoExpositor() {
+		
+		float tvenda = 0;
+		
+		float tbonificacao = 0;
+		
+		for (VendasEmGeral venda : getListavenda()) {
+			tvenda = tvenda + venda.getValortotalpedido().floatValue();
+		}
+		if(tvenda ==0){
+			tvenda = 1;
+		}
+		for (VendasEmGeral bonificacao : getListabonificacaoexpositor()) {
 			tbonificacao = tbonificacao + bonificacao.getValortotalpedido().floatValue();
 		}
 		float atingido = 0;

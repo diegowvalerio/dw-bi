@@ -59,7 +59,7 @@
 						
 						<p:columnGroup type="header" >
 								<p:row>
-									<p:column colspan="7" headerText="Acumulado Seven" style="border: 1px solid"/>
+									<p:column colspan="8" headerText="Acumulado Seven" style="border: 1px solid"/>
 									<p:column colspan="5" headerText="Acumulado Sige" style="border: 1px solid"/>
 								</p:row>
 								<p:row>
@@ -68,6 +68,7 @@
 									<p:column colspan="1" headerText="Amostra" style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Amostra Paga"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Bonificação"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Bonificação Expositor"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Expositor"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Troca"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Negociações"  style="border: 1px solid; text-align: Left"/>
@@ -93,6 +94,10 @@
 							
 							<p:column style="border: 1px solid">
 								<h:outputText value="#{vendas.vlbonificacao}" ><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
+							</p:column>
+							
+							<p:column style="border: 1px solid">
+								<h:outputText value="#{vendas.vlbonificacaoexpositor}" ><f:convertNumber type="currency" currencySymbol="R$" /> </h:outputText>
 							</p:column>
 							
 							<p:column  style="border: 1px solid">
@@ -164,7 +169,7 @@
 							<p:columnGroup type="header" id="group5" >
 								<p:row>
 									<p:column colspan="3" headerText="Itens do Pedido" style="border: 1px solid"/>
-									<p:column colspan="7" headerText="Histórico Seven" style="border: 1px solid"/>
+									<p:column colspan="8" headerText="Histórico Seven" style="border: 1px solid"/>
 									<p:column colspan="5" headerText="Histórico Sige" style="border: 1px solid"/>
 								</p:row>
 								<p:row>
@@ -176,6 +181,7 @@
 									<p:column colspan="1" headerText="Amostra" style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Amostra Paga"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Bonificação"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Bonificação Expositor"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Expositor"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Troca"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Negociações"  style="border: 1px solid; text-align: Left"/>
@@ -219,6 +225,11 @@
 							<p:column headerText="Qtde Bonificação Seven"
 								sortBy="#{vendas.qtdebonificacao}">
 								<h:outputText value="#{vendas.qtdebonificacao}" />
+							</p:column>
+							
+							<p:column headerText="Qtde Bonificação Expositor Seven"
+								sortBy="#{vendas.qtdebonificacaoexpositor}">
+								<h:outputText value="#{vendas.qtdebonificacaoexpositor}" />
 							</p:column>
 							
 							<p:column headerText="Qtde Expositor Seven"

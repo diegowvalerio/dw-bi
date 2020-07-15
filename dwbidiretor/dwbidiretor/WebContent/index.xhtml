@@ -221,32 +221,6 @@
 					
 					<div class="col-md-3 col-sm-6 col-xs-12">
 						<div class="info-box ">
-							<span class="info-box-icon bg-olive"><i
-								class="fa fa-shopping-bag"></i></span>
-
-							<div class="info-box-content">
-								<span class="info-box-text">Amostras Pagas</span> <span
-									class="info-box-text"><h:outputText
-										value="#{beanResumo.amostraPagadodia}" /></span>
-
-								<span class="progress-description" style="text-align:right"> 
-									<h:outputText 
-									value="#{beanResumo.percentualSobPedido_AmostraPaga} %"/>
-								</span>
-								
-								<span class="progress-description"> <h:commandLink
-										action="#{beanResumo.encaminha13()}"
-										styleClass="fa fa-arrow-circle-right small-box-footer"
-										value="  R$ #{beanResumo.valorTotalAmostraPaga}" />
-								</span>
-							</div>
-							<!-- /.info-box-content -->
-						</div>
-						<!-- /.info-box -->
-					</div>
-					
-					<div class="col-md-3 col-sm-6 col-xs-12">
-						<div class="info-box ">
 							<span class="info-box-icon bg-purple"><i
 								class="fa fa-gift"></i></span>
 
@@ -264,6 +238,32 @@
 										action="#{beanResumo.encaminha6()}"
 										styleClass="fa fa-arrow-circle-right small-box-footer"
 										value="  R$ #{beanResumo.valorTotalBonificacao}" />
+								</span>
+							</div>
+							<!-- /.info-box-content -->
+						</div>
+						<!-- /.info-box -->
+					</div>
+					
+					<div class="col-md-3 col-sm-6 col-xs-12">
+						<div class="info-box ">
+							<span class="info-box-icon bg-teal"><i
+								class="fa fa-gift"></i></span>
+
+							<div class="info-box-content">
+								<span class="info-box-text">Bonificações p/ Expositor</span> <span
+									class="info-box-text"><h:outputText
+										value="#{beanResumo.bonificacaoExpositordodia}" /></span>
+
+								<span class="progress-description" style="text-align:right"> 
+									<h:outputText 
+									value="#{beanResumo.percentualSobPedido_BonificacaoExpositor} %"/>
+								</span>
+								
+								<span class="progress-description"> <h:commandLink
+										action="#{beanResumo.encaminha15()}"
+										styleClass="fa fa-arrow-circle-right small-box-footer"
+										value="  R$ #{beanResumo.valorTotalBonificacaoexpositor}" />
 								</span>
 							</div>
 							<!-- /.info-box-content -->
@@ -323,6 +323,32 @@
 						<!-- /.info-box -->
 					</div>
 					
+					<div class="col-md-3 col-sm-6 col-xs-12">
+						<div class="info-box ">
+							<span class="info-box-icon bg-fuchsia"><i
+								class="fa fa-retweet"></i></span>
+
+							<div class="info-box-content">
+								<span class="info-box-text">Troca Negociações</span> <span
+									class="info-box-text"><h:outputText
+										value="#{beanResumo.trocaNegociododia}" /></span>
+
+								<span class="progress-description" style="text-align:right"> 
+									<h:outputText 
+									value="#{beanResumo.percentualSobPedido_TrocaNegocio} %"/>
+								</span>
+								
+								<span class="progress-description"> <h:commandLink
+										action="#{beanResumo.encaminha12()}"
+										styleClass="fa fa-arrow-circle-right small-box-footer"
+										value="  R$ #{beanResumo.valorTotalTrocaNegocio}" />
+								</span>
+							</div>
+							<!-- /.info-box-content -->
+						</div>
+						<!-- /.info-box -->
+					</div>
+					
 						<div class="col-md-3 col-sm-6 col-xs-12">
 						<div class="info-box ">
 							<span class="info-box-icon bg-black"><i
@@ -351,30 +377,29 @@
 					
 					<div class="col-md-3 col-sm-6 col-xs-12">
 						<div class="info-box ">
-							<span class="info-box-icon bg-fuchsia"><i
-								class="fa fa-retweet"></i></span>
+							<span class="info-box-icon bg-olive"><i
+								class="fa fa-shopping-bag"></i></span>
 
 							<div class="info-box-content">
-								<span class="info-box-text">Troca Negociações</span> <span
+								<span class="info-box-text">Amostras Pagas</span> <span
 									class="info-box-text"><h:outputText
-										value="#{beanResumo.trocaNegociododia}" /></span>
+										value="#{beanResumo.amostraPagadodia}" /></span>
 
 								<span class="progress-description" style="text-align:right"> 
 									<h:outputText 
-									value="#{beanResumo.percentualSobPedido_TrocaNegocio} %"/>
+									value="(Não SOMA como Invesimento) #{beanResumo.percentualSobPedido_AmostraPaga} %"/>
 								</span>
 								
 								<span class="progress-description"> <h:commandLink
-										action="#{beanResumo.encaminha12()}"
+										action="#{beanResumo.encaminha13()}"
 										styleClass="fa fa-arrow-circle-right small-box-footer"
-										value="  R$ #{beanResumo.valorTotalTrocaNegocio}" />
+										value="  R$ #{beanResumo.valorTotalAmostraPaga}" />
 								</span>
 							</div>
 							<!-- /.info-box-content -->
 						</div>
 						<!-- /.info-box -->
-					</div>
-					
+					</div>					
 					
 					<div class="col-md-3 col-sm-6 col-xs-12">
 						<div class="info-box ">
