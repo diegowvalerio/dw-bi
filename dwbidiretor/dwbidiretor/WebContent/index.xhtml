@@ -150,9 +150,12 @@
 									class="info-box-number"><h:outputText
 										value="#{beanResumo.totalClientes}" /></span>
 
-								<div class="progress">
-									<div class="progress-bar" style="width: 100%"></div>
-								</div>
+								<span class="progress-description" style="text-align:right"> 
+									<h:commandLink
+										action="#{beanResumo.encaminha16()}"
+										value="Efetivado: #{beanResumo.totalClientes_Efetivado}"/>
+								</span>
+								
 								<span class="progress-description"> <h:commandLink
 										action="#{beanResumo.encaminha3()}"
 										styleClass="fa fa-arrow-circle-right small-box-footer"

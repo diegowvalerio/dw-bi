@@ -159,7 +159,7 @@ public class BeanResumo implements Serializable {
 			listainvestimento_2 = servico.investimentooemgeral_2(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 			listafaturamento = servico.faturamentoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 			
-			listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
+			listaclientes = servicoclientes.clientesnovos_efetivado(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 		} else {			
 			listavenda = servico.vendasemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 			listaamostra = servico.amostraemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
@@ -174,7 +174,7 @@ public class BeanResumo implements Serializable {
 			listainvestimento_2 = servico.investimentooemgeral_2(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);			
 			listafaturamento = servico.faturamentoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 			
-			listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
+			listaclientes = servicoclientes.clientesnovos_efetivado(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 		}
 
 		session.removeAttribute("data1");
@@ -225,7 +225,7 @@ public class BeanResumo implements Serializable {
 		listainvestimento_2 = servico.investimentooemgeral_2(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);		
 		listafaturamento = servico.faturamentoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 		
-		listaclientes = servicoclientes.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
+		listaclientes = servicoclientes.clientesnovos_efetivado(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 		/*gerar grafico*/
 		createAnimatedModels();
 	}
@@ -734,6 +734,18 @@ public class BeanResumo implements Serializable {
 
 		return "/pages/relatorios/vendaemgeral/bonificacaoexpositoremgeral.xhtml";
 	}
+	
+	/* dados clientesnovos */
+	public String encaminha16() {
+		FacesContext fc = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
+		session.setAttribute("vendedor", this.vendedor);
+		session.setAttribute("gestor", this.gestor);
+		session.setAttribute("data1", this.data_grafico);
+		session.setAttribute("data2", this.data_grafico2);
+
+		return "/pages/relatorios/clientesnovos/clientesnovos_efetivado.xhtml";
+	}
 	/* pegar usuario conectado */
 	public String usuarioconectado() {
 		String nome;
@@ -1051,6 +1063,18 @@ public class BeanResumo implements Serializable {
 
 		for (ClientesNovos cliente : getListaclientes()) {
 			total++;
+		}
+
+		return total;
+	}
+	
+	public int getTotalClientes_Efetivado() {
+		int total = 0;
+
+		for (ClientesNovos cliente : getListaclientes()) {
+			if(cliente.getVendas().intValue() > 0) {
+			total++;
+			}
 		}
 
 		return total;

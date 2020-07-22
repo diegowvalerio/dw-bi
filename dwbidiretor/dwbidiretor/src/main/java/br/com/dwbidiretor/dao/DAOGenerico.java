@@ -84,6 +84,8 @@ public List<VendasEmGeral> bonificacaoexpositoremgeral(Date data1, Date data2, S
 
 	public List<ClientesNovos> clientesnovos(Date data1, Date data2,String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2);
 	
+	public List<ClientesNovos> clientesnovos_efetivado(Date data1, Date data2,String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2);
+	
 	public List<Vendedor> consultavendedor();
 	
 	public List<Cliente> consultacliente(String palavra);

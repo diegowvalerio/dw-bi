@@ -17,6 +17,7 @@ public class ClientesNovos implements Serializable {
 	private String nomefantasia;
 	private String cpfcnpj;
 	private Date datacadastro;
+	private BigDecimal vendas;
 
 	public ClientesNovos() {
 		super();
@@ -76,6 +77,15 @@ public class ClientesNovos implements Serializable {
 
 	public void setDatacadastro(Date datacadastro) {
 		this.datacadastro = datacadastro;
-	}	
+	}
+
+	public BigDecimal getVendas() {
+		return vendas;
+	}
+
+	public void setVendas(BigDecimal vendas) {
+		this.vendas = vendas;
+	}
+	
 
 }

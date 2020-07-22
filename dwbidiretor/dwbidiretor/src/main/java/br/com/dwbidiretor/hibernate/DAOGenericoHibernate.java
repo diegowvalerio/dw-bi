@@ -2136,6 +2136,69 @@ public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String ve
 		return list;
 	}
 	
+	//clientes cadastrados no periodo com venda
+	public List<ClientesNovos> clientesnovos_efetivado(Date data1,Date data2,String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
+		List<ClientesNovos> list = new ArrayList<>();
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		String dataFormatada = formato.format(data1);
+		String dataFormatada2 = formato.format(data2);
+
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+						" SELECT " 
+						+ " cl.VENDEDORID1 vendedor, " 
+						+ " v.NOME_CADCFTV nome_vendedor, "
+						+ " c.cadcftvid cliente, " 
+						+ " c.NOME_CADCFTV nome_cliente, " 
+						+ " c.APELIDO_CADCFTV nome_fantasia, " 
+						+ " c.CNPJCPF_CADCFTV cnpj_cpf, " 
+						+ " c.DATACREATE_CADCFTV data_cadastro, " 
+						+ " NVL(vendas.vendas,0) VENDAS "
+						
+						+ " from cadcftv c "
+						+ " inner join cliente cl on cl.CADCFTVID = c.cadcftvid  "
+						//+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  " + usuarioconectado()
+						//+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+						+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = cl.VENDEDORID1 "
+						+ " INNER JOIN cadcftv V ON V.cadcftvID = V2.CADCFTVID "
+						
+						+ " left join( "
+						+ " select "
+						+ " p.cadcftvid, "
+						+ " count(p.pedidovendaid) vendas "
+						+ " from pedidovenda p  "
+						+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID " 
+						+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') " 
+						+ " AND CF.tipooperacao_cfop = 'VENDA' "
+						+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
+						+ " group by p.cadcftvid "
+						+ " ) vendas on vendas.cadcftvid = c.cadcftvid "
+						
+						+ " WHERE c.ATIVO_CADCFTV = 'SIM' "
+						+ " and c.DATACREATE_CADCFTV between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
+						+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+						+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+						+ " order by cl.VENDEDORID1,c.cadcftvid ");
+
+		List<Object[]> lista = query.getResultList();
+
+		for (Object[] row : lista) {
+			ClientesNovos clientesNovos = new ClientesNovos();
+
+			clientesNovos.setCodigovendedor((BigDecimal) row[0]);
+			clientesNovos.setNomevendedor((String) row[1]);
+			clientesNovos.setCodigocliente((BigDecimal) row[2]);
+			clientesNovos.setNomecliente((String) row[3]);
+			clientesNovos.setNomefantasia((String) row[4]);
+			clientesNovos.setCpfcnpj((String) row[5]);
+			clientesNovos.setDatacadastro((Date) row[6] );
+			clientesNovos.setVendas((BigDecimal) row[7] );
+			
+			list.add(clientesNovos);
+		}
+
+		return list;
+	}
+	
 	public List<Vendedor> consultavendedor() {
 		List<Vendedor> list = new ArrayList<>();
 

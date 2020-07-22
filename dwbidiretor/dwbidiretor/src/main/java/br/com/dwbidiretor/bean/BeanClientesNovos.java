@@ -13,6 +13,7 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.omnifaces.el.ELContextWrapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -56,6 +57,7 @@ public class BeanClientesNovos implements Serializable {
 	private String gestorfiltrado2;
 	private String clientefiltrado;
 	private String clientefiltrado2;
+	private int acumulatorAux;
 
 	@PostConstruct
 	public void init() {
@@ -109,9 +111,9 @@ public class BeanClientesNovos implements Serializable {
 		if ((Date) session.getAttribute("data1") != null) {
 			data_grafico = (Date) session.getAttribute("data1");
 			data_grafico2 = (Date) session.getAttribute("data2");
-			lista = servico.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, clientefiltrado, clientefiltrado2);
+			lista = servico.clientesnovos_efetivado(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, clientefiltrado, clientefiltrado2);
 		} else {			
-			lista = servico.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, clientefiltrado, clientefiltrado2);
+			lista = servico.clientesnovos_efetivado(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, clientefiltrado, clientefiltrado2);
 		}
 
 		session.removeAttribute("data1");
@@ -139,7 +141,32 @@ public class BeanClientesNovos implements Serializable {
 			gestorfiltrado = gestor.getGestorid().toString();
 			gestorfiltrado2 = gestor.getGestorid().toString();
 		}
-		lista = servico.clientesnovos(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, clientefiltrado, clientefiltrado2);
+		lista = servico.clientesnovos_efetivado(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, clientefiltrado, clientefiltrado2);
+	}
+	
+	//valor quebra por vendedor
+	public void acumulateValue(int value)
+    {
+		if (value > 1) {
+			value = 1;
+		}
+        acumulatorAux += value;
+    }
+
+	public int getAcumulatedValue() {
+        int aux = acumulatorAux ;
+        acumulatorAux = 0;
+        return aux;
+    }
+	
+	//fim
+	
+	public int getAcumulatorAux() {
+		return acumulatorAux;
+	}
+
+	public void setAcumulatorAux(int acumulatorAux) {
+		this.acumulatorAux = acumulatorAux;
 	}
 
 	public String getClientefiltrado() {
@@ -284,6 +311,18 @@ public class BeanClientesNovos implements Serializable {
 
 		for (ClientesNovos cliente : getLista()) {
 			total++;
+		}
+
+		return total;
+	}
+	
+	public int getTotalClientes_Efetivado() {
+		int total = 0;
+
+		for (ClientesNovos cliente : getLista()) {
+			if(cliente.getVendas().intValue() > 0) {
+			total++;
+			}
 		}
 
 		return total;
