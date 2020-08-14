@@ -32,11 +32,11 @@ public interface DAOGenerico<E> {
 	
 	public List<VendasEmGeral> vendasemgeral(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2);
 	
-	public List<VendasEmGeralItem> vendasemgeralitem(BigDecimal pedido);
+	public List<VendasEmGeralItem> vendasemgeralitem(BigDecimal pedido, String origem);
 	
 	public List<VendasEmGeral> amostraemgeral(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2);
 	
-	public List<VendasEmGeralItem> amostraemgeralitem(BigDecimal pedido);
+	public List<VendasEmGeralItem> amostraemgeralitem(BigDecimal pedido, String origem);
 	
 	public List<VendasEmGeral> amostrapagaemgeral(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2);
 	
@@ -48,7 +48,7 @@ public interface DAOGenerico<E> {
 	
 	public List<VendasEmGeral> trocadefeitoemgeral(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2);
 	
-	public List<VendasEmGeralItem> trocadefeitoemgeralitem(BigDecimal pedido);
+	public List<VendasEmGeralItem> trocadefeitoemgeralitem(BigDecimal pedido, String origem);
 	
 	public List<VendasEmGeral> trocanegocioemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String cliente1, String cliente2);
 	
@@ -56,7 +56,7 @@ public interface DAOGenerico<E> {
 	
 	public List<VendasEmGeral> bonificacaoemgeral(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2);
 	
-	public List<VendasEmGeralItem> bonificacaoemgeralitem(BigDecimal pedido);
+	public List<VendasEmGeralItem> bonificacaoemgeralitem(BigDecimal pedido, String origem);
 	
 	public List<VendasEmGeral> bonificacaoexpositoremgeral(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2);
 	
@@ -64,7 +64,7 @@ public interface DAOGenerico<E> {
 	
 	public List<VendasEmGeral> expositoremgeral(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2);
 	
-	public List<VendasEmGeralItem> expositoremgeralitem(BigDecimal pedido);
+	public List<VendasEmGeralItem> expositoremgeralitem(BigDecimal pedido, String origem);
 	
 	public List<ClientesNovos> clientesnovos(Date data1, Date data2,String vendedor1, String vendedor2);
 	

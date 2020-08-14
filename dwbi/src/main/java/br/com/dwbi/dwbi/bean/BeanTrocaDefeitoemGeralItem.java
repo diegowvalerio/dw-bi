@@ -56,7 +56,7 @@ public class BeanTrocaDefeitoemGeralItem implements Serializable {
 		session.removeAttribute("data1");
 		session.removeAttribute("data2");
 
-		this.listavendaitems = servico.trocadefeitoemgeralitem(this.vendasEmGeral.getPedido());
+		this.listavendaitems = servico.trocadefeitoemgeralitem(this.vendasEmGeral.getPedido(),this.vendasEmGeral.getOrigem());
 
 	}
 

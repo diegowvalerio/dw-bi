@@ -94,7 +94,7 @@
 								<h:outputText value="#{clientes.nomecliente}" />
 							</p:column>
 							
-							<p:column headerText="Fantasia" >
+							<p:column headerText="Fantasia" >#{beanClientesNovos.acumulateValue2(1)}
 								<h:outputText value="#{clientes.nomefantasia}" />
 							</p:column>
 
@@ -114,7 +114,16 @@
         												
 							<p:summaryRow>
            						<p:column style="text-align:right">
-                					<h:outputText value="Total Clientes c/ Venda no Periodo:" />
+                					<h:outputText value="Total Clientes:" />
+            					</p:column>
+            					
+            					<p:column>
+                					<h:outputText value="#{beanClientesNovos.acumulatedValue2}" >
+                					</h:outputText>
+            					</p:column>
+            					
+            					<p:column style="text-align:right">
+                					<h:outputText value="Total c/ Venda:" />
             					</p:column>
             					
             					<p:column>

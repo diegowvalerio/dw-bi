@@ -58,6 +58,7 @@ public class BeanClientesNovos implements Serializable {
 	private String clientefiltrado;
 	private String clientefiltrado2;
 	private int acumulatorAux;
+	private int acumulatorAux2;
 
 	@PostConstruct
 	public void init() {
@@ -159,10 +160,36 @@ public class BeanClientesNovos implements Serializable {
         return aux;
     }
 	
+	
+	//2
+	public void acumulateValue2(int value)
+    {
+		if (value > 1) {
+			value = 1;
+		}
+        acumulatorAux2 += value;
+    }
+
+	public int getAcumulatedValue2() {
+        int aux = acumulatorAux2 ;
+        acumulatorAux2 = 0;
+        return aux;
+    }
+	
+	
+	
 	//fim
 	
 	public int getAcumulatorAux() {
 		return acumulatorAux;
+	}
+
+	public int getAcumulatorAux2() {
+		return acumulatorAux2;
+	}
+
+	public void setAcumulatorAux2(int acumulatorAux2) {
+		this.acumulatorAux2 = acumulatorAux2;
 	}
 
 	public void setAcumulatorAux(int acumulatorAux) {

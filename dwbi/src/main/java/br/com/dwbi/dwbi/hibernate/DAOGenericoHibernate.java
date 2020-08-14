@@ -32,6 +32,7 @@ import br.com.dwbi.classe.VendasEmGeral;
 import br.com.dwbi.classe.VendasEmGeralItem;
 import br.com.dwbi.classe.Vendedor;
 import br.com.dwbi.dwbi.dao.DAOGenerico;
+import br.com.dwbi.dwbi.fabrica.EntityManagerProducerSige.Corporativo;
 
 public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 	private static final long serialVersionUID = 1L;
@@ -39,6 +40,11 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 	@Inject
 	protected EntityManager manager;
 	private Class classeEntidade;
+	
+	//sige
+	@Inject
+	@Corporativo
+	protected EntityManager managerSige;
 
 	public DAOGenericoHibernate(Class classeEntidade) {
 		this.classeEntidade = classeEntidade;
@@ -134,6 +140,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			list.add(vendaAnoMes);
 
 		}
+		
 
 		return list;
 	}
@@ -184,6 +191,10 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 		String dataFormatada = formato.format(data1);
 		String dataFormatada2 = formato.format(data2);
+		
+		SimpleDateFormat formato2 = new SimpleDateFormat("yyyy-MM-dd");
+		String SdataFormatada = formato2.format(data1);
+		String SdataFormatada2 = formato2.format(data2);
 
 		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
 				// "SELECT * FROM("
@@ -197,7 +208,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " t.desc_tipo_pedido as tipo_pedido, " 
 						+ " CF.tipooperacao_cfop, " 
 						+ " p.status_pedidovenda, "
-						+ " v.NOME_CADCFTV nome_vendedor "
+						+ " v.NOME_CADCFTV nome_vendedor, "
+						+ " 'SEVEN' as origem "
 						+ " from pedidovenda p "
 						+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
 						+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID "
@@ -230,19 +242,65 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			vendasEmGeral.setTipooperacaocfop((String) row[7] );
 			vendasEmGeral.setStatuspedido((String) row[8] );
 			vendasEmGeral.setNomevendedor((String) row[9] );
-			
-			
+			vendasEmGeral.setOrigem((String) row[10] );
 			
 			list.add(vendasEmGeral);
 		}
+		
+		//adicionando parte do SIge
+		javax.persistence.Query querySige = (javax.persistence.Query) managerSige.createNativeQuery(
+			" select s.Cod_cli_for as cod_cliente, "
+			+" g.Nome_cadastro ,p.Num_docto pedido ,p.Data_v1 dataPedido , "
+			+" cast(s.Valor_liquido as money) as valor_venda ,cd.Desc_cond_pgto,'' tipopedido, "
+			+" 'VENDA' as tipooperacao,'Fechado'as statuspedido,v.Nome_cadastro nome_vendedor, 'SIGE' as origem "
+			
+			+" from tbsaidas s  left join tbsaidas p on p.Chave_fato = s.Chave_fato_orig_un   "
+			+" inner join tbCadastroGeral g on g.Cod_cadastro = s.Cod_cli_for "
+			+" inner join tbCadastroGeral v on v.Cod_cadastro = s.Cod_vend_comp "
+			+" left join tbTipoMvEstoque tp on tp.cod_tipo_mv = p.cod_tipo_mv  "
+			+" left join ( select max(s2.chave_fato) chave, s2.Chave_fato_orig_un from tbsaidas s2   "
+			+" group by s2.Chave_fato_orig_un) s22 on s22.Chave_fato_orig_un = s.Chave_fato  "
+			+" left join tbsaidas s2 on s2.Chave_fato_orig_un = s.Chave_fato and s2.Chave_fato = s22.chave  "
+			+" inner join tbCondPgto cd on cd.Cod_cond_pgto = p.Cod_cond_pgto "
+			+" where s.Cod_tipo_mv in ('520')and p.Cod_tipo_mv in ('510')  "
+			+" and s.STATUS <> 'C'AND s.STATUS_CTB = 'S' and p.Status<>'C' "
+			+" and s.Cod_vend_comp ="+ usuarioconectado()
+			+" and s.Cod_cli_for between ' " + cliente1 + " ' and ' " + cliente2 + "' "
+			+" and p.Data_v1 between ' " + SdataFormatada + " ' and ' " + SdataFormatada2 + " ' ");
+			
+		
+		List<Object[]> listasige = querySige.getResultList();
+		if(listasige.size()>0){
+		for (Object[] rowsige : listasige) {
+			VendasEmGeral vendasEmGeral = new VendasEmGeral();
+			
+			int scliente = (Integer) rowsige[0];
+			int spedido = (Integer) rowsige[2];
+
+			vendasEmGeral.setCodigocliente(new BigDecimal(scliente));
+			vendasEmGeral.setNomecliente((String) rowsige[1] );
+			vendasEmGeral.setPedido(new BigDecimal(spedido) );
+			vendasEmGeral.setDatapedido((Date) rowsige[3] );
+			vendasEmGeral.setValortotalpedido((BigDecimal) rowsige[4] );
+			vendasEmGeral.setPrazo((String) rowsige[5] );
+			vendasEmGeral.setTipopedido((String) rowsige[6] );
+			vendasEmGeral.setTipooperacaocfop((String) rowsige[7] );
+			vendasEmGeral.setStatuspedido((String) rowsige[8] );
+			vendasEmGeral.setNomevendedor((String) rowsige[9] );
+			vendasEmGeral.setOrigem((String) rowsige[10] );
+			
+			list.add(vendasEmGeral);			
+			}
+		}
+		//fim da parte do sige
 
 		return list;
 	}
 	//detalhes do pedido de venda
-	public List<VendasEmGeralItem> vendasemgeralitem(BigDecimal pedido) {
+	public List<VendasEmGeralItem> vendasemgeralitem(BigDecimal pedido, String origem) {
 		List<VendasEmGeralItem> list = new ArrayList<>();
 		
-		/*lista 2*/
+		if (origem.equals("SEVEN")) {
 		javax.persistence.Query query2 = (javax.persistence.Query) manager.createNativeQuery(
 				// "SELECT * FROM("
 						" select " 
@@ -316,6 +374,59 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			
 			list.add(vendasEmGeralItem);
 		}
+		}
+		if (origem.equals("SIGE")) {
+			//adicionando parte do SIge
+			javax.persistence.Query querySige = (javax.persistence.Query) managerSige.createNativeQuery(
+				" select s.Cod_cli_for as cod_cliente, "
+				+" g.Nome_cadastro ,p.Num_docto pedido ,p.Data_v1 dataPedido , "
+				+" cast(s.Valor_liquido as money) as valor_venda ,cd.Desc_cond_pgto,'' tipopedido, "
+				+" 'VENDA' as tipooperacao,'Fechado'as statuspedido, v.Nome_cadastro nome_vendedor, 'SIGE' as origem, "
+				+" cast(it.Cod_produto as integer)produto, pr.Desc_produto_est, cast(it.Qtde_pri as integer) qtde , it.Valor_unitario, it.Valor_liquido "
+				
+				+" from tbsaidas s  left join tbsaidas p on p.Chave_fato = s.Chave_fato_orig_un   "
+				+" inner join tbCadastroGeral g on g.Cod_cadastro = s.Cod_cli_for "
+				+" inner join tbCadastroGeral v on v.Cod_cadastro = s.Cod_vend_comp "
+				+" left join tbTipoMvEstoque tp on tp.cod_tipo_mv = p.cod_tipo_mv  "
+				+" left join ( select max(s2.chave_fato) chave, s2.Chave_fato_orig_un from tbsaidas s2   "
+				+" group by s2.Chave_fato_orig_un) s22 on s22.Chave_fato_orig_un = s.Chave_fato  "
+				+" left join tbsaidas s2 on s2.Chave_fato_orig_un = s.Chave_fato and s2.Chave_fato = s22.chave  "
+				+" inner join tbSaidasItem it on it.Chave_fato = p.Chave_fato "
+				+" inner join tbproduto pr on pr.Cod_produto = it.Cod_produto "
+				+" inner join tbCondPgto cd on cd.Cod_cond_pgto = p.Cod_cond_pgto "
+				+" where s.Cod_tipo_mv in ('520','523','527') and p.Cod_tipo_mv in ('510')  "
+				+" and s.STATUS <> 'C'AND s.STATUS_CTB = 'S' and p.Status<>'C' "
+				+" and s.Cod_vend_comp ="+ usuarioconectado()
+				+" AND P.Num_docto ="+ pedido);
+			
+			List<Object[]> listasige = querySige.getResultList();
+			
+			if(listasige.size()>0){
+			for (Object[] rowsige : listasige) {
+				VendasEmGeralItem vendasEmGeralItem = new VendasEmGeralItem();
+				
+				int spedido = (Integer) rowsige[2];
+				int sproduto = (Integer) rowsige[11];
+				int sqtde = (Integer) rowsige[13];
+				
+				vendasEmGeralItem.setPedido(new BigDecimal(spedido));
+				vendasEmGeralItem.setCodigoproduto(new BigDecimal(sproduto));
+				vendasEmGeralItem.setNomeproduto((String) rowsige[12] );
+				vendasEmGeralItem.setQuantidadeproduto(new BigDecimal(sqtde));
+				vendasEmGeralItem.setValorunitarioproduto((BigDecimal) rowsige[14] );
+				vendasEmGeralItem.setValortotalproduto((BigDecimal) rowsige[15] );
+				vendasEmGeralItem.setNota(null);
+				vendasEmGeralItem.setDatanota(null);
+				vendasEmGeralItem.setStatusnota(null);
+				vendasEmGeralItem.setImagem(null );
+				
+				
+				list.add(vendasEmGeralItem);
+			}
+				
+			}
+			
+		}
 		return list;
 		
 	}
@@ -327,6 +438,10 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 			String dataFormatada = formato.format(data1);
 			String dataFormatada2 = formato.format(data2);
+			
+			SimpleDateFormat formato2 = new SimpleDateFormat("yyyy-MM-dd");
+			String SdataFormatada = formato2.format(data1);
+			String SdataFormatada2 = formato2.format(data2);
 
 			javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
 					// "SELECT * FROM("
@@ -380,15 +495,61 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				
 				list.add(vendasEmGeral);
 			}
+			
+			//adicionando parte do SIge
+			javax.persistence.Query querySige = (javax.persistence.Query) managerSige.createNativeQuery(
+				" select s.Cod_cli_for as cod_cliente, "
+				+" g.Nome_cadastro ,p.Num_docto pedido ,p.Data_v1 dataPedido , "
+				+" cast(s.Valor_liquido as money) as valor_venda ,cd.Desc_cond_pgto,'' tipopedido, "
+				+" 'AMOSTRA' as tipooperacao,'Fechado'as statuspedido,v.Nome_cadastro nome_vendedor, 'SIGE' as origem "
+				
+				+" from tbsaidas s  left join tbsaidas p on p.Chave_fato = s.Chave_fato_orig_un   "
+				+" inner join tbCadastroGeral g on g.Cod_cadastro = s.Cod_cli_for "
+				+" inner join tbCadastroGeral v on v.Cod_cadastro = s.Cod_vend_comp "
+				+" left join tbTipoMvEstoque tp on tp.cod_tipo_mv = p.cod_tipo_mv  "
+				+" left join ( select max(s2.chave_fato) chave, s2.Chave_fato_orig_un from tbsaidas s2   "
+				+" group by s2.Chave_fato_orig_un) s22 on s22.Chave_fato_orig_un = s.Chave_fato  "
+				+" left join tbsaidas s2 on s2.Chave_fato_orig_un = s.Chave_fato and s2.Chave_fato = s22.chave  "
+				+" inner join tbCondPgto cd on cd.Cod_cond_pgto = p.Cod_cond_pgto "
+				+" where s.Cod_tipo_mv in ('520','523','527')and p.Cod_tipo_mv in ('516')  "
+				+" and s.STATUS <> 'C'AND s.STATUS_CTB = 'S' and p.Status<>'C' "
+				+" and s.Cod_vend_comp ="+ usuarioconectado()
+				+" and s.Cod_cli_for between ' " + cliente1 + " ' and ' " + cliente2 + "' "
+				+" and p.Data_v1 between ' " + SdataFormatada + " ' and ' " + SdataFormatada2 + " ' ");
+			
+			List<Object[]> listasige = querySige.getResultList();
+			if(listasige.size()>0){
+			for (Object[] rowsige : listasige) {
+				VendasEmGeral vendasEmGeral = new VendasEmGeral();
+				
+				int scliente = (Integer) rowsige[0];
+				int spedido = (Integer) rowsige[2];
+
+				vendasEmGeral.setCodigocliente(new BigDecimal(scliente));
+				vendasEmGeral.setNomecliente((String) rowsige[1] );
+				vendasEmGeral.setPedido(new BigDecimal(spedido) );
+				vendasEmGeral.setDatapedido((Date) rowsige[3] );
+				vendasEmGeral.setValortotalpedido((BigDecimal) rowsige[4] );
+				vendasEmGeral.setPrazo((String) rowsige[5] );
+				vendasEmGeral.setTipopedido((String) rowsige[6] );
+				vendasEmGeral.setTipooperacaocfop((String) rowsige[7] );
+				vendasEmGeral.setStatuspedido((String) rowsige[8] );
+				vendasEmGeral.setNomevendedor((String) rowsige[9] );
+				vendasEmGeral.setOrigem((String) rowsige[10] );
+				
+				list.add(vendasEmGeral);			
+				}
+			}
+			//fim da parte do sige
 
 			return list;
 		}
 	
 	//detalhes do pedido de amostra
-		public List<VendasEmGeralItem> amostraemgeralitem(BigDecimal pedido) {
+		public List<VendasEmGeralItem> amostraemgeralitem(BigDecimal pedido,String origem){
 			List<VendasEmGeralItem> list = new ArrayList<>();
 			
-			/*lista 2*/
+			if (origem.equals("SEVEN")) {
 			javax.persistence.Query query2 = (javax.persistence.Query) manager.createNativeQuery(
 					// "SELECT * FROM("
 							" select " 
@@ -463,6 +624,58 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				vendasEmGeralItem.setImagem((Blob) row2[17] );
 				
 				list.add(vendasEmGeralItem);
+			}
+			}
+			if (origem.equals("SIGE")) {
+				//adicionando parte do SIge
+				javax.persistence.Query querySige = (javax.persistence.Query) managerSige.createNativeQuery(
+					" select s.Cod_cli_for as cod_cliente, "
+					+" g.Nome_cadastro ,p.Num_docto pedido ,p.Data_v1 dataPedido , "
+					+" cast(s.Valor_liquido as money) as valor_venda ,cd.Desc_cond_pgto,'' tipopedido, "
+					+" 'VENDA' as tipooperacao,'Fechado'as statuspedido, v.Nome_cadastro nome_vendedor, 'SIGE' as origem, "
+					+" cast(it.Cod_produto as integer)produto, pr.Desc_produto_est, cast(it.Qtde_pri as integer) qtde , it.Valor_unitario, it.Valor_liquido "
+					
+					+" from tbsaidas s  left join tbsaidas p on p.Chave_fato = s.Chave_fato_orig_un   "
+					+" inner join tbCadastroGeral g on g.Cod_cadastro = s.Cod_cli_for "
+					+" inner join tbCadastroGeral v on v.Cod_cadastro = s.Cod_vend_comp "
+					+" left join tbTipoMvEstoque tp on tp.cod_tipo_mv = p.cod_tipo_mv  "
+					+" left join ( select max(s2.chave_fato) chave, s2.Chave_fato_orig_un from tbsaidas s2   "
+					+" group by s2.Chave_fato_orig_un) s22 on s22.Chave_fato_orig_un = s.Chave_fato  "
+					+" left join tbsaidas s2 on s2.Chave_fato_orig_un = s.Chave_fato and s2.Chave_fato = s22.chave  "
+					+" inner join tbSaidasItem it on it.Chave_fato = p.Chave_fato "
+					+" inner join tbproduto pr on pr.Cod_produto = it.Cod_produto "
+					+" inner join tbCondPgto cd on cd.Cod_cond_pgto = p.Cod_cond_pgto "
+					+" where s.Cod_tipo_mv in ('520','523','527') and p.Cod_tipo_mv in ('516')  "
+					+" and s.STATUS <> 'C'AND s.STATUS_CTB = 'S' and p.Status<>'C' "
+					+" and s.Cod_vend_comp ="+ usuarioconectado()
+					+" AND P.Num_docto ="+ pedido);
+				
+				List<Object[]> listasige = querySige.getResultList();
+				
+				if(listasige.size()>0){
+				for (Object[] rowsige : listasige) {
+					VendasEmGeralItem vendasEmGeralItem = new VendasEmGeralItem();
+					
+					int spedido = (Integer) rowsige[2];
+					int sproduto = (Integer) rowsige[11];
+					int sqtde = (Integer) rowsige[13];
+					
+					vendasEmGeralItem.setPedido(new BigDecimal(spedido));
+					vendasEmGeralItem.setCodigoproduto(new BigDecimal(sproduto));
+					vendasEmGeralItem.setNomeproduto((String) rowsige[12] );
+					vendasEmGeralItem.setQuantidadeproduto(new BigDecimal(sqtde));
+					vendasEmGeralItem.setValorunitarioproduto((BigDecimal) rowsige[14] );
+					vendasEmGeralItem.setValortotalproduto((BigDecimal) rowsige[15] );
+					vendasEmGeralItem.setNota(null);
+					vendasEmGeralItem.setDatanota(null);
+					vendasEmGeralItem.setStatusnota(null);
+					vendasEmGeralItem.setImagem(null );
+					
+					
+					list.add(vendasEmGeralItem);
+				}
+					
+				}
 			}
 			return list;
 			
@@ -620,6 +833,10 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 					SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 					String dataFormatada = formato.format(data1);
 					String dataFormatada2 = formato.format(data2);
+					
+					SimpleDateFormat formato2 = new SimpleDateFormat("yyyy-MM-dd");
+					String SdataFormatada = formato2.format(data1);
+					String SdataFormatada2 = formato2.format(data2);
 
 					javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
 							// "SELECT * FROM("
@@ -673,15 +890,61 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						
 						list.add(vendasEmGeral);
 					}
+					
+					//adicionando parte do SIge
+					javax.persistence.Query querySige = (javax.persistence.Query) managerSige.createNativeQuery(
+						" select s.Cod_cli_for as cod_cliente, "
+						+" g.Nome_cadastro ,p.Num_docto pedido ,p.Data_v1 dataPedido , "
+						+" cast(s.Valor_liquido as money) as valor_venda ,cd.Desc_cond_pgto,'' tipopedido, "
+						+" 'AMOSTRA' as tipooperacao,'Fechado'as statuspedido,v.Nome_cadastro nome_vendedor, 'SIGE' as origem "
+						
+						+" from tbsaidas s  left join tbsaidas p on p.Chave_fato = s.Chave_fato_orig_un   "
+						+" inner join tbCadastroGeral g on g.Cod_cadastro = s.Cod_cli_for "
+						+" inner join tbCadastroGeral v on v.Cod_cadastro = s.Cod_vend_comp "
+						+" left join tbTipoMvEstoque tp on tp.cod_tipo_mv = p.cod_tipo_mv  "
+						+" left join ( select max(s2.chave_fato) chave, s2.Chave_fato_orig_un from tbsaidas s2   "
+						+" group by s2.Chave_fato_orig_un) s22 on s22.Chave_fato_orig_un = s.Chave_fato  "
+						+" left join tbsaidas s2 on s2.Chave_fato_orig_un = s.Chave_fato and s2.Chave_fato = s22.chave  "
+						+" inner join tbCondPgto cd on cd.Cod_cond_pgto = p.Cod_cond_pgto "
+						+" where s.Cod_tipo_mv in ('520','523','527')and p.Cod_tipo_mv in ('515')  "
+						+" and s.STATUS <> 'C'AND s.STATUS_CTB = 'S' and p.Status<>'C' "
+						+" and s.Cod_vend_comp ="+ usuarioconectado()
+						+" and s.Cod_cli_for between ' " + cliente1 + " ' and ' " + cliente2 + "' "
+						+" and p.Data_v1 between ' " + SdataFormatada + " ' and ' " + SdataFormatada2 + " ' ");
+					
+					List<Object[]> listasige = querySige.getResultList();
+					if(listasige.size()>0){
+					for (Object[] rowsige : listasige) {
+						VendasEmGeral vendasEmGeral = new VendasEmGeral();
+						
+						int scliente = (Integer) rowsige[0];
+						int spedido = (Integer) rowsige[2];
+
+						vendasEmGeral.setCodigocliente(new BigDecimal(scliente));
+						vendasEmGeral.setNomecliente((String) rowsige[1] );
+						vendasEmGeral.setPedido(new BigDecimal(spedido) );
+						vendasEmGeral.setDatapedido((Date) rowsige[3] );
+						vendasEmGeral.setValortotalpedido((BigDecimal) rowsige[4] );
+						vendasEmGeral.setPrazo((String) rowsige[5] );
+						vendasEmGeral.setTipopedido((String) rowsige[6] );
+						vendasEmGeral.setTipooperacaocfop((String) rowsige[7] );
+						vendasEmGeral.setStatuspedido((String) rowsige[8] );
+						vendasEmGeral.setNomevendedor((String) rowsige[9] );
+						vendasEmGeral.setOrigem((String) rowsige[10] );
+						
+						list.add(vendasEmGeral);			
+						}
+					}
+					//fim da parte do sige
 
 					return list;
 				}
 			
 			//detalhes do pedido de amostra
-				public List<VendasEmGeralItem> trocadefeitoemgeralitem(BigDecimal pedido) {
+				public List<VendasEmGeralItem> trocadefeitoemgeralitem(BigDecimal pedido, String origem) {
 					List<VendasEmGeralItem> list = new ArrayList<>();
 					
-					/*lista 2*/
+					if (origem.equals("SEVEN")) {
 					javax.persistence.Query query2 = (javax.persistence.Query) manager.createNativeQuery(
 							// "SELECT * FROM("
 									" select " 
@@ -755,6 +1018,58 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						vendasEmGeralItem.setImagem((Blob) row2[17] );
 						
 						list.add(vendasEmGeralItem);
+					}
+				}
+					if (origem.equals("SIGE")) {
+						//adicionando parte do SIge
+						javax.persistence.Query querySige = (javax.persistence.Query) managerSige.createNativeQuery(
+							" select s.Cod_cli_for as cod_cliente, "
+							+" g.Nome_cadastro ,p.Num_docto pedido ,p.Data_v1 dataPedido , "
+							+" cast(s.Valor_liquido as money) as valor_venda ,cd.Desc_cond_pgto,'' tipopedido, "
+							+" 'VENDA' as tipooperacao,'Fechado'as statuspedido, v.Nome_cadastro nome_vendedor, 'SIGE' as origem, "
+							+" cast(it.Cod_produto as integer)produto, pr.Desc_produto_est, cast(it.Qtde_pri as integer) qtde , it.Valor_unitario, it.Valor_liquido "
+							
+							+" from tbsaidas s  left join tbsaidas p on p.Chave_fato = s.Chave_fato_orig_un   "
+							+" inner join tbCadastroGeral g on g.Cod_cadastro = s.Cod_cli_for "
+							+" inner join tbCadastroGeral v on v.Cod_cadastro = s.Cod_vend_comp "
+							+" left join tbTipoMvEstoque tp on tp.cod_tipo_mv = p.cod_tipo_mv  "
+							+" left join ( select max(s2.chave_fato) chave, s2.Chave_fato_orig_un from tbsaidas s2   "
+							+" group by s2.Chave_fato_orig_un) s22 on s22.Chave_fato_orig_un = s.Chave_fato  "
+							+" left join tbsaidas s2 on s2.Chave_fato_orig_un = s.Chave_fato and s2.Chave_fato = s22.chave  "
+							+" inner join tbSaidasItem it on it.Chave_fato = p.Chave_fato "
+							+" inner join tbproduto pr on pr.Cod_produto = it.Cod_produto "
+							+" inner join tbCondPgto cd on cd.Cod_cond_pgto = p.Cod_cond_pgto "
+							+" where s.Cod_tipo_mv in ('520','523','527') and p.Cod_tipo_mv in ('515')  "
+							+" and s.STATUS <> 'C'AND s.STATUS_CTB = 'S' and p.Status<>'C' "
+							+" and s.Cod_vend_comp ="+ usuarioconectado()
+							+" AND P.Num_docto ="+ pedido);
+						
+						List<Object[]> listasige = querySige.getResultList();
+						
+						if(listasige.size()>0){
+						for (Object[] rowsige : listasige) {
+							VendasEmGeralItem vendasEmGeralItem = new VendasEmGeralItem();
+							
+							int spedido = (Integer) rowsige[2];
+							int sproduto = (Integer) rowsige[11];
+							int sqtde = (Integer) rowsige[13];
+							
+							vendasEmGeralItem.setPedido(new BigDecimal(spedido));
+							vendasEmGeralItem.setCodigoproduto(new BigDecimal(sproduto));
+							vendasEmGeralItem.setNomeproduto((String) rowsige[12] );
+							vendasEmGeralItem.setQuantidadeproduto(new BigDecimal(sqtde));
+							vendasEmGeralItem.setValorunitarioproduto((BigDecimal) rowsige[14] );
+							vendasEmGeralItem.setValortotalproduto((BigDecimal) rowsige[15] );
+							vendasEmGeralItem.setNota(null);
+							vendasEmGeralItem.setDatanota(null);
+							vendasEmGeralItem.setStatusnota(null);
+							vendasEmGeralItem.setImagem(null );
+							
+							
+							list.add(vendasEmGeralItem);
+						}
+							
+						}
 					}
 					return list;
 					
@@ -1113,14 +1428,65 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 					
 					list.add(vendasEmGeral);
 				}
+				
+				//adicionando parte do SIge
+				
+				SimpleDateFormat formato2 = new SimpleDateFormat("yyyy-MM-dd");
+				String SdataFormatada = formato2.format(data1);
+				String SdataFormatada2 = formato2.format(data2);
+				
+				javax.persistence.Query querySige = (javax.persistence.Query) managerSige.createNativeQuery(
+					" select s.Cod_cli_for as cod_cliente, "
+					+" g.Nome_cadastro ,p.Num_docto pedido ,p.Data_v1 dataPedido , "
+					+" cast(s.Valor_liquido as money) as valor_venda ,cd.Desc_cond_pgto,'' tipopedido, "
+					+" 'AMOSTRA' as tipooperacao,'Fechado'as statuspedido,v.Nome_cadastro nome_vendedor, 'SIGE' as origem "
+					
+					+" from tbsaidas s  left join tbsaidas p on p.Chave_fato = s.Chave_fato_orig_un   "
+					+" inner join tbCadastroGeral g on g.Cod_cadastro = s.Cod_cli_for "
+					+" inner join tbCadastroGeral v on v.Cod_cadastro = s.Cod_vend_comp "
+					+" left join tbTipoMvEstoque tp on tp.cod_tipo_mv = p.cod_tipo_mv  "
+					+" left join ( select max(s2.chave_fato) chave, s2.Chave_fato_orig_un from tbsaidas s2   "
+					+" group by s2.Chave_fato_orig_un) s22 on s22.Chave_fato_orig_un = s.Chave_fato  "
+					+" left join tbsaidas s2 on s2.Chave_fato_orig_un = s.Chave_fato and s2.Chave_fato = s22.chave  "
+					+" inner join tbCondPgto cd on cd.Cod_cond_pgto = p.Cod_cond_pgto "
+					+" where s.Cod_tipo_mv in ('520','523','527')and p.Cod_tipo_mv in ('512')  "
+					+" and s.STATUS <> 'C'AND s.STATUS_CTB = 'S' and p.Status<>'C' "
+					+" and s.Cod_vend_comp ="+ usuarioconectado()
+					+" and s.Cod_cli_for between ' " + cliente1 + " ' and ' " + cliente2 + "' "
+					+" and p.Data_v1 between ' " + SdataFormatada + " ' and ' " + SdataFormatada2 + " ' ");
+				
+				List<Object[]> listasige = querySige.getResultList();
+				if(listasige.size()>0){
+				for (Object[] rowsige : listasige) {
+					VendasEmGeral vendasEmGeral = new VendasEmGeral();
+					
+					int scliente = (Integer) rowsige[0];
+					int spedido = (Integer) rowsige[2];
+
+					vendasEmGeral.setCodigocliente(new BigDecimal(scliente));
+					vendasEmGeral.setNomecliente((String) rowsige[1] );
+					vendasEmGeral.setPedido(new BigDecimal(spedido) );
+					vendasEmGeral.setDatapedido((Date) rowsige[3] );
+					vendasEmGeral.setValortotalpedido((BigDecimal) rowsige[4] );
+					vendasEmGeral.setPrazo((String) rowsige[5] );
+					vendasEmGeral.setTipopedido((String) rowsige[6] );
+					vendasEmGeral.setTipooperacaocfop((String) rowsige[7] );
+					vendasEmGeral.setStatuspedido((String) rowsige[8] );
+					vendasEmGeral.setNomevendedor((String) rowsige[9] );
+					vendasEmGeral.setOrigem((String) rowsige[10] );
+					
+					list.add(vendasEmGeral);			
+					}
+				}
+				//fim da parte do sige
 
 				return list;
 			}
 		
 	//detalhes do pedido de bonificação
-	public List<VendasEmGeralItem> bonificacaoemgeralitem(BigDecimal pedido) {
+	public List<VendasEmGeralItem> bonificacaoemgeralitem(BigDecimal pedido, String origem) {
 	List<VendasEmGeralItem> list = new ArrayList<>();
-				/*lista 2*/
+		if (origem.equals("SEVEN")) {
 				javax.persistence.Query query2 = (javax.persistence.Query) manager.createNativeQuery(
 						// "SELECT * FROM("
 								" select " 
@@ -1195,6 +1561,58 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 					vendasEmGeralItem.setImagem((Blob) row2[17] );
 					
 					list.add(vendasEmGeralItem);
+				}
+				}
+				if (origem.equals("SIGE")) {
+					//adicionando parte do SIge
+					javax.persistence.Query querySige = (javax.persistence.Query) managerSige.createNativeQuery(
+						" select s.Cod_cli_for as cod_cliente, "
+						+" g.Nome_cadastro ,p.Num_docto pedido ,p.Data_v1 dataPedido , "
+						+" cast(s.Valor_liquido as money) as valor_venda ,cd.Desc_cond_pgto,'' tipopedido, "
+						+" 'VENDA' as tipooperacao,'Fechado'as statuspedido, v.Nome_cadastro nome_vendedor, 'SIGE' as origem, "
+						+" cast(it.Cod_produto as integer)produto, pr.Desc_produto_est, cast(it.Qtde_pri as integer) qtde , it.Valor_unitario, it.Valor_liquido "
+						
+						+" from tbsaidas s  left join tbsaidas p on p.Chave_fato = s.Chave_fato_orig_un   "
+						+" inner join tbCadastroGeral g on g.Cod_cadastro = s.Cod_cli_for "
+						+" inner join tbCadastroGeral v on v.Cod_cadastro = s.Cod_vend_comp "
+						+" left join tbTipoMvEstoque tp on tp.cod_tipo_mv = p.cod_tipo_mv  "
+						+" left join ( select max(s2.chave_fato) chave, s2.Chave_fato_orig_un from tbsaidas s2   "
+						+" group by s2.Chave_fato_orig_un) s22 on s22.Chave_fato_orig_un = s.Chave_fato  "
+						+" left join tbsaidas s2 on s2.Chave_fato_orig_un = s.Chave_fato and s2.Chave_fato = s22.chave  "
+						+" inner join tbSaidasItem it on it.Chave_fato = p.Chave_fato "
+						+" inner join tbproduto pr on pr.Cod_produto = it.Cod_produto "
+						+" inner join tbCondPgto cd on cd.Cod_cond_pgto = p.Cod_cond_pgto "
+						+" where s.Cod_tipo_mv in ('520','523','527') and p.Cod_tipo_mv in ('512')  "
+						+" and s.STATUS <> 'C'AND s.STATUS_CTB = 'S' and p.Status<>'C' "
+						+" and s.Cod_vend_comp ="+ usuarioconectado()
+						+" AND P.Num_docto ="+ pedido);
+					
+					List<Object[]> listasige = querySige.getResultList();
+					
+					if(listasige.size()>0){
+					for (Object[] rowsige : listasige) {
+						VendasEmGeralItem vendasEmGeralItem = new VendasEmGeralItem();
+						
+						int spedido = (Integer) rowsige[2];
+						int sproduto = (Integer) rowsige[11];
+						int sqtde = (Integer) rowsige[13];
+						
+						vendasEmGeralItem.setPedido(new BigDecimal(spedido));
+						vendasEmGeralItem.setCodigoproduto(new BigDecimal(sproduto));
+						vendasEmGeralItem.setNomeproduto((String) rowsige[12] );
+						vendasEmGeralItem.setQuantidadeproduto(new BigDecimal(sqtde));
+						vendasEmGeralItem.setValorunitarioproduto((BigDecimal) rowsige[14] );
+						vendasEmGeralItem.setValortotalproduto((BigDecimal) rowsige[15] );
+						vendasEmGeralItem.setNota(null);
+						vendasEmGeralItem.setDatanota(null);
+						vendasEmGeralItem.setStatusnota(null);
+						vendasEmGeralItem.setImagem(null );
+						
+						
+						list.add(vendasEmGeralItem);
+					}
+						
+					}
 				}
 				return list;
 				
@@ -1407,15 +1825,66 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 					
 					list.add(vendasEmGeral);
 				}
+				
+				//adicionando parte do SIge
+				
+				SimpleDateFormat formato2 = new SimpleDateFormat("yyyy-MM-dd");
+				String SdataFormatada = formato2.format(data1);
+				String SdataFormatada2 = formato2.format(data2);
+				
+				javax.persistence.Query querySige = (javax.persistence.Query) managerSige.createNativeQuery(
+					" select s.Cod_cli_for as cod_cliente, "
+					+" g.Nome_cadastro ,p.Num_docto pedido ,p.Data_v1 dataPedido , "
+					+" cast(s.Valor_liquido as money) as valor_venda ,cd.Desc_cond_pgto,'' tipopedido, "
+					+" 'AMOSTRA' as tipooperacao,'Fechado'as statuspedido,v.Nome_cadastro nome_vendedor, 'SIGE' as origem "
+					
+					+" from tbsaidas s  left join tbsaidas p on p.Chave_fato = s.Chave_fato_orig_un   "
+					+" inner join tbCadastroGeral g on g.Cod_cadastro = s.Cod_cli_for "
+					+" inner join tbCadastroGeral v on v.Cod_cadastro = s.Cod_vend_comp "
+					+" left join tbTipoMvEstoque tp on tp.cod_tipo_mv = p.cod_tipo_mv  "
+					+" left join ( select max(s2.chave_fato) chave, s2.Chave_fato_orig_un from tbsaidas s2   "
+					+" group by s2.Chave_fato_orig_un) s22 on s22.Chave_fato_orig_un = s.Chave_fato  "
+					+" left join tbsaidas s2 on s2.Chave_fato_orig_un = s.Chave_fato and s2.Chave_fato = s22.chave  "
+					+" inner join tbCondPgto cd on cd.Cod_cond_pgto = p.Cod_cond_pgto "
+					+" where s.Cod_tipo_mv in ('520','523','527')and p.Cod_tipo_mv in ('517')  "
+					+" and s.STATUS <> 'C'AND s.STATUS_CTB = 'S' and p.Status<>'C' "
+					+" and s.Cod_vend_comp ="+ usuarioconectado()
+					+" and s.Cod_cli_for between ' " + cliente1 + " ' and ' " + cliente2 + "' "
+					+" and p.Data_v1 between ' " + SdataFormatada + " ' and ' " + SdataFormatada2 + " ' ");
+				
+				List<Object[]> listasige = querySige.getResultList();
+				if(listasige.size()>0){
+				for (Object[] rowsige : listasige) {
+					VendasEmGeral vendasEmGeral = new VendasEmGeral();
+					
+					int scliente = (Integer) rowsige[0];
+					int spedido = (Integer) rowsige[2];
+
+					vendasEmGeral.setCodigocliente(new BigDecimal(scliente));
+					vendasEmGeral.setNomecliente((String) rowsige[1] );
+					vendasEmGeral.setPedido(new BigDecimal(spedido) );
+					vendasEmGeral.setDatapedido((Date) rowsige[3] );
+					vendasEmGeral.setValortotalpedido((BigDecimal) rowsige[4] );
+					vendasEmGeral.setPrazo((String) rowsige[5] );
+					vendasEmGeral.setTipopedido((String) rowsige[6] );
+					vendasEmGeral.setTipooperacaocfop((String) rowsige[7] );
+					vendasEmGeral.setStatuspedido((String) rowsige[8] );
+					vendasEmGeral.setNomevendedor((String) rowsige[9] );
+					vendasEmGeral.setOrigem((String) rowsige[10] );
+					
+					list.add(vendasEmGeral);			
+					}
+				}
+				//fim da parte do sige
 
 				return list;
 			}
 		
 		//detalhes do pedido de amostra
-			public List<VendasEmGeralItem> expositoremgeralitem(BigDecimal pedido) {
+			public List<VendasEmGeralItem> expositoremgeralitem(BigDecimal pedido, String origem) {
 				List<VendasEmGeralItem> list = new ArrayList<>();
 				
-				/*lista 2*/
+				if (origem.equals("SEVEN")) {
 				javax.persistence.Query query2 = (javax.persistence.Query) manager.createNativeQuery(
 						// "SELECT * FROM("
 								" select " 
@@ -1491,6 +1960,59 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 					
 					list.add(vendasEmGeralItem);
 				}
+				
+			}
+			if (origem.equals("SIGE")) {
+				//adicionando parte do SIge
+				javax.persistence.Query querySige = (javax.persistence.Query) managerSige.createNativeQuery(
+					" select s.Cod_cli_for as cod_cliente, "
+					+" g.Nome_cadastro ,p.Num_docto pedido ,p.Data_v1 dataPedido , "
+					+" cast(s.Valor_liquido as money) as valor_venda ,cd.Desc_cond_pgto,'' tipopedido, "
+					+" 'VENDA' as tipooperacao,'Fechado'as statuspedido, v.Nome_cadastro nome_vendedor, 'SIGE' as origem, "
+					+" cast(it.Cod_produto as integer)produto, pr.Desc_produto_est, cast(it.Qtde_pri as integer) qtde , it.Valor_unitario, it.Valor_liquido "
+					
+					+" from tbsaidas s  left join tbsaidas p on p.Chave_fato = s.Chave_fato_orig_un   "
+					+" inner join tbCadastroGeral g on g.Cod_cadastro = s.Cod_cli_for "
+					+" inner join tbCadastroGeral v on v.Cod_cadastro = s.Cod_vend_comp "
+					+" left join tbTipoMvEstoque tp on tp.cod_tipo_mv = p.cod_tipo_mv  "
+					+" left join ( select max(s2.chave_fato) chave, s2.Chave_fato_orig_un from tbsaidas s2   "
+					+" group by s2.Chave_fato_orig_un) s22 on s22.Chave_fato_orig_un = s.Chave_fato  "
+					+" left join tbsaidas s2 on s2.Chave_fato_orig_un = s.Chave_fato and s2.Chave_fato = s22.chave  "
+					+" inner join tbSaidasItem it on it.Chave_fato = p.Chave_fato "
+					+" inner join tbproduto pr on pr.Cod_produto = it.Cod_produto "
+					+" inner join tbCondPgto cd on cd.Cod_cond_pgto = p.Cod_cond_pgto "
+					+" where s.Cod_tipo_mv in ('520','523','527') and p.Cod_tipo_mv in ('517')  "
+					+" and s.STATUS <> 'C'AND s.STATUS_CTB = 'S' and p.Status<>'C' "
+					+" and s.Cod_vend_comp ="+ usuarioconectado()
+					+" AND P.Num_docto ="+ pedido);
+				
+				List<Object[]> listasige = querySige.getResultList();
+				
+				if(listasige.size()>0){
+				for (Object[] rowsige : listasige) {
+					VendasEmGeralItem vendasEmGeralItem = new VendasEmGeralItem();
+					
+					int spedido = (Integer) rowsige[2];
+					int sproduto = (Integer) rowsige[11];
+					int sqtde = (Integer) rowsige[13];
+					
+					vendasEmGeralItem.setPedido(new BigDecimal(spedido));
+					vendasEmGeralItem.setCodigoproduto(new BigDecimal(sproduto));
+					vendasEmGeralItem.setNomeproduto((String) rowsige[12] );
+					vendasEmGeralItem.setQuantidadeproduto(new BigDecimal(sqtde));
+					vendasEmGeralItem.setValorunitarioproduto((BigDecimal) rowsige[14] );
+					vendasEmGeralItem.setValortotalproduto((BigDecimal) rowsige[15] );
+					vendasEmGeralItem.setNota(null);
+					vendasEmGeralItem.setDatanota(null);
+					vendasEmGeralItem.setStatusnota(null);
+					vendasEmGeralItem.setImagem(null );
+					
+					
+					list.add(vendasEmGeralItem);
+				}
+					
+				}
+			}
 				return list;
 				
 			}

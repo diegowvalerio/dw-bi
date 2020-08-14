@@ -29,6 +29,7 @@ public class VendasEmGeral implements Serializable {
 	private String tipooperacaocfop;
 	private String statuspedido;
 	private String nomevendedor;
+	private String origem;
 
 		
 
@@ -108,6 +109,14 @@ public class VendasEmGeral implements Serializable {
 		this.statuspedido = statuspedido;
 	}
 
+
+	public String getOrigem() {
+		return origem;
+	}
+
+	public void setOrigem(String origem) {
+		this.origem = origem;
+	}
 
 	@Override
 	public int hashCode() {

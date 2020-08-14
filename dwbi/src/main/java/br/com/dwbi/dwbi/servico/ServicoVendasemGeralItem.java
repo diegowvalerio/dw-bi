@@ -18,32 +18,32 @@ public class ServicoVendasemGeralItem implements Serializable{
 	@Inject
 	private DAOVendasemGeralItem dao;
 	
-	public List<VendasEmGeralItem> vendasemgeralitem(BigDecimal pedido){
-		return dao.vendasemgeralitem(pedido);
+	public List<VendasEmGeralItem> vendasemgeralitem(BigDecimal pedido, String origem){
+		return dao.vendasemgeralitem(pedido,origem);
 	}
 	
-	public List<VendasEmGeralItem> amostraemgeralitem(BigDecimal pedido){
-		return dao.amostraemgeralitem(pedido);
+	public List<VendasEmGeralItem> amostraemgeralitem(BigDecimal pedido, String origem){
+		return dao.amostraemgeralitem(pedido,origem);
 	}
 	
-	public List<VendasEmGeralItem> bonificacaoemgeralitem(BigDecimal pedido){
-		return dao.bonificacaoemgeralitem(pedido);
+	public List<VendasEmGeralItem> bonificacaoemgeralitem(BigDecimal pedido, String origem){
+		return dao.bonificacaoemgeralitem(pedido,origem);
 	}
 	
 	public List<VendasEmGeralItem> bonificacaoexpositoremgeralitem(BigDecimal pedido){
 		return dao.bonificacaoexpositoremgeralitem(pedido);
 	}
 	
-	public List<VendasEmGeralItem> expositoremgeralitem(BigDecimal pedido){
-		return dao.expositoremgeralitem(pedido);
+	public List<VendasEmGeralItem> expositoremgeralitem(BigDecimal pedido, String origem){
+		return dao.expositoremgeralitem(pedido,origem);
 	}
 	
 	public VendasEmGeralItem consultaitem(BigDecimal produto){
 		return dao.consultaitem(produto);
 	}
 	
-	public List<VendasEmGeralItem> trocadefeitoemgeralitem(BigDecimal pedido){
-		return dao.trocadefeitoemgeralitem(pedido);
+	public List<VendasEmGeralItem> trocadefeitoemgeralitem(BigDecimal pedido, String origem){
+		return dao.trocadefeitoemgeralitem(pedido,origem);
 	}
 	public List<VendasEmGeralItem> trocanegocioemgeralitem(BigDecimal pedido){
 		return dao.trocanegocioemgeralitem(pedido);

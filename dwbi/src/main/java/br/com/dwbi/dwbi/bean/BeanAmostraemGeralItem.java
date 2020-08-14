@@ -57,7 +57,7 @@ public class BeanAmostraemGeralItem implements Serializable {
 		session.removeAttribute("data1");
 		session.removeAttribute("data2");
 
-		this.listavendaitems = servico.amostraemgeralitem(this.vendasEmGeral.getPedido());
+		this.listavendaitems = servico.amostraemgeralitem(this.vendasEmGeral.getPedido(),this.vendasEmGeral.getOrigem());
 
 	}
 

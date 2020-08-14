@@ -56,7 +56,7 @@ public class BeanExpositoremGeralItem implements Serializable {
 		session.removeAttribute("data1");
 		session.removeAttribute("data2");
 
-		this.listavendaitems = servico.expositoremgeralitem(this.vendasEmGeral.getPedido());
+		this.listavendaitems = servico.expositoremgeralitem(this.vendasEmGeral.getPedido(),this.vendasEmGeral.getOrigem());
 
 	}
 

@@ -56,7 +56,7 @@ public class BeanBonificacaoemGeralItem implements Serializable {
 		session.removeAttribute("data1");
 		session.removeAttribute("data2");
 
-		this.listavendaitems = servico.bonificacaoemgeralitem(this.vendasEmGeral.getPedido());
+		this.listavendaitems = servico.bonificacaoemgeralitem(this.vendasEmGeral.getPedido(),this.vendasEmGeral.getOrigem());
 
 	}
 
