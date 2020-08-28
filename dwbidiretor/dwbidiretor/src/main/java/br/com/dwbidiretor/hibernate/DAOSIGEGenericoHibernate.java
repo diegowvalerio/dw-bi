@@ -53,7 +53,21 @@ public class DAOSIGEGenericoHibernate<E> implements DAOSIGEGenerico<E>, Serializ
 
 	@Override
 	public E salvar(E e) {
-		manager.persist(e);
+		// INSERT INTO dwbi_login (usuario ,senha ,ativo, TIPO) VALUES('4603' ,'00704001000117','SIM','VENDEDOR' )
+		//manager.persist(e);
+		//return e;
+		
+		javax.persistence.Query query2 = (javax.persistence.Query) manager.createNativeQuery(
+				// "SELECT * FROM("
+				" INSERT INTO dwbi_login (usuario ,senha ,ativo, TIPO) VALUES('"+ ((SigeUsuario) e).getUsuario() +"', '"+ ((SigeUsuario) e).getSenha() +"', '"+ ((SigeUsuario) e).getAtivo() +"', '"+ ((SigeUsuario) e).getTipo() +"')  "
+				+" SELECT idlogin,usuario,senha from dwbi_login where usuario = '"+ usuarioconectado() +"'");
+		try {
+			query2.getResultList();
+		} catch (Exception e2) {
+			System.out.println(e2);
+		}
+		
+		
 		return e;
 	}
 

@@ -21,29 +21,22 @@ import br.com.dwbidiretor.servico.ServicoSigeUsuario;
 
 @Named
 @ViewScoped
-public class BeanSigeUsuarioAcesso implements Serializable {
+public class BeanSigeUsuarioAcesso_Novo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private SigeUsuario sigeusuario = new SigeUsuario();
 	
 	@Inject
 	private ServicoSigeUsuario servico;
-	private List<SigeUsuario> lista = new ArrayList<>();
-
 
 	@PostConstruct
 	public void init() {
-		lista = servico.consultaracesso();
+		this.sigeusuario = getSigeusuario();
 	}
 	
-	public void salvar(){
-		servico.alteraracesso(sigeusuario);
-		lista = servico.consultaracesso();
-	}
-	
-	public void salvar_novo(){
+	public String salvar_novo(){
 		servico.salvar(sigeusuario);
-		lista = servico.consultaracesso();
+		return "usuarios";
 	}
 	
 
@@ -53,22 +46,6 @@ public class BeanSigeUsuarioAcesso implements Serializable {
 
 	public void setSigeusuario(SigeUsuario sigeusuario) {
 		this.sigeusuario = sigeusuario;
-	}
-
-	public List<SigeUsuario> getLista() {
-		return lista;
-	}
-
-	public void setLista(List<SigeUsuario> lista) {
-		this.lista = lista;
-	}
-	
-	public String encaminha() {
-		FacesContext fc = FacesContext.getCurrentInstance();
-		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
-		session.setAttribute("sigeusuario", this.sigeusuario);
-
-		return "acesso-modulo";
 	}
 
 }

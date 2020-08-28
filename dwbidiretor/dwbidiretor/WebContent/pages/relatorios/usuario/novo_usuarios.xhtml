@@ -1,0 +1,75 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+       Acesso Usuário
+    </ui:define>
+
+	<ui:define name="description">
+       Acesso Usuário ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Acesso Usuário" />
+
+		<h:form id="form">
+			<div class="box box-primary">
+				<div class="box-header with-border">
+				
+				<p:panelGrid id="painelDadosCad" columns="2">
+						
+        				
+        				<p:outputLabel value="Nome:" for="nome" />
+						<p:inputText id="nome" value="#{beanSigeUsuarioAcesso_Novo.sigeusuario.usuario}" onkeyup="this.value=this.value.toUpperCase()"/>
+
+						<p:outputLabel value="Senha: " for="senha" />
+						<p:password id="senha" value="#{beanSigeUsuarioAcesso_Novo.sigeusuario.senha}" redisplay="true" />
+						
+						<p:outputLabel value="Ativo:" for="ativo" />
+						<p:selectOneMenu id="ativo" value="#{beanSigeUsuarioAcesso_Novo.sigeusuario.ativo}" >
+							<f:selectItem itemLabel="Selecione" itemValue="" noSelectionOption="false"/>
+            				<f:selectItem itemLabel="Ativo" itemValue="SIM" />
+            				<f:selectItem itemLabel="Inativo" itemValue="NAO" />
+        				</p:selectOneMenu>
+						
+						<p:outputLabel value="Tipo:" for="tipo" />
+						<p:selectOneMenu id="tipo" value="#{beanSigeUsuarioAcesso_Novo.sigeusuario.tipo}" >
+							<f:selectItem itemLabel="Selecione" itemValue="" noSelectionOption="false"/>
+            				<f:selectItem itemLabel="Diretor" itemValue="DIRETOR" />
+            				<f:selectItem itemLabel="Vendedor" itemValue="VENDEDOR" />
+            				<f:selectItem itemLabel="Gestor" itemValue="GESTOR" />
+        				</p:selectOneMenu>
+										
+					</p:panelGrid>
+					<p:commandButton icon="fa fa-check" styleClass="btn-primary"
+						action="#{beanSigeUsuarioAcesso_Novo.salvar_novo()}" ajax="false" />
+				
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
