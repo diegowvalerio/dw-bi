@@ -24,6 +24,7 @@ import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
+import org.jfree.data.time.Day;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -36,6 +37,7 @@ import br.com.dwbidiretor.classe.InvestimentoVendedor;
 import br.com.dwbidiretor.classe.Mapa;
 import br.com.dwbidiretor.classe.MetaVenda;
 import br.com.dwbidiretor.classe.PedidoItem;
+import br.com.dwbidiretor.classe.PedidosConferidos;
 import br.com.dwbidiretor.classe.VendaAnoMes;
 import br.com.dwbidiretor.classe.VendaGrupoSubGrupoProdutoQuantidadeValor;
 import br.com.dwbidiretor.classe.VendasEmGeral;
@@ -193,6 +195,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 
 		return list;
 	}
+	
 	//pedidos de venda
 	public List<VendasEmGeral> vendasemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
 		List<VendasEmGeral> list = new ArrayList<>();
@@ -2916,6 +2919,82 @@ public List<AnaliseClientePedido> analiseclientepedido(Date data1, Date data2, B
 		Collections.sort(list, Comparator.comparing(PedidoItem::getSige_vl_venda, Comparator.nullsLast(Integer::compareTo)));
 		return list;
 		
+	}
+	
+	//pedidos conferidos por periodo
+	
+	public List<PedidosConferidos> pedidosconferidos(Date data1, Date data2){
+		List<PedidosConferidos> list = new ArrayList<>();
+		
+		data2.setDate(data2.getDate()+1);
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		String dataFormatada = formato.format(data1);
+		String dataFormatada2 = formato.format(data2);
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				" select " + 
+				" p.DT_PEDIDOVENDA data_pedido, " + 
+				" p.pedidovendaid pedido, " + 
+				" g.cadcftvid, " + 
+				" g.NOME_CADCFTV, " + 
+				" TP.DESC_TIPO_PEDIDO TIPO_PEDIDO, " + 
+				" p.VL_TOTALPROD_PEDIDOVENDA vlr, " + 
+				" p.VL_PESOLIQ_PEDIDOVENDA peso , " + 
+				" p.QT_VOLUME_PEDIDOVENDA volumes, " + 
+				" INICIO.DT_INICIO, " + 
+				" FIM.DT_FIM, " + 
+				" u.NOME_USUARIO " + 
+				" from pedidovenda p " + 
+				" inner join cadcftv g on g.cadcftvid = p.cadcftvid " + 
+				" left join V_PEDIDOVENDA_CONFERENCIA it on it.pedidovendaid = p.pedidovendaid " + 
+				" INNER JOIN TIPO_PEDIDO TP ON TP.TIPOPEDIDOID = p.TIPOPEDIDOID " + 
+				" left JOIN ( " + 
+				" SELECT PEDIDOVENDAID ,MIN(TO_CHAR(DT_INI_ENTGA_PEDIDOVENDA_ITEM,'DD/MM/YYYY HH24:MI:SS' )) DT_INICIO FROM PEDIDOVENDA_ITEM " + 
+				" GROUP BY PEDIDOVENDAID " + 
+				" )INICIO ON INICIO.PEDIDOVENDAID = P.PEDIDOVENDAID " + 
+				" left JOIN ( " + 
+				" SELECT PEDIDOVENDAID ,MAX(TO_CHAR(DT_FIM_ENTGA_PEDIDOVENDA_ITEM,'DD/MM/YYYY HH24:MI:SS' )) DT_FIM FROM PEDIDOVENDA_ITEM " + 
+				" GROUP BY PEDIDOVENDAID " + 
+				" )FIM ON FIM.PEDIDOVENDAID = P.PEDIDOVENDAID " + 
+				" left JOIN( " + 
+				" SELECT PEDIDOVENDAID ,MAX(USUARIOID_DESPACHO ) USUARIO FROM PEDIDOVENDA_ITEM " +  
+				" GROUP BY PEDIDOVENDAID " + 
+				" )USUARIO ON USUARIO.PEDIDOVENDAID = P.PEDIDOVENDAID " + 
+				" INNER JOIN USUARIO U ON U.USUARIOID = USUARIO.USUARIO " +
+				" left join( " +
+				" select pedidovendaid ,DT_INI_ENTGA_PEDIDOVENDA_ITEM data_i from pedidovenda_item " +
+				" )dt on dt.pedidovendaid = p.pedidovendaid and TO_CHAR(dt.data_i,'DD/MM/YYYY HH24:MI:SS' ) = INICIO.DT_INICIO " +
+				" left join( " +
+				" select pedidovendaid ,DT_FIM_ENTGA_PEDIDOVENDA_ITEM data_f from pedidovenda_item " +
+				" )dt2 on dt2.pedidovendaid = p.pedidovendaid and TO_CHAR(dt2.data_f,'DD/MM/YYYY HH24:MI:SS' ) = FIM.DT_FIM " +
+				" where IT.CONFERIDO = 'SIM' " +
+				" and p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "+
+				" and dt.data_i BETWEEN ' " + dataFormatada + " ' and ' " + dataFormatada2 + " '  "+
+				" and dt2.data_f BETWEEN ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " );
+				
+		
+		List<Object[]> lista = query.getResultList();
+		
+		for (Object[] row : lista) {
+			PedidosConferidos pedidosconferido = new PedidosConferidos();	
+			
+			pedidosconferido.setDatapedido((Date) row[0] );
+			pedidosconferido.setPedido((BigDecimal) row[1]);
+			pedidosconferido.setCodigocliente((BigDecimal) row[2]);
+			pedidosconferido.setNomecliente((String) row[3]);
+			pedidosconferido.setTipopedido((String) row[4]);
+			pedidosconferido.setVlrpedido((BigDecimal) row[5]);
+			pedidosconferido.setPeso((BigDecimal) row[6]);
+			pedidosconferido.setVolume((BigDecimal) row[7]);
+			
+			pedidosconferido.setDatainicio((String) row[8] );
+			pedidosconferido.setDatafim((String) row[9] );
+			pedidosconferido.setUsuario((String) row[10]);
+			
+			list.add(pedidosconferido);
+		}
+		
+		return list;
 	}
 
 	//dados cliente

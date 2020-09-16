@@ -1,0 +1,131 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Pedidos Conferidos
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Pedidos Conferidos" />
+
+		<h:form id="form">
+				<p:panelGrid columns="5" columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
+
+					<p:outputLabel value=" Data:  " for="data_grafico" />
+					<p:calendar locale="pt_BR" id="data_grafico"
+						value="#{beanPedidosConferidos.data_grafico}" pattern="dd/MM/yyyy"
+						mask="true" required="true" readonlyInput="true">
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico2" />
+					<p:calendar locale="pt_BR" id="data_grafico2"
+						value="#{beanPedidosConferidos.data_grafico2}" pattern="dd/MM/yyyy"
+						mask="true" required="true" readonlyInput="true">
+					</p:calendar>
+					
+
+					<p:commandButton action="#{beanPedidosConferidos.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld"
+						styleClass="btn-primary" />
+
+				</p:panelGrid>
+			<div class="box box-primary" >
+				<div style="overflow:scroll;width:100%;overflow:auto">
+				
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
+						<p:dataTable id="venda" var="vendas"  scrollable="true" rowIndexVar="rowIndex"
+							value="#{beanPedidosConferidos.lista}" resizableColumns="true">
+							
+							<p:column headerText="#" width="1%">
+       					 	<h:outputLabel value="#{rowIndex+1}" />
+   							</p:column>
+							
+							<p:column  headerText="Data Pedido" width="5%">
+								<h:outputText value="#{vendas.datapedido}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Pedido" width="5%">
+								<h:outputText value="#{vendas.pedido}" />
+							</p:column>
+							
+							<p:column headerText="Cliente" width="5%">
+								<h:outputText value="#{vendas.codigocliente}" />
+							</p:column>
+							
+							<p:column headerText="Nome">
+								<h:outputText value="#{vendas.nomecliente}" />
+							</p:column>
+
+							<p:column  headerText="Tipo Pedido" >
+								<h:outputText value="#{vendas.tipopedido}" />
+							</p:column>
+
+							<p:column headerText="Valor" width="5%">
+								<h:outputText value="#{vendas.vlrpedido}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column  headerText="Peso" width="5%">
+								<h:outputText value="#{vendas.peso}" />
+							</p:column>
+							
+							<p:column  headerText="Volumes" width="5%">
+								<h:outputText value="#{vendas.volume}" />
+							</p:column>
+							
+							<p:column  headerText="Data Inicio" >
+								<h:outputText value="#{vendas.datainicio}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column  headerText="Data Fim">
+								<h:outputText value="#{vendas.datafim}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column  headerText="Usuario">
+								<h:outputText value="#{vendas.usuario}" />
+							</p:column>
+							
+						</p:dataTable>
+					</h:panelGrid>
+					</div>
+				</div>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
