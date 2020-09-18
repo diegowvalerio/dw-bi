@@ -20,6 +20,12 @@
 	background-image: url("#{resource['images/fundo.jpg']}")
 }
 
+.footer {
+    position:absolute;
+    bottom:0;
+    width:100%;
+}
+
 @media ( max-width : 768px) {
 	div.ui-growl {
 		display: none !important;
@@ -84,5 +90,12 @@ body .load-bar {
 }
 </style>
 	</h:body>
+					 
 </f:view>
+
+	<div class="footer">
+	
+        <h:outputLink styleClass="btn btn-block" 
+					 value="https://www.facebook.com/DwEquipamentosSolucoes" >Dw Equipamentos e Soluções</h:outputLink>
+    </div>
 </html>
