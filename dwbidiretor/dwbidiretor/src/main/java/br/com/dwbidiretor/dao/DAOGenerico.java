@@ -15,6 +15,7 @@ import br.com.dwbidiretor.classe.Mapa;
 import br.com.dwbidiretor.classe.MetaVenda;
 import br.com.dwbidiretor.classe.PedidoItem;
 import br.com.dwbidiretor.classe.PedidosConferidos;
+import br.com.dwbidiretor.classe.RetornoAfinacao;
 import br.com.dwbidiretor.classe.VendaAnoMes;
 import br.com.dwbidiretor.classe.VendaGrupoSubGrupoProdutoQuantidadeValor;
 import br.com.dwbidiretor.classe.VendasEmGeral;
@@ -49,7 +50,7 @@ public interface DAOGenerico<E> {
 	
 	public List<VendasEmGeralItem> bonificacaoemgeralitem(BigDecimal pedido);
 	
-public List<VendasEmGeral> bonificacaoexpositoremgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2);
+	public List<VendasEmGeral> bonificacaoexpositoremgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2);
 	
 	public List<VendasEmGeralItem> bonificacaoexpositoremgeralitem(BigDecimal pedido);
 	
@@ -110,5 +111,7 @@ public List<VendasEmGeral> bonificacaoexpositoremgeral(Date data1, Date data2, S
 	public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2);
 	
 	public List<PedidosConferidos> pedidosconferidos(Date data1, Date data2);
+	
+	public List<RetornoAfinacao> retornoafinacao(Date data1, Date data2);
 	
 }

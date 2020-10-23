@@ -1,0 +1,93 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+ 	 Retorno Afinação
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Retorno Afinação" />
+
+		<h:form id="form">
+			<p:panelGrid columns="8"
+				columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+				layout="grid" styleClass="ui-fluid card" id="filtroscli">
+
+				<p:outputLabel value=" Data:  " for="data_grafico" />
+				<p:calendar locale="pt_BR" id="data_grafico"
+					value="#{beanRetornoAfinacao.data_grafico}" pattern="dd/MM/yyyy"
+					mask="true" required="true" readonlyInput="true">
+				</p:calendar>
+
+				<p:outputLabel value=" Até:  " for="data_grafico2" />
+				<p:calendar locale="pt_BR" id="data_grafico2"
+					value="#{beanRetornoAfinacao.data_grafico2}" pattern="dd/MM/yyyy"
+					mask="true" required="true" readonlyInput="true">
+				</p:calendar>
+
+
+				<p:commandButton action="#{beanRetornoAfinacao.filtrar()}"
+					value="Filtrar" icon="fa fa-check" update=":form:paineld"
+					styleClass="btn-primary" />
+
+			</p:panelGrid>
+			<div class="box box-primary">
+				<div style="overflow: scroll; width: 100%; overflow: auto">
+
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right"
+						width="100%">
+						<p:dataTable id="venda" var="vendas" scrollable="true"
+							value="#{beanRetornoAfinacao.lista}" resizableColumns="true">
+
+							<p:column headerText="Cod. Usinado"
+								sortBy="#{vendas.produto_usinado}">
+								<h:outputText value="#{vendas.produto_usinado}" />
+							</p:column>
+
+							<p:column headerText="Produto Usinado"
+								sortBy="#{vendas.nomeproduto_usinado}">
+								<h:outputText value="#{vendas.nomeproduto_usinado}" />
+							</p:column>
+
+							<p:column headerText="Qtde Usinado"
+								sortBy="#{vendas.qtde_usinado}">
+								<h:outputText value="#{vendas.qtde_usinado}" />
+							</p:column>
+
+
+						</p:dataTable>
+					</h:panelGrid>
+				</div>
+			</div>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

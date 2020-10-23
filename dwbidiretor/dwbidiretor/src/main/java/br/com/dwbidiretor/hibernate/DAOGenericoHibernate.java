@@ -38,6 +38,7 @@ import br.com.dwbidiretor.classe.Mapa;
 import br.com.dwbidiretor.classe.MetaVenda;
 import br.com.dwbidiretor.classe.PedidoItem;
 import br.com.dwbidiretor.classe.PedidosConferidos;
+import br.com.dwbidiretor.classe.RetornoAfinacao;
 import br.com.dwbidiretor.classe.VendaAnoMes;
 import br.com.dwbidiretor.classe.VendaGrupoSubGrupoProdutoQuantidadeValor;
 import br.com.dwbidiretor.classe.VendasEmGeral;
@@ -3276,8 +3277,46 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 	}
 
 	return list;
-}
 	
+}
+	//busca itens retorno da afinação marcio tecco
+	public List<RetornoAfinacao> retornoafinacao(Date data1, Date data2){
+		List<RetornoAfinacao> list = new ArrayList<>();
+	
+		
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		String dataFormatada = formato.format(data1);
+		String dataFormatada2 = formato.format(data2);
+	
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+			" select "
+			+ " it.produtoid codigo_usinado, "
+			+ " p.NOME_PRODUTO produto_usinado, "
+			+ " it.QT_ITEMENTRADA qtde "
+			+ " from entrada en "
+			+ " inner join itementrada it on it.entradaid = en.entradaid "
+			+ " inner join produto p on p.produtoid = it.produtoid "
+			+ " where en.FORNECEDOR = 16290 "
+			+ " and en.DT_ENTRADA between ' " + dataFormatada + " ' and ' " + dataFormatada2 +" ' "
+			+ " and en.CFOPID = 697 ");
+		
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			
+			RetornoAfinacao retorno = new RetornoAfinacao();		
+			
+			retorno.setProduto_usinado((BigDecimal) row[0]);
+			retorno.setNomeproduto_usinado((String) row[1]);
+			retorno.setQtde_usinado((BigDecimal) row[2]);
+			
+			list.add(retorno);
+		}
+	
+	return list;
+}
+
+
+
 	//mapa de pedidos
 			public List<Mapa> mapa(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
 				List<Mapa> list = new ArrayList<>();
