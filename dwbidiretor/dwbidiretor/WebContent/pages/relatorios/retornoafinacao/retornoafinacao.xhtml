@@ -36,9 +36,18 @@
 		<adm:breadcrumb title="Retorno Afinação" />
 
 		<h:form id="form">
-			<p:panelGrid columns="8"
-				columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
-				layout="grid" styleClass="ui-fluid card" id="filtroscli">
+			<p:panelGrid columns="7" columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
+				
+				<p:outputLabel value="CFOP" for="cfop" />
+				<p:selectOneMenu id="cfop"
+							value="#{beanRetornoAfinacao.cfop}" lazy="true"
+							 required="true">
+							<f:selectItem itemLabel="" itemValue="" />
+							<f:selectItem itemLabel="697 - RETORNO PRODUTO" itemValue="697" />
+							<f:selectItem itemLabel="989 - RETORNO PERCA" itemValue="989" />
+				</p:selectOneMenu>
+				
 
 				<p:outputLabel value=" Data:  " for="data_grafico" />
 				<p:calendar locale="pt_BR" id="data_grafico"
@@ -58,34 +67,61 @@
 					styleClass="btn-primary" />
 
 			</p:panelGrid>
-			<div class="box box-primary">
-				<div style="overflow: scroll; width: 100%; overflow: auto">
+			<p:separator></p:separator>
+			
+			<p:panelGrid columns="1" id="paineld" >
 
-					<h:panelGrid columns="1" id="paineld" columnClasses="left,right"
-						width="100%">
-						<p:dataTable id="venda" var="vendas" scrollable="true"
-							value="#{beanRetornoAfinacao.lista}" resizableColumns="true">
+				<p:dataTable id="venda" var="vendas" scrollable="true"
+					value="#{beanRetornoAfinacao.lista}" resizableColumns="true">
 
-							<p:column headerText="Cod. Usinado"
-								sortBy="#{vendas.produto_usinado}">
-								<h:outputText value="#{vendas.produto_usinado}" />
-							</p:column>
+					<p:column headerText="Cod." width="3%" style="background-color: peachpuff;">
+						<h:outputText value="#{vendas.produto_usinado}" />
+					</p:column>
 
-							<p:column headerText="Produto Usinado"
-								sortBy="#{vendas.nomeproduto_usinado}">
-								<h:outputText value="#{vendas.nomeproduto_usinado}" />
-							</p:column>
+					<p:column headerText="Produto Usinado" style="background-color: peachpuff;">
+						<h:outputText value="#{vendas.nomeproduto_usinado}" />
+					</p:column>
 
-							<p:column headerText="Qtde Usinado"
-								sortBy="#{vendas.qtde_usinado}">
-								<h:outputText value="#{vendas.qtde_usinado}" />
-							</p:column>
+					<p:column headerText="Qtde" width="3%" style="background-color: peachpuff;">
+						<h:outputText value="#{vendas.qtde_usinado}" />
+					</p:column>
+					
+					<p:column headerText="Cod." width="3%" style="background-color: lightblue;">
+						<h:outputText value="#{vendas.produto_afinado}" />
+					</p:column>
+					
+					<p:column headerText="Produto Afinado" style="background-color: lightblue;">
+						<h:outputText value="#{vendas.nomeproduto_afinado}" />
+					</p:column>
+					
+					<p:column width="5%" headerText="Vrl Unit." style="background-color: lightblue;">
+						<h:outputText value="#{vendas.valor_servicoafinado}">
+							<f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="5"/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column width="5%" headerText="Vrl Total" style="background-color: lightblue;">
+						<h:outputText value="#{vendas.valortotal_servicoafinado}">
+							<f:convertNumber type="currency" currencySymbol="R$" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Cod." width="3%" style="background-color: darkseagreen;">
+						<h:outputText value="#{vendas.produto_cromado}" />
+					</p:column>
+					
+					<p:column headerText="Produto Cromado" style="background-color: darkseagreen;">
+						<h:outputText value="#{vendas.nomeproduto_cromado}" />
+					</p:column>
+					
+					<p:column headerText="Qtde" width="3%" style="background-color: darkseagreen;">
+						<h:outputText value="#{vendas.qtde_cromado}" />
+					</p:column>
 
 
-						</p:dataTable>
-					</h:panelGrid>
-				</div>
-			</div>
+				</p:dataTable>
+			</p:panelGrid>
+
 		</h:form>
 
 	</ui:define>

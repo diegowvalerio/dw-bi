@@ -112,6 +112,6 @@ public interface DAOGenerico<E> {
 	
 	public List<PedidosConferidos> pedidosconferidos(Date data1, Date data2);
 	
-	public List<RetornoAfinacao> retornoafinacao(Date data1, Date data2);
+	public List<RetornoAfinacao> retornoafinacao(Date data1, Date data2, String cfop);
 	
 }

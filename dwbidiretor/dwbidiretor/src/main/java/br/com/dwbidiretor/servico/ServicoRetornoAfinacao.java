@@ -18,8 +18,8 @@ public class ServicoRetornoAfinacao implements Serializable{
 	private DAORetornoAfinacao dao;
 	
 	
-	public List<RetornoAfinacao> retornoafinacao(Date data1, Date data2){
-		return dao.retornoafinacao(data1, data2);
+	public List<RetornoAfinacao> retornoafinacao(Date data1, Date data2, String cfop){
+		return dao.retornoafinacao(data1, data2 , cfop);
 	}
 	
 }

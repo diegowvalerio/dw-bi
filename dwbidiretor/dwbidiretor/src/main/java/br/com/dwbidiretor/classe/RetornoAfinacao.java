@@ -23,8 +23,19 @@ public class RetornoAfinacao implements Serializable {
 	
 	private BigDecimal produto_cromado;
 	private String nomeproduto_cromado;
+	private BigDecimal qtde_cromado;
 	
 	
+	public BigDecimal getQtde_cromado() {
+		return qtde_cromado;
+	}
+
+
+	public void setQtde_cromado(BigDecimal qtde_cromado) {
+		this.qtde_cromado = qtde_cromado;
+	}
+
+
 	public RetornoAfinacao() {
 		super();
 	}

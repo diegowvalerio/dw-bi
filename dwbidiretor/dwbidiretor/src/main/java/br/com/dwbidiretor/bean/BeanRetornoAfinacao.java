@@ -45,7 +45,7 @@ public class BeanRetornoAfinacao implements Serializable {
 
 	private Date data_grafico = new Date();
 	private Date data_grafico2 = new Date();
-
+	private String cfop;
 
 	@PostConstruct
 	public void init() {
@@ -54,8 +54,9 @@ public class BeanRetornoAfinacao implements Serializable {
 	}
 	
 	public void filtrar(){
-		
-		lista = servico.retornoafinacao(data_grafico, data_grafico2);
+		if (!cfop.equals("")) {
+		lista = servico.retornoafinacao(data_grafico, data_grafico2,cfop);
+		}
 	}
 
 	public RetornoAfinacao getRetornoafinacao() {
@@ -88,6 +89,14 @@ public class BeanRetornoAfinacao implements Serializable {
 
 	public void setData_grafico2(Date data_grafico2) {
 		this.data_grafico2 = data_grafico2;
+	}
+
+	public String getCfop() {
+		return cfop;
+	}
+
+	public void setCfop(String cfop) {
+		this.cfop = cfop;
 	}
 	
 	

@@ -3280,7 +3280,7 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 	
 }
 	//busca itens retorno da afinação marcio tecco
-	public List<RetornoAfinacao> retornoafinacao(Date data1, Date data2){
+	public List<RetornoAfinacao> retornoafinacao(Date data1, Date data2, String cfop){
 		List<RetornoAfinacao> list = new ArrayList<>();
 	
 		
@@ -3292,13 +3292,14 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 			" select "
 			+ " it.produtoid codigo_usinado, "
 			+ " p.NOME_PRODUTO produto_usinado, "
-			+ " it.QT_ITEMENTRADA qtde "
+			+ " SUM(it.QT_ITEMENTRADA) qtde "
 			+ " from entrada en "
 			+ " inner join itementrada it on it.entradaid = en.entradaid "
 			+ " inner join produto p on p.produtoid = it.produtoid "
 			+ " where en.FORNECEDOR = 16290 "
 			+ " and en.DT_ENTRADA between ' " + dataFormatada + " ' and ' " + dataFormatada2 +" ' "
-			+ " and en.CFOPID = 697 ");
+			+ " and en.CFOPID = "+cfop
+			+ " GROUP BY p.NOME_PRODUTO,it.produtoid ");
 		
 		List<Object[]> lista = query.getResultList();
 		for (Object[] row : lista) {
@@ -3308,9 +3309,60 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 			retorno.setProduto_usinado((BigDecimal) row[0]);
 			retorno.setNomeproduto_usinado((String) row[1]);
 			retorno.setQtde_usinado((BigDecimal) row[2]);
+			//faz relação
+			javax.persistence.Query querySige = (javax.persistence.Query) managerSige.createNativeQuery(
+					" select "
+					+ " isnull(codigo_afinacao,0)codigo_afinacao, "
+					+ " isnull(nome_afinado,'')nome_afinado, "
+					+ " codigo_usinado, "
+					+ " nome_usinado, "
+					+ " isnull(codigo_cromado,0) codigo_cromado, "
+					+ " isnull(nome_cromado,'') nome_cromado "
+					+ " from dw_tbrelacao "
+					+ " where codigo_usinado = ' "+retorno.getProduto_usinado()+" ' ");
+			List<Object[]> lista2 = querySige.getResultList();
+			for (Object[] row2 : lista2) {
+				
+				BigDecimal f = new BigDecimal((Double) row2[0]);
+				BigDecimal c = new BigDecimal((Double) row2[4]);
+				
+				retorno.setProduto_afinado(f);
+				retorno.setNomeproduto_afinado((String) row2[1]);
+				retorno.setProduto_cromado(c);
+				retorno.setNomeproduto_cromado((String) row2[5]);
+				if(!retorno.getNomeproduto_cromado().equals("")) {
+					retorno.setQtde_cromado(retorno.getQtde_usinado());
+				}
+			}
+			//
+			
+			//busca valor de servico de affincao da tabela 44
+			if (retorno.getProduto_afinado() != null) {
+			javax.persistence.Query query3 = (javax.persistence.Query) manager.createNativeQuery(
+					" select "
+					+ " produtoid, "
+					+ " nvl(VL_UNIT_TABELAPRECOPRODUTO,0) vl "
+					+ " from TABELAPRECOPRODUTO "
+					+ " where TABELAPRECOID = '44' "
+					+ " and produtoid = ' "+retorno.getProduto_afinado()+" ' ");
+			List<Object[]> lista3 = query3.getResultList();
+			 for (Object[] row3 : lista3) {
+				retorno.setValor_servicoafinado((BigDecimal) row3[1]);
+				
+				if(cfop.equals("989")) {
+					BigDecimal un = new BigDecimal(retorno.getValor_servicoafinado().doubleValue()/3);
+					retorno.setValor_servicoafinado(un);
+				}
+				BigDecimal total = new BigDecimal(retorno.getQtde_usinado().doubleValue()*retorno.getValor_servicoafinado().doubleValue());
+				retorno.setValortotal_servicoafinado(total);
+			 }
+			}
+			//
 			
 			list.add(retorno);
 		}
+		
+		
 	
 	return list;
 }
