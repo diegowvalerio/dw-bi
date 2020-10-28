@@ -3,11 +3,13 @@ package br.com.dwbidiretor.bean;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
@@ -36,27 +38,57 @@ import br.com.dwbidiretor.servico.ServicoVendedor;
 @ViewScoped
 public class BeanRetornoAfinacao implements Serializable {
 	private static final long serialVersionUID = 1L;
-
+	private static final Locale LOCAL = new Locale("pt","BR");
+	
 	private RetornoAfinacao retornoafinacao = new RetornoAfinacao();
 	@Inject
 	private ServicoRetornoAfinacao servico;
 	private List<RetornoAfinacao> lista = new ArrayList<>();
 
-
 	private Date data_grafico = new Date();
 	private Date data_grafico2 = new Date();
 	private String cfop;
+	private double vlrnota = 0;
+	private double total = 0;
 
 	@PostConstruct
 	public void init() {
-		
 
 	}
-	
-	public void filtrar(){
+
+	public void filtrar() {
+		DecimalFormat f = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(LOCAL));
+		
+		total = 0;
+		
 		if (!cfop.equals("")) {
-		lista = servico.retornoafinacao(data_grafico, data_grafico2,cfop);
+			lista = servico.retornoafinacao(data_grafico, data_grafico2, cfop);
+
+			if (lista.size() > 0 && vlrnota > 0) {
+				for (RetornoAfinacao r : lista) {
+					if (r.getValortotal_servicoafinado() != null && !r.getNomeproduto_cromado().equals("")) {
+						total = total + r.getValortotal_servicoafinado().doubleValue();
+					}
+				}
+
+				for (RetornoAfinacao r : lista) {
+					if (r.getValortotal_servicoafinado() != null
+							&& !r.getNomeproduto_cromado().equals("")) {
+						
+						r.setVlrservico_cromado((r.getValor_servicoafinado().doubleValue() / total) * vlrnota);
+						r.setVlrtotalservico_cromado(r.getQtde_cromado().doubleValue()*r.getVlrservico_cromado());
+					}
+				}
+			}
 		}
+	}
+
+	public double getTotal() {
+		return total;
+	}
+
+	public void setTotal(double total) {
+		this.total = total;
 	}
 
 	public RetornoAfinacao getRetornoafinacao() {
@@ -69,6 +101,14 @@ public class BeanRetornoAfinacao implements Serializable {
 
 	public List<RetornoAfinacao> getLista() {
 		return lista;
+	}
+
+	public double getVlrnota() {
+		return vlrnota;
+	}
+
+	public void setVlrnota(double vlrnota) {
+		this.vlrnota = vlrnota;
 	}
 
 	public void setLista(List<RetornoAfinacao> lista) {
@@ -98,6 +138,5 @@ public class BeanRetornoAfinacao implements Serializable {
 	public void setCfop(String cfop) {
 		this.cfop = cfop;
 	}
-	
-	
+
 }

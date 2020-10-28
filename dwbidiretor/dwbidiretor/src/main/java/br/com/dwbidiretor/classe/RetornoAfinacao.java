@@ -24,10 +24,32 @@ public class RetornoAfinacao implements Serializable {
 	private BigDecimal produto_cromado;
 	private String nomeproduto_cromado;
 	private BigDecimal qtde_cromado;
+	private double vlrservico_cromado;
+	private double vlrtotalservico_cromado;
 	
 	
 	public BigDecimal getQtde_cromado() {
 		return qtde_cromado;
+	}
+
+
+	public double getVlrtotalservico_cromado() {
+		return vlrtotalservico_cromado;
+	}
+
+
+	public void setVlrtotalservico_cromado(double vlrtotalservico_cromado) {
+		this.vlrtotalservico_cromado = vlrtotalservico_cromado;
+	}
+
+
+	public double getVlrservico_cromado() {
+		return vlrservico_cromado;
+	}
+
+
+	public void setVlrservico_cromado(double vlrservico_cromado) {
+		this.vlrservico_cromado = vlrservico_cromado;
 	}
 
 

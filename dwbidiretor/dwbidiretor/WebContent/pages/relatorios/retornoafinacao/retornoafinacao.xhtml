@@ -36,18 +36,18 @@
 		<adm:breadcrumb title="Retorno Afinação" />
 
 		<h:form id="form">
-			<p:panelGrid columns="7" columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
-                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
-				
+			<p:panelGrid columns="9"
+				columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+				layout="grid" styleClass="ui-fluid card" id="filtroscli">
+
 				<p:outputLabel value="CFOP" for="cfop" />
-				<p:selectOneMenu id="cfop"
-							value="#{beanRetornoAfinacao.cfop}" lazy="true"
-							 required="true">
-							<f:selectItem itemLabel="" itemValue="" />
-							<f:selectItem itemLabel="697 - RETORNO PRODUTO" itemValue="697" />
-							<f:selectItem itemLabel="989 - RETORNO PERCA" itemValue="989" />
+				<p:selectOneMenu id="cfop" value="#{beanRetornoAfinacao.cfop}"
+					lazy="true" required="true">
+					<f:selectItem itemLabel="" itemValue="" />
+					<f:selectItem itemLabel="697 - RETORNO PRODUTO" itemValue="697" />
+					<f:selectItem itemLabel="989 - RETORNO PERCA" itemValue="989" />
 				</p:selectOneMenu>
-				
+
 
 				<p:outputLabel value=" Data:  " for="data_grafico" />
 				<p:calendar locale="pt_BR" id="data_grafico"
@@ -61,6 +61,11 @@
 					mask="true" required="true" readonlyInput="true">
 				</p:calendar>
 
+				<p:outputLabel value="Vlr Nota Cromação :" for="vlrnota" />
+				<p:inputNumber id="vlrnota" emptyValue="true" symbol="R$ "
+					decimalSeparator="," thousandSeparator="."
+					value="#{beanRetornoAfinacao.vlrnota}" />
+
 
 				<p:commandButton action="#{beanRetornoAfinacao.filtrar()}"
 					value="Filtrar" icon="fa fa-check" update=":form:paineld"
@@ -68,54 +73,79 @@
 
 			</p:panelGrid>
 			<p:separator></p:separator>
-			
-			<p:panelGrid columns="1" id="paineld" >
+
+			<p:panelGrid columns="1" id="paineld">
 
 				<p:dataTable id="venda" var="vendas" scrollable="true"
 					value="#{beanRetornoAfinacao.lista}" resizableColumns="true">
 
-					<p:column headerText="Cod." width="3%" style="background-color: peachpuff;">
+					<p:column headerText="Cod." width="3%"
+						style="background-color: peachpuff;">
 						<h:outputText value="#{vendas.produto_usinado}" />
 					</p:column>
 
-					<p:column headerText="Produto Usinado" style="background-color: peachpuff;">
+					<p:column headerText="Produto Usinado"
+						style="background-color: peachpuff;">
 						<h:outputText value="#{vendas.nomeproduto_usinado}" />
 					</p:column>
 
-					<p:column headerText="Qtde" width="3%" style="background-color: peachpuff;">
+					<p:column headerText="Qtde" width="2%"
+						style="background-color: peachpuff;">
 						<h:outputText value="#{vendas.qtde_usinado}" />
 					</p:column>
-					
-					<p:column headerText="Cod." width="3%" style="background-color: lightblue;">
+
+					<p:column headerText="Cod." width="3%"
+						style="background-color: lightblue;">
 						<h:outputText value="#{vendas.produto_afinado}" />
 					</p:column>
-					
-					<p:column headerText="Produto Afinado" style="background-color: lightblue;">
+
+					<p:column headerText="Produto Afinado"
+						style="background-color: lightblue;">
 						<h:outputText value="#{vendas.nomeproduto_afinado}" />
 					</p:column>
-					
-					<p:column width="5%" headerText="Vrl Unit." style="background-color: lightblue;">
+
+					<p:column width="5%" headerText="Vrl Unit."
+						style="background-color: lightblue;">
 						<h:outputText value="#{vendas.valor_servicoafinado}">
-							<f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="5"/>
+							<f:convertNumber type="currency" currencySymbol="R$"
+								minFractionDigits="5" locale="pt-BR"/>
 						</h:outputText>
 					</p:column>
-					
-					<p:column width="5%" headerText="Vrl Total" style="background-color: lightblue;">
-						<h:outputText value="#{vendas.valortotal_servicoafinado}">
-							<f:convertNumber type="currency" currencySymbol="R$" />
+
+					<p:column width="5%" headerText="Vrl Total"
+						style="background-color: lightblue;">
+						<h:outputText value="#{vendas.valortotal_servicoafinado}" >
+							<f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="5" locale="pt-BR"/>
 						</h:outputText>
 					</p:column>
-					
-					<p:column headerText="Cod." width="3%" style="background-color: darkseagreen;">
+
+					<p:column headerText="Cod." width="3%"
+						style="background-color: darkseagreen;">
 						<h:outputText value="#{vendas.produto_cromado}" />
 					</p:column>
-					
-					<p:column headerText="Produto Cromado" style="background-color: darkseagreen;">
+
+					<p:column headerText="Produto Cromado"
+						style="background-color: darkseagreen;">
 						<h:outputText value="#{vendas.nomeproduto_cromado}" />
 					</p:column>
-					
-					<p:column headerText="Qtde" width="3%" style="background-color: darkseagreen;">
+
+					<p:column headerText="Qtde" width="2%"
+						style="background-color: darkseagreen;">
 						<h:outputText value="#{vendas.qtde_cromado}" />
+					</p:column>
+					
+					<p:column width="5%" headerText="Vrl Unit."
+						style="background-color: darkseagreen;">
+						<h:outputText value="#{vendas.vlrservico_cromado}">
+							<f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="5" locale="pt-BR"/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column width="5%" headerText="Vrl Total"
+						style="background-color: darkseagreen;">
+						<h:outputText value="#{vendas.vlrtotalservico_cromado}">
+							<f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="5" locale="pt-BR"/>
+						</h:outputText>
 					</p:column>
 
 
