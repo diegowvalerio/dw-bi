@@ -36,13 +36,18 @@
 		<adm:breadcrumb title="Retorno Afinação" />
 
 		<h:form id="form">
+		
+		<p:commandButton action="lista?faces-redirect=true"
+						ajax="false" value="Relação de Produtos"
+						styleClass="btn-primary" />
+						
 			<p:panelGrid columns="9"
 				columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
 				layout="grid" styleClass="ui-fluid card" id="filtroscli">
 
 				<p:outputLabel value="CFOP" for="cfop" />
 				<p:selectOneMenu id="cfop" value="#{beanRetornoAfinacao.cfop}"
-					lazy="true" required="true">
+					lazy="true" >
 					<f:selectItem itemLabel="" itemValue="" />
 					<f:selectItem itemLabel="697 - RETORNO PRODUTO" itemValue="697" />
 					<f:selectItem itemLabel="989 - RETORNO PERCA" itemValue="989" />

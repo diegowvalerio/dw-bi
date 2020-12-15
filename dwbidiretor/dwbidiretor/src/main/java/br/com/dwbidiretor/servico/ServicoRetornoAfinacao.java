@@ -22,4 +22,19 @@ public class ServicoRetornoAfinacao implements Serializable{
 		return dao.retornoafinacao(data1, data2 , cfop);
 	}
 	
+	public List<RetornoAfinacao> consulta_relacao(){
+		return dao.consultar_relacao();
+	}
+	
+	public void salvar(RetornoAfinacao e) {
+		dao.salvar_relacao(e);
+	}
+	
+	public void alterar(RetornoAfinacao e) {
+		dao.alterar_relacao(e);
+	}
+	
+	public void excluir(RetornoAfinacao e) {
+		dao.excluir_relacao(e);
+	}
 }

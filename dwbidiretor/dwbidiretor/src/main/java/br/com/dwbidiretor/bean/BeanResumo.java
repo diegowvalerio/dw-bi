@@ -1314,6 +1314,52 @@ public class BeanResumo implements Serializable {
 
 	}
 	
+	public float getLucrogeral() {
+		
+		float total = 0;
+		float total2 = 0;
+		
+		for (VendasEmGeral venda : getListavenda()) {
+			total = total + venda.getValortotalpedido().floatValue();
+			total2 = total2 + venda.getValortotalliquidopedido().floatValue();
+		}
+		
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(total2 == 0){
+			total2 = 1;
+			atingido = 100;
+		}else{
+			atingido = (total2 / total)*100;
+		}
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+
+	}
+	
+	public float getMediaLucrogeral() {
+		float total = 0;
+		float t = 0;
+		
+		for (VendasEmGeral venda : getListavenda()) {
+			float t2 = 0;
+			t2 = (venda.getValortotalliquidopedido().floatValue() / venda.getValortotalpedido().floatValue())*100;
+			t = t + t2;
+			total++;
+			//System.out.println(t);
+		}
+		
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		atingido = t / total;
+		
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+		//return atingido;
+	}
+	
 	public void createAnimatedModels() {
 		Calendar hoje = Calendar.getInstance();
 		

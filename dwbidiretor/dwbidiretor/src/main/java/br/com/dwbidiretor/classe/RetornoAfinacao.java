@@ -6,12 +6,14 @@ import java.math.BigDecimal;
 
 import javax.persistence.*;
 
-
+@Entity
 public class RetornoAfinacao implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	
 	@Id
+	private Integer id;
+	
 	private BigDecimal produto_usinado;
 	private String nomeproduto_usinado;
 	private BigDecimal qtde_usinado;
@@ -27,6 +29,14 @@ public class RetornoAfinacao implements Serializable {
 	private double vlrservico_cromado;
 	private double vlrtotalservico_cromado;
 	
+	public Integer getId() {
+		return id;
+	}
+
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	
 	public BigDecimal getQtde_cromado() {
 		return qtde_cromado;
@@ -149,6 +159,33 @@ public class RetornoAfinacao implements Serializable {
 
 	public void setNomeproduto_cromado(String nomeproduto_cromado) {
 		this.nomeproduto_cromado = nomeproduto_cromado;
+	}
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RetornoAfinacao other = (RetornoAfinacao) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 
 	

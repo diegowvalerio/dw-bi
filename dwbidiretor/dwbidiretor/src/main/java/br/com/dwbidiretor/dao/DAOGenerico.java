@@ -114,4 +114,10 @@ public interface DAOGenerico<E> {
 	
 	public List<RetornoAfinacao> retornoafinacao(Date data1, Date data2, String cfop);
 	
+	//tabela de telação de itens
+	public List<RetornoAfinacao> consultar_relacao();
+	public E salvar_relacao(E e);
+	public E alterar_relacao(E e);
+	public E excluir_relacao(E e);
+	
 }

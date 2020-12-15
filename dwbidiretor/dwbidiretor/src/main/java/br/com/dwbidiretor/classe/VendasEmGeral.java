@@ -30,6 +30,8 @@ public class VendasEmGeral implements Serializable {
 	private String nomevendedor;
 	
 	private Date dataliberadogestor;
+	
+	private BigDecimal valortotalliquidopedido;
 
 		
 
@@ -117,6 +119,14 @@ public class VendasEmGeral implements Serializable {
 		this.statuspedido = statuspedido;
 	}
 
+
+	public BigDecimal getValortotalliquidopedido() {
+		return valortotalliquidopedido;
+	}
+
+	public void setValortotalliquidopedido(BigDecimal valortotalliquidopedido) {
+		this.valortotalliquidopedido = valortotalliquidopedido;
+	}
 
 	@Override
 	public int hashCode() {

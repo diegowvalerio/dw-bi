@@ -90,7 +90,9 @@
 				<p:separator />
 				
 				<p:panelGrid id="resumo" rendered="#{beanControleAcesso.acesso('diretor_inicio_resumo')}" >
-								
+				
+				<h:outputText value="T: #{beanResumo.lucrogeral} % M: #{beanResumo.mediaLucrogeral} %"/>		
+						
 				<div class="row" >
 					<div class="col-md-3 col-sm-6 col-xs-12">
 						<div class="info-box ">

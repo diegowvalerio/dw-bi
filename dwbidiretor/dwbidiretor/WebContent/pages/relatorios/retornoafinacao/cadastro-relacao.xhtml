@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:define name="title">
+       Cadastro Relação
+    </ui:define>
+
+    <ui:define name="body">
+        <f:metadata>
+        </f:metadata>
+
+        <adm:breadcrumb title="Cadastro Relação" link="cadastro-relacao.xhtml"/>
+			<p:panel>
+				<h:form id="form" >
+				<p:growl id="erros" showDetail="true" sticky="false" />
+					<p:panelGrid columns="4">
+					
+						<p:outputLabel value="Cód. Usinado" for="produto_usinado" />
+						<p:inputText id="produto_usinado" value="#{beanRetornoAfinacaoEdita.retornoafinacao.produto_usinado}" />
+						
+						<p:outputLabel value="Nome Usinado" for="nomeproduto_usinado" />
+						<p:inputText id="nomeproduto_usinado" value="#{beanRetornoAfinacaoEdita.retornoafinacao.nomeproduto_usinado}"  size="80"/>
+
+						<p:outputLabel value="Cód. Afinado" for="produto_afinado" />
+						<p:inputText id="produto_afinado" value="#{beanRetornoAfinacaoEdita.retornoafinacao.produto_afinado}"  />
+						
+						<p:outputLabel value="Nome Afinado" for="nomeproduto_afinado" />
+						<p:inputText id="nomeproduto_afinado" value="#{beanRetornoAfinacaoEdita.retornoafinacao.nomeproduto_afinado}"  size="80"/>
+						
+						<p:outputLabel value="Cód. Cromado" for="produto_cromado" />
+						<p:inputText id="produto_cromado" value="#{beanRetornoAfinacaoEdita.retornoafinacao.produto_cromado}"  />
+						
+						<p:outputLabel value="Nome Cromado" for="nomeproduto_cromado" />
+						<p:inputText id="nomeproduto_cromado" value="#{beanRetornoAfinacaoEdita.retornoafinacao.nomeproduto_cromado}" size="80"/>
+						
+					</p:panelGrid>
+					<p:commandButton action="#{beanRetornoAfinacaoEdita.salvar()}" value="Salvar"
+						icon="fa fa-check" styleClass="btn-primary" update="erros"/>
+				</h:form>
+			</p:panel>
+
+    </ui:define>
+
+</ui:composition>

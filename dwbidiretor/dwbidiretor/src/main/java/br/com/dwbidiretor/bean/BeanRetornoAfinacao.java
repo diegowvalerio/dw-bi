@@ -44,6 +44,7 @@ public class BeanRetornoAfinacao implements Serializable {
 	@Inject
 	private ServicoRetornoAfinacao servico;
 	private List<RetornoAfinacao> lista = new ArrayList<>();
+	private List<RetornoAfinacao> lista2 = new ArrayList<>();
 
 	private Date data_grafico = new Date();
 	private Date data_grafico2 = new Date();
@@ -53,6 +54,7 @@ public class BeanRetornoAfinacao implements Serializable {
 
 	@PostConstruct
 	public void init() {
+		lista2 = servico.consulta_relacao();
 
 	}
 
@@ -83,6 +85,21 @@ public class BeanRetornoAfinacao implements Serializable {
 		}
 	}
 
+	public void excluir() {
+		servico.excluir(retornoafinacao);
+	}
+	
+	public String salvar() {
+		servico.salvar(retornoafinacao);
+		
+		return "lista";
+	}
+	
+	public void alterar(){
+		servico.alterar(retornoafinacao);
+	}
+	
+	
 	public double getTotal() {
 		return total;
 	}
@@ -137,6 +154,14 @@ public class BeanRetornoAfinacao implements Serializable {
 
 	public void setCfop(String cfop) {
 		this.cfop = cfop;
+	}
+
+	public List<RetornoAfinacao> getLista2() {
+		return lista2;
+	}
+
+	public void setLista2(List<RetornoAfinacao> lista2) {
+		this.lista2 = lista2;
 	}
 
 }

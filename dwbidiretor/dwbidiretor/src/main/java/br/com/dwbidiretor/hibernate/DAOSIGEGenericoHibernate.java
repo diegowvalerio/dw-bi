@@ -29,6 +29,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.microsoft.sqlserver.jdbc.SQLServerException;
 
+import br.com.dwbidiretor.classe.RetornoAfinacao;
 import br.com.dwbidiretor.classe.SigeAcesso;
 import br.com.dwbidiretor.classe.SigeModulo;
 import br.com.dwbidiretor.classe.SigeUsuario;
@@ -73,7 +74,7 @@ public class DAOSIGEGenericoHibernate<E> implements DAOSIGEGenerico<E>, Serializ
 
 	@Override
 	public E alterar(E e) {
-		List<SigeUsuario> list = new ArrayList<>();
+		//List<SigeUsuario> list = new ArrayList<>();
 		javax.persistence.Query query2 = (javax.persistence.Query) manager.createNativeQuery(
 				// "SELECT * FROM("
 				" update dwbi_login set senha = '"+ ((SigeUsuario) e).getSenha() +"' where usuario = '"+ usuarioconectado() +"'   "
@@ -296,4 +297,6 @@ public class DAOSIGEGenericoHibernate<E> implements DAOSIGEGenerico<E>, Serializ
 		
 		return e;
 	}
+	
+
 }

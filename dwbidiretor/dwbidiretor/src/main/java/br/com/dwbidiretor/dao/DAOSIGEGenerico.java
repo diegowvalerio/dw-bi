@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import br.com.dwbidiretor.classe.RetornoAfinacao;
 import br.com.dwbidiretor.classe.SigeAcesso;
 import br.com.dwbidiretor.classe.SigeModulo;
 import br.com.dwbidiretor.classe.SigeUsuario;
@@ -32,4 +33,7 @@ public interface DAOSIGEGenerico<E> {
 	public List<SigeAcesso> consultar_acesso(Integer idlogin);
 	public E salvar_acesso(E e);
 	public E excluir_acesso(E e);
+	
+	
+	
 }

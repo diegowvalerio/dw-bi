@@ -1,0 +1,141 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+ 	 Retorno Afinação
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Retorno Afinação" />
+
+		<h:form id="form">
+			<div class="box box-primary">
+				<div class="box-header with-border">
+				
+				<p:commandButton action="cadastro-relacao?faces-redirect=true"
+						ajax="false" icon="fa fa-plus" value="Novo"
+						styleClass="btn-primary" />
+
+				<p:dataTable id="venda" var="vendas" scrollable="true"
+					value="#{beanRetornoAfinacao.lista2}" resizableColumns="true">
+
+					<p:column headerText="Cod." width="5%" filterBy="#{vendas.produto_usinado}" filterMatchMode="contains"
+						style="background-color: peachpuff;">
+						<h:outputText value="#{vendas.produto_usinado}" />
+					</p:column>
+
+					<p:column headerText="Produto Usinado" filterBy="#{vendas.nomeproduto_usinado}" filterMatchMode="contains"
+						style="background-color: peachpuff;">
+						<h:outputText value="#{vendas.nomeproduto_usinado}" />
+					</p:column>
+
+					<p:column headerText="Cod." width="5%" filterBy="#{vendas.produto_afinado}" filterMatchMode="contains"
+						style="background-color: lightblue;">
+						<h:outputText value="#{vendas.produto_afinado}" />
+					</p:column>
+
+					<p:column headerText="Produto Afinado" filterBy="#{vendas.nomeproduto_afinado}" filterMatchMode="contains"
+						style="background-color: lightblue;">
+						<h:outputText value="#{vendas.nomeproduto_afinado}" />
+					</p:column>
+
+					<p:column headerText="Cod." width="5%" filterBy="#{vendas.produto_cromado}" filterMatchMode="contains"
+						style="background-color: darkseagreen;">
+						<h:outputText value="#{vendas.produto_cromado}" />
+					</p:column>
+
+					<p:column headerText="Produto Cromado" filterBy="#{vendas.nomeproduto_cromado}" filterMatchMode="contains"
+						style="background-color: darkseagreen;">
+						<h:outputText value="#{vendas.nomeproduto_cromado}" />
+					</p:column>
+					
+					
+					<p:column width="6%" headerText="Operações"
+							style="text-align:center">
+
+							<p:commandButton  oncomplete="PF('dialog').show();"  
+								update=":form:painelDados" icon="fa fa-edit">
+								<f:setPropertyActionListener value="#{vendas}"
+									target="#{beanRetornoAfinacao.retornoafinacao}" />
+									<p:ajax update=":form:painelDados"/>
+							</p:commandButton>
+							
+							
+							<p:commandButton action="#{beanRetornoAfinacao.excluir()}"
+								id="buttonColunaExcluir" ajax="false" immediate="true"
+								partialSubmit="true" process="@this" 
+								oncomplete="#{beanRetornoAfinacao.lista2}" icon="fa fa-trash" 
+								onclick="if(!confirm('Confirma a exclusão ?')) return false;">
+								<f:setPropertyActionListener
+									target="#{beanRetornoAfinacao.retornoafinacao}"
+									value="#{vendas}" />
+							</p:commandButton>
+
+						</p:column>
+
+
+				</p:dataTable>
+			
+				</div>
+			</div>
+			
+			<p:dialog id="dlg" header="Editar" widgetVar="dialog" width="50%"
+					 responsive="true" resizable="true" position="center" onShow="position='center'">
+					<p:panelGrid id="painelDados" columns="4" >
+						
+        				
+        				<p:outputLabel value="Cód. Usinado" for="produto_usinado" />
+						<p:inputText id="produto_usinado" value="#{beanRetornoAfinacao.retornoafinacao.produto_usinado}" />
+						
+						<p:outputLabel value="Nome Usinado" for="nomeproduto_usinado" />
+						<p:inputText id="nomeproduto_usinado" value="#{beanRetornoAfinacao.retornoafinacao.nomeproduto_usinado}"  size="80"/>
+
+						<p:outputLabel value="Cód. Afinado" for="produto_afinado" />
+						<p:inputText id="produto_afinado" value="#{beanRetornoAfinacao.retornoafinacao.produto_afinado}"  />
+						
+						<p:outputLabel value="Nome Afinado" for="nomeproduto_afinado" />
+						<p:inputText id="nomeproduto_afinado" value="#{beanRetornoAfinacao.retornoafinacao.nomeproduto_afinado}"  size="80"/>
+						
+						<p:outputLabel value="Cód. Cromado" for="produto_cromado" />
+						<p:inputText id="produto_cromado" value="#{beanRetornoAfinacao.retornoafinacao.produto_cromado}"  />
+						
+						<p:outputLabel value="Nome Cromado" for="nomeproduto_cromado" />
+						<p:inputText id="nomeproduto_cromado" value="#{beanRetornoAfinacao.retornoafinacao.nomeproduto_cromado}" size="80"/>
+										
+					</p:panelGrid>
+					<p:commandButton icon="fa fa-check" styleClass="btn-primary"
+						action="#{beanRetornoAfinacao.alterar()}" ajax="false" />
+				</p:dialog>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

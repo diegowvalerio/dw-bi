@@ -217,7 +217,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " t.desc_tipo_pedido as tipo_pedido, " 
 						+ " CF.tipooperacao_cfop, " 
 						+ " p.status_pedidovenda, "
-						+ " v.NOME_CADCFTV nome_vendedor "
+						+ " v.NOME_CADCFTV nome_vendedor, "
+						+ " itens.TOTALLIQUIDO_PEDIDO "
 						+ " from pedidovenda p "
 						+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
 						+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID "
@@ -227,6 +228,22 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						//+ " inner join roteiro r on r.roteiroid = p.roteiroid "
 						//+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
 						//+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+						+ " left join( "
+						+ " SELECT  "
+						+ " x.pedidovendaid, "
+						+ " sum(x.TOTAL_VENDA) TOTAL_VENDA , "
+						+ " sum(x.TOTALLIQUIDO_PEDIDO) TOTALLIQUIDO_PEDIDO"
+						//+ " (sum(x.TOTALLIQUIDO_PEDIDO) /sum(x.TOTAL_VENDA))*100 as perc_lucro
+						+ " FROM( "
+						+ " select "
+						+ " p.pedidovendaid, "
+						+ " IT.vl_total_pedidovenda_item TOTAL_VENDA, "
+						+ " (IT.vl_total_pedidovenda_item - ( it.VL_CUSTOORIG_PEDIDOVENDA_ITEM  * it.qt_pedidovenda_item )) TOTALLIQUIDO_PEDIDO "
+						+ " from pedidovenda_item it "
+						+ " inner join pedidovenda p on p.pedidovendaid = it.pedidovendaid)X "
+						+ " group by x.pedidovendaid "
+						+ " ) itens on itens.pedidovendaid = p.pedidovendaid "
+						
 						+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
 						+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
 						+ " AND CF.tipooperacao_cfop = 'VENDA' "
@@ -254,7 +271,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			vendasEmGeral.setStatuspedido((String) row[8] );
 			vendasEmGeral.setNomevendedor((String) row[9] );
 			
-			
+			vendasEmGeral.setValortotalliquidopedido((BigDecimal) row[10] );
 			
 			list.add(vendasEmGeral);
 		}
@@ -3317,7 +3334,7 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 					+ " codigo_usinado, "
 					+ " nome_usinado, "
 					+ " isnull(codigo_cromado,0) codigo_cromado, "
-					+ " isnull(nome_cromado,'') nome_cromado "
+					+ " isnull(nome_cromado,'') nome_cromado, id "
 					+ " from dw_tbrelacao "
 					+ " where codigo_usinado = ' "+retorno.getProduto_usinado()+" ' ");
 			List<Object[]> lista2 = querySige.getResultList();
@@ -3333,6 +3350,7 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 				if(!retorno.getNomeproduto_cromado().equals("")) {
 					retorno.setQtde_cromado(retorno.getQtde_usinado());
 				}
+				retorno.setId((Integer) row2[6]);
 			}
 			//
 			
@@ -3367,6 +3385,110 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 	return list;
 }
 
+	/// retorno afinação
+	// consulta relação
+	@Override
+	public List<RetornoAfinacao> consultar_relacao() {
+		List<RetornoAfinacao> list = new ArrayList<>();
+
+		javax.persistence.Query query = (javax.persistence.Query) managerSige.createNativeQuery(
+				" select * from dw_tbrelacao ");
+		
+		List<Object[]> lista = query.getResultList();
+
+		for (Object[] row2 : lista) {
+			
+			RetornoAfinacao retorno = new RetornoAfinacao();
+
+			if (row2[0] != null) {
+				BigDecimal u = new BigDecimal((Double) row2[2]);
+				retorno.setProduto_usinado(u);
+			}else {
+				//BigDecimal u =  new BigDecimal(0);
+				//retorno.setProduto_usinado(null);
+			}
+			
+			
+			if (row2[0] != null) {
+				BigDecimal f = new BigDecimal((Double) row2[0]);
+				retorno.setProduto_afinado(f);
+			}else {
+				//BigDecimal f =  new BigDecimal(0);
+				//retorno.setProduto_afinado(f);
+			}
+			
+			if (row2[4] != null) {
+				BigDecimal c = new BigDecimal((Double) row2[4]);
+				retorno.setProduto_cromado(c);
+			}else {
+				//BigDecimal c =  new BigDecimal(0);
+				//retorno.setProduto_cromado(c);
+			}
+			
+			
+			retorno.setNomeproduto_afinado((String) row2[1]);
+			retorno.setNomeproduto_usinado((String) row2[3]);
+			retorno.setNomeproduto_cromado((String) row2[5]);
+			retorno.setId((Integer) row2[6]);
+			
+			list.add(retorno);
+
+		}
+		
+		return list;
+	}
+	//inserir relação nova
+	@Override
+	public E salvar_relacao(E e) {
+		
+		javax.persistence.Query query2 = (javax.persistence.Query) managerSige.createNativeQuery(
+				
+				" INSERT INTO dw_tbrelacao (codigo_afinacao,nome_afinado,codigo_usinado ,nome_usinado,codigo_cromado ,nome_cromado ) VALUES('"+ ((RetornoAfinacao) e).getProduto_afinado().floatValue() +"', '"+ ((RetornoAfinacao) e).getNomeproduto_afinado() +"', '"+((RetornoAfinacao) e).getProduto_usinado().floatValue() +"', '"+ ((RetornoAfinacao) e).getNomeproduto_usinado() +"', '"+((RetornoAfinacao) e).getProduto_cromado().floatValue() +"', '"+ ((RetornoAfinacao) e).getNomeproduto_cromado() +"')  " 
+				+" SELECT idlogin,usuario,senha from dwbi_login where usuario = '"+ usuarioconectado() +"'");
+		try {
+			query2.getResultList();
+		} catch (Exception e2) {
+			System.out.println("Erro:"+e2);
+		}
+		
+		
+		return e;
+	}
+	//alterar relação
+	@Override
+	public E alterar_relacao(E e) {
+		
+		
+		javax.persistence.Query query2 = (javax.persistence.Query) managerSige.createNativeQuery(
+				// "SELECT * FROM("
+				" update dw_tbrelacao set codigo_afinacao = '"+ ((RetornoAfinacao) e).getProduto_afinado().floatValue() +"', nome_afinado = '"+ ((RetornoAfinacao) e).getNomeproduto_afinado() +"',codigo_usinado = '"+ ((RetornoAfinacao) e).getProduto_usinado().floatValue() +"', nome_usinado = '"+ ((RetornoAfinacao) e).getNomeproduto_usinado() +"',codigo_cromado = '"+ ((RetornoAfinacao) e).getProduto_cromado().floatValue() +"', nome_cromado = '"+ ((RetornoAfinacao) e).getNomeproduto_cromado() +"' where id = '"+ ((RetornoAfinacao) e).getId() +"'   "
+				+" SELECT idlogin,usuario,senha from dwbi_login where usuario = '"+ usuarioconectado() +"'");
+		try {
+			query2.getResultList();
+		} catch (Exception e2) {
+			System.out.println("Erro:"+e2);
+		}
+		
+		
+		return e;
+	}
+	
+	//excluir relaçao
+		@Override
+		public E excluir_relacao(E e) {
+
+			javax.persistence.Query query2 = (javax.persistence.Query) managerSige.createNativeQuery(
+					// "SELECT * FROM("
+					" delete from dw_tbrelacao where id = '"+ ((RetornoAfinacao) e).getId() +"' "
+					+" SELECT idlogin,usuario,senha from dwbi_login where usuario = '"+ usuarioconectado() +"'");
+			try {
+				query2.getResultList();
+			} catch (Exception e2) {
+				System.out.println("Erro:"+e2);
+			}
+			
+			return e;
+		}
 
 
 	//mapa de pedidos

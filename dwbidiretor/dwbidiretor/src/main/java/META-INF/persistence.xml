@@ -4,6 +4,7 @@
 		<class>br.com.dwbidiretor.classe.SigeUsuario</class>
 		<class>br.com.dwbidiretor.classe.SigeModulo</class>
 		<class>br.com.dwbidiretor.classe.SigeAcesso</class>
+		<class>br.com.dwbidiretor.classe.RetornoAfinacao</class>
 	
 	<properties>
 			
