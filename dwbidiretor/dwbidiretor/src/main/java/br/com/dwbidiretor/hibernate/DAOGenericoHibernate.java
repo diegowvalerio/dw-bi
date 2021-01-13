@@ -218,7 +218,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " CF.tipooperacao_cfop, " 
 						+ " p.status_pedidovenda, "
 						+ " v.NOME_CADCFTV nome_vendedor, "
-						+ " itens.TOTALLIQUIDO_PEDIDO "
+						+ " itens.TOTALLIQUIDO_PEDIDO,"
+						+ " itens.perc_lucro "
 						+ " from pedidovenda p "
 						+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
 						+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID "
@@ -232,8 +233,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " SELECT  "
 						+ " x.pedidovendaid, "
 						+ " sum(x.TOTAL_VENDA) TOTAL_VENDA , "
-						+ " sum(x.TOTALLIQUIDO_PEDIDO) TOTALLIQUIDO_PEDIDO"
-						//+ " (sum(x.TOTALLIQUIDO_PEDIDO) /sum(x.TOTAL_VENDA))*100 as perc_lucro
+						+ " sum(x.TOTALLIQUIDO_PEDIDO) TOTALLIQUIDO_PEDIDO,"
+						+ " round((sum(x.TOTALLIQUIDO_PEDIDO) /sum(x.TOTAL_VENDA))*100,2) as perc_lucro"
 						+ " FROM( "
 						+ " select "
 						+ " p.pedidovendaid, "
@@ -272,6 +273,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			vendasEmGeral.setNomevendedor((String) row[9] );
 			
 			vendasEmGeral.setValortotalliquidopedido((BigDecimal) row[10] );
+			vendasEmGeral.setPerc_lucro((BigDecimal) row[11] );
 			
 			list.add(vendasEmGeral);
 		}

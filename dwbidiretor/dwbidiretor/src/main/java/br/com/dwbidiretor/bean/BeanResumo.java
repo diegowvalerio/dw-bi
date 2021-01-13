@@ -2,6 +2,7 @@ package br.com.dwbidiretor.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -1344,10 +1345,11 @@ public class BeanResumo implements Serializable {
 		
 		for (VendasEmGeral venda : getListavenda()) {
 			float t2 = 0;
-			t2 = (venda.getValortotalliquidopedido().floatValue() / venda.getValortotalpedido().floatValue())*100;
+			//t2 = (venda.getValortotalliquidopedido().floatValue() / venda.getValortotalpedido().floatValue())*100;
+			t2 = venda.getPerc_lucro().floatValue();
 			t = t + t2;
 			total++;
-			//System.out.println(t);
+			System.out.println(t+" pedido:"+venda.getPedido().toString()+"- "+t2);
 		}
 		
 		float atingido = 0;

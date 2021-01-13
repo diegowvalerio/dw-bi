@@ -32,6 +32,7 @@ public class VendasEmGeral implements Serializable {
 	private Date dataliberadogestor;
 	
 	private BigDecimal valortotalliquidopedido;
+	private BigDecimal perc_lucro;
 
 		
 
@@ -126,6 +127,14 @@ public class VendasEmGeral implements Serializable {
 
 	public void setValortotalliquidopedido(BigDecimal valortotalliquidopedido) {
 		this.valortotalliquidopedido = valortotalliquidopedido;
+	}
+
+	public BigDecimal getPerc_lucro() {
+		return perc_lucro;
+	}
+
+	public void setPerc_lucro(BigDecimal perc_lucro) {
+		this.perc_lucro = perc_lucro;
 	}
 
 	@Override
