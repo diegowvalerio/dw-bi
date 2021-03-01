@@ -43,6 +43,7 @@ import br.com.dwbidiretor.classe.VendaAnoMes;
 import br.com.dwbidiretor.classe.VendaGrupoSubGrupoProdutoQuantidadeValor;
 import br.com.dwbidiretor.classe.VendasEmGeral;
 import br.com.dwbidiretor.classe.VendasEmGeralItem;
+import br.com.dwbidiretor.classe.VendasEndereco;
 import br.com.dwbidiretor.classe.Vendedor;
 import br.com.dwbidiretor.classe.VendedorMetaVenda;
 import br.com.dwbidiretor.dao.DAOGenerico;
@@ -3297,6 +3298,86 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 
 	return list;
 	
+}
+
+public List<VendasEndereco> vendasendereco(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
+	List<VendasEndereco> list = new ArrayList<>();
+	
+	SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+	String dataFormatada = formato.format(data1);
+	String dataFormatada2 = formato.format(data2);
+
+	javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+			// "SELECT * FROM("
+					" select " 
+					+ "  c.CADCFTVID CLIENTE, "
+					+ "  c.NOME_CADCFTV nome_cliente, "
+					+ "  en.END_ENDCADCFTV endereco, "
+					+ "  en.NRO_ENDCADCFTV, "
+					+ "  en.nome_cidade, "
+					+ "  en.CEP_ENDCADCFTV, "
+					+ "  en.uf_cidade, "
+					
+					+ "  v.cadcftvid vendedor, "
+					+ "  v.NOME_CADCFTV nome_vendedor, "
+					+ "  G.NOME_GESTOR, "
+					
+					+ "  P.PEDIDOVENDAID, "
+					+ "  P.DT_PEDIDOVENDA, "
+					+ "  P.VL_TOTALPROD_PEDIDOVENDA "
+					
+					+ "  from cadcftv c "
+					+ "  inner join cliente cl on cl.CADCFTVID = c.CADCFTVID "
+					+ "  inner join cadcftv v on v.cadcftvid = cl.VENDEDORID1 "
+					+ "  INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = v.cadcftvid "
+					+ "  INNER JOIN PEDIDOVENDA P ON P.CADCFTVID = C.CADCFTVID "
+					+ "  INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+					+ "  INNER JOIN GESTOR G ON G.GESTORID = V2.GESTORID "
+					
+					+ "  LEFT join ( "
+					+ "  SELECT V.CADCFTVID,CI.UF_CIDADE, ci.nome_cidade, V.END_ENDCADCFTV, V.CEP_ENDCADCFTV, V.NRO_ENDCADCFTV FROM ENDCADCFTV V "
+					+ "  inner join( "
+					+ "  SELECT max(ENDCADCFTVID) d , CADCFTVID cod FROM ENDCADCFTV "
+					+ "  group by cadcftvid "
+					+ "  )x on x.d = v.ENDCADCFTVID and x.cod = v.CADCFTVID "
+					+ "  INNER JOIN CIDADE CI ON CI.CIDADEID = V.CIDADEID "
+					+ "  ) EN ON EN.CADCFTVID = C.CADCFTVID "
+					
+					+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+					+ " AND CF.tipooperacao_cfop = 'VENDA' "
+					+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
+					+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
+					+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+					+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+					+ " ORDER BY P.PEDIDOVENDAID  ");
+
+	List<Object[]> lista = query.getResultList();
+	
+	
+
+	for (Object[] row : lista) {
+		VendasEndereco vendas = new VendasEndereco();
+
+		vendas.setCodigocliente((BigDecimal) row[0]);
+		vendas.setNomecliente((String) row[1] );
+		vendas.setEndereco((String) row[2]);
+		vendas.setNumero((String) row[3]);
+		vendas.setCidade((String) row[4]);
+		vendas.setCep((String) row[5]);
+		vendas.setUf((String) row[6]);
+		vendas.setCodigovendedor((BigDecimal) row[7]);
+		vendas.setNomevendedor((String) row[8] );
+		vendas.setNomegestor((String) row[9]);
+		
+		vendas.setPedido((BigDecimal) row[10] );
+		vendas.setDatapedido((Date) row[11] );
+		vendas.setValortotalpedido((BigDecimal) row[12] );
+		
+				
+		list.add(vendas);
+	}
+
+	return list;
 }
 	//busca itens retorno da afinação marcio tecco
 	public List<RetornoAfinacao> retornoafinacao(Date data1, Date data2, String cfop){

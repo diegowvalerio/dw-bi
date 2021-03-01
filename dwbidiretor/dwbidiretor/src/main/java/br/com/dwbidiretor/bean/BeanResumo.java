@@ -1349,7 +1349,7 @@ public class BeanResumo implements Serializable {
 			t2 = venda.getPerc_lucro().floatValue();
 			t = t + t2;
 			total++;
-			System.out.println(t+" pedido:"+venda.getPedido().toString()+"- "+t2);
+			//System.out.println(t+" pedido:"+venda.getPedido().toString()+"- "+t2);
 		}
 		
 		float atingido = 0;

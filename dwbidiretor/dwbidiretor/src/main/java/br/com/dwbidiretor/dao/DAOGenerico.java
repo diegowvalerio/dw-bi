@@ -20,6 +20,7 @@ import br.com.dwbidiretor.classe.VendaAnoMes;
 import br.com.dwbidiretor.classe.VendaGrupoSubGrupoProdutoQuantidadeValor;
 import br.com.dwbidiretor.classe.VendasEmGeral;
 import br.com.dwbidiretor.classe.VendasEmGeralItem;
+import br.com.dwbidiretor.classe.VendasEndereco;
 import br.com.dwbidiretor.classe.Vendedor;
 import br.com.dwbidiretor.classe.VendedorMetaVenda;
 
@@ -113,6 +114,8 @@ public interface DAOGenerico<E> {
 	public List<PedidosConferidos> pedidosconferidos(Date data1, Date data2);
 	
 	public List<RetornoAfinacao> retornoafinacao(Date data1, Date data2, String cfop);
+	
+	public List<VendasEndereco> vendasendereco(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2);
 	
 	//tabela de telação de itens
 	public List<RetornoAfinacao> consultar_relacao();
