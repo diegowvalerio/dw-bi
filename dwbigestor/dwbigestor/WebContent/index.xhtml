@@ -69,7 +69,7 @@
 								completeMethod="#{beanResumo.completaCliente}" var="c"
 								itemLabel="#{c.nomecliente}" itemValue="#{c}" forceSelection="true"
 								converter="conversorCliente" />
-							<p:watermark value="Digite Nome ou Código" for="cliente"></p:watermark>
+							<p:watermark value="Pesquise por Nome, Código ou Cpf/Cnpj" for="cliente"></p:watermark>
 						</h:panelGroup>
 
 					<p:commandButton action="#{beanResumo.filtrar()}" value="Filtrar"

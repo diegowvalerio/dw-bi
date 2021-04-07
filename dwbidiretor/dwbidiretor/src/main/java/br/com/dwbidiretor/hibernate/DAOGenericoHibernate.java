@@ -2268,7 +2268,7 @@ public List<Cliente> consultacliente(String palavra) {
 						//+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
 						+ " INNER JOIN CLIENTE V2 ON V2.CADCFTVID = V.CADCFTVID "						
 						+ " WHERE v.ATIVO_CADCFTV = 'SIM' AND v.FUNCAO_PRINCIPAL_CADCFTV = 'CLIENTE' "
-						+ " and (v.nome_cadcftv like '%"+palavra+"%' or v.cadcftvid like '%"+palavra+"%') "
+						+ " and (v.nome_cadcftv like '%"+palavra+"%' or v.cadcftvid like '%"+palavra+"%' or v.CNPJCPF_CADCFTV like '"+palavra+"%' ) "
 						+ " order by v.cadcftvid ");
 
 		List<Object[]> lista = query.getResultList();
@@ -2279,7 +2279,6 @@ public List<Cliente> consultacliente(String palavra) {
 			cliente.setCodigocliente((BigDecimal) row[0]);
 			cliente.setNomecliente((String) row[1]);
 			cliente.setCpfcnpj((String) row[2]);
-			
 			
 			list.add(cliente);
 		}

@@ -477,6 +477,7 @@ public class BeanResumo implements Serializable {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
 		session.setAttribute("vendedor", this.vendedor);
+		session.setAttribute("cliente", this.cliente);
 		session.setAttribute("data1", this.data_grafico);
 		session.setAttribute("data2", this.data_grafico2);
 
@@ -488,6 +489,7 @@ public class BeanResumo implements Serializable {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
 		session.setAttribute("vendedor", this.vendedor);
+		session.setAttribute("cliente", this.cliente);
 		session.setAttribute("data1", this.data_grafico);
 		session.setAttribute("data2", this.data_grafico2);
 
@@ -519,6 +521,7 @@ public class BeanResumo implements Serializable {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
 		session.setAttribute("vendedor", this.vendedor);
+		session.setAttribute("cliente", this.cliente);
 		session.setAttribute("data1", this.data_grafico);
 		session.setAttribute("data2", this.data_grafico2);
 
@@ -530,6 +533,7 @@ public class BeanResumo implements Serializable {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
 		session.setAttribute("vendedor", this.vendedor);
+		session.setAttribute("cliente", this.cliente);
 		session.setAttribute("data1", this.data_grafico);
 		session.setAttribute("data2", this.data_grafico2);
 

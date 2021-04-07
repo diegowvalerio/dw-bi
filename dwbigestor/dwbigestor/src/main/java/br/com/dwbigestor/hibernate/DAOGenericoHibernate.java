@@ -1557,7 +1557,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " INNER JOIN CLIENTE V2 ON V2.CADCFTVID = V.CADCFTVID "	
 						+ " INNER JOIN VENDEDOR V3 ON V3.CADCFTVID = V2.VENDEDORID1 "
 						+ " WHERE v.ATIVO_CADCFTV = 'SIM' AND v.FUNCAO_PRINCIPAL_CADCFTV = 'CLIENTE' "
-						+ " and (v.nome_cadcftv like '%"+palavra+"%' or v.cadcftvid like '%"+palavra+"%') "
+						+ " and (v.nome_cadcftv like '%"+palavra+"%' or v.cadcftvid like '%"+palavra+"%' or v.CNPJCPF_CADCFTV like '"+palavra+"%' ) "
 						+ " and V3.GESTORID = G.GESTORID  "
 						+ " order by v.cadcftvid ");
 
