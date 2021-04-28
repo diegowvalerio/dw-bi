@@ -57,6 +57,7 @@ public class BeanResumo implements Serializable {
 	private List<VendasEmGeral> listaamostrapaga = new ArrayList<>();
 	private List<VendasEmGeral> listatrocadefeito = new ArrayList<>();
 	private List<VendasEmGeral> listatrocanegocio = new ArrayList<>();
+	private List<VendasEmGeral> listafaturamento = new ArrayList<>();
 	
 	private ClientesNovos clientesNovos = new ClientesNovos();
 	@Inject
@@ -132,6 +133,7 @@ public class BeanResumo implements Serializable {
 			listabonificacaoexpositor = servico.bonificacaoexpositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 			listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 			listabrinde = servico.brindeemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2,clientefiltrado, clientefiltrado2);
+			listafaturamento = servico.faturamentoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2,clientefiltrado, clientefiltrado2);
 			
 			listaamostrapaga = servico.amostrapagaemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 			listatrocadefeito = servico.trocadefeitoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
@@ -145,6 +147,7 @@ public class BeanResumo implements Serializable {
 			listabonificacaoexpositor = servico.bonificacaoexpositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 			listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 			listabrinde = servico.brindeemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2,clientefiltrado, clientefiltrado2);
+			listafaturamento = servico.faturamentoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2,clientefiltrado, clientefiltrado2);
 			
 			listaamostrapaga = servico.amostrapagaemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 			listatrocadefeito = servico.trocadefeitoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
@@ -187,6 +190,7 @@ public class BeanResumo implements Serializable {
 		listabonificacaoexpositor = servico.bonificacaoexpositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 		listaexpositor = servico.expositoremgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 		listabrinde = servico.brindeemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2,clientefiltrado, clientefiltrado2);
+		listafaturamento = servico.faturamentoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2,clientefiltrado, clientefiltrado2);
 		
 		listaamostrapaga = servico.amostrapagaemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
 		listatrocadefeito = servico.trocadefeitoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, clientefiltrado, clientefiltrado2);
@@ -201,6 +205,14 @@ public class BeanResumo implements Serializable {
 		return servicocliente.consultacliente(n);
 	}
 	
+	public List<VendasEmGeral> getListafaturamento() {
+		return listafaturamento;
+	}
+
+	public void setListafaturamento(List<VendasEmGeral> listafaturamento) {
+		this.listafaturamento = listafaturamento;
+	}
+
 	public List<VendasEmGeral> getListabonificacaoexpositor() {
 		return listabonificacaoexpositor;
 	}
@@ -540,6 +552,18 @@ public class BeanResumo implements Serializable {
 		return "/pages/relatorios/vendaemgeral/expositoremgeral.xhtml";
 	}
 	
+	/* dados faturamento emgeral */
+	public String encaminha8() {
+		FacesContext fc = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
+		session.setAttribute("cliente", this.cliente);
+		session.setAttribute("vendedor", this.vendedor);
+		session.setAttribute("data1", this.data_grafico);
+		session.setAttribute("data2", this.data_grafico2);
+
+		return "/pages/relatorios/vendaemgeral/faturamentoemgeral.xhtml";
+	}
+	
 	public String encaminha9() {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
@@ -723,6 +747,26 @@ public class BeanResumo implements Serializable {
 		}
 		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
 
+	}
+	
+	public int getFaturamentododia() {
+		int total = 0;
+
+		for (VendasEmGeral faturado : getListafaturamento()) {
+			total++;
+		}
+
+		return total;
+	}
+	
+	public String getValorTotalFaturamento() {
+		float total = 0;
+
+		for (VendasEmGeral faturamento : getListafaturamento()) {
+			total = total + faturamento.getValortotalpedido().floatValue();
+		}
+
+		return new DecimalFormat("###,###.##").format(total);
 	}
 
 	public int getPedidododia() {

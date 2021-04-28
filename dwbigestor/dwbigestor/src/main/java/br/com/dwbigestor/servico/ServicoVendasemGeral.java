@@ -53,4 +53,8 @@ public class ServicoVendasemGeral implements Serializable{
 		return dao.amostrapagaemgeral(data1, data2, vendedor1,vendedor2, cliente1,  cliente2);
 	}
 	
+	public List<VendasEmGeral> faturamentoemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String cliente1, String cliente2){
+		return dao.faturamentoemgeral(data1, data2, vendedor1,vendedor2,  cliente1,  cliente2);
+	}
+	
 }
