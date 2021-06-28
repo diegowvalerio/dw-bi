@@ -1,0 +1,91 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Painel
+    </ui:define>
+
+	<ui:define name="description">
+		
+	</ui:define>
+
+	<ui:define name="body">
+		
+		<adm:breadcrumb title="Resumo" />
+		<h:form id="form">
+		
+			<section class="content">
+				<p:panelGrid columns="8" id="filtros" 
+					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+					layout="grid" styleClass="ui-fluid card">
+					
+					<p:outputLabel value=" Ano:  " for="ano" />
+					<p:selectOneMenu id="ano" value="#{beanPainel_Diretor.ano}"
+							lazy="true" style="width:125px" required="true">
+							<f:selectItem itemLabel="" itemValue=" " />
+							<f:selectItem itemLabel="2018" itemValue="2018" />
+							<f:selectItem itemLabel="2019" itemValue="2019" />
+							<f:selectItem itemLabel="2020" itemValue="2020" />
+							<f:selectItem itemLabel="2021" itemValue="2021" />
+						</p:selectOneMenu>
+
+					<p:outputLabel value=" Mês:  " for="mes" />
+					<p:selectOneMenu id="mes" value="#{beanPainel_Diretor.mes}"
+							lazy="true" style="width:125px" required="true">
+							<f:selectItem itemLabel="" itemValue=" " />
+							<f:selectItem itemLabel="01" itemValue="01" />
+							<f:selectItem itemLabel="02" itemValue="02" />
+							<f:selectItem itemLabel="03" itemValue="03" />
+							<f:selectItem itemLabel="04" itemValue="04" />
+							<f:selectItem itemLabel="05" itemValue="05" />
+							<f:selectItem itemLabel="06" itemValue="06" />
+							<f:selectItem itemLabel="07" itemValue="07" />
+							<f:selectItem itemLabel="08" itemValue="08" />
+							<f:selectItem itemLabel="09" itemValue="09" />
+							<f:selectItem itemLabel="10" itemValue="10" />
+							<f:selectItem itemLabel="11" itemValue="11" />
+							<f:selectItem itemLabel="12" itemValue="12" />
+						</p:selectOneMenu>
+
+					<p:commandButton action="#{beanResumo.filtrar()}" value="Filtrar"
+						icon="fa fa-check" update=":form" styleClass="btn-primary" />
+				</p:panelGrid>
+
+				<p:separator />
+				
+				<p:panelGrid id="resumo" >
+						
+				<div class="row" >
+					
+					
+				</div>
+				</p:panelGrid>
+				
+			</section>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

@@ -394,6 +394,30 @@
 						<!-- /.info-box -->
 					</div>
 					
+					<div class="col-md-3 col-sm-6 col-xs-12">
+						<div class="info-box ">
+							<span class="info-box-icon bg-blue">
+							<i class="fa fa-tags"></i></span>
+
+							<div class="info-box-content">
+								<span class="info-box-text">Faturamento</span> <span
+									class="info-box-number"><h:outputText
+										value="#{beanResumo.faturamentododia}" /></span>
+
+								<div class="progress">
+									<div class="progress-bar" style="width: 100%"></div>
+								</div>
+								<span class="progress-description"> <h:commandLink
+										action="#{beanResumo.encaminha8()}"
+										styleClass="fa fa-arrow-circle-right small-box-footer"
+										value="  R$ #{beanResumo.valorTotalFaturamento}" />
+								</span>
+							</div>
+							<!-- /.info-box-content -->
+						</div>
+						<!-- /.info-box -->
+					</div>
+					
 				</div>
 				<p:separator />
 				<h:panelGrid columns="1" id="painelmetavenda"

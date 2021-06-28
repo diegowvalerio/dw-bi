@@ -32,6 +32,7 @@ public class VendasEndereco implements Serializable {
 	
 	private Date datapedido;
 	private BigDecimal valortotalpedido;
+	private String regiao;
 		
 
 	public VendasEndereco() {
@@ -166,6 +167,16 @@ public class VendasEndereco implements Serializable {
 
 	public void setCodigovendedor(BigDecimal codigovendedor) {
 		this.codigovendedor = codigovendedor;
+	}
+
+
+	public String getRegiao() {
+		return regiao;
+	}
+
+
+	public void setRegiao(String regiao) {
+		this.regiao = regiao;
 	}
 
 	

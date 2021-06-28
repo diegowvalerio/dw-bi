@@ -35,7 +35,9 @@ import br.com.dwbidiretor.classe.DadosCliente;
 import br.com.dwbidiretor.classe.Gestor;
 import br.com.dwbidiretor.classe.InvestimentoVendedor;
 import br.com.dwbidiretor.classe.Mapa;
+import br.com.dwbidiretor.classe.MateriaPrimaEstrutura;
 import br.com.dwbidiretor.classe.MetaVenda;
+import br.com.dwbidiretor.classe.NotasClienteEmail;
 import br.com.dwbidiretor.classe.PedidoItem;
 import br.com.dwbidiretor.classe.PedidosConferidos;
 import br.com.dwbidiretor.classe.RetornoAfinacao;
@@ -120,6 +122,227 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		return nome;
 	}
 
+	public List<MateriaPrimaEstrutura> materiaPrimaEstrutura(String produtoid){
+		List<MateriaPrimaEstrutura> list = new ArrayList<>();
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				"select "
+						+ " p.produtoid, "
+						+ " p.nome_produto, "
+						+ " p.VL_CUSTO_PRODUTO, "
+						+ "  "
+						+ " ficha.PRODUTOID_PAI, "
+						+ " pp.NOME_PRODUTO nome_produto_pai, "
+						+ " sum(ficha.QTDE_ESTRUTURA) QTDE_ESTRUTURA, "
+						+ " sum(ficha.QTDE_ESTRUTURA * p.VL_CUSTO_PRODUTO) custo_ficha, "
+						+ " pp.TP_PRODUTO, "
+						+ " pp.VL_CUSTO_PRODUTO custo_acabado, "
+						+ " tb.VL_UNIT_TABELAPRECOPRODUTO valor_tabela, "
+						+ " tb.tabelaprecoid "
+						+ " from produto p "
+						+ "  "
+						+ " left join( "
+						+ " select "
+						+ " e.PRODUTOID_FILHO x, "
+						+ " e.PRODUTOID_FILHO, "
+						+ " e.PRODUTOID_PAI, "
+						+ " e.QTDE_ESTRUTURA "
+						+ " from ESTRUTURA e "
+						+ " where e.PRODUTOID_FILHO is not null "
+						+ "  "
+						+ " union all "
+						+ "  "
+						+ " select "
+						+ " e.PRODUTOID_FILHO x, "
+						+ " e1.PRODUTOID_FILHO, "
+						+ " e1.PRODUTOID_PAI, "
+						+ " e.QTDE_ESTRUTURA "
+						+ " from ESTRUTURA e "
+						+ " left join ESTRUTURA e1 on e1.PRODUTOID_FILHO = e.PRODUTOID_PAI "
+						+ " where e1.PRODUTOID_FILHO is not null "
+						+ "  "
+						+ " union all "
+						+ "  "
+						+ " select "
+						+ " e.PRODUTOID_FILHO x, "
+						+ " e2.PRODUTOID_FILHO, "
+						+ " e2.PRODUTOID_PAI, "
+						+ " e.QTDE_ESTRUTURA "
+						+ " from ESTRUTURA e "
+						+ " left join ESTRUTURA e1 on e1.PRODUTOID_FILHO = e.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e2 on e2.PRODUTOID_FILHO = e1.PRODUTOID_PAI "
+						+ " where e2.PRODUTOID_FILHO is not null "
+						+ "  "
+						+ " union all "
+						+ "  "
+						+ " select "
+						+ " e.PRODUTOID_FILHO x, "
+						+ " e3.PRODUTOID_FILHO, "
+						+ " e3.PRODUTOID_PAI, "
+						+ " e.QTDE_ESTRUTURA "
+						+ " from ESTRUTURA e "
+						+ " left join ESTRUTURA e1 on e1.PRODUTOID_FILHO = e.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e2 on e2.PRODUTOID_FILHO = e1.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e3 on e3.PRODUTOID_FILHO = e2.PRODUTOID_PAI "
+						+ " where e3.PRODUTOID_FILHO is not null "
+						+ "  "
+						+ " union all "
+						+ "  "
+						+ " select "
+						+ " e.PRODUTOID_FILHO x, "
+						+ " e4.PRODUTOID_FILHO, "
+						+ " e4.PRODUTOID_PAI, "
+						+ " e.QTDE_ESTRUTURA "
+						+ " from ESTRUTURA e "
+						+ " left join ESTRUTURA e1 on e1.PRODUTOID_FILHO = e.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e2 on e2.PRODUTOID_FILHO = e1.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e3 on e3.PRODUTOID_FILHO = e2.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e4 on e4.PRODUTOID_FILHO = e3.PRODUTOID_PAI "
+						+ " where e4.PRODUTOID_FILHO is not null "
+						+ "  "
+						+ " union all "
+						+ "  "
+						+ " select "
+						+ " e.PRODUTOID_FILHO x, "
+						+ " e5.PRODUTOID_FILHO, "
+						+ " e5.PRODUTOID_PAI, "
+						+ " e.QTDE_ESTRUTURA "
+						+ " from ESTRUTURA e "
+						+ " left join ESTRUTURA e1 on e1.PRODUTOID_FILHO = e.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e2 on e2.PRODUTOID_FILHO = e1.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e3 on e3.PRODUTOID_FILHO = e2.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e4 on e4.PRODUTOID_FILHO = e3.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e5 on e5.PRODUTOID_FILHO = e4.PRODUTOID_PAI "
+						+ " where e5.PRODUTOID_FILHO is not null "
+						+ "  "
+						+ " union all "
+						+ "  "
+						+ " select "
+						+ " e.PRODUTOID_FILHO x, "
+						+ " e6.PRODUTOID_FILHO, "
+						+ " e6.PRODUTOID_PAI, "
+						+ " e.QTDE_ESTRUTURA "
+						+ " from ESTRUTURA e "
+						+ " left join ESTRUTURA e1 on e1.PRODUTOID_FILHO = e.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e2 on e2.PRODUTOID_FILHO = e1.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e3 on e3.PRODUTOID_FILHO = e2.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e4 on e4.PRODUTOID_FILHO = e3.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e5 on e5.PRODUTOID_FILHO = e4.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e6 on e6.PRODUTOID_FILHO = e5.PRODUTOID_PAI "
+						+ " where e6.PRODUTOID_FILHO is not null "
+						+ "  "
+						+ " union all "
+						+ "  "
+						+ " select "
+						+ " e.PRODUTOID_FILHO x, "
+						+ " e7.PRODUTOID_FILHO, "
+						+ " e7.PRODUTOID_PAI, "
+						+ " e.QTDE_ESTRUTURA "
+						+ " from ESTRUTURA e "
+						+ " left join ESTRUTURA e1 on e1.PRODUTOID_FILHO = e.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e2 on e2.PRODUTOID_FILHO = e1.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e3 on e3.PRODUTOID_FILHO = e2.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e4 on e4.PRODUTOID_FILHO = e3.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e5 on e5.PRODUTOID_FILHO = e4.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e6 on e6.PRODUTOID_FILHO = e5.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e7 on e7.PRODUTOID_FILHO = e6.PRODUTOID_PAI "
+						+ " where e7.PRODUTOID_FILHO is not null "
+						+ "  "
+						+ " union all "
+						+ "  "
+						+ " select "
+						+ " e.PRODUTOID_FILHO x, "
+						+ " e8.PRODUTOID_FILHO, "
+						+ " e8.PRODUTOID_PAI, "
+						+ " e.QTDE_ESTRUTURA "
+						+ " from ESTRUTURA e "
+						+ " left join ESTRUTURA e1 on e1.PRODUTOID_FILHO = e.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e2 on e2.PRODUTOID_FILHO = e1.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e3 on e3.PRODUTOID_FILHO = e2.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e4 on e4.PRODUTOID_FILHO = e3.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e5 on e5.PRODUTOID_FILHO = e4.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e6 on e6.PRODUTOID_FILHO = e5.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e7 on e7.PRODUTOID_FILHO = e6.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e8 on e8.PRODUTOID_FILHO = e7.PRODUTOID_PAI "
+						+ " where e8.PRODUTOID_FILHO is not null "
+						+ "  "
+						+ " union all "
+						+ "  "
+						+ " select "
+						+ " e.PRODUTOID_FILHO x, "
+						+ " e9.PRODUTOID_FILHO, "
+						+ " e9.PRODUTOID_PAI, "
+						+ " e.QTDE_ESTRUTURA "
+						+ " from ESTRUTURA e "
+						+ " left join ESTRUTURA e1 on e1.PRODUTOID_FILHO = e.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e2 on e2.PRODUTOID_FILHO = e1.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e3 on e3.PRODUTOID_FILHO = e2.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e4 on e4.PRODUTOID_FILHO = e3.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e5 on e5.PRODUTOID_FILHO = e4.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e6 on e6.PRODUTOID_FILHO = e5.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e7 on e7.PRODUTOID_FILHO = e6.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e8 on e8.PRODUTOID_FILHO = e7.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e9 on e9.PRODUTOID_FILHO = e8.PRODUTOID_PAI "
+						+ " where e9.PRODUTOID_FILHO is not null "
+						+ "  "
+						+ " union all "
+						+ "  "
+						+ " select "
+						+ " e.PRODUTOID_FILHO x, "
+						+ " e10.PRODUTOID_FILHO, "
+						+ " e10.PRODUTOID_PAI, "
+						+ " e.QTDE_ESTRUTURA "
+						+ " from ESTRUTURA e "
+						+ " left join ESTRUTURA e1 on e1.PRODUTOID_FILHO = e.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e2 on e2.PRODUTOID_FILHO = e1.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e3 on e3.PRODUTOID_FILHO = e2.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e4 on e4.PRODUTOID_FILHO = e3.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e5 on e5.PRODUTOID_FILHO = e4.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e6 on e6.PRODUTOID_FILHO = e5.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e7 on e7.PRODUTOID_FILHO = e6.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e8 on e8.PRODUTOID_FILHO = e7.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e9 on e9.PRODUTOID_FILHO = e8.PRODUTOID_PAI "
+						+ " left join ESTRUTURA e10 on e10.PRODUTOID_FILHO = e9.PRODUTOID_PAI "
+						+ " where e10.PRODUTOID_FILHO is not null "
+						+ " )ficha on ficha.x = p.produtoid "
+						+ "  "
+						+ " left join produto pp on pp.produtoid = ficha.PRODUTOID_PAI "
+						+ " left join TABELAPRECOPRODUTO tb on tb.produtoid = pp.produtoid and tb.tabelaprecoid in (1,8) "
+						+ " where p.tp_produto = 'MATPRIMA'  "
+						+ " and pp.TP_PRODUTO = 'ACABADO' "
+						+ " and pp.STATUS_PRODUTO = 'ATIVO' "
+						+ " and p.STATUS_PRODUTO = 'ATIVO' "
+						+ " and p.produtoid = "+produtoid
+						+ "  "
+						+ " group by "
+						+ " p.produtoid, "
+						+ " p.nome_produto, "
+						+ " p.VL_CUSTO_PRODUTO, "
+						+ " ficha.PRODUTOID_PAI, "
+						+ " pp.NOME_PRODUTO, "
+						//+ " ficha.QTDE_ESTRUTURA, "
+						+ " pp.TP_PRODUTO,pp.VL_CUSTO_PRODUTO,tb.VL_UNIT_TABELAPRECOPRODUTO,tb.tabelaprecoid "
+						+ "  "
+						+ " order by ficha.PRODUTOID_PAI ");
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			MateriaPrimaEstrutura materiaPrimaEstrutura = new MateriaPrimaEstrutura();
+			
+			materiaPrimaEstrutura.setProdutoid((BigDecimal) row[0]);
+			materiaPrimaEstrutura.setNomeproduto((String) row[1]);
+			materiaPrimaEstrutura.setVl_custo((BigDecimal) row[2]);
+			materiaPrimaEstrutura.setProdutoid_acabado((BigDecimal) row[3]);
+			materiaPrimaEstrutura.setNomeproduto_acabado((String) row[4]);
+			materiaPrimaEstrutura.setQtde_estrutura((BigDecimal) row[5]);
+			materiaPrimaEstrutura.setCusto_ficha((BigDecimal) row[6]);
+			materiaPrimaEstrutura.setTipoproduto((String) row[7]);
+			materiaPrimaEstrutura.setCusto_acabado((BigDecimal) row[8]);
+			materiaPrimaEstrutura.setValor_tabela((BigDecimal) row[9]);
+			materiaPrimaEstrutura.setTabelaprecoid((BigDecimal) row[10]);
+			list.add(materiaPrimaEstrutura);
+		}
+		return list;
+	}
 	/* venda ano mes */
 	public List<VendaAnoMes> vendaanomes() {
 		List<VendaAnoMes> list = new ArrayList<>();
@@ -195,6 +418,87 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			list.add(vendaGrupoSubGrupoProdutoQuantidadeValor);
 		}
 
+		return list;
+	}
+	
+	public List<NotasClienteEmail> notasclienteemails(String ano, String mes, String dia){
+		List<NotasClienteEmail> list = new ArrayList<>();
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				"SELECT DISTINCT * FROM ("
+						+ "select "
+						+ "count(p.pedidovendaid) n_notas_dia,"
+						+ "nota_mes.n_notas_mes,"
+						+ "p.CADCFTVID,"
+						+ "c.NOME_CADCFTV,"
+						+ "email.EMAIL_EMAILCADCFTV"
+						+ ""
+						+ "from pedidovenda p "
+						+ "inner join CADCFTV c on c.CADCFTVID = p.CADCFTVID"
+						+ "INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID"
+						+ ""
+						+ "left join("
+						+ "select * from("
+						+ "select "
+						+ "ROW_NUMBER() OVER(PARTITION BY e.CADCFTVID ORDER BY e.CADCFTVID ASC) AS nun,"
+						+ "e.CADCFTVID,"
+						+ "e.EMAIL_EMAILCADCFTV"
+						+ "from EMAILCADCFTV e"
+						+ "group by"
+						+ "e.CADCFTVID,"
+						+ "e.EMAIL_EMAILCADCFTV)x"
+						+ "where x.nun = 1"
+						+ ")email on email.CADCFTVID = p.CADCFTVID"
+						+ ""
+						+ "left join("
+						+ "select "
+						+ "count(p.pedidovendaid) n_notas_mes,"
+						+ "p.CADCFTVID,"
+						+ "c.NOME_CADCFTV"
+						+ ""
+						+ "from pedidovenda p "
+						+ "inner join CADCFTV c on c.CADCFTVID = p.CADCFTVID"
+						+ "INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID"
+						+ ""
+						+ "where p.STATUS_PEDIDOVENDA = 'FATURADO'"
+						+ "AND CF.tipooperacao_cfop = 'VENDA'"
+						+ "and p.ORIGEM_PEDIDOVENDA <> 'SIMETRICA'"
+						+ "and TO_CHAR(p.DT_FATURAMENTO_PEDIDOVENDA,'YYYY') = '"+ano+"'"
+						+ "and TO_CHAR(P.DT_FATURAMENTO_PEDIDOVENDA,'MM') = '"+mes+"'"
+						+ ""
+						+ "group by"
+						+ "p.CADCFTVID,"
+						+ "c.NOME_CADCFTV"
+						+ ")nota_mes on nota_mes.CADCFTVID = p.CADCFTVID"
+						+ ""
+						+ "where p.STATUS_PEDIDOVENDA = 'FATURADO'"
+						+ "AND CF.tipooperacao_cfop = 'VENDA'"
+						+ "and p.ORIGEM_PEDIDOVENDA <> 'SIMETRICA'"
+						+ "and TO_CHAR(p.DT_FATURAMENTO_PEDIDOVENDA,'YYYY') = '"+ano+"'"
+						+ "and TO_CHAR(P.DT_FATURAMENTO_PEDIDOVENDA,'MM') = '"+mes+"'"
+						+ "and TO_CHAR(P.DT_FATURAMENTO_PEDIDOVENDA,'DD') = '"+dia+"'"
+						+ ""
+						+ ""
+						+ "group by"
+						+ "nota_mes.n_notas_mes,"
+						+ "p.CADCFTVID,email.EMAIL_EMAILCADCFTV,"
+						+ "c.NOME_CADCFTV)X"
+						+ ""
+						+ "WHERE X.n_notas_dia = X.n_notas_mes and x.EMAIL_EMAILCADCFTV is not null"
+				);
+		List<Object[]> lista = query.getResultList();
+		
+		for (Object[] row : lista) {
+			NotasClienteEmail notasClienteEmail = new NotasClienteEmail();
+
+			
+			notasClienteEmail.setCodigocliente((BigDecimal) row[2]);
+			notasClienteEmail.setNomecliente((String) row[3] );
+			notasClienteEmail.setEmail((String) row[4] );
+						
+			list.add(notasClienteEmail);
+		}
+		
 		return list;
 	}
 	
@@ -3323,10 +3627,12 @@ public List<VendasEndereco> vendasendereco(Date data1, Date data2, String vended
 					
 					+ "  P.PEDIDOVENDAID, "
 					+ "  P.DT_PEDIDOVENDA, "
-					+ "  P.VL_TOTALPROD_PEDIDOVENDA "
+					+ "  P.VL_TOTALPROD_PEDIDOVENDA, "
+					+ "  re.NOME_REGIAO "
 					
 					+ "  from cadcftv c "
 					+ "  inner join cliente cl on cl.CADCFTVID = c.CADCFTVID "
+					+ "  inner join REGIAO re on re.REGIAOID = cl.REGIAOID "
 					+ "  inner join cadcftv v on v.cadcftvid = cl.VENDEDORID1 "
 					+ "  INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = v.cadcftvid "
 					+ "  INNER JOIN PEDIDOVENDA P ON P.CADCFTVID = C.CADCFTVID "
@@ -3371,6 +3677,7 @@ public List<VendasEndereco> vendasendereco(Date data1, Date data2, String vended
 		vendas.setPedido((BigDecimal) row[10] );
 		vendas.setDatapedido((Date) row[11] );
 		vendas.setValortotalpedido((BigDecimal) row[12] );
+		vendas.setRegiao((String) row[13]);
 		
 				
 		list.add(vendas);

@@ -1,0 +1,136 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+ 	 Matéria-Prima x Acabado
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Matéria-Prima x Acabado" />
+
+		<h:form id="form">
+						
+			<p:panelGrid columns="3"
+				columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+				layout="grid" styleClass="ui-fluid card" id="filtroscli">
+
+				<p:outputLabel value="Código da Matéria-Prima" for="produto" />
+				<p:inputText value="#{beanMateriaPrimaEstrutura.produto}" id="produto">
+				</p:inputText>
+
+				<p:commandButton action="#{beanMateriaPrimaEstrutura.filtrar()}"
+					value="Filtrar" icon="fa fa-check" update=":form:paineld"
+					styleClass="btn-primary" />
+					
+					
+				<p:outputLabel value="Custo:" />	
+				<p:inputNumber id="custo" emptyValue="true" symbol="R$ "  
+                			decimalSeparator="," thousandSeparator="." decimalPlaces="5"
+							value="#{beanMateriaPrimaEstrutura.custo}" />	
+							
+				<p:selectOneMenu id="tipo"
+							value="#{beanMateriaPrimaEstrutura.tipo}" lazy="true"
+							style="width:125px" required="true">
+							<f:selectItem itemLabel="" itemValue=" " />
+							<f:selectItem itemLabel="Novo" itemValue="N" />
+							<f:selectItem itemLabel="Antigo" itemValue="A" />
+						</p:selectOneMenu>
+
+			</p:panelGrid>
+
+			<p:panelGrid columns="1" id="paineld">
+			
+				<p:outputLabel value="Código: #{beanMateriaPrimaEstrutura.materiaPrimaEstrutura.produtoid}"></p:outputLabel>
+				<p:outputLabel value="Nome: #{beanMateriaPrimaEstrutura.materiaPrimaEstrutura.nomeproduto}"></p:outputLabel>	
+				<p:outputLabel value="Custo: #{beanMateriaPrimaEstrutura.materiaPrimaEstrutura.vl_custo}"></p:outputLabel>
+												
+				<p:dataTable id="lista" var="listas" scrollable="true"
+					value="#{beanMateriaPrimaEstrutura.lista}" resizableColumns="true">
+
+					<p:column headerText="Produto" width="5%"
+						style="background-color: peachpuff;">
+						<h:outputText value="#{listas.produtoid_acabado}" />
+					</p:column>
+
+					<p:column headerText="Nome"
+						style="background-color: peachpuff;">
+						<h:outputText value="#{listas.nomeproduto_acabado}" />
+					</p:column>
+
+					<p:column headerText="Qtde Estrutura" width="5%"
+						style="background-color: peachpuff;">
+						<h:outputText value="#{listas.qtde_estrutura}" />
+					</p:column>
+
+					<p:column width="5%" headerText="Valor Custo"
+						style="background-color: lightblue;">
+						<h:outputText value="#{listas.custo_ficha}">
+							<f:convertNumber type="currency" currencySymbol="R$"
+								minFractionDigits="5" locale="pt-BR"/>
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Tipo" width="6%"
+						style="background-color: darkseagreen;">
+						<h:outputText value="#{listas.tipoproduto}" />
+					</p:column>
+					
+					<p:column width="8%" headerText="Custo Acabado"
+						style="background-color: lightblue;">
+						<h:outputText value="#{listas.custo_acabado}">
+							<f:convertNumber type="currency" currencySymbol="R$"
+								minFractionDigits="5" locale="pt-BR"/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column width="10%" headerText="Valor Tabela"
+						style="background-color: lightblue;">
+						<h:outputText value="#{listas.valor_tabela}">
+							<f:convertNumber type="currency" currencySymbol="R$"
+								minFractionDigits="5" locale="pt-BR"/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column width="10%" headerText="Novo Valor"
+						style="background-color: #E0FFFF;">
+						<h:outputText value="#{listas.novovalorvenda}">
+							<f:convertNumber type="currency" currencySymbol="R$"
+								minFractionDigits="5" locale="pt-BR"/>
+						</h:outputText>
+					</p:column>
+
+				</p:dataTable>
+			</p:panelGrid>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

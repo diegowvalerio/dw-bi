@@ -12,7 +12,9 @@ import br.com.dwbidiretor.classe.DadosCliente;
 import br.com.dwbidiretor.classe.Gestor;
 import br.com.dwbidiretor.classe.InvestimentoVendedor;
 import br.com.dwbidiretor.classe.Mapa;
+import br.com.dwbidiretor.classe.MateriaPrimaEstrutura;
 import br.com.dwbidiretor.classe.MetaVenda;
+import br.com.dwbidiretor.classe.NotasClienteEmail;
 import br.com.dwbidiretor.classe.PedidoItem;
 import br.com.dwbidiretor.classe.PedidosConferidos;
 import br.com.dwbidiretor.classe.RetornoAfinacao;
@@ -116,6 +118,10 @@ public interface DAOGenerico<E> {
 	public List<RetornoAfinacao> retornoafinacao(Date data1, Date data2, String cfop);
 	
 	public List<VendasEndereco> vendasendereco(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2);
+	
+	public List<NotasClienteEmail> notasclienteemails(String ano, String mes, String dia);
+	
+	public List<MateriaPrimaEstrutura> materiaPrimaEstrutura(String produtoid);
 	
 	//tabela de telação de itens
 	public List<RetornoAfinacao> consultar_relacao();

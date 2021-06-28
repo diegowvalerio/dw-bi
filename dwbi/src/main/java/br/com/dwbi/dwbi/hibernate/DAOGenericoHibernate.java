@@ -184,6 +184,72 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 
 		return list;
 	}
+	
+	public List<VendasEmGeral> faturamentoemgeral(Date data1, Date data2, String cliente1, String cliente2) {
+		List<VendasEmGeral> list = new ArrayList<>();
+		
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		String dataFormatada = formato.format(data1);
+		String dataFormatada2 = formato.format(data2);
+
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				// "SELECT * FROM("
+						" select " 
+						+ " CI.CADCFTVID AS CLIENTE, " 
+						+ " CI.NOME_CADCFTV AS NOME_CLIENTE, "
+						+ " p.NR_NOTA_PEDIDOVENDA nota, " 
+						+ " P.DT_FATURAMENTO_PEDIDOVENDA AS DATAfaturamento, "
+						+ " p.vl_totalprod_pedidovenda, " 
+						+ " pg.nome_formapagto as prazo, "
+						+ " t.desc_tipo_pedido as tipo_pedido, " 
+						+ " CF.tipooperacao_cfop, " 
+						+ " p.status_pedidovenda, "
+						+ " v.NOME_CADCFTV nome_vendedor "
+						+ " from pedidovenda p "
+						+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
+						+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID "
+						+ " inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid "
+						+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid "
+						+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+						+ " inner join roteiro r on r.roteiroid = p.roteiroid "
+						+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
+						+ " where p.status_pedidovenda in ('FATURADO') "
+						+ " AND CF.tipooperacao_cfop = 'VENDA' "
+						+ " and p.DT_FATURAMENTO_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
+						+ " AND P.VENDEDOR1ID =  "+ usuarioconectado()
+						+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
+						+ " ORDER BY P.NR_NOTA_PEDIDOVENDA  ");
+
+		List<Object[]> lista = query.getResultList();
+		
+		
+
+		for (Object[] row : lista) {
+			VendasEmGeral vendasEmGeral = new VendasEmGeral();
+			
+			String nota = (String) row[2];
+			Integer notr = Integer.valueOf(nota);
+			BigDecimal notag = new BigDecimal(notr.intValue());
+
+			vendasEmGeral.setCodigocliente((BigDecimal) row[0]);
+			vendasEmGeral.setNomecliente((String) row[1] );
+			vendasEmGeral.setPedido(notag);
+			vendasEmGeral.setDatapedido((Date) row[3] );
+			vendasEmGeral.setValortotalpedido((BigDecimal) row[4] );
+			vendasEmGeral.setPrazo((String) row[5] );
+			vendasEmGeral.setTipopedido((String) row[6] );
+			vendasEmGeral.setTipooperacaocfop((String) row[7] );
+			vendasEmGeral.setStatuspedido((String) row[8] );
+			vendasEmGeral.setNomevendedor((String) row[9] );
+			
+			
+			
+			list.add(vendasEmGeral);
+		}
+
+		return list;
+	}
+	
 	//pedidos de venda
 	public List<VendasEmGeral> vendasemgeral(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2) {
 		List<VendasEmGeral> list = new ArrayList<>();
