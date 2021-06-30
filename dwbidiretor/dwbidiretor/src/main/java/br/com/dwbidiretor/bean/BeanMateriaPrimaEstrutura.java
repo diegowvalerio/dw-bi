@@ -2,8 +2,17 @@ package br.com.dwbidiretor.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -63,7 +72,49 @@ public class BeanMateriaPrimaEstrutura implements Serializable {
 			}
 		}
 	}
-
+	
+	public void update_tabela(){
+		
+		DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.getDefault());
+		otherSymbols.setDecimalSeparator('.');
+		DecimalFormat resultado = new DecimalFormat("0.00000",otherSymbols); 
+		try {
+			
+			 //"update TABELAPRECOPRODUTO set VL_UNIT_TABELAPRECOPRODUTO = ? where produtoid = ? and TABELAPRECOID = ?";
+			Connection conexao = ObterConexao();
+			
+			conexao.setAutoCommit(false);
+			for (MateriaPrimaEstrutura ma:lista) {
+				String query = "";
+				if(ma.getNovovalorvenda() != null ) {
+					query = "update TABELAPRECOPRODUTO set VL_UNIT_TABELAPRECOPRODUTO = "+resultado.format(ma.getNovovalorvenda())+" where produtoid = '"+ma.getProdutoid_acabado()+"' and TABELAPRECOID = "+ma.getTabelaprecoid()+" ";
+					PreparedStatement pr = conexao.prepareStatement(query);
+					pr.executeUpdate();
+					pr.closeOnCompletion();
+					conexao.commit();
+				}
+			}
+			conexao.setAutoCommit(true);
+			conexao.close();
+		}catch (Exception e) { 
+			e.printStackTrace();
+		}
+	}
+	
+	private static Connection ObterConexao() {
+		Connection conexao = null;
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conexao = DriverManager.getConnection("jdbc:oracle:thin:@MSERVER2:1521:AWORKSDB", "SEVEN", "SEVEN");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return conexao;
+	}
+	
+	
 	public String getTipo() {
 		return tipo;
 	}

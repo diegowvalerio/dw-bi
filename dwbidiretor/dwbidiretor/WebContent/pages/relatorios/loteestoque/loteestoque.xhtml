@@ -1,0 +1,104 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+
+<style type="text/css">  
+            .color_100 {  
+                background-color: #CEF6E3;  
+            }  
+            
+            .color_m100 {  
+                background-color: #A9E2F3;  
+            }
+            
+            .color_0 {  
+                background-color: #F5A9D0;  
+            }
+     </style>
+	</ui:define>
+
+	<ui:define name="title">
+ 	 Lote x Estoque
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Lote x Estoque" />
+
+		<h:form id="form">
+						
+			<p:panelGrid columns="5"
+				columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+				layout="grid" styleClass="ui-fluid card" id="filtroscli">
+
+				<p:outputLabel value="Código Lote" for="lote" />
+				<p:inputText value="#{beanLoteEstoque.lote}" id="lote">
+				</p:inputText>
+
+				<p:commandButton action="#{beanLoteEstoque.filtrar()}"
+					value="Filtrar" icon="fa fa-check" update=":form:paineld :form:total"
+					styleClass="btn-primary" />
+					
+				<p:outputLabel value="Total Atendido:"></p:outputLabel>
+				<p:inputNumber  symbol=" %" symbolPosition="s"  readonly="true"
+                			decimalSeparator="," thousandSeparator="."  id="total"
+							value="#{beanLoteEstoque.perc_atingido_lote}" />
+
+			</p:panelGrid>
+										
+			<p:panelGrid columns="1" id="paineld">												
+				<p:dataTable id="lista" var="listas" rowStyleClass="#{listas.perc_atendido == 100 ? 'color_100' : null or listas.perc_atendido == 0 ? 'color_0' : null or listas.perc_atendido > 0 ? 'color_m100' : null }"
+					value="#{beanLoteEstoque.lista}" >
+
+					<p:column headerText="Produto" width="5%">
+						<h:outputText value="#{listas.produtoid}" />
+					</p:column>
+
+					<p:column headerText="Nome">
+						<h:outputText value="#{listas.nomeproduto}" />
+					</p:column>
+
+					<p:column headerText="Qtde Lote" width="5%">
+						<h:outputText value="#{listas.qtde}" />
+					</p:column>
+					
+					<p:column headerText="Qtde Estoque" width="5%">
+						<h:outputText value="#{listas.saldo}" />
+					</p:column>
+					
+					<p:column headerText="% Atendido" width="5%">
+						<h:outputText value="#{listas.perc_atendido}" />
+					</p:column>
+
+				</p:dataTable>				
+			</p:panelGrid>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

@@ -71,8 +71,8 @@
 				<p:outputLabel value="Nome: #{beanMateriaPrimaEstrutura.materiaPrimaEstrutura.nomeproduto}"></p:outputLabel>	
 				<p:outputLabel value="Custo: #{beanMateriaPrimaEstrutura.materiaPrimaEstrutura.vl_custo}"></p:outputLabel>
 												
-				<p:dataTable id="lista" var="listas" scrollable="true"
-					value="#{beanMateriaPrimaEstrutura.lista}" resizableColumns="true">
+				<p:dataTable id="lista" var="listas" 
+					value="#{beanMateriaPrimaEstrutura.lista}" >
 
 					<p:column headerText="Produto" width="5%"
 						style="background-color: peachpuff;">
@@ -125,8 +125,21 @@
 								minFractionDigits="5" locale="pt-BR"/>
 						</h:outputText>
 					</p:column>
+					
+					<p:column headerText="Tabela" width="4%"
+						style="background-color: darkseagreen;">
+						<h:outputText value="#{listas.tabelaprecoid}" />
+					</p:column>
 
 				</p:dataTable>
+				
+				<p:separator></p:separator>
+				
+				<p:commandButton action="#{beanMateriaPrimaEstrutura.update_tabela()}" value="Atualizar Tabela de Preço"
+								ajax="false" immediate="true" partialSubmit="true"  process="@this"
+								icon="fa fa-refresh"	onclick="if(!confirm('Confirma a atualização de preço ? Esta operação é irreversível !')) return false;">
+				</p:commandButton>
+				
 			</p:panelGrid>
 
 		</h:form>

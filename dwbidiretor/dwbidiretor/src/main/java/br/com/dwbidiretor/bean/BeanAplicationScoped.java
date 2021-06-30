@@ -158,6 +158,8 @@ public class BeanAplicationScoped implements Serializable {
 				lista.add(notasClienteEmail);
 				System.out.println(resultSet.getString("NOME_CADCFTV"));
 			}
+			statement.closeOnCompletion();
+			conexao.close();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
