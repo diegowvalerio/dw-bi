@@ -18,8 +18,8 @@ public class ServicoMetaVenda implements Serializable{
 	private DAOMetaVenda dao;
 	
 	
-	public List<MetaVenda> metavenda(String vendedor1, String vendedor2, String gestor1, String gestor2) {
-		return dao.metavenda(vendedor1, vendedor2, gestor1, gestor2);
+	public List<MetaVenda> metavenda(String vendedor1, String vendedor2, String gestor1, String gestor2,String ano, String mes) {
+		return dao.metavenda(vendedor1, vendedor2, gestor1, gestor2,ano,mes);
 	}
 	
 }

@@ -118,10 +118,13 @@ public class BeanResumo implements Serializable {
 	private float tot_trocadefeito;
 	private float tot_trocanegocio;
 	private float tot_venda;
+	
+	private String mes;
+	private String ano;
 
 	@PostConstruct
 	public void init() {
-		
+			
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
 		data_grafico =c.getTime();
@@ -177,6 +180,12 @@ public class BeanResumo implements Serializable {
 			
 			listaclientes = servicoclientes.clientesnovos_efetivado(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 		}
+		
+		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		String data = df.format(data_grafico);
+		
+		mes = data.substring(3,5);
+		ano = data.substring(6,10);
 
 		session.removeAttribute("data1");
 		session.removeAttribute("data2");
@@ -562,6 +571,22 @@ public class BeanResumo implements Serializable {
 		this.listainvestimento_2 = listainvestimento_2;
 	}
 
+	public String getMes() {
+		return mes;
+	}
+
+	public void setMes(String mes) {
+		this.mes = mes;
+	}
+
+	public String getAno() {
+		return ano;
+	}
+
+	public void setAno(String ano) {
+		this.ano = ano;
+	}
+
 	/* dados vendaemgeral */
 	public String encaminha2() {
 		FacesContext fc = FacesContext.getCurrentInstance();
@@ -593,6 +618,8 @@ public class BeanResumo implements Serializable {
 		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
 		session.setAttribute("vendedor", this.vendedor);
 		session.setAttribute("gestor", this.gestor);
+		session.setAttribute("ano", this.ano);
+		session.setAttribute("mes", this.mes);
 		return "/pages/relatorios/vendedormetavenda/vendedormetavenda.xhtml";
 	}
 	
@@ -1363,11 +1390,17 @@ public class BeanResumo implements Serializable {
 	}
 	
 	public void createAnimatedModels() {
+		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		String data = df.format(data_grafico);
+		
+		mes = data.substring(3,5);
+		ano = data.substring(6,10);
+		
 		Calendar hoje = Calendar.getInstance();
 		
 		Date d = new Date();
 		graficometavenda = initBarModel();
-		graficometavenda.setTitle("Meta x Venda ("+ Integer.valueOf(d.getMonth()+1) +"/"+hoje.get(Calendar.YEAR) +")");
+		graficometavenda.setTitle("Meta x Venda ("+mes+"/"+ano+")");
 		graficometavenda.setAnimate(true);
 		graficometavenda.setLegendPosition("ne");
 		graficometavenda.setSeriesColors("20B2AA,808080");
@@ -1384,8 +1417,13 @@ public class BeanResumo implements Serializable {
 	
 	@SuppressWarnings("null")
 	public BarChartModel initBarModel() {
-    	
-    	listametavenda = servicometavenda.metavenda(vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
+		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		String data = df.format(data_grafico);
+		
+		mes = data.substring(3,5);
+		ano = data.substring(6,10);
+		    	
+    	listametavenda = servicometavenda.metavenda(vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,ano,mes);
     	
     	 BarChartModel model = new BarChartModel();
          

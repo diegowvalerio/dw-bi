@@ -11,6 +11,7 @@ import br.com.dwbidiretor.classe.ClientesNovos;
 import br.com.dwbidiretor.classe.DadosCliente;
 import br.com.dwbidiretor.classe.Gestor;
 import br.com.dwbidiretor.classe.InvestimentoVendedor;
+import br.com.dwbidiretor.classe.ItensTabela;
 import br.com.dwbidiretor.classe.Mapa;
 import br.com.dwbidiretor.classe.MateriaPrimaEstrutura;
 import br.com.dwbidiretor.classe.MetaVenda;
@@ -18,6 +19,7 @@ import br.com.dwbidiretor.classe.NotasClienteEmail;
 import br.com.dwbidiretor.classe.PedidoItem;
 import br.com.dwbidiretor.classe.PedidosConferidos;
 import br.com.dwbidiretor.classe.RetornoAfinacao;
+import br.com.dwbidiretor.classe.TabelaPreco;
 import br.com.dwbidiretor.classe.VendaAnoMes;
 import br.com.dwbidiretor.classe.VendaGrupoSubGrupoProdutoQuantidadeValor;
 import br.com.dwbidiretor.classe.VendasEmGeral;
@@ -25,6 +27,9 @@ import br.com.dwbidiretor.classe.VendasEmGeralItem;
 import br.com.dwbidiretor.classe.VendasEndereco;
 import br.com.dwbidiretor.classe.Vendedor;
 import br.com.dwbidiretor.classe.VendedorMetaVenda;
+import br.com.dwbidiretor.classe.painel.Diretor_01;
+import br.com.dwbidiretor.classe.painel.Venda_Grupo;
+import br.com.dwbidiretor.classe.painel.Venda_Subgrupo;
 
 public interface DAOGenerico<E> {
 	public E salvar(E e);
@@ -99,9 +104,9 @@ public interface DAOGenerico<E> {
 	
 	public VendasEmGeralItem consultaitem(BigDecimal produto);
 	
-	public List<MetaVenda> metavenda(String vendedor1, String vendedor2, String gestor1, String gestor2);
+	public List<MetaVenda> metavenda(String vendedor1, String vendedor2, String gestor1, String gestor2, String ano, String mes);
 	
-	public List<VendedorMetaVenda> vendedormetavenda(String vendedor1, String vendedor2, String gestor1, String gestor2);
+	public List<VendedorMetaVenda> vendedormetavenda(String vendedor1, String vendedor2, String gestor1, String gestor2, String ano, String mes);
 	
 	public List<VendasEmGeral> faturamentoemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2);
 	
@@ -122,6 +127,16 @@ public interface DAOGenerico<E> {
 	public List<NotasClienteEmail> notasclienteemails(String ano, String mes, String dia);
 	
 	public List<MateriaPrimaEstrutura> materiaPrimaEstrutura(String produtoid);
+	
+	public List<TabelaPreco> tabelapreco();
+	
+	public List<ItensTabela> itenstabela(String idtabela);
+	public ItensTabela itenstabela(String idtabela, String produtoid);
+	
+	//painel diretor
+	public List<Diretor_01> diretor_01(String ano, String mes);
+	public List<Venda_Grupo> venda_grupo(String ano, String mes);
+	public List<Venda_Subgrupo> venda_subgrupo(String ano, String mes, String idgrupo);
 	
 	//tabela de telação de itens
 	public List<RetornoAfinacao> consultar_relacao();

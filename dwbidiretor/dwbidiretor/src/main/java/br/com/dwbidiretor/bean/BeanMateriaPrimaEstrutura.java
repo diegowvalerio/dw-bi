@@ -18,9 +18,13 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import br.com.dwbidiretor.classe.ItensTabela;
 import br.com.dwbidiretor.classe.MateriaPrimaEstrutura;
+import br.com.dwbidiretor.classe.TabelaPreco;
 import br.com.dwbidiretor.msg.FacesMessageUtil;
+import br.com.dwbidiretor.servico.ServicoItensTabela;
 import br.com.dwbidiretor.servico.ServicoMateriaPrimaEstrutura;
+import br.com.dwbidiretor.servico.ServicoTabelaPreco;
 
 
 @Named
@@ -33,13 +37,24 @@ public class BeanMateriaPrimaEstrutura implements Serializable {
 	private ServicoMateriaPrimaEstrutura servico;
 	private List<MateriaPrimaEstrutura> lista = new ArrayList<>();
 	
+	@Inject
+	private ServicoTabelaPreco servicotabelapreco;
+	private List<TabelaPreco> listatabelapreco = new ArrayList<>();
+	private List<TabelaPreco> listatabelapreco_selecionada = new ArrayList<>();
+	
+	@Inject
+	private ServicoItensTabela servicoitenstabela;
+	private List<ItensTabela> listaitenstabela = new ArrayList<>();
+	private List<ItensTabela> listatabelamae = new ArrayList<>();
+	
 	private String produto = null;
 	private float custo = 0;
 	private String tipo = null;
+	private String log = null;
 	
 	@PostConstruct
 	public void init() {
-		
+		listatabelapreco = servicotabelapreco.tabelaprecos();
 		
 	}
 	
@@ -101,6 +116,56 @@ public class BeanMateriaPrimaEstrutura implements Serializable {
 		}
 	}
 	
+	public void prepara_tabelas_selecionadas(){
+		listaitenstabela.clear();
+		
+		DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.getDefault());
+		otherSymbols.setDecimalSeparator('.');
+		DecimalFormat resultado = new DecimalFormat("0.00000",otherSymbols);
+		
+		if(listatabelapreco_selecionada.size()>0) {
+			listatabelamae = servicoitenstabela.itenstabela("1");
+			log =  "Tabela(s) Selecionada(s)\r\n";
+			
+			for(TabelaPreco p:listatabelapreco_selecionada) {
+				
+				log = log +p.getId()+"-"+p.getNometabela()+"\r\n";
+				log = log + "Verificando itens ...\r\n";
+				ItensTabela t = new ItensTabela();
+				for(ItensTabela tt:listatabelamae) {
+					t = servicoitenstabela.itenstabela(p.getId().toString(), tt.getProdutoid().toString());
+					if(t.getNomeproduto() != null) {
+						float vl_n =((100*tt.getValor_tabela().floatValue())/(100-p.getPerc_desconto().floatValue()));
+						if(vl_n != t.getValor_tabela().floatValue()) {
+							t.setNovovalorvenda(BigDecimal.valueOf(vl_n));
+							listaitenstabela.add(t);
+							log = log+ ("ID: "+t.getProdutoid()+" valor mãe: "+resultado.format(tt.getValor_tabela())+" valor atual: "+resultado.format(t.getValor_tabela())+" novo valor: "+resultado.format(t.getNovovalorvenda())+"\r\n");
+						}
+					}					
+				}
+			}
+			
+			log = log+ "Total de "+listaitenstabela.size()+" alterações serão realizadas.\r\n";
+		}
+		renderatualiza();
+	}
+	
+	public void update_tabelas_selecionadas(){
+		
+	}
+	
+	public boolean renderatualiza() {
+		if(listaitenstabela.size()>0) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	public boolean hasSelectedProducts() {
+        return this.listatabelapreco_selecionada != null && !this.listatabelapreco_selecionada.isEmpty();
+    }
+	
 	private static Connection ObterConexao() {
 		Connection conexao = null;
 		try {
@@ -115,6 +180,30 @@ public class BeanMateriaPrimaEstrutura implements Serializable {
 	}
 	
 	
+	public List<ItensTabela> getListatabelamae() {
+		return listatabelamae;
+	}
+
+	public void setListatabelamae(List<ItensTabela> listatabelamae) {
+		this.listatabelamae = listatabelamae;
+	}
+
+	public List<ItensTabela> getListaitenstabela() {
+		return listaitenstabela;
+	}
+
+	public void setListaitenstabela(List<ItensTabela> listaitenstabela) {
+		this.listaitenstabela = listaitenstabela;
+	}
+
+	public String getLog() {
+		return log;
+	}
+
+	public void setLog(String log) {
+		this.log = log;
+	}
+
 	public String getTipo() {
 		return tipo;
 	}
@@ -153,6 +242,22 @@ public class BeanMateriaPrimaEstrutura implements Serializable {
 
 	public void setLista(List<MateriaPrimaEstrutura> lista) {
 		this.lista = lista;
+	}
+
+	public List<TabelaPreco> getListatabelapreco() {
+		return listatabelapreco;
+	}
+
+	public void setListatabelapreco(List<TabelaPreco> listatabelapreco) {
+		this.listatabelapreco = listatabelapreco;
+	}
+
+	public List<TabelaPreco> getListatabelapreco_selecionada() {
+		return listatabelapreco_selecionada;
+	}
+
+	public void setListatabelapreco_selecionada(List<TabelaPreco> listatabelapreco_selecionada) {
+		this.listatabelapreco_selecionada = listatabelapreco_selecionada;
 	}
 		
 	

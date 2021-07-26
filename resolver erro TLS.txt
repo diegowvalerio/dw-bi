@@ -1,0 +1,16 @@
+link:
+https://stackoverflow.com/questions/67246010/the-server-selected-protocol-version-tls10-is-not-accepted-by-client-preferences
+
+
+oque fazer:
+entrar na pasta do java: 
+C:\Program Files (x86)\Java\jre1.8.0_291\lib\security
+
+no arquivo:
+java.security
+
+localizar a linha: 
+jdk.tls.disabledAlgorithms
+
+e remover:
+TLSv1

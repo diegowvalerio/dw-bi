@@ -57,6 +57,9 @@ public class BeanVendedorMetaVenda implements Serializable {
 	private String vendedorfiltrado2;
 	private String gestorfiltrado;
 	private String gestorfiltrado2;
+	
+	private String mes;
+	private String ano;
 
 	@PostConstruct
 	public void init() {
@@ -107,10 +110,14 @@ public class BeanVendedorMetaVenda implements Serializable {
 		listavendedor = servicovendedor.consultavendedor();
 		listagestor = servicogestor.consultagestor(vendedorfiltrado,vendedorfiltrado2);
 		
-		lista = servico.vendedormetavenda(vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
+		ano =  (String) session.getAttribute("ano");
+		mes =  (String) session.getAttribute("mes");
+		lista = servico.vendedormetavenda(vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,ano,mes);
 		
 		session.removeAttribute("vendedor");
 		session.removeAttribute("gestor");
+		session.removeAttribute("ano");
+		session.removeAttribute("mes");
 
 		
 
@@ -133,7 +140,23 @@ public class BeanVendedorMetaVenda implements Serializable {
 			gestorfiltrado = gestor.getGestorid().toString();
 			gestorfiltrado2 = gestor.getGestorid().toString();
 		}
-		lista = servico.vendedormetavenda(vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
+		lista = servico.vendedormetavenda(vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,ano,mes);
+	}
+
+	public String getMes() {
+		return mes;
+	}
+
+	public void setMes(String mes) {
+		this.mes = mes;
+	}
+
+	public String getAno() {
+		return ano;
+	}
+
+	public void setAno(String ano) {
+		this.ano = ano;
 	}
 
 	public Gestor getGestor() {

@@ -141,7 +141,63 @@
 				</p:commandButton>
 				
 			</p:panelGrid>
+			
+			<p:separator></p:separator>
+			<div class="row">
+			<div class="col-md-6">
+			<p:panelGrid id="tabelas" columns="1" >
+				<p:dataTable id="listatabela" var="listas" value="#{beanMateriaPrimaEstrutura.listatabelapreco}"  rowKey="#{listas.id}" 
+				style="width: 100%;" scrollable="true" scrollHeight="350" selection="#{beanMateriaPrimaEstrutura.listatabelapreco_selecionada}" rowSelectMode="add">
+				
+					<p:ajax event="rowSelect" update=":form:btn_tabelas"/>
+            		<p:ajax event="rowUnselect" update=":form:btn_tabelas"/>
+            		<p:ajax event="rowSelectCheckbox" update=":form:btn_tabelas"/>
+            		<p:ajax event="rowUnselectCheckbox" update=":form:btn_tabelas"/>
+            		<p:ajax event="toggleSelect" update=":form:btn_tabelas"/>
+				
+					<p:column width="3%" selectionMode="multiple" exportable="false" style="border: 1px solid; text-align: Left; padding: 02px 05px;">
+					</p:column>
+					
+					<p:column headerText="ID" width="3%" style="border: 1px solid; text-align: Left; padding: 02px 05px;">
+						<h:outputText value="#{listas.id}" />
+					</p:column>
 
+					<p:column headerText="TABELA" style="border: 1px solid; text-align: Left; padding: 02px 05px;">
+						<h:outputText value="#{listas.nometabela}" />
+					</p:column>
+
+					<p:column width="18%" headerText="DESCONTO" style="border: 1px solid; text-align: Left; padding: 02px 05px;">
+						<h:outputText value="#{listas.perc_desconto}">
+							<f:convertNumber type="currency" currencySymbol="%"
+								minFractionDigits="2" locale="pt-BR"/>
+						</h:outputText>
+					</p:column>
+				</p:dataTable>		
+			</p:panelGrid>
+			</div>
+			
+			<div class="col-md-6">
+				<p:panelGrid id="btns" columns="1" >
+					<p:outputLabel value="Este procedimento usa como base a tabela de preço 1- TABELA MAE, conforme o desconto da tabela será formulado o preço de venda."></p:outputLabel>	
+					<p:commandButton action="#{beanMateriaPrimaEstrutura.prepara_tabelas_selecionadas()}" value="Preparar Tabelas" update=":form:log"
+								ajax="false" immediate="true" partialSubmit="true"  process="@this" styleClass="btn btn-warning" id="btn_tabelas" disabled="#{!beanMateriaPrimaEstrutura.hasSelectedProducts()}"
+								icon="fa fa-refresh">
+					</p:commandButton>
+					
+					<p:commandButton action="#{beanMateriaPrimaEstrutura.update_tabelas_selecionadas()}" value="Atualizar Tabelas" update=":form:log"
+								ajax="false" immediate="true" partialSubmit="true"  process="@this" styleClass="btn btn-danger" id="btn_atualiza_tabelas" disabled="#{!beanMateriaPrimaEstrutura.renderatualiza()}"
+								icon="fa fa-refresh"	onclick="if(!confirm('Confirma a atualização de preço ? Esta operação é irreversível !')) return false;">
+					</p:commandButton>
+
+						<h:panelGrid columns="1" width="100%">
+							<h:outputText value="Log:" />
+							<p:inputTextarea id="log" rows="09" disabled="true"
+								style="width: 100% !important;" value="#{beanMateriaPrimaEstrutura.log}"
+								autoResize="false" />
+						</h:panelGrid>
+				</p:panelGrid>
+			</div>
+			</div>
 		</h:form>
 
 	</ui:define>
