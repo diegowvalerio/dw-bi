@@ -151,7 +151,37 @@ public class BeanMateriaPrimaEstrutura implements Serializable {
 	}
 	
 	public void update_tabelas_selecionadas(){
+		DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.getDefault());
+		otherSymbols.setDecimalSeparator('.');
+		DecimalFormat resultado = new DecimalFormat("0.00000",otherSymbols);
 		
+		if (listaitenstabela.size() > 0) {
+			try {
+				log = log + "Iniciando atualizações...\r\n";
+				Connection conexao = ObterConexao();
+				conexao.setAutoCommit(false);
+				int i = 0;
+				for (ItensTabela it : listaitenstabela) {
+					
+					String query = "";
+					query = "update TABELAPRECOPRODUTO set VL_UNIT_TABELAPRECOPRODUTO = "+resultado.format(it.getNovovalorvenda())+" where produtoid = '"+it.getProdutoid()+"' and TABELAPRECOID = "+it.getTabelaprecoid()+" ";
+					PreparedStatement pr = conexao.prepareStatement(query);
+					pr.executeUpdate();
+					pr.closeOnCompletion();
+					i += pr.getUpdateCount();
+					conexao.commit();
+					//System.out.println(query);
+					
+				}
+				
+				conexao.setAutoCommit(true);
+				conexao.close();
+				log = log + i+" Atualizações realizadas com sucesso ! \r\n";
+			} catch (Exception e) {
+				e.printStackTrace();
+				log = log + "=========== ERRO ========== \r\n" + e.getMessage()+ "\r\n =========== FIM ERRO ==========";
+			}
+		}
 	}
 	
 	public boolean renderatualiza() {
