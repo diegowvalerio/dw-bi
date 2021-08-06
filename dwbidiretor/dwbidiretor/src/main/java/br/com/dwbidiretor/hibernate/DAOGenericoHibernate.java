@@ -32,6 +32,7 @@ import br.com.dwbidiretor.classe.AnaliseClientePedido;
 import br.com.dwbidiretor.classe.Cliente;
 import br.com.dwbidiretor.classe.ClientesNovos;
 import br.com.dwbidiretor.classe.DadosCliente;
+import br.com.dwbidiretor.classe.FasePedido;
 import br.com.dwbidiretor.classe.Gestor;
 import br.com.dwbidiretor.classe.InvestimentoVendedor;
 import br.com.dwbidiretor.classe.ItensTabela;
@@ -39,8 +40,10 @@ import br.com.dwbidiretor.classe.Mapa;
 import br.com.dwbidiretor.classe.MateriaPrimaEstrutura;
 import br.com.dwbidiretor.classe.MetaVenda;
 import br.com.dwbidiretor.classe.NotasClienteEmail;
+import br.com.dwbidiretor.classe.PedidoFase;
 import br.com.dwbidiretor.classe.PedidoItem;
 import br.com.dwbidiretor.classe.PedidosConferidos;
+import br.com.dwbidiretor.classe.PrazoPedido;
 import br.com.dwbidiretor.classe.RetornoAfinacao;
 import br.com.dwbidiretor.classe.TabelaPreco;
 import br.com.dwbidiretor.classe.VendaAnoMes;
@@ -125,6 +128,157 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		}
 		// System.out.println(nome);
 		return nome;
+	}
+	
+	public List<PrazoPedido> prazopedido(int venda, int outros,Date data1, Date data2){
+		List<PrazoPedido> list = new ArrayList<>();
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		String dataFormatada = formato.format(data1);
+		String dataFormatada2 = formato.format(data2);
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				" select  "
+				+ " p.pedidovendaid pedido, "
+				+ " p.CADCFTVID codigo_cliente, "
+				+ " cliente.NOME_CADCFTV nome_cliente, "
+				+ " tp.DESC_TIPO_PEDIDO tipo_pedido , "
+				+ " fase.DESC_ROTEIRO fase_atual, "
+				+ " p.STATUS_PEDIDOVENDA, "
+				+ " p.VL_TOTALPROD_PEDIDOVENDA valor_total , "
+				+ " TO_CHAR(p.DT_PEDIDOVENDA,'DD/MM/YYYY') digitacao_entrada, "
+				+ " TO_CHAR(financeiro.DT_ROTEIRO_PEDIDO,'DD/MM/YYYY') financeiro_entrada, "
+				+ " TO_CHAR(conferencia.DT_ROTEIRO_PEDIDO,'DD/MM/YYYY') conferencia_entrada, "
+				+ " TO_CHAR(analisegestor.DT_ROTEIRO_PEDIDO,'DD/MM/YYYY') analisegestor_entrada, "
+				+ " TO_CHAR(colorselect.DT_ROTEIRO_PEDIDO,'DD/MM/YYYY') colorselect_entrada, "
+				+ " TO_CHAR(programacao.DT_ROTEIRO_PEDIDO,'DD/MM/YYYY') programacao_entrada, "
+				+ " TO_CHAR(producao.DT_ROTEIRO_PEDIDO,'DD/MM/YYYY')  producao_entrada, "
+				+ " TO_CHAR(producaocolor.DT_ROTEIRO_PEDIDO,'DD/MM/YYYY')  producaocolor_entrada, "
+				+ " TO_CHAR(expedicao.DT_ROTEIRO_PEDIDO,'DD/MM/YYYY') expedicao_entrada, "
+				+ " TO_CHAR(faturamento.DT_ROTEIRO_PEDIDO,'DD/MM/YYYY') faturamento_entrada, "
+				+ " TO_CHAR(posvenda.DT_ROTEIRO_PEDIDO,'DD/MM/YYYY')  posvenda_entrada "
+				+ "  "
+				+ " from pedidovenda p "
+				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+				+ " inner join CADCFTV cliente on cliente.CADCFTVID = p.CADCFTVID "
+				+ " inner join ROTEIRO fase on fase.roteiroid = p.ROTEIROID "
+				+ " inner join TIPO_PEDIDO tp on tp.TIPOPEDIDOID = p.TIPOPEDIDOID "
+				+ " left join ROTEIRO_PEDIDO digitacao on digitacao.PEDIDOVENDAID = p.pedidovendaid and digitacao.ROTEIROID = 1 "
+				+ " left join (select max(DT_ROTEIRO_PEDIDO) as DT_ROTEIRO_PEDIDO,pedidovendaid,ROTEIROID from ROTEIRO_PEDIDO group by pedidovendaid,ROTEIROID )conferencia on conferencia.PEDIDOVENDAID = p.pedidovendaid and conferencia.ROTEIROID = 2 "
+				+ " left join (select max(DT_ROTEIRO_PEDIDO) as DT_ROTEIRO_PEDIDO,pedidovendaid,ROTEIROID from ROTEIRO_PEDIDO group by pedidovendaid,ROTEIROID )financeiro on financeiro.PEDIDOVENDAID = p.pedidovendaid and financeiro.ROTEIROID = 3 "
+				+ " left join (select max(DT_ROTEIRO_PEDIDO) as DT_ROTEIRO_PEDIDO,pedidovendaid,ROTEIROID from ROTEIRO_PEDIDO group by pedidovendaid,ROTEIROID )analisegestor on analisegestor.PEDIDOVENDAID = p.pedidovendaid and analisegestor.ROTEIROID = 9 "
+				+ " left join (select max(DT_ROTEIRO_PEDIDO) as DT_ROTEIRO_PEDIDO,pedidovendaid,ROTEIROID from ROTEIRO_PEDIDO group by pedidovendaid,ROTEIROID )colorselect on colorselect.PEDIDOVENDAID = p.pedidovendaid and colorselect.ROTEIROID = 10 "
+				+ " left join (select max(DT_ROTEIRO_PEDIDO) as DT_ROTEIRO_PEDIDO,pedidovendaid,ROTEIROID from ROTEIRO_PEDIDO group by pedidovendaid,ROTEIROID )programacao on programacao.PEDIDOVENDAID = p.pedidovendaid and programacao.ROTEIROID = 4 "
+				+ " left join (select max(DT_ROTEIRO_PEDIDO) as DT_ROTEIRO_PEDIDO,pedidovendaid,ROTEIROID from ROTEIRO_PEDIDO group by pedidovendaid,ROTEIROID )producao on producao.PEDIDOVENDAID = p.pedidovendaid and producao.ROTEIROID = 5 "
+				+ " left join (select max(DT_ROTEIRO_PEDIDO) as DT_ROTEIRO_PEDIDO,pedidovendaid,ROTEIROID from ROTEIRO_PEDIDO group by pedidovendaid,ROTEIROID )producaocolor on producaocolor.PEDIDOVENDAID = p.pedidovendaid and producaocolor.ROTEIROID = 11 "
+				+ " left join (select max(DT_ROTEIRO_PEDIDO) as DT_ROTEIRO_PEDIDO,pedidovendaid,ROTEIROID from ROTEIRO_PEDIDO group by pedidovendaid,ROTEIROID )expedicao on expedicao.PEDIDOVENDAID = p.pedidovendaid and expedicao.ROTEIROID = 6 "
+				+ " left join (select max(DT_ROTEIRO_PEDIDO) as DT_ROTEIRO_PEDIDO,pedidovendaid,ROTEIROID from ROTEIRO_PEDIDO group by pedidovendaid,ROTEIROID )faturamento on faturamento.PEDIDOVENDAID = p.pedidovendaid and faturamento.ROTEIROID = 7 "
+				+ " left join (select max(DT_ROTEIRO_PEDIDO) as DT_ROTEIRO_PEDIDO,pedidovendaid,ROTEIROID from ROTEIRO_PEDIDO group by pedidovendaid,ROTEIROID )posvenda on posvenda.PEDIDOVENDAID = p.pedidovendaid and posvenda.ROTEIROID = 8 "
+				+ "  "
+				+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+				+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
+				+ " AND (CF.tipooperacao_cfop = 'VENDA' and 1="+venda+" or CF.tipooperacao_cfop <> 'VENDA' and 1="+outros+") ");
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			PrazoPedido pedido= new PrazoPedido();
+			pedido.setPedidoid((BigDecimal)row[0]);
+			pedido.setCodigocliente((BigDecimal)row[1]);
+			pedido.setNomecliente((String)row[2]);
+			pedido.setTipopedido((String)row[3]);
+			pedido.setFase_atual((String)row[4]);
+			pedido.setStatus((String)row[5]);
+			pedido.setValor((BigDecimal)row[6]);
+			
+			pedido.setDt_digitacao((String)row[7]);
+			pedido.setDt_financeiro((String)row[8]);
+			pedido.setDt_conferencia((String)row[9]);
+			pedido.setDt_analisegestor((String)row[10]);
+			pedido.setDt_color((String)row[11]);
+			pedido.setDt_programacao((String)row[12]);
+			pedido.setDt_producao((String)row[13]);
+			pedido.setDt_producaocolor((String)row[14]);
+			pedido.setDt_expedicao((String)row[15]);
+			pedido.setDt_faturamento((String)row[16]);
+			pedido.setDt_posvenda((String)row[17]);
+			
+			list.add(pedido);
+		}
+		
+		return list;
+	}
+	
+	public List<PedidoFase> pedidofase(int venda, int outros, BigDecimal roteiro){
+		List<PedidoFase> list = new ArrayList<>();
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				" select "
+				+ " p.pedidovendaid, "
+				+ " p.DT_PEDIDOVENDA, "
+				+ " p.CADCFTVID cliente, "
+				+ " c.NOME_CADCFTV nomecliente, "
+				+ " p.VL_TOTALPROD_PEDIDOVENDA valor, "
+				+ " tp.DESC_TIPO_PEDIDO tipopedido, "
+				+ " p.STATUS_PEDIDOVENDA status, "
+				+ " TO_CHAR(fase.DT_ROTEIRO_PEDIDO,'DD/MM/YYYY') dataentrada_fase, "
+				+ " to_date(SYSDATE,'DD/MM/YYYY') - to_date(fase.DT_ROTEIRO_PEDIDO,'DD/MM/YYYY') dias_na_fase "
+				+ " from pedidovenda p "
+				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+				+ " inner join TIPO_PEDIDO tp on tp.TIPOPEDIDOID = p.TIPOPEDIDOID "
+				+ " inner join CADCFTV c on c.CADCFTVID = p.CADCFTVID "
+				+ " left join (select max(DT_ROTEIRO_PEDIDO) as DT_ROTEIRO_PEDIDO,pedidovendaid,ROTEIROID from ROTEIRO_PEDIDO group by pedidovendaid,ROTEIROID )fase on fase.PEDIDOVENDAID = p.pedidovendaid and fase.ROTEIROID = p.ROTEIROID "
+				+ " where p.STATUS_PEDIDOVENDA in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO') "
+				+ " AND (CF.tipooperacao_cfop = 'VENDA' and 1="+venda+" or CF.tipooperacao_cfop <> 'VENDA' and 1="+outros+") "
+				+ " and p.ROTEIROID = "+roteiro);
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			PedidoFase pedidofase = new PedidoFase();
+			pedidofase.setPedidoid((BigDecimal) row[0]);
+			pedidofase.setDatapedido((Date) row[1]);
+			pedidofase.setCodigocliente((BigDecimal) row[2]);
+			pedidofase.setNomecliente((String) row[3]);
+			pedidofase.setValor((BigDecimal) row[4]);
+			pedidofase.setTipopedido((String) row[5]);
+			pedidofase.setStatus((String) row[6]);
+			pedidofase.setDataentradafase((String) row[7]);
+			pedidofase.setDiasnafase((BigDecimal) row[8]);
+			
+			list.add(pedidofase);
+		}
+		return list;
+	}
+	
+	public List<FasePedido> fasepedido(int venda, int outros){
+		List<FasePedido> list = new ArrayList<>();
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				"  select "
+				+ " r.ROTEIROID, "
+				+ " r.DESC_ROTEIRO, "
+				+ " nvl(total.vl_pedido,0) vl_pedido, "
+				+ " nvl(total.qtde,0) qtde "
+				+ " "
+				+ " from ROTEIRO r "
+				+ " "
+				+ " left join( "
+				+ " select "
+				+ " p.ROTEIROID , "
+				+ " sum(p.VL_TOTALPROD_PEDIDOVENDA) vl_pedido, "
+				+ " count(p.pedidovendaid) qtde "
+				+ " from pedidovenda p "
+				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+				+ " where p.STATUS_PEDIDOVENDA in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO') "
+				+ " AND (CF.tipooperacao_cfop = 'VENDA' and 1="+venda+" or CF.tipooperacao_cfop <> 'VENDA' and 1="+outros+") "
+				+ " group by p.ROTEIROID) total on total.ROTEIROID = r.ROTEIROID "
+				+ "  "
+				+ " order by r.ROTEIROID");
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			FasePedido fasePedido = new FasePedido();
+			fasePedido.setRoteiroid((BigDecimal) row[0]);
+			fasePedido.setNomeroteiro((String) row[1]);
+			fasePedido.setVlpedido((BigDecimal) row[2]);
+			fasePedido.setQtdepedido((BigDecimal) row[3]);
+			
+			list.add(fasePedido);
+		}
+		return list;
 	}
 	
 	public ItensTabela itenstabela(String idtabela, String produtoid){

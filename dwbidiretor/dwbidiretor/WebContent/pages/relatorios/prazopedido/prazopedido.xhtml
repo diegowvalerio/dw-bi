@@ -1,0 +1,200 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Prazo Pedido
+    </ui:define>
+
+	<ui:define name="description">
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Prazo Pedido" />
+
+		<h:form id="form">
+			
+					<p:panelGrid columns="6" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+                             layout="grid" styleClass="ui-fluid card" >
+                             
+					<p:selectOneRadio id="console" value="#{beanPrazoPedido.selecionado}" unselectable="true">
+            			<f:selectItem itemLabel="Todos" itemValue="1"/>
+            			<f:selectItem itemLabel="Venda" itemValue="2"/>
+            			<f:selectItem itemLabel="Outros" itemValue="3"/>
+        			</p:selectOneRadio>
+        			
+        			<p:outputLabel value=" Data:  " for="data_grafico" />
+					<p:calendar locale="pt_BR" id="data_grafico"
+						value="#{beanPrazoPedido.data_grafico}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico2" />
+					<p:calendar locale="pt_BR" id="data_grafico2"
+						value="#{beanPrazoPedido.data_grafico2}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+					
+					<p:commandButton action="#{beanPrazoPedido.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld2"
+						styleClass="btn-primary" />
+
+					</p:panelGrid>
+					
+				<p:separator></p:separator>
+				
+				<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="pedido" fileName="prazo_pedidos" pageOnly="true"/>
+				</h:commandLink>	
+			
+				<div class="box box-primary" >
+				<div style="overflow:scroll;width:100%;overflow:auto">
+				
+					<h:panelGrid columns="1" id="paineld2" columnClasses="left,right" width="100%">
+					<p:dataTable id="pedido" var="listas2" value="#{beanPrazoPedido.lista}"  scrollable="true" resizableColumns="true">           			
+						
+						<p:column headerText="Pedido" >
+							<h:outputText value="#{listas2.pedidoid}" />
+						</p:column>
+						
+						<p:column headerText="Cliente">
+							<h:outputText value="#{listas2.codigocliente}" />
+						</p:column>
+						
+						<p:column headerText="Nome">
+							<h:outputText value="#{listas2.nomecliente}" />
+						</p:column>
+						
+						<p:column headerText="Valor"  >
+							<h:outputText value="#{listas2.valor}">
+							<f:convertNumber type="currency" currencySymbol="R$"
+								minFractionDigits="2" locale="pt-BR"/>
+							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="Tipo" >
+							<h:outputText value="#{listas2.tipopedido}" />
+						</p:column>
+						
+						<p:column headerText="Fase Atual" >
+							<h:outputText value="#{listas2.fase_atual}" />
+						</p:column>
+						
+						<p:column headerText="Status"  >
+							<h:outputText value="#{listas2.status}" />
+						</p:column>
+						
+						<p:column headerText="Digitação"  >
+							<h:outputText value="#{listas2.dt_digitacao}" />
+						</p:column>
+						<p:column headerText="#" >
+							<h:outputText value="#{listas2.dias_digitacao}"/>
+						</p:column>
+						
+						<p:column headerText="Financeiro"  >
+							<h:outputText value="#{listas2.dt_financeiro}" />
+						</p:column>
+						<p:column headerText="#"  >
+							<h:outputText value="#{listas2.dias_financeiro}"/>
+						</p:column>
+						
+						<p:column headerText="Conferencia"  >
+							<h:outputText value="#{listas2.dt_conferencia}" />
+						</p:column>
+						<p:column headerText="#"  >
+							<h:outputText value="#{listas2.dias_conferencia}"/>
+						</p:column>
+						
+						<p:column headerText="Analise Gestor"  >
+							<h:outputText value="#{listas2.dt_analisegestor}" />
+						</p:column>
+						<p:column headerText="#"  >
+							<h:outputText value="#{listas2.dias_analisegestor}"/>
+						</p:column>
+						
+						<p:column headerText="Color"  >
+							<h:outputText value="#{listas2.dt_color}" />
+						</p:column>
+						<p:column headerText="#"  >
+							<h:outputText value="#{listas2.dias_color}"/>
+						</p:column>
+						
+						<p:column headerText="Programação"  >
+							<h:outputText value="#{listas2.dt_programacao}" />
+						</p:column>
+						<p:column headerText="#"  >
+							<h:outputText value="#{listas2.dias_programacao}"/>
+						</p:column>
+						
+						<p:column headerText="Produção Color"  >
+							<h:outputText value="#{listas2.dt_producaocolor}" />
+						</p:column>
+						<p:column headerText="#"  >
+							<h:outputText value="#{listas2.dias_producaocolor}"/>
+						</p:column>
+						
+						<p:column headerText="Produção"  >
+							<h:outputText value="#{listas2.dt_producao}" />
+						</p:column>
+						<p:column headerText="#"  >
+							<h:outputText value="#{listas2.dias_producao}"/>
+						</p:column>
+						
+						<p:column headerText="Expedicão"  >
+							<h:outputText value="#{listas2.dt_expedicao}" />
+						</p:column>
+						<p:column headerText="#"  >
+							<h:outputText value="#{listas2.dias_expedicao}"/>
+						</p:column>
+						
+						<p:column headerText="Faturamento"  >
+							<h:outputText value="#{listas2.dt_faturamento}" />
+						</p:column>
+						<p:column headerText="#"  >
+							<h:outputText value="#{listas2.dias_faturamento}"/>
+						</p:column>
+						
+						<p:column headerText="Pos Venda"  >
+							<h:outputText value="#{listas2.dt_posvenda}" />
+						</p:column>
+						<p:column headerText="#"  >
+							<h:outputText value="#{listas2.dias_posvenda}"/>
+						</p:column>
+						
+						<p:column headerText="Total dias"  >
+							<h:outputText value="#{listas2.totaldias}" />
+						</p:column>
+						
+
+					</p:dataTable>
+
+				</h:panelGrid>
+			</div>
+			</div>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

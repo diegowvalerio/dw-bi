@@ -225,7 +225,7 @@ public class BeanAplicationScoped implements Serializable {
 							+ "(Sua resposta será confidencial) \n"
 							+ "\r\n"
 							+ " Para responder clique no link abaixo para acessar a pesquisa. \r\n"
-							+ " https://docs.google.com/forms/d/e/1FAIpQLSehihD-zigDIGy0Z6D6k1Go7H2BwtJX5AxPdeY4Q6XFCBvsoA/viewform?usp=sf_link ");
+							+ " http://pesquisa.marchezanmetais.com.br ");
 
 					/** Método para enviar a mensagem criada */
 					Transport.send(message);

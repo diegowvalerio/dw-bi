@@ -9,6 +9,7 @@ import br.com.dwbidiretor.classe.AnaliseClientePedido;
 import br.com.dwbidiretor.classe.Cliente;
 import br.com.dwbidiretor.classe.ClientesNovos;
 import br.com.dwbidiretor.classe.DadosCliente;
+import br.com.dwbidiretor.classe.FasePedido;
 import br.com.dwbidiretor.classe.Gestor;
 import br.com.dwbidiretor.classe.InvestimentoVendedor;
 import br.com.dwbidiretor.classe.ItensTabela;
@@ -16,8 +17,10 @@ import br.com.dwbidiretor.classe.Mapa;
 import br.com.dwbidiretor.classe.MateriaPrimaEstrutura;
 import br.com.dwbidiretor.classe.MetaVenda;
 import br.com.dwbidiretor.classe.NotasClienteEmail;
+import br.com.dwbidiretor.classe.PedidoFase;
 import br.com.dwbidiretor.classe.PedidoItem;
 import br.com.dwbidiretor.classe.PedidosConferidos;
+import br.com.dwbidiretor.classe.PrazoPedido;
 import br.com.dwbidiretor.classe.RetornoAfinacao;
 import br.com.dwbidiretor.classe.TabelaPreco;
 import br.com.dwbidiretor.classe.VendaAnoMes;
@@ -132,6 +135,10 @@ public interface DAOGenerico<E> {
 	
 	public List<ItensTabela> itenstabela(String idtabela);
 	public ItensTabela itenstabela(String idtabela, String produtoid);
+	
+	public List<FasePedido> fasepedido(int venda, int outros);
+	public List<PedidoFase> pedidofase(int venda, int outros, BigDecimal roteiro);
+	public List<PrazoPedido> prazopedido(int venda, int outros,Date data1, Date data2);
 	
 	//painel diretor
 	public List<Diretor_01> diretor_01(String ano, String mes);
