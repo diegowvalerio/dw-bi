@@ -1,0 +1,130 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Seven Mobile
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Treinamentos" />
+		<h:form id="form">
+			<div class="card">				
+				<p:accordionPanel widgetVar="">
+					<p:tab title="Introdução" >
+						<p class="p-m-0">Este material tem como intuito, exemplificar
+							e facilitar a instalação e o uso do aplicativo Seven Mobile. Abaixo temos uma sequência de instruções : </p>
+					</p:tab>
+					
+					<p:tab title="Instalação">
+						<p class="p-m-0">Atenção: Este aplicativo só está disponivél para aparelhos com sistema operacional <b>Android</b>.</p>
+						<p class="p-m-0">O aplicativo Seven Mobile não está disponivél na loja virtual PlayStore, sendo nescessário realizar o download diretamente do site da Marchezan Metais.</p>
+						<p class="p-m-0">Confira o vídeo abaixo:</p>
+						
+						<video width="500" height="500" controls="controls" >
+							<source
+								src="/dwbi/pages/treinamentos/sevenmobile/instalacao.mp4"
+								type="video/mp4">
+							</source>
+						</video>
+					</p:tab>
+					
+					<p:tab title="Configuração">
+						<p class="p-m-0">Após realizar a instalação é nescessário configurar o aplicativo para conseguir utilizá-lo.</p>
+						<p class="p-m-0">Nesta etapa vamos precisar do <b>login</b> e <b>senha</b>, caso não saiba qual informação inserir nos campos de login e senha, entre em contato com a empresa.</p>
+						<p class="p-m-0">Confira o vídeo abaixo:</p>
+						
+						<video width="500" height="500" controls="controls" >
+							<source
+								src="/dwbi/pages/treinamentos/sevenmobile/instalacao.mp4"
+								type="video/mp4">
+							</source>
+						</video>
+					</p:tab>
+					
+					<p:tab title="Clientes">
+						<p class="p-m-0">Já dentro do aplicativo, temos algumas opções que se referem aos clientes:</p>
+						
+						<p:accordionPanel widgetVar="" activeIndex="-1">
+							
+							<p:tab title="Novo Cliente">
+								<p class="p-m-0">Opção para cadastrar novos clientes.</p>
+
+								<video width="500" height="500" controls="controls">
+									<source
+										src="/dwbi/pages/treinamentos/sevenmobile/instalacao.mp4"
+										type="video/mp4"></source>
+								</video>
+							</p:tab>
+							
+							<p:tab title="Clientes Próximos">
+								<p class="p-m-0">Exibe no mapa a localização dos clientes.</p>
+								<video width="500" height="500" controls="controls">
+									<source
+										src="/dwbi/pages/treinamentos/sevenmobile/instalacao.mp4"
+										type="video/mp4"></source>
+								</video>
+							</p:tab>
+							
+							<p:tab title="Clientes Inadimplentes">
+								<p class="p-m-0">Lista de clientes que possuem titulos em atraso.</p>
+								<video width="500" height="500" controls="controls">
+									<source
+										src="/dwbi/pages/treinamentos/sevenmobile/instalacao.mp4"
+										type="video/mp4"></source>
+								</video>
+							</p:tab>
+						</p:accordionPanel>
+
+						
+					</p:tab>
+					
+					<p:tab title="Produtos">
+					
+					</p:tab>
+					
+					<p:tab title="Orçamentos">
+					
+					</p:tab>
+					
+					<p:tab title="Pedidos">
+					
+					</p:tab>
+					
+					<p:tab title="Sincronização">
+					
+					</p:tab>
+					
+					<p:tab title="Atualização de Versão">
+					
+					</p:tab>
+					
+				</p:accordionPanel>
+
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

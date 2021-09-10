@@ -33,7 +33,9 @@ public class VendasEndereco implements Serializable {
 	private Date datapedido;
 	private BigDecimal valortotalpedido;
 	private String regiao;
-		
+	
+	private BigDecimal perc_lucro;
+	private BigDecimal qtdeitens;
 
 	public VendasEndereco() {
 		super();
@@ -177,6 +179,26 @@ public class VendasEndereco implements Serializable {
 
 	public void setRegiao(String regiao) {
 		this.regiao = regiao;
+	}
+
+
+	public BigDecimal getPerc_lucro() {
+		return perc_lucro;
+	}
+
+
+	public void setPerc_lucro(BigDecimal perc_lucro) {
+		this.perc_lucro = perc_lucro;
+	}
+
+
+	public BigDecimal getQtdeitens() {
+		return qtdeitens;
+	}
+
+
+	public void setQtdeitens(BigDecimal qtdeitens) {
+		this.qtdeitens = qtdeitens;
 	}
 
 	

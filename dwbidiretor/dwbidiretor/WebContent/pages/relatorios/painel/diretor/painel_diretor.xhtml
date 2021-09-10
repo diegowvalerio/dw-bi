@@ -5,7 +5,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:adm="http://github.com/adminfaces"
 	template="/WEB-INF/templates/template.xhtml">
-
+	
 	<ui:define name="head-end">
 		<style type="text/css">
 .ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
@@ -21,7 +21,38 @@
 	{
 	padding: 0;
 }
+
 </style>
+<script type="text/javascript">
+   
+    	function chartExtender() {
+    		   //copy the config options into a variable
+    		   var options = $.extend(true, {}, this.cfg.config);
+    		   options = {
+    		      //remove the legend
+    		      legend: {
+    		         display: false
+    		      },
+    		      scales: {
+    		         xAxes: [{
+    		            display: true, 
+    		         }],
+    		         yAxes: [{
+    		            display: true,
+    		            scaleLabel: {
+    		               display: true,
+    		            }
+    		         }]
+    		      }
+    		      
+    		   };
+
+    		   //merge all options into the main chart options
+    		   $.extend(true, this.cfg.config, options);
+    		};
+    
+</script>
+
 	</ui:define>
 
 	<ui:define name="title">
@@ -45,7 +76,6 @@
 					<p:outputLabel value=" Ano:  " for="ano" />
 					<p:selectOneMenu id="ano" value="#{beanPainel_Diretor.ano}"
 							lazy="true" style="width:125px" required="true">
-							<f:selectItem itemLabel="" itemValue=" " />
 							<f:selectItem itemLabel="2018" itemValue="2018" />
 							<f:selectItem itemLabel="2019" itemValue="2019" />
 							<f:selectItem itemLabel="2020" itemValue="2020" />
@@ -55,7 +85,6 @@
 					<p:outputLabel value=" Mês:  " for="mes" />
 					<p:selectOneMenu id="mes" value="#{beanPainel_Diretor.mes}"
 							lazy="true" style="width:125px" required="true">
-							<f:selectItem itemLabel="" itemValue=" " />
 							<f:selectItem itemLabel="01" itemValue="01" />
 							<f:selectItem itemLabel="02" itemValue="02" />
 							<f:selectItem itemLabel="03" itemValue="03" />
@@ -68,6 +97,40 @@
 							<f:selectItem itemLabel="10" itemValue="10" />
 							<f:selectItem itemLabel="11" itemValue="11" />
 							<f:selectItem itemLabel="12" itemValue="12" />
+						</p:selectOneMenu>
+						
+					<p:outputLabel value=" UF:  " for="uf" />
+					<p:selectOneMenu id="uf" value="#{beanPainel_Diretor.uf}"
+							lazy="true" style="width:125px" required="true">
+							<f:selectItem itemLabel="Todos" itemValue="TD" />
+							<f:selectItem itemLabel="AC" itemValue="AC" />
+							<f:selectItem itemLabel="AL" itemValue="AL" />
+							<f:selectItem itemLabel="AP" itemValue="AP" />
+							<f:selectItem itemLabel="AM" itemValue="AM" />
+							<f:selectItem itemLabel="BA" itemValue="BA" />
+							<f:selectItem itemLabel="CE" itemValue="CE" />
+							<f:selectItem itemLabel="ES" itemValue="ES" />
+							<f:selectItem itemLabel="GO" itemValue="GO" />
+							<f:selectItem itemLabel="MA" itemValue="MA" />
+							<f:selectItem itemLabel="MT" itemValue="MT" />
+							<f:selectItem itemLabel="MS" itemValue="MS" />
+							<f:selectItem itemLabel="MG" itemValue="MG" />
+							<f:selectItem itemLabel="PA" itemValue="PA" />
+							<f:selectItem itemLabel="PB" itemValue="PB" />
+							<f:selectItem itemLabel="PR" itemValue="PR" />
+							<f:selectItem itemLabel="PE" itemValue="PE" />
+							<f:selectItem itemLabel="PI" itemValue="PI" />
+							<f:selectItem itemLabel="RJ" itemValue="RJ" />
+							<f:selectItem itemLabel="RN" itemValue="RN" />
+							<f:selectItem itemLabel="RS" itemValue="RS" />
+							<f:selectItem itemLabel="RO" itemValue="RO" />
+							<f:selectItem itemLabel="RR" itemValue="RR" />
+							<f:selectItem itemLabel="SC" itemValue="SC" />
+							<f:selectItem itemLabel="SP" itemValue="SP" />
+							<f:selectItem itemLabel="SE" itemValue="SE" />
+							<f:selectItem itemLabel="TO" itemValue="TO" />
+							<f:selectItem itemLabel="DF" itemValue="DF" />
+							
 						</p:selectOneMenu>
 
 					<p:commandButton action="#{beanPainel_Diretor.filtrar()}" value="Filtrar"
@@ -350,6 +413,26 @@
 				 </div>
 				 
 				 	<div class="row" >
+				 	
+				 		<div class="col-md-3 col-sm-6 col-xs-12">
+						<div class="info-box bg-blue">
+							<span class="info-box-icon ">
+								<i class="fa fa-shopping-bag"></i>
+							</span>
+
+							<div class="info-box-content">
+								<span class="info-box-text">Vendedores Atendidos : #{beanPainel_Diretor.diretor01.mes}/#{beanPainel_Diretor.diretor01.ano}</span> 
+								<span class="info-box-number">
+									<h:outputText value="#{beanPainel_Diretor.diretor01.vendedores_atendidos}"/>
+								</span>
+								<div class="progress">
+									<div class="progress-bar" style="width: 0%"></div>
+								</div>
+							</div>
+							<!-- /.info-box-content -->
+						</div>
+						<!-- /.info-box -->
+					</div>
 					
 						<div class="col-md-3 col-sm-6 col-xs-12">
 						<div class="info-box bg-blue">
@@ -443,8 +526,63 @@
 							</div>
 							<!-- /.box -->
 						</div>
-					</div>
+					</div>	
 					
+					<p:panel header="Gráfico Anual">
+					<div class="row" >	
+					
+						<div class="col-md-6">
+							<div class="box box-default">
+								<div class="box-header with-border">
+									<h3 class="box-title">Vendedores Ativos x Ano</h3>
+
+									<div class="box-tools pull-right">
+										<button type="button" class="btn btn-box-tool"
+											data-widget="collapse">
+											<i class="fa fa-minus"></i>
+										</button>
+									</div>
+									<!-- /.box-tools -->
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body" style="">
+									<p:barChart 
+										model="#{beanPainel_Diretor.grafico_vendedores_ano}">
+									</p:barChart>
+								</div>
+								<!-- /.box-body -->
+							</div>
+							<!-- /.box -->
+						</div>
+						
+						
+						<div class="col-md-6">
+							<div class="box box-default">
+								<div class="box-header with-border">
+									<h3 class="box-title">Clientes Ativos x Ano</h3>
+
+									<div class="box-tools pull-right">
+										<button type="button" class="btn btn-box-tool"
+											data-widget="collapse">
+											<i class="fa fa-minus"></i>
+										</button>
+									</div>
+									<!-- /.box-tools -->
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body" style="">
+									<p:barChart extender="my_ext" 
+										model="#{beanPainel_Diretor.grafico_clientes_ano}"
+										>
+									</p:barChart>
+								</div>
+								<!-- /.box-body -->
+							</div>
+							<!-- /.box -->
+						</div>
+						
+					</div>
+					</p:panel>
 				
 				</p:panelGrid>
 				

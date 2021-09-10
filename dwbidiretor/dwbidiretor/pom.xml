@@ -16,6 +16,14 @@
 	</properties>
 
 	<dependencies>
+	
+	<!-- https://mvnrepository.com/artifact/org.webjars/jqplot -->
+<dependency>
+    <groupId>org.webjars</groupId>
+    <artifactId>jqplot</artifactId>
+    <version>1.0.8r1250</version>
+</dependency>
+	
 
 		<!-- apache poi : permite exportar para excel, pdf, csv -->
 		<dependency>

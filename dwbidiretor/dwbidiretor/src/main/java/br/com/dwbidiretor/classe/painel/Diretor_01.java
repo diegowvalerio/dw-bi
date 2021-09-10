@@ -34,6 +34,7 @@ public class Diretor_01 implements Serializable {
 	
 	public BigDecimal num_docs_pedido;
 	public BigDecimal ticket_medio_pedido;
+	public BigDecimal vendedores_atendidos;
 	
 	
 	
@@ -199,6 +200,14 @@ public class Diretor_01 implements Serializable {
 
 	public void setTicket_medio_pedido(BigDecimal ticket_medio_pedido) {
 		this.ticket_medio_pedido = ticket_medio_pedido;
+	}
+
+	public BigDecimal getVendedores_atendidos() {
+		return vendedores_atendidos;
+	}
+
+	public void setVendedores_atendidos(BigDecimal vendedores_atendidos) {
+		this.vendedores_atendidos = vendedores_atendidos;
 	}
 
 	

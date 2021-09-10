@@ -53,9 +53,11 @@ import br.com.dwbidiretor.classe.VendasEmGeralItem;
 import br.com.dwbidiretor.classe.VendasEndereco;
 import br.com.dwbidiretor.classe.Vendedor;
 import br.com.dwbidiretor.classe.VendedorMetaVenda;
+import br.com.dwbidiretor.classe.painel.Cliente_Ano;
 import br.com.dwbidiretor.classe.painel.Diretor_01;
 import br.com.dwbidiretor.classe.painel.Venda_Grupo;
 import br.com.dwbidiretor.classe.painel.Venda_Subgrupo;
+import br.com.dwbidiretor.classe.painel.Vendedor_Ano;
 import br.com.dwbidiretor.dao.DAOGenerico;
 import br.com.dwbidiretor.fabrica.EntityManagerProducerSige.Corporativo;
 
@@ -438,6 +440,95 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		return list;
 	}
 	
+	public List<Vendedor_Ano> vendedor_Ano(String uf){
+		List<Vendedor_Ano> list = new ArrayList<>();
+		
+		int f = 0;
+		if(uf.equals("TD")) {
+			f = 2;
+		}else {
+			f = 1;
+		}
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				" select  "
+				+ " x.ano,COUNT(x.VENDEDOR1ID) vendedores_ativos  "
+				+ " from(select   "
+				+ " TO_CHAR(p.DT_FATURAMENTO_PEDIDOVENDA,'YYYY') ano, "
+				+ " p.VENDEDOR1ID  "
+				+ " from pedidovenda p   "
+				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+				+ " LEFT join "
+				+ " ( "
+				+ " SELECT V.CADCFTVID,CI.UF_CIDADE, ci.nome_cidade, V.END_ENDCADCFTV FROM ENDCADCFTV V "
+				+ " inner join( "
+				+ " SELECT max(ENDCADCFTVID) d , CADCFTVID cod FROM ENDCADCFTV "
+				+ " group by cadcftvid "
+				+ " )x on x.d = v.ENDCADCFTVID and x.cod = v.CADCFTVID "
+				+ " INNER JOIN CIDADE CI ON CI.CIDADEID = V.CIDADEID "
+				+ " ) EN ON EN.CADCFTVID = p.CADCFTVID "
+				+ " where p.STATUS_PEDIDOVENDA in ('FATURADO')  "
+				+ " AND CF.tipooperacao_cfop = 'VENDA'  "
+				+ " and (en.uf_cidade = '"+uf+"' and 1="+f+" or 2="+f+" ) "
+				+ " group by TO_CHAR(p.DT_FATURAMENTO_PEDIDOVENDA,'YYYY'), "
+				+ " p.VENDEDOR1ID)x group by x.ano "
+				+ " order by x.ano ");
+		List<Object[]> lista = query.getResultList();
+		
+		for (Object[] row : lista) {
+			Vendedor_Ano venda = new Vendedor_Ano();
+			venda.setAno((String) row[0]);
+			venda.setVendedores((BigDecimal) row[1]);
+			
+			list.add(venda);
+		}
+		return list;
+	}
+	
+	public List<Cliente_Ano> cliente_Ano(String uf){
+		List<Cliente_Ano> list = new ArrayList<>();
+		int f = 0;
+		if(uf.equals("TD")) {
+			f = 2;
+		}else {
+			f = 1;
+		}
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				" select  "
+				+ " x.ano,COUNT(x.CADCFTVID) clientes_ativos  "
+				+ " from(select   "
+				+ " TO_CHAR(p.DT_FATURAMENTO_PEDIDOVENDA,'YYYY') ano, "
+				+ " p.CADCFTVID  "
+				+ " from pedidovenda p   "
+				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+				+ " LEFT join "
+				+ " ( "
+				+ " SELECT V.CADCFTVID,CI.UF_CIDADE, ci.nome_cidade, V.END_ENDCADCFTV FROM ENDCADCFTV V "
+				+ " inner join( "
+				+ " SELECT max(ENDCADCFTVID) d , CADCFTVID cod FROM ENDCADCFTV "
+				+ " group by cadcftvid "
+				+ " )x on x.d = v.ENDCADCFTVID and x.cod = v.CADCFTVID "
+				+ " INNER JOIN CIDADE CI ON CI.CIDADEID = V.CIDADEID "
+				+ " ) EN ON EN.CADCFTVID = p.CADCFTVID "
+				+ " where p.STATUS_PEDIDOVENDA in ('FATURADO')  "
+				+ " AND CF.tipooperacao_cfop = 'VENDA'  "
+				+ " and (en.uf_cidade = '"+uf+"' and 1="+f+" or 2="+f+" ) "
+				+ " group by TO_CHAR(p.DT_FATURAMENTO_PEDIDOVENDA,'YYYY'), "
+				+ " p.CADCFTVID)x group by x.ano "
+				+ " order by x.ano ");
+		List<Object[]> lista = query.getResultList();
+		
+		for (Object[] row : lista) {
+			Cliente_Ano venda = new Cliente_Ano();
+			venda.setAno((String) row[0]);
+			venda.setClientes((BigDecimal) row[1]);
+			
+			list.add(venda);
+		}
+		return list;
+	}
+	
 	public List<Diretor_01> diretor_01(String ano, String mes){
 		List<Diretor_01> list = new ArrayList<>();
 		
@@ -462,7 +553,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " faturado_anual.qtde, "
 						+ " round(faturado_anual.vl_anual_faturado /faturado_anual.qtde,2) ticket_medio_anual, "
 						+ " pedido_mes.qtde qtde_pedido, "
-						+ " round(pedido_mes.vl_mes_pedido /pedido_mes.qtde,2) ticket_medio_pedido "
+						+ " round(pedido_mes.vl_mes_pedido /pedido_mes.qtde,2) ticket_medio_pedido, "
+						+ " vendedores.vendedores_atendidos "
 						+ "  "
 						+ " from PLANEJAMENTO_ANUAL pl "
 						+ "  "
@@ -519,6 +611,22 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " p.CADCFTVID)x group by x.ano,x.mes "
 						+ " )clientes on clientes.ano = pl.ano and clientes.mes = meta_vendedor_mes.mes "
 						+ "  "
+						+ " inner join(  "
+						+ " select  "
+						+ " x.ano,x.mes,COUNT(x.VENDEDOR1ID) vendedores_atendidos "
+						+ " from(select  "
+						+ " TO_CHAR(p.DT_FATURAMENTO_PEDIDOVENDA,'YYYY') ano, "
+						+ " TO_CHAR(p.DT_FATURAMENTO_PEDIDOVENDA,'MM') mes, "
+						+ " p.VENDEDOR1ID "
+						+ " from pedidovenda p  "
+						+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+						+ " where p.STATUS_PEDIDOVENDA in ('FATURADO')  "
+						+ " AND CF.tipooperacao_cfop = 'VENDA' "
+						+ " group by TO_CHAR(p.DT_FATURAMENTO_PEDIDOVENDA,'YYYY'), "
+						+ " TO_CHAR(p.DT_FATURAMENTO_PEDIDOVENDA,'MM'), "
+						+ " p.VENDEDOR1ID)x group by x.ano,x.mes "
+						+ " )vendedores on vendedores.ano = pl.ano and vendedores.mes = meta_vendedor_mes.mes "
+						+ " "
 						+ " left join(  "
 						+ " select  "
 						+ " TO_CHAR(c.DATACREATE_CADCFTV,'YYYY') ano, "
@@ -580,6 +688,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			diretor_01.setTicket_medio_anual((BigDecimal) row[17]);
 			diretor_01.setNum_docs_pedido((BigDecimal) row[18]);
 			diretor_01.setTicket_medio_pedido((BigDecimal) row[19]);
+			diretor_01.setVendedores_atendidos((BigDecimal) row[20]);
 						
 			list.add(diretor_01);
 		}
@@ -4092,7 +4201,9 @@ public List<VendasEndereco> vendasendereco(Date data1, Date data2, String vended
 					+ "  P.PEDIDOVENDAID, "
 					+ "  P.DT_PEDIDOVENDA, "
 					+ "  P.VL_TOTALPROD_PEDIDOVENDA, "
-					+ "  re.NOME_REGIAO "
+					+ "  re.NOME_REGIAO,"
+					+ "  itens.perc_lucro,"
+					+ "  qtde.qtdeitens "
 					
 					+ "  from cadcftv c "
 					+ "  inner join cliente cl on cl.CADCFTVID = c.CADCFTVID "
@@ -4111,6 +4222,25 @@ public List<VendasEndereco> vendasendereco(Date data1, Date data2, String vended
 					+ "  )x on x.d = v.ENDCADCFTVID and x.cod = v.CADCFTVID "
 					+ "  INNER JOIN CIDADE CI ON CI.CIDADEID = V.CIDADEID "
 					+ "  ) EN ON EN.CADCFTVID = C.CADCFTVID "
+					
+					+ " left join (select it.pedidovendaid, sum(it.QT_INI_PEDIDOVENDA_ITEM) qtdeitens from pedidovenda_item it group by it.pedidovendaid)qtde on qtde.pedidovendaid = p.pedidovendaid"
+					
+					
+					+ "  left join( "
+					+ "  SELECT " 
+					+ "  x.pedidovendaid, "
+					+ "  sum(x.TOTAL_VENDA), "
+					+ "  sum(x.TOTALLIQUIDO_PEDIDO), "
+					+ "  (sum(x.TOTALLIQUIDO_PEDIDO) /(sum(x.TOTAL_VENDA)))*100 as perc_lucro "
+					+ "  FROM( "
+					+ "  select "
+					+ "  p.pedidovendaid, "
+					+ "  case when IT.vl_total_pedidovenda_item = 0 then 1 else IT.vl_total_pedidovenda_item end TOTAL_VENDA, "
+					+ "  (IT.vl_total_pedidovenda_item - ( it.VL_CUSTOORIG_PEDIDOVENDA_ITEM  * it.qt_pedidovenda_item )) TOTALLIQUIDO_PEDIDO "
+					+ "  from pedidovenda_item it "
+					+ "  inner join pedidovenda p on p.pedidovendaid = it.pedidovendaid)X "
+					+ "  group by x.pedidovendaid "
+					+ "  ) itens on itens.pedidovendaid = p.pedidovendaid "
 					
 					+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
 					+ " AND CF.tipooperacao_cfop = 'VENDA' "
@@ -4142,6 +4272,8 @@ public List<VendasEndereco> vendasendereco(Date data1, Date data2, String vended
 		vendas.setDatapedido((Date) row[11] );
 		vendas.setValortotalpedido((BigDecimal) row[12] );
 		vendas.setRegiao((String) row[13]);
+		vendas.setPerc_lucro((BigDecimal) row[14]);
+		vendas.setQtdeitens((BigDecimal) row[15]);
 		
 				
 		list.add(vendas);

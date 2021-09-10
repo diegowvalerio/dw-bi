@@ -42,13 +42,13 @@
 					<p:outputLabel value=" Data:  " for="data_grafico" />
 					<p:calendar locale="pt_BR" id="data_grafico"
 						value="#{beanVendasEndereco.data_grafico}" pattern="dd/MM/yyyy"
-						mask="true" required="true" readonlyInput="true">
+						mask="true" required="true" >
 					</p:calendar>
 
 					<p:outputLabel value=" Até:  " for="data_grafico2" />
 					<p:calendar locale="pt_BR" id="data_grafico2"
 						value="#{beanVendasEndereco.data_grafico2}" pattern="dd/MM/yyyy"
-						mask="true" required="true" readonlyInput="true">
+						mask="true" required="true" >
 					</p:calendar>
 					
 					<p:outputLabel value="Gestor:" for="gestor" />
@@ -158,6 +158,17 @@
 							
 							<p:column  headerText="Região" sortBy="#{vendas.regiao}">
 								<h:outputText value="#{vendas.regiao}" />
+							</p:column>
+							
+							<p:column headerText="% LC"
+								sortBy="#{vendas.perc_lucro}">
+								<h:outputText value="#{vendas.perc_lucro}">
+									<f:convertNumber type="currency" currencySymbol="" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column  headerText="Total QTde" sortBy="#{vendas.qtdeitens}">
+								<h:outputText value="#{vendas.qtdeitens}" />
 							</p:column>
 									
 						</p:dataTable>

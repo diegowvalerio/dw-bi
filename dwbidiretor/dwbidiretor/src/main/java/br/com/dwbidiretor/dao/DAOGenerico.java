@@ -30,9 +30,11 @@ import br.com.dwbidiretor.classe.VendasEmGeralItem;
 import br.com.dwbidiretor.classe.VendasEndereco;
 import br.com.dwbidiretor.classe.Vendedor;
 import br.com.dwbidiretor.classe.VendedorMetaVenda;
+import br.com.dwbidiretor.classe.painel.Cliente_Ano;
 import br.com.dwbidiretor.classe.painel.Diretor_01;
 import br.com.dwbidiretor.classe.painel.Venda_Grupo;
 import br.com.dwbidiretor.classe.painel.Venda_Subgrupo;
+import br.com.dwbidiretor.classe.painel.Vendedor_Ano;
 
 public interface DAOGenerico<E> {
 	public E salvar(E e);
@@ -144,6 +146,8 @@ public interface DAOGenerico<E> {
 	public List<Diretor_01> diretor_01(String ano, String mes);
 	public List<Venda_Grupo> venda_grupo(String ano, String mes);
 	public List<Venda_Subgrupo> venda_subgrupo(String ano, String mes, String idgrupo);
+	public List<Vendedor_Ano> vendedor_Ano(String ano);
+	public List<Cliente_Ano> cliente_Ano(String ano);
 	
 	//tabela de telação de itens
 	public List<RetornoAfinacao> consultar_relacao();
