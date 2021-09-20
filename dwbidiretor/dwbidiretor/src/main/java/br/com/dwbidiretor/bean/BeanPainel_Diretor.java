@@ -42,6 +42,7 @@ import br.com.dwbidiretor.classe.VendasEmGeralItem;
 import br.com.dwbidiretor.classe.Vendedor;
 import br.com.dwbidiretor.classe.painel.Cliente_Ano;
 import br.com.dwbidiretor.classe.painel.Diretor_01;
+import br.com.dwbidiretor.classe.painel.Qtde_Ano;
 import br.com.dwbidiretor.classe.painel.Venda_Grupo;
 import br.com.dwbidiretor.classe.painel.Venda_Subgrupo;
 import br.com.dwbidiretor.classe.painel.Vendedor_Ano;
@@ -51,6 +52,7 @@ import br.com.dwbidiretor.servico.ServicoVendasemGeral;
 import br.com.dwbidiretor.servico.ServicoVendedor;
 import br.com.dwbidiretor.servico.painel.ServicoPainel_Diretor;
 import br.com.dwbidiretor.servico.painel.ServicoPainel_Diretor_Cliente_Ano;
+import br.com.dwbidiretor.servico.painel.ServicoPainel_Diretor_Qtde_Ano;
 import br.com.dwbidiretor.servico.painel.ServicoPainel_Diretor_VendaSubgrupo;
 import br.com.dwbidiretor.servico.painel.ServicoPainel_Diretor_Vendagrupo;
 import br.com.dwbidiretor.servico.painel.ServicoPainel_Diretor_Vendedor_Ano;
@@ -81,6 +83,9 @@ public class BeanPainel_Diretor implements Serializable {
 	@Inject
 	private ServicoPainel_Diretor_Cliente_Ano servicoCliente_Ano;
 	private List<Cliente_Ano> lista_vendCliente_Ano = new ArrayList<>();
+	@Inject
+	private ServicoPainel_Diretor_Qtde_Ano servicoQtde_Ano;
+	private List<Qtde_Ano> lista_Qtde_Ano = new ArrayList<>();
 	
 	private int quantidadeDias;
 	
@@ -92,6 +97,7 @@ public class BeanPainel_Diretor implements Serializable {
 	private HorizontalBarChartModel grafico_pedidos_subgrupo_mes;
 	private BarChartModel grafico_vendedores_ano;
 	private BarChartModel grafico_clientes_ano;
+	private BarChartModel grafico_qtde_ano;
 	
 	@PostConstruct
 	public void init() {
@@ -119,11 +125,13 @@ public class BeanPainel_Diretor implements Serializable {
 		
 		lista_vendVendedor_Ano = servicoVendedor_Ano.vendedor_Ano(uf);
 		lista_vendCliente_Ano = servicoCliente_Ano.cliente_Ano(uf);
+		lista_Qtde_Ano = servicoQtde_Ano.qtde_Ano(uf);
 		
 		cria_grafico_venda_grupo_mensal();
 		cria_grafico_venda_subgrupo_mensal();
 		cria_grafico_vendedores_ano();
 		cria_grafico_clientes_ano();
+		cria_grafico_qtde_ano();
 		
 	}
 	
@@ -140,11 +148,13 @@ public class BeanPainel_Diretor implements Serializable {
 		
 		lista_vendVendedor_Ano = servicoVendedor_Ano.vendedor_Ano(uf);
 		lista_vendCliente_Ano = servicoCliente_Ano.cliente_Ano(uf);
+		lista_Qtde_Ano = servicoQtde_Ano.qtde_Ano(uf);
 		
 		cria_grafico_venda_grupo_mensal();
 		cria_grafico_venda_subgrupo_mensal();
 		cria_grafico_vendedores_ano();
 		cria_grafico_clientes_ano();
+		cria_grafico_qtde_ano();
 		
 	}
 	
@@ -380,7 +390,59 @@ public class BeanPainel_Diretor implements Serializable {
 		options.setTitle(title);*/
 
         grafico_clientes_ano.setOptions(options);
-        grafico_clientes_ano.setExtender("chartExtender");
+       // grafico_clientes_ano.setExtender("chartExtender");
+	}
+	
+	public void cria_grafico_qtde_ano() {
+		DecimalFormat df = new DecimalFormat("#,###.00");
+		grafico_qtde_ano = new BarChartModel();
+		
+		
+		ChartData data = new ChartData();
+
+		BarChartDataSet hbarDataSet = new BarChartDataSet();
+		if(uf.equals("TD")) {
+			hbarDataSet.setLabel("N° Peças Faturado");
+		}else {
+			hbarDataSet.setLabel("N° Peças Faturado / UF: "+uf);
+		}
+		
+		
+
+		List<Number> values = new ArrayList<>();
+		List<String> bgColor = new ArrayList<>();
+		List<String> labels = new ArrayList<>();
+
+		for (Qtde_Ano v : lista_Qtde_Ano) {
+			values.add(v.getQtde());
+			bgColor.add("rgba(70, 130, 180)");
+			labels.add(v.getAno());
+		}
+		hbarDataSet.setData(values);
+		hbarDataSet.setBackgroundColor(bgColor);
+
+		data.addChartDataSet(hbarDataSet);
+		data.setLabels(labels);
+		grafico_qtde_ano.setData(data);
+
+		// Options
+		BarChartOptions options = new BarChartOptions();
+        CartesianScales cScales = new CartesianScales();
+        CartesianLinearAxes linearAxes = new CartesianLinearAxes();
+        linearAxes.setOffset(true);
+        CartesianLinearTicks ticks = new CartesianLinearTicks();
+        ticks.setBeginAtZero(true);
+        linearAxes.setTicks(ticks);
+        cScales.addYAxesData(linearAxes);
+        options.setScales(cScales);
+
+		/*Title title = new Title();
+		title.setDisplay(true);
+		title.setText(mes + "/" + ano);
+		options.setTitle(title);*/
+
+        grafico_qtde_ano.setOptions(options);
+        grafico_qtde_ano.setExtender("my_ext");
 	}
 	
 
@@ -534,6 +596,22 @@ public class BeanPainel_Diretor implements Serializable {
 
 	public void setUf(String uf) {
 		this.uf = uf;
+	}
+
+	public List<Qtde_Ano> getLista_Qtde_Ano() {
+		return lista_Qtde_Ano;
+	}
+
+	public void setLista_Qtde_Ano(List<Qtde_Ano> lista_Qtde_Ano) {
+		this.lista_Qtde_Ano = lista_Qtde_Ano;
+	}
+
+	public BarChartModel getGrafico_qtde_ano() {
+		return grafico_qtde_ano;
+	}
+
+	public void setGrafico_qtde_ano(BarChartModel grafico_qtde_ano) {
+		this.grafico_qtde_ano = grafico_qtde_ano;
 	}
 	
 	

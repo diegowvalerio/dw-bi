@@ -55,6 +55,7 @@ import br.com.dwbidiretor.classe.Vendedor;
 import br.com.dwbidiretor.classe.VendedorMetaVenda;
 import br.com.dwbidiretor.classe.painel.Cliente_Ano;
 import br.com.dwbidiretor.classe.painel.Diretor_01;
+import br.com.dwbidiretor.classe.painel.Qtde_Ano;
 import br.com.dwbidiretor.classe.painel.Venda_Grupo;
 import br.com.dwbidiretor.classe.painel.Venda_Subgrupo;
 import br.com.dwbidiretor.classe.painel.Vendedor_Ano;
@@ -525,6 +526,49 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			venda.setClientes((BigDecimal) row[1]);
 			
 			list.add(venda);
+		}
+		return list;
+	}
+	
+	public List<Qtde_Ano> qtde_Ano(String uf){
+		List<Qtde_Ano> list = new ArrayList<>();
+		int f = 0;
+		if(uf.equals("TD")) {
+			f = 2;
+		}else {
+			f = 1;
+		}
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				" select   "
+				+ " TO_CHAR(p.DT_FATURAMENTO_PEDIDOVENDA,'YYYY') ano, "
+				+ " sum(it.QT_PEDIDOVENDA_ITEM) qtde "
+				+ " from pedidovenda p "
+				+ " inner join pedidovenda_item it on it.pedidovendaid = p.pedidovendaid "
+				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+				+ " LEFT join( "
+				+ " SELECT V.CADCFTVID,CI.UF_CIDADE, ci.nome_cidade, V.END_ENDCADCFTV FROM ENDCADCFTV V "
+				+ " inner join( "
+				+ " SELECT max(ENDCADCFTVID) d , CADCFTVID cod FROM ENDCADCFTV "
+				+ " group by cadcftvid "
+				+ " )x on x.d = v.ENDCADCFTVID and x.cod = v.CADCFTVID "
+				+ " INNER JOIN CIDADE CI ON CI.CIDADEID = V.CIDADEID "
+				+ " ) EN ON EN.CADCFTVID = p.CADCFTVID "
+				+ " where p.STATUS_PEDIDOVENDA in ('FATURADO') "
+				+ " AND CF.tipooperacao_cfop = 'VENDA' "
+				+ " and p.ORIGEM_PEDIDOVENDA  <> 'SIMETRICA' "
+				+ " and (en.uf_cidade = '"+uf+"' and 1="+f+" or 2="+f+" ) "
+				+ " group by TO_CHAR(p.DT_FATURAMENTO_PEDIDOVENDA,'YYYY') "
+				+ " order by TO_CHAR(p.DT_FATURAMENTO_PEDIDOVENDA,'YYYY') ");
+		
+		List<Object[]> lista = query.getResultList();
+		
+		for (Object[] row : lista) {
+			Qtde_Ano qtde = new Qtde_Ano();
+			qtde.setAno((String) row[0]);
+			qtde.setQtde((BigDecimal) row[1]);
+			
+			list.add(qtde);
 		}
 		return list;
 	}

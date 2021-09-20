@@ -6,6 +6,12 @@
 	xmlns:adm="http://github.com/adminfaces"
 	template="/WEB-INF/templates/template.xhtml">
 	
+	<h:outputScript library="js" name="jquery.jqplot.js" />
+	<h:outputScript library="js" name="jqplot.barRenderer.min.js" />
+	<h:outputScript library="js" name="jqplot.categoryAxisRenderer.js" />
+	<h:outputScript library="js" name="jqplot.pointLabels.min.js" />
+	<h:outputStylesheet library="css" name="jquery.jqplot.css" />
+	
 	<ui:define name="head-end">
 		<style type="text/css">
 .ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
@@ -23,33 +29,23 @@
 }
 
 </style>
+		
 <script type="text/javascript">
-   
-    	function chartExtender() {
-    		   //copy the config options into a variable
-    		   var options = $.extend(true, {}, this.cfg.config);
-    		   options = {
-    		      //remove the legend
-    		      legend: {
-    		         display: false
-    		      },
-    		      scales: {
-    		         xAxes: [{
-    		            display: true, 
-    		         }],
-    		         yAxes: [{
-    		            display: true,
-    		            scaleLabel: {
-    		               display: true,
-    		            }
-    		         }]
-    		      }
-    		      
-    		   };
-
-    		   //merge all options into the main chart options
-    		   $.extend(true, this.cfg.config, options);
-    		};
+function my_ext(){  
+	this.cfg.config.enablePlugins = true;
+	var options = {
+            options: {
+            	series:[{
+            	      pointLabels: {
+            	         show: true,
+            	         seriesLabelIndex:1,
+            	         hideZeros:false
+            	      }
+            	   }]
+            }
+         };
+    $.extend(true, this.cfg.config, options);
+};
     
 </script>
 
@@ -99,39 +95,6 @@
 							<f:selectItem itemLabel="12" itemValue="12" />
 						</p:selectOneMenu>
 						
-					<p:outputLabel value=" UF:  " for="uf" />
-					<p:selectOneMenu id="uf" value="#{beanPainel_Diretor.uf}"
-							lazy="true" style="width:125px" required="true">
-							<f:selectItem itemLabel="Todos" itemValue="TD" />
-							<f:selectItem itemLabel="AC" itemValue="AC" />
-							<f:selectItem itemLabel="AL" itemValue="AL" />
-							<f:selectItem itemLabel="AP" itemValue="AP" />
-							<f:selectItem itemLabel="AM" itemValue="AM" />
-							<f:selectItem itemLabel="BA" itemValue="BA" />
-							<f:selectItem itemLabel="CE" itemValue="CE" />
-							<f:selectItem itemLabel="ES" itemValue="ES" />
-							<f:selectItem itemLabel="GO" itemValue="GO" />
-							<f:selectItem itemLabel="MA" itemValue="MA" />
-							<f:selectItem itemLabel="MT" itemValue="MT" />
-							<f:selectItem itemLabel="MS" itemValue="MS" />
-							<f:selectItem itemLabel="MG" itemValue="MG" />
-							<f:selectItem itemLabel="PA" itemValue="PA" />
-							<f:selectItem itemLabel="PB" itemValue="PB" />
-							<f:selectItem itemLabel="PR" itemValue="PR" />
-							<f:selectItem itemLabel="PE" itemValue="PE" />
-							<f:selectItem itemLabel="PI" itemValue="PI" />
-							<f:selectItem itemLabel="RJ" itemValue="RJ" />
-							<f:selectItem itemLabel="RN" itemValue="RN" />
-							<f:selectItem itemLabel="RS" itemValue="RS" />
-							<f:selectItem itemLabel="RO" itemValue="RO" />
-							<f:selectItem itemLabel="RR" itemValue="RR" />
-							<f:selectItem itemLabel="SC" itemValue="SC" />
-							<f:selectItem itemLabel="SP" itemValue="SP" />
-							<f:selectItem itemLabel="SE" itemValue="SE" />
-							<f:selectItem itemLabel="TO" itemValue="TO" />
-							<f:selectItem itemLabel="DF" itemValue="DF" />
-							
-						</p:selectOneMenu>
 
 					<p:commandButton action="#{beanPainel_Diretor.filtrar()}" value="Filtrar"
 						icon="fa fa-check" update=":form" styleClass="btn-primary" />
@@ -412,7 +375,7 @@
 										
 				 </div>
 				 
-				 	<div class="row" >
+				 <div class="row" >
 				 	
 				 		<div class="col-md-3 col-sm-6 col-xs-12">
 						<div class="info-box bg-blue">
@@ -475,6 +438,9 @@
 					</div>
 					
 					</div>
+					
+				<p:separator></p:separator>				
+					
 					<div class="row" >
 						<div class="col-md-7">
 							<div class="box box-default">
@@ -528,6 +494,49 @@
 						</div>
 					</div>	
 					
+				 <p:separator></p:separator>
+				 
+				 <p:panelGrid columns="3" id="filtros2" 
+					 styleClass="ui-fluid card">
+						
+					<p:outputLabel value=" UF:  " for="uf" />
+					<p:selectOneMenu id="uf" value="#{beanPainel_Diretor.uf}"
+							lazy="true" style="width:125px" required="true">
+							<f:selectItem itemLabel="Todos" itemValue="TD" />
+							<f:selectItem itemLabel="AC" itemValue="AC" />
+							<f:selectItem itemLabel="AL" itemValue="AL" />
+							<f:selectItem itemLabel="AP" itemValue="AP" />
+							<f:selectItem itemLabel="AM" itemValue="AM" />
+							<f:selectItem itemLabel="BA" itemValue="BA" />
+							<f:selectItem itemLabel="CE" itemValue="CE" />
+							<f:selectItem itemLabel="ES" itemValue="ES" />
+							<f:selectItem itemLabel="GO" itemValue="GO" />
+							<f:selectItem itemLabel="MA" itemValue="MA" />
+							<f:selectItem itemLabel="MT" itemValue="MT" />
+							<f:selectItem itemLabel="MS" itemValue="MS" />
+							<f:selectItem itemLabel="MG" itemValue="MG" />
+							<f:selectItem itemLabel="PA" itemValue="PA" />
+							<f:selectItem itemLabel="PB" itemValue="PB" />
+							<f:selectItem itemLabel="PR" itemValue="PR" />
+							<f:selectItem itemLabel="PE" itemValue="PE" />
+							<f:selectItem itemLabel="PI" itemValue="PI" />
+							<f:selectItem itemLabel="RJ" itemValue="RJ" />
+							<f:selectItem itemLabel="RN" itemValue="RN" />
+							<f:selectItem itemLabel="RS" itemValue="RS" />
+							<f:selectItem itemLabel="RO" itemValue="RO" />
+							<f:selectItem itemLabel="RR" itemValue="RR" />
+							<f:selectItem itemLabel="SC" itemValue="SC" />
+							<f:selectItem itemLabel="SP" itemValue="SP" />
+							<f:selectItem itemLabel="SE" itemValue="SE" />
+							<f:selectItem itemLabel="TO" itemValue="TO" />
+							<f:selectItem itemLabel="DF" itemValue="DF" />
+							
+						</p:selectOneMenu>
+
+					<p:commandButton action="#{beanPainel_Diretor.filtrar()}" value="Filtrar UF"
+						icon="fa fa-check" update=":form" styleClass="btn-primary" />
+				</p:panelGrid>
+					
 					<p:panel header="Gráfico Anual">
 					<div class="row" >	
 					
@@ -545,7 +554,7 @@
 									<!-- /.box-tools -->
 								</div>
 								<!-- /.box-header -->
-								<div class="box-body" style="">
+								<div class="box-body" >
 									<p:barChart 
 										model="#{beanPainel_Diretor.grafico_vendedores_ano}">
 									</p:barChart>
@@ -570,8 +579,8 @@
 									<!-- /.box-tools -->
 								</div>
 								<!-- /.box-header -->
-								<div class="box-body" style="">
-									<p:barChart extender="my_ext" 
+								<div class="box-body" >
+									<p:barChart
 										model="#{beanPainel_Diretor.grafico_clientes_ano}"
 										>
 									</p:barChart>
@@ -581,8 +590,31 @@
 							<!-- /.box -->
 						</div>
 						
+						<div class="col-md-6">
+							<div class="box box-default">
+								<div class="box-header with-border">
+									<h3 class="box-title">Peças Faturadas x Ano</h3>
+
+									<div class="box-tools pull-right">
+										<button type="button" class="btn btn-box-tool"
+											data-widget="collapse">
+											<i class="fa fa-minus"></i>
+										</button>
+									</div>
+									<!-- /.box-tools -->
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body" >
+									<p:barChart model="#{beanPainel_Diretor.grafico_qtde_ano}">
+									</p:barChart>
+								</div>
+								<!-- /.box-body -->
+							</div>
+							<!-- /.box -->
+						</div>
+						
 					</div>
-					</p:panel>
+					</p:panel>	
 				
 				</p:panelGrid>
 				
