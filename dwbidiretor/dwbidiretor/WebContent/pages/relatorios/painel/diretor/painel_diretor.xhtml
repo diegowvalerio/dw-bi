@@ -537,7 +537,6 @@ function my_ext(){
 						icon="fa fa-check" update=":form" styleClass="btn-primary" />
 				</p:panelGrid>
 					
-					<p:panel header="Gráfico Anual">
 					<div class="row" >	
 					
 						<div class="col-md-6">
@@ -555,16 +554,77 @@ function my_ext(){
 								</div>
 								<!-- /.box-header -->
 								<div class="box-body" >
+								<p:tabView dynamic="false" cache="false" id="tabview2">
+									<p:tab title="Gráfico" id="grafico2">
 									<p:barChart 
 										model="#{beanPainel_Diretor.grafico_vendedores_ano}">
+										<p:ajax event="itemSelect" listener="#{beanPainel_Diretor.itemSelect3}" update=":form:tabview4" />
 									</p:barChart>
+									</p:tab>
+									<p:tab title="Dados" id="dados2">
+									<p:dataTable id="tabela2" value="#{beanPainel_Diretor.lista_vendVendedor_Ano}" var="lista" scrollable="true" scrollHeight="300">
+											<p:column headerText="Ano" width="10%">
+											#{lista.ano}
+											</p:column>
+											
+											<p:column headerText="Vendedores" >
+												#{lista.vendedores}
+											</p:column>
+										</p:dataTable>
+									</p:tab>
+									</p:tabView>
 								</div>
 								<!-- /.box-body -->
 							</div>
 							<!-- /.box -->
 						</div>
 						
+						<div class="col-md-6">
+							<div class="box box-default">
+								<div class="box-header with-border">
+									<h3 class="box-title">Vendedores Ativos x Mês</h3>
+
+									<div class="box-tools pull-right">
+										<button type="button" class="btn btn-box-tool"
+											data-widget="collapse">
+											<i class="fa fa-minus"></i>
+										</button>
+									</div>
+									<!-- /.box-tools -->
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body" >
+								<p:tabView dynamic="false" cache="false" id="tabview4">
+									<p:tab title="Gráfico" id="grafico4">
+									<p:barChart 
+										model="#{beanPainel_Diretor.grafico_vendedores_mes}">
+									</p:barChart>
+									</p:tab>
+									<p:tab title="Dados" id="dados4">
+									<p:dataTable id="tabela4" value="#{beanPainel_Diretor.lista_vendVendedor_Mes}" var="lista" scrollable="true" scrollHeight="300">
+											<p:column headerText="Ano" width="10%">
+											#{lista.ano}
+											</p:column>
+											
+											<p:column headerText="Mês" width="10%">
+											#{lista.mes}
+											</p:column>
+											
+											<p:column headerText="Vendedores" >
+												#{lista.vendedores}
+											</p:column>
+										</p:dataTable>
+									</p:tab>
+									</p:tabView>
+								</div>
+								<!-- /.box-body -->
+							</div>
+							<!-- /.box -->
+						</div>
 						
+					</div>
+					<div class="row" >
+					
 						<div class="col-md-6">
 							<div class="box box-default">
 								<div class="box-header with-border">
@@ -580,15 +640,33 @@ function my_ext(){
 								</div>
 								<!-- /.box-header -->
 								<div class="box-body" >
+								<p:tabView dynamic="false" cache="false" id="tabview3">
+									<p:tab title="Gráfico" id="grafico3">
 									<p:barChart
 										model="#{beanPainel_Diretor.grafico_clientes_ano}"
 										>
 									</p:barChart>
+									</p:tab>
+									<p:tab title="Dados" id="dados3">
+									<p:dataTable id="tabela3" value="#{beanPainel_Diretor.lista_vendCliente_Ano}" var="lista" scrollable="true" scrollHeight="300">
+											<p:column headerText="Ano" width="10%">
+											#{lista.ano}
+											</p:column>
+											
+											<p:column headerText="Clientes" >
+												#{lista.clientes}
+											</p:column>
+										</p:dataTable>
+									</p:tab>
+									</p:tabView>
 								</div>
 								<!-- /.box-body -->
 							</div>
 							<!-- /.box -->
 						</div>
+						
+					</div>	
+					<div class="row" >
 						
 						<div class="col-md-6">
 							<div class="box box-default">
@@ -605,8 +683,70 @@ function my_ext(){
 								</div>
 								<!-- /.box-header -->
 								<div class="box-body" >
-									<p:barChart model="#{beanPainel_Diretor.grafico_qtde_ano}">
-									</p:barChart>
+								<p:tabView dynamic="false" cache="false" id="tabview1">
+									<p:tab title="Gráfico" id="grafico1">
+										<p:barChart model="#{beanPainel_Diretor.grafico_qtde_ano}">
+										<p:ajax event="itemSelect" listener="#{beanPainel_Diretor.itemSelect2}" update=":form:tabview" />
+										</p:barChart>
+									</p:tab>
+									<p:tab title="Dados" id="dados1">
+										<p:dataTable id="tabela1" value="#{beanPainel_Diretor.lista_Qtde_Ano}" var="qtdeano" scrollable="true" scrollHeight="300">
+											<p:column headerText="Ano" width="10%">
+											#{qtdeano.ano}
+											</p:column>
+											
+											<p:column headerText="Quantidade" >
+												<h:outputText value="#{qtdeano.qtde}">
+													<f:convertNumber pattern="#,##0.00" />
+												</h:outputText>
+											</p:column>
+										</p:dataTable>
+									</p:tab>
+									</p:tabView>
+								</div>
+								<!-- /.box-body -->
+							</div>
+							<!-- /.box -->
+						</div>
+						
+						<div class="col-md-6">
+							<div class="box box-default">
+								<div class="box-header with-border">
+									<h3 class="box-title">Peças Faturadas x Mês</h3>
+
+									<div class="box-tools pull-right">
+										<button type="button" class="btn btn-box-tool"
+											data-widget="collapse">
+											<i class="fa fa-minus"></i>
+										</button>
+									</div>
+									<!-- /.box-tools -->
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body" >
+								<p:tabView dynamic="false" cache="false" id="tabview">
+									<p:tab title="Gráfico" id="grafico">
+										<p:barChart model="#{beanPainel_Diretor.grafico_qtde_mes}" id="graficoqtdemes">
+										</p:barChart>
+									</p:tab>
+									<p:tab title="Dados" id="dados">
+										<p:dataTable id="tabela" value="#{beanPainel_Diretor.lista_Qtde_mes}" var="qtdemes" scrollable="true" scrollHeight="300">
+											<p:column headerText="Ano" width="10%">
+											#{qtdemes.ano}
+											</p:column>
+											
+											<p:column headerText="Mês" width="10%">
+											#{qtdemes.mes}
+											</p:column>
+											
+											<p:column headerText="Quantidade" >
+											<h:outputText value="#{qtdemes.qtde}">
+													<f:convertNumber pattern="#,##0.00" />
+												</h:outputText>
+											</p:column>
+										</p:dataTable>
+									</p:tab>
+								</p:tabView>
 								</div>
 								<!-- /.box-body -->
 							</div>
@@ -614,7 +754,7 @@ function my_ext(){
 						</div>
 						
 					</div>
-					</p:panel>	
+						
 				
 				</p:panelGrid>
 				
