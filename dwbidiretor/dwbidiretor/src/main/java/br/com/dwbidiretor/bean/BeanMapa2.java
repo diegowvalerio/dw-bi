@@ -4,23 +4,21 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.primefaces.event.map.OverlaySelectEvent;
-import org.primefaces.model.map.DefaultMapModel;
-import org.primefaces.model.map.LatLng;
-import org.primefaces.model.map.MapModel;
-import org.primefaces.model.map.Marker;
-import org.primefaces.model.map.Polygon;
-
+import com.jsf2leaf.model.LatLong;
+import com.jsf2leaf.model.Layer;
+import com.jsf2leaf.model.Map;
+import com.jsf2leaf.model.Marker;
+import com.jsf2leaf.model.Pulse;
 
 import br.com.dwbidiretor.classe.Gestor;
 import br.com.dwbidiretor.classe.Mapa;
-import br.com.dwbidiretor.classe.MetaVenda;
 import br.com.dwbidiretor.classe.Vendedor;
 import br.com.dwbidiretor.servico.ServicoGestor;
 import br.com.dwbidiretor.servico.ServicoMapa;
@@ -29,13 +27,11 @@ import br.com.dwbidiretor.servico.ServicoVendedor;
 
 @Named
 @ViewScoped
-public class BeanMapa implements Serializable {
+public class BeanMapa2 implements Serializable {
 	private static final long serialVersionUID = 1L;
-
-	private MapModel simpleModel;
-	private Marker marker;
 	
-	private Mapa mapa = new Mapa();
+	private Map map = new Map();
+
 	@Inject
 	private ServicoMapa servico;
 	private List<Mapa> listamapa = new ArrayList<>();
@@ -60,9 +56,11 @@ public class BeanMapa implements Serializable {
 	private String vendedorfiltrado2;
 	private String gestorfiltrado;
 	private String gestorfiltrado2;
-
+	
+	
 	@PostConstruct
 	public void init() {
+		
 		listavendedor = servicovendedor.consultavendedor();
 		vendedorfiltrado = "0";
 		vendedorfiltrado2 = "999999";
@@ -71,16 +69,19 @@ public class BeanMapa implements Serializable {
 		gestorfiltrado = "0";
 		gestorfiltrado2 = "999999";
 		
-		simpleModel = new DefaultMapModel();
-        //Shared coordinates
-        LatLng coord1 = new LatLng(-23.010324, -53.193782);
-        //Basic marker
-        simpleModel.addOverlay(new Marker(coord1, "MARCHEZAN METAIS","","https://maps.google.com/mapfiles/ms/micons/red-dot.png"));
+		Layer placesLayer = (new Layer()).setLabel("Marchezan");
+		//placesLayer.addMarker(new Marker(new LatLong("-23.010324","-53.193782"),"<b>Marchezan Metais</b>"));
+		placesLayer.addMarker(new Marker(new LatLong("-23.010324","-53.193782"),"<b>Marchezan Metais</b>", new Pulse(true, 10, "#FF8C00")));
+		
+		map.setWidth("100%").setHeight("500px").setCenter(new LatLong("-23.010324","-53.193782")).setZoom(3);
+		map.addLayer(placesLayer);
+		map.setMiniMap(false);
+		
 	
 	}
 	
-	public void filtrar(){
-		simpleModel = new DefaultMapModel();
+	public void filtrar2() {
+		
 		
 		if (vendedor == null){
 			vendedorfiltrado = "0";
@@ -100,39 +101,44 @@ public class BeanMapa implements Serializable {
 			gestorfiltrado2 = gestor.getGestorid().toString();
 		}
 		
-		
-		
 		listamapa = servico.mapa(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
+		Layer placesLayer = new Layer();
+		Layer placesLayer2 = new Layer();
+		//placesLayer.addMarker(new Marker(new LatLong("-23.010324","-53.193782"),"<b>Marchezan Metais</b>"));
 		
-		LatLng coord = new LatLng(-23.010324, -53.193782);
-        //Basic marker
-        simpleModel.addOverlay(new Marker(coord, "MARCHEZAN METAIS","","https://maps.google.com/mapfiles/ms/micons/red-dot.png"));
-        
-		for (Mapa mapa : getListamapa()) {
-			
+		for (Mapa mapa : listamapa) {
 			if(mapa.getTotalperiodo().doubleValue() > 0) {
-				//Shared coordinates
-		        LatLng coord1 = new LatLng(mapa.getLatitude().doubleValue(), mapa.getLongitude().doubleValue());
-		        //Basic marker
-		        simpleModel.addOverlay(new Marker(coord1, "CLIENTE: "+mapa.getCliente()+"-"+mapa.getNomecliente()+", ENDEREÇO: "+mapa.getEndereco()+", BAIRRO: "+mapa.getBairro()+
+				placesLayer2.addMarker(new Marker(new LatLong(mapa.getLatitude().toString(),mapa.getLongitude().toString()),"CLIENTE: "+mapa.getCliente()+"-"+mapa.getNomecliente()+", ENDEREÇO: "+mapa.getEndereco()+", BAIRRO: "+mapa.getBairro()+
 		        		", "+mapa.getNumero()+", CEP: "+mapa.getCep()+", CIDADE/UF: "+mapa.getCidade()+"-"+mapa.getUf()+", DATA ULTIMA COMPRA: "+mapa.getUltimacompra()+
-		        		", VENDEDOR: "+mapa.getVendedor()+"-"+mapa.getNomevendedor(),"",
-		        		"https://maps.google.com/mapfiles/ms/micons/green-dot.png"));
+		        		", VENDEDOR: "+mapa.getVendedor()+"-"+mapa.getNomevendedor(), new Pulse(true, 10, "#FF4040")));
 			}else {
-			 			
-	        //Shared coordinates
-	        LatLng coord1 = new LatLng(mapa.getLatitude().doubleValue(), mapa.getLongitude().doubleValue());
-	        //Basic marker
-	        simpleModel.addOverlay(new Marker(coord1, "CLIENTE: "+mapa.getCliente()+"-"+mapa.getNomecliente()+", ENDEREÇO: "+mapa.getEndereco()+", BAIRRO: "+mapa.getBairro()+
-	        		", "+mapa.getNumero()+", CEP: "+mapa.getCep()+", CIDADE/UF: "+mapa.getCidade()+"-"+mapa.getUf()+", DATA ULTIMA COMPRA: "+mapa.getUltimacompra()+
-	        		", VENDEDOR: "+mapa.getVendedor()+"-"+mapa.getNomevendedor(),"",
-	        		"https://maps.google.com/mapfiles/ms/micons/blue-dot.png"));
+				placesLayer.addMarker(new Marker(new LatLong(mapa.getLatitude().toString(),mapa.getLongitude().toString()),"CLIENTE: "+mapa.getCliente()+"-"+mapa.getNomecliente()+", ENDEREÇO: "+mapa.getEndereco()+", BAIRRO: "+mapa.getBairro()+
+		        		", "+mapa.getNumero()+", CEP: "+mapa.getCep()+", CIDADE/UF: "+mapa.getCidade()+"-"+mapa.getUf()+", DATA ULTIMA COMPRA: "+mapa.getUltimacompra()+
+		        		", VENDEDOR: "+mapa.getVendedor()+"-"+mapa.getNomevendedor() , new Pulse(true, 10, "#1E90FF")));
 			}
 		}
 		
 		
-				
+
+		map.setWidth("100%").setHeight("500px").setCenter(new LatLong("-23.010324","-53.193782")).setZoom(3);
+		
+		if(placesLayer.getMarkers().size()>0) {
+			placesLayer.setLabel("Sem Venda");
+			map.addLayer(placesLayer);
+		}
+		if(placesLayer2.getMarkers().size()>0) {
+			placesLayer2.setLabel("Com Venda");
+			map.addLayer(placesLayer2);
+		}
+		map.setZoomControl(true);
+		map.setZoomEnabled(true);
+		map.setMiniMap(false);
+		
+		listamapa.clear();
+		map = new Map();
+		
 	}
+	
 	
 	public void filtragestor() {
 		if (getVendedor() != null){
@@ -147,14 +153,6 @@ public class BeanMapa implements Serializable {
 		}
 	}
 	
-	 public Mapa getMapa() {
-		return mapa;
-	}
-
-	public void setMapa(Mapa mapa) {
-		this.mapa = mapa;
-	}
-
 	public List<Mapa> getListamapa() {
 		return listamapa;
 	}
@@ -255,16 +253,12 @@ public class BeanMapa implements Serializable {
 		return serialVersionUID;
 	}
 
-	public MapModel getSimpleModel() {
-	        return simpleModel;
-	    }
+	public Map getMap() {
+		return map;
+	}
 
-    public void onMarkerSelect(OverlaySelectEvent event) {
-        marker = (Marker) event.getOverlay();
-    }
-      
-    public Marker getMarker() {
-        return marker;
-    }
+	public void setMap(Map map) {
+		this.map = map;
+	}
 
 }

@@ -49,6 +49,15 @@ public class InvestimentoVendedor implements Serializable {
 	private BigDecimal vlbonificacaoexpositor;
 	private BigDecimal pcbonificacaoexpositor;
 
+	private BigDecimal vlvendedorfaturado2021;
+	private BigDecimal vlvendedorfaturado2020;
+	
+	private BigDecimal investimento2021;
+	private BigDecimal investimento2020;
+	
+	private BigDecimal pcinvest2021;
+	private BigDecimal pcinvest2020;
+	
 	public InvestimentoVendedor() {
 		super();
 	}
@@ -259,6 +268,66 @@ public class InvestimentoVendedor implements Serializable {
 
 	public void setNomevendedor(String nomevendedor) {
 		this.nomevendedor = nomevendedor;
+	}
+
+
+	public BigDecimal getVlvendedorfaturado2021() {
+		return vlvendedorfaturado2021;
+	}
+
+
+	public void setVlvendedorfaturado2021(BigDecimal vlvendedorfaturado2021) {
+		this.vlvendedorfaturado2021 = vlvendedorfaturado2021;
+	}
+
+
+	public BigDecimal getVlvendedorfaturado2020() {
+		return vlvendedorfaturado2020;
+	}
+
+
+	public void setVlvendedorfaturado2020(BigDecimal vlvendedorfaturado2020) {
+		this.vlvendedorfaturado2020 = vlvendedorfaturado2020;
+	}
+
+
+	public BigDecimal getInvestimento2021() {
+		return investimento2021;
+	}
+
+
+	public void setInvestimento2021(BigDecimal investimento2021) {
+		this.investimento2021 = investimento2021;
+	}
+
+
+	public BigDecimal getInvestimento2020() {
+		return investimento2020;
+	}
+
+
+	public void setInvestimento2020(BigDecimal investimento2020) {
+		this.investimento2020 = investimento2020;
+	}
+
+
+	public BigDecimal getPcinvest2021() {
+		return pcinvest2021;
+	}
+
+
+	public void setPcinvest2021(BigDecimal pcinvest2021) {
+		this.pcinvest2021 = pcinvest2021;
+	}
+
+
+	public BigDecimal getPcinvest2020() {
+		return pcinvest2020;
+	}
+
+
+	public void setPcinvest2020(BigDecimal pcinvest2020) {
+		this.pcinvest2020 = pcinvest2020;
 	}
 
 

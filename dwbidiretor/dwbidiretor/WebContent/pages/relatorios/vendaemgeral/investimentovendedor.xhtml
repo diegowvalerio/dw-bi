@@ -42,13 +42,13 @@
 					<p:outputLabel value=" Data:  " for="data_grafico" />
 					<p:calendar locale="pt_BR" id="data_grafico"
 						value="#{beanInvestimentoVendedor.data_grafico}" pattern="dd/MM/yyyy"
-						mask="true" required="true" readonlyInput="true">
+						mask="true" required="true" >
 					</p:calendar>
 
 					<p:outputLabel value=" Até:  " for="data_grafico2" />
 					<p:calendar locale="pt_BR" id="data_grafico2"
 						value="#{beanInvestimentoVendedor.data_grafico2}" pattern="dd/MM/yyyy"
-						mask="true" required="true" readonlyInput="true">
+						mask="true" required="true" >
 					</p:calendar>
 					
 					<p:outputLabel value="Gestor:" for="gestor" />
@@ -103,42 +103,77 @@
 								<h:outputText value="#{vendas.nomevendedor}" />
 							</p:column>
 							
+							<p:column  headerText="Faturado 2020" sortBy="#{vendas.vlvendedorfaturado2020}" >
+								<h:outputText value="#{vendas.vlvendedorfaturado2020}" 
+								style="font-weight:bold">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
 							
-							<p:column  headerText="% Faturado Geral" sortBy="#{vendas.pcinvestidogeral}" >
-								<h:outputText value="#{vendas.pcinvestidogeral}" 
+							<p:column  headerText="Investido 2020" sortBy="#{vendas.investimento2020}" >
+								<h:outputText value="#{vendas.investimento2020}" 
+								style="font-weight:bold">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column  headerText="% 2020" sortBy="#{vendas.pcinvest2020}" >
+								<h:outputText value="#{vendas.pcinvest2020}" 
 								style="font-weight:bold">
 									<f:convertNumber type="currency" currencySymbol="%" />
 								</h:outputText>
 							</p:column>
 							
-							<p:column headerText="Total Investido"
+							<p:column  headerText="Faturado 2021" sortBy="#{vendas.vlvendedorfaturado2021}" >
+								<h:outputText value="#{vendas.vlvendedorfaturado2021}" 
+								style="font-weight:bold">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column  headerText="Investido 2021" sortBy="#{vendas.investimento2021}" >
+								<h:outputText value="#{vendas.investimento2021}" 
+								style="font-weight:bold">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column  headerText="% 2021" sortBy="#{vendas.pcinvest2021}" >
+								<h:outputText value="#{vendas.pcinvest2021}" 
+								style="font-weight:bold">
+									<f:convertNumber type="currency" currencySymbol="%" />
+								</h:outputText>
+							</p:column>
+							
+							
+							<p:column headerText="Investido Periodo"
 								sortBy="#{vendas.vltotalinvestido}">
 								<h:outputText value="#{vendas.vltotalinvestido}">
 									<f:convertNumber type="currency" currencySymbol="R$" />
 								</h:outputText>
 							</p:column>
 							
-							<p:column headerText="Faturado Vendedor"
+							<p:column headerText="Faturado Periodo"
 								sortBy="#{vendas.vlvendedorfaturado}">
 								<h:outputText value="#{vendas.vlvendedorfaturado}">
 									<f:convertNumber type="currency" currencySymbol="R$" />
 								</h:outputText>
 							</p:column>
 							
-							<p:column  headerText="% Faturado Vendedor" sortBy="#{vendas.pcinvestidovendedor}" >
+							<p:column  headerText="% Faturado Periodo" sortBy="#{vendas.pcinvestidovendedor}" >
 								<h:outputText value="#{vendas.pcinvestidovendedor}" 
 								style="font-weight:bold">
 									<f:convertNumber type="currency" currencySymbol="%" />
 								</h:outputText>
 							</p:column>
 							
-							<p:column headerText="Amostra"
+							<p:column headerText="Amostra" 
 								sortBy="#{vendas.vlamostra}">
 								<h:outputText value="#{vendas.vlamostra}">
 									<f:convertNumber type="currency" currencySymbol="R$" />
 								</h:outputText>
 								<br></br>
-								<h:outputText value="#{vendas.pcamostra}" 
+								<h:outputText value="#{vendas.pcamostra}"
 								style="font-weight:bold">
 									<f:convertNumber type="currency" currencySymbol="%" />
 								</h:outputText>
@@ -218,7 +253,7 @@
 							
 							<p:columnGroup type="footer">
 								<p:row>
-									<p:column colspan="2" style="text-align:right"
+									<p:column colspan="7" style="text-align:right"
 										footerText="Total Investido:" />
 									<p:column footerText="R$#{beanInvestimentoVendedor.valorTotalInvestido}" />
 								</p:row>

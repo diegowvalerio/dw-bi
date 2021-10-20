@@ -188,6 +188,8 @@ public class BeanInvestimentoVendedor implements Serializable {
 		}
 		listainvestimentovendedor = servico.investimentovendedor(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, clientefiltrado, clientefiltrado2);
 	}
+	
+	
 	public List<Cliente> completaCliente(String nome) {
 		String n = nome.toUpperCase();
 		return servicocliente.consultacliente(n);

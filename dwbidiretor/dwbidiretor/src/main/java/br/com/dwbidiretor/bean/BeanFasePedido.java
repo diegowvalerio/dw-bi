@@ -45,7 +45,7 @@ public class BeanFasePedido implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		lista = servico.fasepedido(venda, outros);
+		lista = servico.fasepedido(1, 1);
 		
 	}
 	

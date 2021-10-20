@@ -7,26 +7,39 @@ import java.util.Date;
 
 import javax.persistence.*;
 
+import com.google.gson.annotations.Expose;
+
 
 public class Mapa implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+	@Expose
 	private BigDecimal vendedor;
+	@Expose
 	private String nomevendedor;
+	@Expose
 	private BigDecimal cliente;
+	@Expose
 	private String nomecliente;
-	
+	@Expose
 	private String cidade;
+	@Expose
 	private String uf;
+	@Expose
 	private String endereco;
+	@Expose
 	private String bairro;
+	@Expose
 	private String cep;
+	@Expose
 	private String numero;
-	
+	@Expose
 	private BigDecimal latitude;
+	@Expose
 	private BigDecimal longitude;
-	
+	@Expose
 	private String ultimacompra;
+	@Expose
+	private BigDecimal totalperiodo;
 	
 	public Mapa() {
 		super();
@@ -134,6 +147,14 @@ public class Mapa implements Serializable {
 
 	public void setUltimacompra(String ultimacompra) {
 		this.ultimacompra = ultimacompra;
+	}
+
+	public BigDecimal getTotalperiodo() {
+		return totalperiodo;
+	}
+
+	public void setTotalperiodo(BigDecimal totalperiodo) {
+		this.totalperiodo = totalperiodo;
 	}
 
 }

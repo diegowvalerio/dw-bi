@@ -2029,7 +2029,14 @@ public List<InvestimentoVendedor> investimentovendedor(Date data1, Date data2, S
 			+ " NVL((NVL(sum(investimento.trocanegocio),0) / fat.vlfaturado )*100 ,0) as pctrocanegocio, "
 			
 			+ " NVL(sum(investimento.bonificacaoexpositor),0) as vlbonificacaoexpositor, "
-			+ " NVL((NVL(sum(investimento.bonificacaoexpositor),0) / fat.vlfaturado )*100 ,0) as pcbonificacaoexpositor "
+			+ " NVL((NVL(sum(investimento.bonificacaoexpositor),0) / fat.vlfaturado )*100 ,0) as pcbonificacaoexpositor,"
+			
+			+ " NVL(fat_2021.vlfaturado,0) as vlfaturado2021, "
+			+ " NVL(fat_2020.vlfaturado,0) as vlfaturado2020,"
+			+ " investimento2021.investimento2021, "
+			+ " investimento2020.investimento2020,"
+			+ " nvl(investimento2021.investimento2021,0)/NVL(fat_2021.vlfaturado,1)*100 pcinvest2021, "
+			+ " nvl(investimento2020.investimento2020,0)/NVL(fat_2020.vlfaturado,1)*100 pcinvest2020 "
 
 			+ " from( "
 			+ " select "
@@ -2103,12 +2110,117 @@ public List<InvestimentoVendedor> investimentovendedor(Date data1, Date data2, S
 			+ " AND CF.tipooperacao_cfop = 'VENDA'  "
 			+ " and p.DT_FATURAMENTO_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada3 + " ' " 
 			+ " ORDER BY P.NR_NOTA_PEDIDOVENDA )geral on geral.vlgeralfaturado is not null "
+			
+			+ "left join ( "
+			+ " select "
+			+ "sum(p.vl_totalprod_pedidovenda) as vlfaturado, "
+			+ "V.CADCFTVID as vendedor "
+			+ "from pedidovenda p  "
+			+ "INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID  "
+			+ "INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID  "
+			+ "inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid  "
+			+ "inner join formapagto pg on pg.formapagtoid = p.formapagtoid  "
+			+ "INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+			+ "INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID  "
+			+ "where p.status_pedidovenda in ('FATURADO') "
+			+ "AND CF.tipooperacao_cfop = 'VENDA' "
+			+ "and TO_CHAR(P.DT_FATURAMENTO_PEDIDOVENDA,'YYYY') in ('2020') "
+			+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " '  "
+			+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2  + " '  "
+			+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
+			+ "group by V.CADCFTVID ) fat_2020 on fat_2020.vendedor = investimento.vendedor "
+
+			+ "left join ( "
+			+ " select "
+			+ "sum(p.vl_totalprod_pedidovenda) as vlfaturado, "
+			+ "V.CADCFTVID as vendedor "
+			+ "from pedidovenda p  "
+			+ "INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID  "
+			+ "INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID  "
+			+ "inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid  "
+			+ "inner join formapagto pg on pg.formapagtoid = p.formapagtoid  "
+			+ "INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+			+ "INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID  "
+			+ "where p.status_pedidovenda in ('FATURADO') "
+			+ "AND CF.tipooperacao_cfop = 'VENDA' "
+			+ "and TO_CHAR(P.DT_FATURAMENTO_PEDIDOVENDA,'YYYY') in ('2021') "
+			+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " '  "
+			+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2  + " '  "
+			+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
+			+ "group by V.CADCFTVID ) fat_2021 on fat_2021.vendedor = investimento.vendedor "
+			
+			+ "left join ( "
+			+ "select "
+			+ "v.cadcftvid as vendedor, "
+			+ "v.NOME_CADCFTV as nome_vendedor , "
+			+ "sum(p.vl_totalprod_pedidovenda) as investimento2021  "
+			
+			+ "from pedidovenda p  "
+			+ "INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID  "
+			+ "INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID  "
+			+ "inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid  "
+			+ "inner join formapagto pg on pg.formapagtoid = p.formapagtoid  "
+			+ "INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+			+ "inner join roteiro r on r.roteiroid = p.roteiroid  "
+			+ "inner join TIPO_PEDIDO_ROTEIRO tr on tr.ROTEIROID = r.ROTEIROID and tr.TIPOPEDIDOID = p.TIPOPEDIDOID "
+			+ "inner join ( "
+			+ "select max(rp.ROTEIROPEDIDOID) r,rp.pedidovendaid, min(trunc(rp.DT_ROTEIRO_PEDIDO)) as DT_ROTEIRO_PEDIDO from ROTEIRO_PEDIDO rp "
+			+ "inner join pedidovenda p on p.pedidovendaid = rp.pedidovendaid "
+			+ "inner join TIPO_PEDIDO_ROTEIRO tr on tr.ROTEIROID = rp.ROTEIROID and tr.TIPOPEDIDOID = p.TIPOPEDIDOID "
+			+ "where tr.ORDEM_ROTEIRO > 3 group by rp.pedidovendaid "
+			+ ") liberado on liberado.pedidovendaid = p.pedidovendaid "
+			+ ""
+			+ "INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID  "
+			+ "where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+			+ "AND CF.tipooperacao_cfop <> 'VENDA' "
+			+ ""
+			+ "and TO_CHAR(liberado.DT_ROTEIRO_PEDIDO,'YYYY') in ('2021') "
+			+ " and p.TIPOPEDIDOID in (4,3,5,14,13,2,16) and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " '  "
+			+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " '  "
+			+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
+			+ "and tr.ORDEM_ROTEIRO > 3"
+			+ "group by  v.cadcftvid,v.NOME_CADCFTV "
+			+ ")investimento2021 on investimento2021.vendedor = investimento.vendedor "		
+			
+			+ " left join ( "
+			+ "select "
+			+ "v.cadcftvid as vendedor, "
+			+ "v.NOME_CADCFTV as nome_vendedor , "
+			+ "sum(p.vl_totalprod_pedidovenda) as investimento2020  "
+
+			+ "from pedidovenda p  "
+			+ "INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID  "
+			+ "INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID  "
+			+ "inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid  "
+			+ "inner join formapagto pg on pg.formapagtoid = p.formapagtoid  "
+			+ "INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+			+ "inner join roteiro r on r.roteiroid = p.roteiroid  "
+			+ "inner join TIPO_PEDIDO_ROTEIRO tr on tr.ROTEIROID = r.ROTEIROID and tr.TIPOPEDIDOID = p.TIPOPEDIDOID "
+			+ "inner join ( "
+			+ "select max(rp.ROTEIROPEDIDOID) r,rp.pedidovendaid, min(trunc(rp.DT_ROTEIRO_PEDIDO)) as DT_ROTEIRO_PEDIDO from ROTEIRO_PEDIDO rp "
+			+ "inner join pedidovenda p on p.pedidovendaid = rp.pedidovendaid "
+			+ "inner join TIPO_PEDIDO_ROTEIRO tr on tr.ROTEIROID = rp.ROTEIROID and tr.TIPOPEDIDOID = p.TIPOPEDIDOID "
+			+ "where tr.ORDEM_ROTEIRO > 3 group by rp.pedidovendaid "
+			+ ") liberado on liberado.pedidovendaid = p.pedidovendaid "
+			+ ""
+			+ "INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID  "
+			+ "where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+			+ "AND CF.tipooperacao_cfop <> 'VENDA' "
+			+ ""
+			+ "and TO_CHAR(liberado.DT_ROTEIRO_PEDIDO,'YYYY') in ('2020') "
+			+ " and p.TIPOPEDIDOID in (4,3,5,14,13,2,16) and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " '  "
+			+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " '  "
+			+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
+			+ "and tr.ORDEM_ROTEIRO > 3"
+			+ "group by  v.cadcftvid,v.NOME_CADCFTV "
+			+ ")investimento2020 on investimento2020.vendedor = investimento.vendedor"	
+			
 
 			+ " group by  "
 			+ " geral.vlgeralfaturado, "
 			+ " fat.vlfaturado, "
 			+ " investimento.vendedor, "
-			+ " investimento.nome_vendedor ");
+			+ " investimento.nome_vendedor,fat_2020.vlfaturado,fat_2021.vlfaturado,investimento2021.investimento2021,investimento2020.investimento2020 ");
 
 	List<Object[]> lista = query.getResultList();
 								
@@ -2136,7 +2248,14 @@ public List<InvestimentoVendedor> investimentovendedor(Date data1, Date data2, S
 		vendasEmGeral.setPctrocanegocio((BigDecimal) row[18] );
 		vendasEmGeral.setVlbonificacaoexpositor((BigDecimal) row[19] );
 		vendasEmGeral.setPcbonificacaoexpositor((BigDecimal) row[20] );
-									
+		
+		vendasEmGeral.setVlvendedorfaturado2021((BigDecimal) row[21] );
+		vendasEmGeral.setVlvendedorfaturado2020((BigDecimal) row[22] );
+		vendasEmGeral.setInvestimento2021((BigDecimal) row[23] );
+		vendasEmGeral.setInvestimento2020((BigDecimal) row[24] );
+		vendasEmGeral.setPcinvest2021((BigDecimal) row[25] );
+		vendasEmGeral.setPcinvest2020((BigDecimal) row[26] );
+		
 		list.add(vendasEmGeral);
 	}
 
@@ -3311,7 +3430,7 @@ public List<Cliente> consultacliente(String palavra) {
 						" select GR.CADCFTVID, G.NOME_GESTOR, g.gestorid from  vendedor v  " 
 						+ " inner join gestor g on g.gestorid = v.gestorid  "
 						+ " left join CADCFTV GR ON GR.CNPJCPF_CADCFTV = G.CNPJ_GESTOR OR GR.CNPJCPF_CADCFTV = G.CPF_GESTOR  "
-						+ " where g.status_gestor = 'ATIVO' AND v.CADCFTVID between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+						+ " where g.status_gestor = 'ATIVO' and GR.ATIVO_CADCFTV = 'SIM' AND v.CADCFTVID between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 						+ " group by GR.CADCFTVID, G.NOME_GESTOR, g.gestorid  ");
 
 		List<Object[]> lista = query.getResultList();
@@ -4641,7 +4760,8 @@ public List<VendasEndereco> vendasendereco(Date data1, Date data2, String vended
 								+ " v.nro_endcadcftv, "
 								+ " V.latitude, v.longitude, "
 								+ " to_char(x.dt,'dd/mm/yyyy') as ultima_compra, "
-								+ " r.NOME_REGIAO "
+								+ " r.NOME_REGIAO,"
+								+ " NVL(x1.TOTALPRODUTO,0) TOTAL "
 
 								+ " from CADCFTV c "
 								+ " INNER JOIN CLIENTE CLt ON CLt.CADCFTVID = C.CADCFTVID "
@@ -4664,10 +4784,27 @@ public List<VendasEndereco> vendasendereco(Date data1, Date data2, String vended
 								+ " where status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') GROUP BY cadcftvid "
 								+ " )x on x.cadcftvid = c.cadcftvid "
 								
+								+ " left join ( "
+								+ "	select "
+								+ "	cadcftvid, "
+								+ "	SUM(VL_TOTALPROD_PEDIDOVENDA) AS TOTALPRODUTO "
+								+ "	from pedidovenda p "
+								+ "	INNER JOIN CFOP CF ON CF.CFOPID = p.CFOPID "
+								+ "	where status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+								+ "	AND CF.tipooperacao_cfop= 'VENDA' "
+								+ "and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
+								+ "GROUP BY cadcftvid  "
+								+ ")x1 on x1.cadcftvid = c.cadcftvid "
+								
 								+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = vw.cadcftvid "
 								+ " where C.funcao_principal_cadcftv = 'CLIENTE' "
+								+ " AND c.ATIVO_CADCFTV = 'SIM' "
 								+ " and vw.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 								+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+								
+								
+								+ " and V.LATITUDE <> '-999' "
+								+ "and V.LONGITUDE <> '-998' "
 
 								+ " order by  "
 								+ " clt.vendedorid1 desc " );
@@ -4694,7 +4831,7 @@ public List<VendasEndereco> vendasendereco(Date data1, Date data2, String vended
 					mapa.setLatitude((BigDecimal) row[11]);
 					mapa.setLongitude((BigDecimal) row[12]);
 					mapa.setUltimacompra((String) row[13]);
-
+					mapa.setTotalperiodo((BigDecimal) row[15]);
 					list.add(mapa);
 				}
 

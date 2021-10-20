@@ -17,6 +17,7 @@
 
 	<dependencies>
 	
+	
 	<!-- https://mvnrepository.com/artifact/org.webjars/jqplot -->
 <dependency>
     <groupId>org.webjars</groupId>
