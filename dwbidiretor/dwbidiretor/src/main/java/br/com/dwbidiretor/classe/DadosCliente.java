@@ -42,6 +42,12 @@ public class DadosCliente implements Serializable {
 	private BigDecimal acvlbonificacaoexpositor;
 	private BigDecimal vlbonificacaoexpositor;
 	
+	private BigDecimal totalinvestimentogeral;
+	private BigDecimal totalinvestimentoperiodo;
+	
+	private float p_geral;
+	private float p_periodo;
+	
 	public DadosCliente() {
 		super();
 	}
@@ -259,6 +265,38 @@ public class DadosCliente implements Serializable {
 
 	public void setUf(String uf) {
 		this.uf = uf;
+	}
+
+	public BigDecimal getTotalinvestimentogeral() {
+		return totalinvestimentogeral;
+	}
+
+	public void setTotalinvestimentogeral(BigDecimal totalinvestimentogeral) {
+		this.totalinvestimentogeral = totalinvestimentogeral;
+	}
+
+	public BigDecimal getTotalinvestimentoperiodo() {
+		return totalinvestimentoperiodo;
+	}
+
+	public void setTotalinvestimentoperiodo(BigDecimal totalinvestimentoperiodo) {
+		this.totalinvestimentoperiodo = totalinvestimentoperiodo;
+	}
+
+	public float getP_geral() {
+		return p_geral;
+	}
+
+	public void setP_geral(float p_geral) {
+		this.p_geral = p_geral;
+	}
+
+	public float getP_periodo() {
+		return p_periodo;
+	}
+
+	public void setP_periodo(float p_periodo) {
+		this.p_periodo = p_periodo;
 	}
 
 	

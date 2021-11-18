@@ -68,7 +68,7 @@
 					
 					<p:outputLabel value="Vendedor:" for="vendedor" />
 					<p:selectOneMenu id="vendedor"
-					value="#{beanMapa.vendedor}"
+					value="#{beanMapa.vendedor}" filter="true" filterMatchMode="contains"
 					converter="conversorVendedor">
 					<f:selectItem itemLabel="Selecionar" />
 					<f:selectItems value="#{beanMapa.listavendedor}"

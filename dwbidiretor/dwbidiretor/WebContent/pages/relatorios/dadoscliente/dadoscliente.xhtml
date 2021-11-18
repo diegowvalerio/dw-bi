@@ -63,7 +63,7 @@
 					
 					<p:outputLabel value="Vendedor:" for="vendedor" />
 					<p:selectOneMenu id="vendedor" value="#{beanDadosCliente.vendedor}"
-						converter="conversorVendedor">
+						converter="conversorVendedor" filter="true" filterMatchMode="contains">
 						<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
 						<f:selectItems value="#{beanDadosCliente.listavendedor}" var="vendedor"
 							itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
@@ -90,6 +90,12 @@
 				
 					<h:panelGrid columns="1" id="paineld" columnClasses="left,right"
 						width="100%">
+						<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="venda" fileName="dadoscliente" pageOnly="true"/>
+						</h:commandLink>
+						
+						<h:outputText value="* Não soma como Investimento" style="text-align:left; color:red"/>
+								
 						<p:dataTable id="venda" var="vendas" scrollable="true" rowIndexVar="rowIndex" 
 							value="#{beanDadosCliente.listavenda}" resizableColumns="true">
 
@@ -98,13 +104,14 @@
 									<p:column colspan="9" headerText="Dados dos Clientes" style="border: 1px solid"/>
 									<p:column colspan="2" headerText="Venda" style="border: 1px solid"/>
 									<p:column colspan="2" headerText="Amostra" style="border: 1px solid"/>
-									<p:column colspan="2" headerText="Amostra Paga" style="border: 1px solid"/>
+									<p:column colspan="2" headerText="Amostra Paga *" style="border: 1px solid; color:red"/>
 									<p:column colspan="2" headerText="Bonificação" style="border: 1px solid"/>
 									<p:column colspan="2" headerText="Bonificação Expositor" style="border: 1px solid"/>
 									<p:column colspan="2" headerText="Expositor" style="border: 1px solid"/>
 									<p:column colspan="2" headerText="Brinde" style="border: 1px solid"/>
-									<p:column colspan="2" headerText="Troca" style="border: 1px solid"/>
+									<p:column colspan="2" headerText="Troca *" style="border: 1px solid; color:red"/>
 									<p:column colspan="2" headerText="Negociações" style="border: 1px solid"/>
+									<p:column colspan="4" headerText="Total Investido" style="border: 1px solid"/>
 																		
 								</p:row>
 								<p:row>
@@ -117,24 +124,28 @@
 									<p:column colspan="1" headerText="Cidade" style="border: 1px solid; text-align: Left"/>	
 									<p:column colspan="1" headerText="CEP" style="border: 1px solid; text-align: Left"/>	
 									<p:column colspan="1" headerText="UF" style="border: 1px solid; text-align: Left"/>						
-									<p:column colspan="1" headerText="Total Geral"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Geral"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Periodo"  style="border: 1px solid; text-align: Left"/>
-									<p:column colspan="1" headerText="Total Geral"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Geral"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Periodo"  style="border: 1px solid; text-align: Left"/>
-									<p:column colspan="1" headerText="Total Geral"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Geral"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Periodo"  style="border: 1px solid; text-align: Left"/>
-									<p:column colspan="1" headerText="Total Geral"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Geral"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Periodo"  style="border: 1px solid; text-align: Left"/>
-									<p:column colspan="1" headerText="Total Geral"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Geral"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Periodo"  style="border: 1px solid; text-align: Left"/>
-									<p:column colspan="1" headerText="Total Geral"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Geral"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Periodo"  style="border: 1px solid; text-align: Left"/>
-									<p:column colspan="1" headerText="Total Geral"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Geral"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Periodo"  style="border: 1px solid; text-align: Left"/>
-									<p:column colspan="1" headerText="Total Geral"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Geral"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Periodo"  style="border: 1px solid; text-align: Left"/>
-									<p:column colspan="1" headerText="Total Geral"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Geral"  style="border: 1px solid; text-align: Left"/>
 									<p:column colspan="1" headerText="Periodo"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Geral"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="%"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Periodo"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="%"  style="border: 1px solid; text-align: Left"/>
 									
 								</p:row>
 							</p:columnGroup>
@@ -245,14 +256,26 @@
 							
 							<p:column>
 								<h:outputText value="#{vendas.vlnegociacoescomerciais}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
-							</p:column>										
+							</p:column>		
+							
+							<p:column>
+								<h:outputText value="#{vendas.totalinvestimentogeral}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>	
+							
+							<p:column>
+								<h:outputText value="#{vendas.p_geral}" ><f:convertNumber type="currency" currencySymbol="%" /></h:outputText>
+							</p:column>	
+							
+							<p:column>
+								<h:outputText value="#{vendas.totalinvestimentoperiodo}" ><f:convertNumber type="currency" currencySymbol="R$" /></h:outputText>
+							</p:column>	
+							
+							<p:column>
+								<h:outputText value="#{vendas.p_periodo}" ><f:convertNumber type="currency" currencySymbol="%" /></h:outputText>
+							</p:column>									
 
 						</p:dataTable>
-						
-						<h:commandLink value="Excel">
-							<p:dataExporter type="xls" target="venda" fileName="dadoscliente" pageOnly="true"/>
-						</h:commandLink>
-						
+												
 					</h:panelGrid>
 					<p:separator />
 					

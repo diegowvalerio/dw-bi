@@ -1,0 +1,196 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+<script type="text/javascript">
+function my_ext(){  
+	this.cfg.config.enablePlugins = true;
+	var options = {
+            options: {
+            	series:[{
+            	      pointLabels: {
+            	         show: true,
+            	         seriesLabelIndex:1,
+            	         hideZeros:false
+            	      }
+            	   }]
+            }
+         };
+    $.extend(true, this.cfg.config, options);
+};
+    
+</script>
+	</ui:define>
+
+	<ui:define name="title">
+        Mix Produtos
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Mix" />
+
+		<h:form id="form">
+			
+					<p:panelGrid columns="5" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
+					
+					<p:outputLabel value="Gestor:" for="gestor" />
+					<p:selectOneMenu id="gestor" value="#{beanMixProduto.gestor}"
+						converter="conversorGestor">
+						<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
+						<f:selectItems value="#{beanMixProduto.listagestor}" var="gestor"
+							itemLabel="#{gestor.nomegestor}"
+							itemValue="#{gestor}" />
+					</p:selectOneMenu>
+						
+					<p:outputLabel value="Vendedor:" for="vendedor" />
+					<p:selectOneMenu id="vendedor"
+					value="#{beanMixProduto.vendedor}"
+					converter="conversorVendedor" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanMixProduto.listavendedor}"
+						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
+						itemValue="#{vendedor}" />
+						<p:ajax listener="#{beanMixProduto.filtragestor}" update=":form:gestor" />
+					</p:selectOneMenu>
+					
+					
+					<p:commandButton action="#{beanMixProduto.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld :form:gqtde"
+						styleClass="btn-primary" />
+
+					</p:panelGrid>
+					
+			<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="mixp" fileName="mixprodutos" pageOnly="true"/>
+			</h:commandLink>
+								
+					<p:panelGrid columns="1" id="paineld" >
+									
+						<p:dataTable id="mixp" var="mixs"  style="font-size:12px;" 
+							value="#{beanMixProduto.lista}"  scrollHeight="600" scrollable="true">
+											 
+           					<p:column headerText="Cód."  width="50" style="border-color: black;">
+                				<h:outputText value="#{mixs.codigoproduto}" />
+            				</p:column>
+        					  						
+							<p:column headerText="Descrição" width="500"  style="border-color: black;">
+								<h:outputText value="#{mixs.nomeproduto}" />
+							</p:column>
+							
+							<p:column headerText="Qtde 2018" style="border-color: black;background-color: #E0FFFF;" width="50">
+								<h:outputText value="#{mixs.qtde2018}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Qtde 2019" style="border-color: black;background-color: #E0FFFF;" width="50">
+								<h:outputText value="#{mixs.qtde2019}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Qtde 2020" style="border-color: black;background-color: #E0FFFF;" width="50">
+								<h:outputText value="#{mixs.qtde2020}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Qtde 2021" style="border-color: black;background-color: #E0FFFF;" width="50">
+								<h:outputText value="#{mixs.qtde2021}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Qtde Total" style="border-color: black;background-color: #B0E0E6;" width="50">
+								<h:outputText value="#{mixs.qtdetotal}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Valor 2018" style="border-color: black;background-color: #FAEBD7;" width="50">
+								<h:outputText value="#{mixs.vl2018}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Valor 2019" style="border-color: black;background-color: #FAEBD7;" width="50">
+								<h:outputText value="#{mixs.vl2019}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Valor 2020" style="border-color: black;background-color: #FAEBD7;" width="50">
+								<h:outputText value="#{mixs.vl2020}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Valor 2021" style="border-color: black;background-color: #FAEBD7;" width="50">
+								<h:outputText value="#{mixs.vl2021}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Valor Total" style="border-color: black;background-color: #FFDEAD;" width="70">
+								<h:outputText value="#{mixs.vltotal}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>	
+							
+							
+							<p:columnGroup type="footer">
+                				<p:row>
+                    				<p:column style="border-color: white;"/>	
+                    				<p:column style="border-color: white;text-align:right" footerText="Total:"/>
+									<p:column footerText="#{beanMixProduto.qtde2018}"/>
+									<p:column footerText="#{beanMixProduto.qtde2019}"/>
+									<p:column footerText="#{beanMixProduto.qtde2020}"/>	
+									<p:column footerText="#{beanMixProduto.qtde2021}"/>	
+									<p:column footerText="#{beanMixProduto.qtdetotal}"/>
+									<p:column footerText="#{beanMixProduto.vl2018}"/>
+									<p:column footerText="#{beanMixProduto.vl2019}"/>
+									<p:column footerText="#{beanMixProduto.vl2020}"/>	
+									<p:column footerText="#{beanMixProduto.vl2021}"/>	
+									<p:column footerText="#{beanMixProduto.vltotal}"/>					
+								</p:row>
+            				</p:columnGroup>
+            				
+						</p:dataTable>
+					</p:panelGrid>
+					
+					<div class="row" >	
+					
+						<div class="col-md-6">
+							<div class="box box-default">
+								<div class="box-body" >
+									<p:lineChart model="#{beanMixProduto.grafico_mixqtde}" id="gqtde"/>
+								</div>
+								<!-- /.box-body -->
+							</div>
+							<!-- /.box -->
+						</div>
+						
+					</div>
+					
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

@@ -198,14 +198,14 @@ public class BeanPainel_Diretor implements Serializable {
 			proporcional_anual = 0;
 			
 		}else {
-			if (diretor01.getAtingido_mensal() != null) {
+			if (diretor01.getAtingido_mensal() != null && diretor01.getMeta_mensal_faturamento_p() != null) {
 				proporcional_mensal_faturamento = (diretor01.getMeta_mensal_faturamento_p().floatValue()/ quantidadeDias) * Integer.parseInt(dia);
 			}
 
-			if (diretor01.getAtingido_mensal_pedido_p() != null) {
+			if (diretor01.getAtingido_mensal_pedido_p() != null && diretor01.getMeta_mensal_pedidos_p() != null) {
 				proporcional_mensal_pedido = (diretor01.getMeta_mensal_pedidos_p().floatValue() / quantidadeDias)* Integer.parseInt(dia);
 			}
-			if (diretor01.getAtingido_anual() != null) {
+			if (diretor01.getAtingido_anual() != null && diretor01.getMeta_anual() != null) {
 				proporcional_anual = (diretor01.getMeta_anual().floatValue() / 365)* diaanos;
 			}
 		}

@@ -63,7 +63,7 @@
 					<p:outputLabel value="Vendedor:" for="vendedor" />
 					<p:selectOneMenu id="vendedor"
 					value="#{beanInvestimentoVendedor_2.vendedor}"
-					converter="conversorVendedor">
+					converter="conversorVendedor" filter="true" filterMatchMode="contains">
 					<f:selectItem itemLabel="Selecionar" />
 					<f:selectItems value="#{beanInvestimentoVendedor_2.listavendedor}"
 						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
@@ -104,28 +104,63 @@
 							</p:column>
 							
 							
-							<p:column  headerText="% Faturado Geral" sortBy="#{vendas.pcinvestidogeral}" >
-								<h:outputText value="#{vendas.pcinvestidogeral}" 
+							<p:column  headerText="Faturado 2020" sortBy="#{vendas.vlvendedorfaturado2020}" >
+								<h:outputText value="#{vendas.vlvendedorfaturado2020}" 
+								style="font-weight:bold">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column  headerText="Investido 2020" sortBy="#{vendas.investimento2020}" >
+								<h:outputText value="#{vendas.investimento2020}" 
+								style="font-weight:bold">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column  headerText="% 2020" sortBy="#{vendas.pcinvest2020}" >
+								<h:outputText value="#{vendas.pcinvest2020}" 
 								style="font-weight:bold">
 									<f:convertNumber type="currency" currencySymbol="%" />
 								</h:outputText>
 							</p:column>
 							
-							<p:column headerText="Total Investido"
+							<p:column  headerText="Faturado 2021" sortBy="#{vendas.vlvendedorfaturado2021}" >
+								<h:outputText value="#{vendas.vlvendedorfaturado2021}" 
+								style="font-weight:bold">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column  headerText="Investido 2021" sortBy="#{vendas.investimento2021}" >
+								<h:outputText value="#{vendas.investimento2021}" 
+								style="font-weight:bold">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column  headerText="% 2021" sortBy="#{vendas.pcinvest2021}" >
+								<h:outputText value="#{vendas.pcinvest2021}" 
+								style="font-weight:bold">
+									<f:convertNumber type="currency" currencySymbol="%" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Investido Periodo"
 								sortBy="#{vendas.vltotalinvestido}">
 								<h:outputText value="#{vendas.vltotalinvestido}">
 									<f:convertNumber type="currency" currencySymbol="R$" />
 								</h:outputText>
 							</p:column>
 							
-							<p:column headerText="Faturado Vendedor"
+							<p:column headerText="Faturado Periodo"
 								sortBy="#{vendas.vlvendedorfaturado}">
 								<h:outputText value="#{vendas.vlvendedorfaturado}">
 									<f:convertNumber type="currency" currencySymbol="R$" />
 								</h:outputText>
 							</p:column>
 							
-							<p:column  headerText="% Faturado Vendedor" sortBy="#{vendas.pcinvestidovendedor}" >
+							<p:column  headerText="% Periodo" sortBy="#{vendas.pcinvestidovendedor}" >
 								<h:outputText value="#{vendas.pcinvestidovendedor}" 
 								style="font-weight:bold">
 									<f:convertNumber type="currency" currencySymbol="%" />
@@ -206,7 +241,7 @@
 							
 							<p:columnGroup type="footer">
 								<p:row>
-									<p:column colspan="2" style="text-align:right"
+									<p:column colspan="7" style="text-align:right"
 										footerText="Total Investido:" />
 									<p:column footerText="R$#{beanInvestimentoVendedor_2.valorTotalInvestido}" />
 								</p:row>
