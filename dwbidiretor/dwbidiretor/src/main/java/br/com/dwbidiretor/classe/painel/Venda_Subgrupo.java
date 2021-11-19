@@ -10,14 +10,6 @@ public class Venda_Subgrupo implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	public BigDecimal idgrupo;
-	public BigDecimal getIdgrupo() {
-		return idgrupo;
-	}
-
-	public void setIdgrupo(BigDecimal idgrupo) {
-		this.idgrupo = idgrupo;
-	}
-
 	public BigDecimal idsubgrupo;
 	public String nomesubgrupo;
 		
@@ -25,6 +17,13 @@ public class Venda_Subgrupo implements Serializable {
 	
 	public Venda_Subgrupo() {
 		super();
+	}
+	public BigDecimal getIdgrupo() {
+		return idgrupo;
+	}
+
+	public void setIdgrupo(BigDecimal idgrupo) {
+		this.idgrupo = idgrupo;
 	}
 
 	public BigDecimal getIdsubgrupo() {

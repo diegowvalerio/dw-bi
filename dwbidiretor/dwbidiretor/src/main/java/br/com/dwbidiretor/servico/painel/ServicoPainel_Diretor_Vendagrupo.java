@@ -21,4 +21,8 @@ public class ServicoPainel_Diretor_Vendagrupo implements Serializable{
 		return dao_vendagrupo.venda_grupo(ano, mes);
 	}	
 	
+	public List<Venda_Grupo> grupos(){
+		return dao_vendagrupo.grupos();
+	}
+	
 }

@@ -46,6 +46,7 @@ import br.com.dwbidiretor.classe.PedidoFase;
 import br.com.dwbidiretor.classe.PedidoItem;
 import br.com.dwbidiretor.classe.PedidosConferidos;
 import br.com.dwbidiretor.classe.PrazoPedido;
+import br.com.dwbidiretor.classe.Produto;
 import br.com.dwbidiretor.classe.RetornoAfinacao;
 import br.com.dwbidiretor.classe.TabelaPreco;
 import br.com.dwbidiretor.classe.VendaAnoMes;
@@ -137,7 +138,75 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		return nome;
 	}
 	
-	public List<MixProduto> mixprodutos(String vendedor1, String vendedor2, String gestor1, String gestor2){
+	public List<Produto> produtos(){
+		List<Produto> list = new ArrayList<>();
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				"select "
+				+ "pr.produtoid, "
+				+ "pr.REFERENCIA_PRODUTO, "
+				+ "pr.NOME_PRODUTO, "
+				+ "pr.SUBGRUPOPRODUTOID, "
+				+ "sub.GRUPOPRODUTOID "
+				+ "from produto pr "
+				+ "inner join SUBGRUPOPRODUTO sub on sub.SUBGRUPOPRODUTOID = pr.SUBGRUPOPRODUTOID "
+				+ "inner join GRUPOPRODUTO gr on gr.GRUPOPRODUTOID = sub.GRUPOPRODUTOID "
+				+ "WHERE pr.TP_PRODUTO = 'ACABADO' ");
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			Produto p = new Produto();
+			p.setProdutoid((BigDecimal)row[0]);
+			p.setReferencia((String) row[1]);
+			p.setNomeproduto((String) row[2]);
+			p.setSubgrupoid((BigDecimal)row[3]);
+			p.setGrupoid((BigDecimal) row[4]);
+			
+			list.add(p);
+		}
+		
+		return list;
+	}
+	
+	public List<Venda_Grupo> grupos(){
+		List<Venda_Grupo> list = new ArrayList<>();
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				"select "
+				+ "gr.GRUPOPRODUTOID, "
+				+ "gr.NOME_GRUPOPRODUTO "
+				+ "from GRUPOPRODUTO gr ");
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			Venda_Grupo v = new Venda_Grupo();
+			v.setIdgrupo((BigDecimal) row[0]);
+			v.setNomegrupo((String) row[1]);
+			
+			list.add(v);
+		}
+		return list;
+		
+	}
+	public List<Venda_Subgrupo> subgrupos(){
+		List<Venda_Subgrupo> list = new ArrayList<>();
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				"select "
+				+ "gr.GRUPOPRODUTOID, "
+				+ "gr.SUBGRUPOPRODUTOID, "
+				+ "gr.NOME_SUBGRUPOPRODUTO "
+				+ "from SUBGRUPOPRODUTO gr ");
+		
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			Venda_Subgrupo v = new Venda_Subgrupo();
+			v.setIdgrupo((BigDecimal) row[0]);
+			v.setIdsubgrupo((BigDecimal) row[0]);
+			v.setNomesubgrupo((String) row[2]);
+			
+			list.add(v);
+		}
+		return list;
+	}
+	
+	public List<MixProduto> mixprodutos(String vendedor1, String vendedor2, String gestor1, String gestor2, String produto1, String produto2, String grupo1, String grupo2){
 		List<MixProduto> list = new ArrayList<>();
 		
 		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
@@ -163,10 +232,15 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " inner join pedidovenda p on p.pedidovendaid = it.pedidovendaid "
 				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
 				+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
+				+ " inner join produto pr on pr.produtoid = it.produtoid "
+				+ " inner join SUBGRUPOPRODUTO sub on sub.SUBGRUPOPRODUTOID = pr.SUBGRUPOPRODUTOID "
+				+ " inner join GRUPOPRODUTO gr on gr.GRUPOPRODUTOID = sub.GRUPOPRODUTOID "
 				+ " where p.status_pedidovenda in ('FATURADO') "
 				+ " AND CF.TIPOOPERACAO_CFOP = 'VENDA'  "
 				+ " and P.VENDEDOR1ID between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 				+ " and V2.GESTORID between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+				+ " and it.produtoid between ' "+ produto1 + " ' and ' " + produto2 + " ' "
+				+ " and gr.GRUPOPRODUTOID between ' "+ grupo1 + " ' and ' " + grupo2 + " ' "
 				+ " )mixpr on mixpr.produtoid = pr.produtoid  "
 				+ " "
 				+ " "
@@ -186,11 +260,16 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " inner join pedidovenda p on p.pedidovendaid = it.pedidovendaid "
 				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
 				+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = P.VENDEDOR1ID "
+				+ " inner join produto pr on pr.produtoid = it.produtoid "
+				+ " inner join SUBGRUPOPRODUTO sub on sub.SUBGRUPOPRODUTOID = pr.SUBGRUPOPRODUTOID "
+				+ " inner join GRUPOPRODUTO gr on gr.GRUPOPRODUTOID = sub.GRUPOPRODUTOID "
 				+ " where p.status_pedidovenda in ('FATURADO') "
 				+ " and p.ORIGEM_PEDIDOVENDA <> 'SIMETRICA' "
 				+ " AND CF.TIPOOPERACAO_CFOP = 'VENDA' "
 				+ " and P.VENDEDOR1ID between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 				+ " and V2.GESTORID between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+				+ " and it.produtoid between ' "+ produto1 + " ' and ' " + produto2 + " ' "
+				+ " and gr.GRUPOPRODUTOID between ' "+ grupo1 + " ' and ' " + grupo2 + " ' "
 				+ " )MIXQTDE GROUP BY MIXQTDE.produtoid "
 				+ " )MIXQTDE ON MIXQTDE.produtoid = PR.PRODUTOID "
 				+ " "
@@ -210,10 +289,15 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " inner join pedidovenda p on p.pedidovendaid = it.pedidovendaid "
 				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
 				+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = P.VENDEDOR1ID "
+				+ " inner join produto pr on pr.produtoid = it.produtoid "
+				+ " inner join SUBGRUPOPRODUTO sub on sub.SUBGRUPOPRODUTOID = pr.SUBGRUPOPRODUTOID "
+				+ " inner join GRUPOPRODUTO gr on gr.GRUPOPRODUTOID = sub.GRUPOPRODUTOID "
 				+ " where p.status_pedidovenda in ('FATURADO') "
 				+ " AND CF.TIPOOPERACAO_CFOP = 'VENDA' "
 				+ " and P.VENDEDOR1ID between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 				+ " and V2.GESTORID between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+				+ " and it.produtoid between ' "+ produto1 + " ' and ' " + produto2 + " ' "
+				+ " and gr.GRUPOPRODUTOID between ' "+ grupo1 + " ' and ' " + grupo2 + " ' "
 				+ " )MIXVL GROUP BY MIXVL.produtoid "
 				+ " )MIXVL ON MIXVL.produtoid = PR.PRODUTOID "
 				+ " "

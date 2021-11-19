@@ -23,6 +23,7 @@ import br.com.dwbidiretor.classe.PedidoFase;
 import br.com.dwbidiretor.classe.PedidoItem;
 import br.com.dwbidiretor.classe.PedidosConferidos;
 import br.com.dwbidiretor.classe.PrazoPedido;
+import br.com.dwbidiretor.classe.Produto;
 import br.com.dwbidiretor.classe.RetornoAfinacao;
 import br.com.dwbidiretor.classe.TabelaPreco;
 import br.com.dwbidiretor.classe.VendaAnoMes;
@@ -149,7 +150,10 @@ public interface DAOGenerico<E> {
 	
 	//elias
 	public List<HCliente> hclientes(String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2);
-	public List<MixProduto> mixprodutos(String vendedor1, String vendedor2, String gestor1, String gestor2);
+	public List<MixProduto> mixprodutos(String vendedor1, String vendedor2, String gestor1, String gestor2, String produto1, String produto2, String grupo1, String grupo2);
+	public List<Produto> produtos();
+	public List<Venda_Grupo> grupos();
+	public List<Venda_Subgrupo> subgrupos();
 	
 	//painel diretor
 	public List<Diretor_01> diretor_01(String ano, String mes);

@@ -55,7 +55,7 @@ function my_ext(){
 
 		<h:form id="form">
 			
-					<p:panelGrid columns="5" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+					<p:panelGrid columns="6" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
                              layout="grid" styleClass="ui-fluid card" id="filtroscli">
 					
 					<p:outputLabel value="Gestor:" for="gestor" />
@@ -78,12 +78,42 @@ function my_ext(){
 						<p:ajax listener="#{beanMixProduto.filtragestor}" update=":form:gestor" />
 					</p:selectOneMenu>
 					
+					<p:outputLabel value="Grupo:" for="grupo" />
+					<p:selectOneMenu id="grupo"
+					value="#{beanMixProduto.grupo}"
+					converter="conversorVendaGrupo" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanMixProduto.listagrupos}"
+						var="grups" itemLabel="#{grups.idgrupo} - #{grups.nomegrupo}"
+						itemValue="#{grupo}" />
+						<p:ajax listener="#{beanMixProduto.filtraporgrupo}" update=":form:produto" />
+					</p:selectOneMenu>
 					
-					<p:commandButton action="#{beanMixProduto.filtrar()}"
-						value="Filtrar" icon="fa fa-check" update=":form:paineld :form:gqtde"
+				</p:panelGrid>	
+				
+				<p:panelGrid columns="2" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+                             layout="grid" styleClass="ui-fluid card" id="filtroscli2">
+                             	
+					<p:outputLabel value="Produto:" for="produto" />
+					<p:selectOneMenu id="produto"
+					value="#{beanMixProduto.produto}"
+					converter="conversorProduto" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanMixProduto.produtos}"
+						var="produts" itemLabel="#{produts.produtoid} || #{produts.referencia} || #{produts.nomeproduto}"
+						itemValue="#{produto}" />
+					</p:selectOneMenu>
+					
+				</p:panelGrid>
+					
+						
+				<p:panelGrid columns="1"  id="filtroscli3">
+                             
+                             <p:commandButton action="#{beanMixProduto.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld :form:gqtde :form:gvalor"
 						styleClass="btn-primary" />
-
-					</p:panelGrid>
+				
+				</p:panelGrid>
 					
 			<h:commandLink value="Excel">
 							<p:dataExporter type="xls" target="mixp" fileName="mixprodutos" pageOnly="true"/>
@@ -175,12 +205,24 @@ function my_ext(){
 						</p:dataTable>
 					</p:panelGrid>
 					
+					<p:separator></p:separator>
+										
 					<div class="row" >	
 					
 						<div class="col-md-6">
 							<div class="box box-default">
 								<div class="box-body" >
 									<p:lineChart model="#{beanMixProduto.grafico_mixqtde}" id="gqtde"/>
+								</div>
+								<!-- /.box-body -->
+							</div>
+							<!-- /.box -->
+						</div>
+						
+						<div class="col-md-6">
+							<div class="box box-default">
+								<div class="box-body" >
+									<p:lineChart model="#{beanMixProduto.grafico_mixvl}" id="gvalor"/>
 								</div>
 								<!-- /.box-body -->
 							</div>

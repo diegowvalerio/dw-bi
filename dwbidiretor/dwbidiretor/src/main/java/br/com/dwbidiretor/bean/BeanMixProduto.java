@@ -16,6 +16,7 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.hibernate.cfg.ImprovedNamingStrategy;
 import org.primefaces.model.charts.ChartData;
 import org.primefaces.model.charts.axes.cartesian.CartesianScales;
 import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
@@ -31,10 +32,14 @@ import com.bea.xml.stream.samples.Parse;
 
 import br.com.dwbidiretor.classe.Gestor;
 import br.com.dwbidiretor.classe.MixProduto;
+import br.com.dwbidiretor.classe.Produto;
 import br.com.dwbidiretor.classe.Vendedor;
+import br.com.dwbidiretor.classe.painel.Venda_Grupo;
 import br.com.dwbidiretor.servico.ServicoGestor;
 import br.com.dwbidiretor.servico.ServicoMixProduto;
+import br.com.dwbidiretor.servico.ServicoProduto;
 import br.com.dwbidiretor.servico.ServicoVendedor;
+import br.com.dwbidiretor.servico.painel.ServicoPainel_Diretor_Vendagrupo;
 
 @Named
 @ViewScoped
@@ -56,6 +61,18 @@ public class BeanMixProduto implements Serializable {
 	@Inject
 	private ServicoGestor servicogestor;
 	private List<Gestor> listagestor = new ArrayList<>();
+	
+	//filtro produto
+	private Produto produto = new Produto();
+	private List<Produto> produtos = new ArrayList<>();
+	@Inject
+	private ServicoProduto servicoproduto;
+	
+	//filtro grupo
+	private Venda_Grupo grupo = new Venda_Grupo();
+	private List<Venda_Grupo> listagrupos = new ArrayList<>();
+	@Inject
+	private ServicoPainel_Diretor_Vendagrupo servicogrupo;
 
 	private String vendedorlogado;
 	
@@ -63,8 +80,14 @@ public class BeanMixProduto implements Serializable {
 	private String vendedorfiltrado2;
 	private String gestorfiltrado;
 	private String gestorfiltrado2;
+	
+	private String produtofiltro;
+	private String produtofiltro2;
+	private String grupofiltro;
+	private String grupofiltro2;
 
 	private LineChartModel grafico_mixqtde;
+	private LineChartModel grafico_mixvl;
 	
 	@PostConstruct
 	public void init() {
@@ -115,11 +138,14 @@ public class BeanMixProduto implements Serializable {
 		
 		listavendedor = servicovendedor.consultavendedor();
 		listagestor = servicogestor.consultagestor(vendedorfiltrado,vendedorfiltrado2);
+		produtos = servicoproduto.produtos();
+		listagrupos = servicogrupo.grupos();
 		
 		session.removeAttribute("vendedor");
 		session.removeAttribute("gestor");
 		
 		geragraficomixqtde();
+		geragraficomixvl();
 		
 	}
 	
@@ -141,9 +167,29 @@ public class BeanMixProduto implements Serializable {
 			gestorfiltrado2 = gestor.getGestorid().toString();
 		}
 		
-		lista = servico.mixprodutos(vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2);
+		if (produto == null){
+			produtofiltro = "0";
+			produtofiltro2 = "999999999";
+			
+		}else{
+			produtofiltro = produto.getProdutoid().toString();
+			produtofiltro2 = produto.getProdutoid().toString();
+		}	
+		
+		if (grupo == null){
+			grupofiltro = "0";
+			grupofiltro2 = "999999";
+			
+		}else{
+			grupofiltro = grupo.getIdgrupo().toString();
+			grupofiltro2 = grupo.getIdgrupo().toString();
+		}
+		
+		
+		lista = servico.mixprodutos(vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, produtofiltro, produtofiltro2, grupofiltro, grupofiltro2);
 		
 		geragraficomixqtde();
+		geragraficomixvl();
 	}
 	
 	public void geragraficomixqtde() {
@@ -153,23 +199,18 @@ public class BeanMixProduto implements Serializable {
 		hbarDataSet.setLabel("Quantidade");
 		
 		List<Number> values = new ArrayList<>();
-		List<String> bgColor = new ArrayList<>();
 		List<String> labels = new ArrayList<>();
 		
 		values.add(getQtde2018i());
-		bgColor.add("rgba(30, 144, 255)");
 		labels.add("2018");
 		
 		values.add(getQtde2019i());
-		bgColor.add("rgba(30, 144, 255)");
 		labels.add("2019");
 		
 		values.add(getQtde2020i());
-		bgColor.add("rgba(30, 144, 255)");
 		labels.add("2020");
 		
 		values.add(getQtde2021i());
-		bgColor.add("rgba(30, 144, 255)");
 		labels.add("2021");
 		
 		hbarDataSet.setData(values);
@@ -193,6 +234,52 @@ public class BeanMixProduto implements Serializable {
         options.setScales(cScales);
 
         grafico_mixqtde.setOptions(options);
+        //grafico_mixqtde.setExtender("my_ext");
+		
+	}
+	
+	public void geragraficomixvl() {
+		grafico_mixvl = new LineChartModel();
+		ChartData data = new ChartData();
+		LineChartDataSet hbarDataSet = new LineChartDataSet();
+		hbarDataSet.setLabel("Valor");
+		
+		List<Number> values = new ArrayList<>();
+		List<String> labels = new ArrayList<>();
+		
+		values.add(getVl2018i());
+		labels.add("2018");
+		
+		values.add(getVl2019i());
+		labels.add("2019");
+		
+		values.add(getVl2020i());
+		labels.add("2020");
+		
+		values.add(getVl2021i());
+		labels.add("2021");
+		
+		hbarDataSet.setData(values);
+		hbarDataSet.setFill(true);
+		hbarDataSet.setBackgroundColor("rgba(255, 222, 173)");
+		
+		data.addChartDataSet(hbarDataSet);
+		data.setLabels(labels);
+		
+		
+		grafico_mixvl.setData(data);
+		
+		LineChartOptions options = new LineChartOptions();
+        CartesianScales cScales = new CartesianScales();
+        CartesianLinearAxes linearAxes = new CartesianLinearAxes();
+        linearAxes.setOffset(true);
+        CartesianLinearTicks ticks = new CartesianLinearTicks();
+        ticks.setBeginAtZero(true);
+        linearAxes.setTicks(ticks);
+        cScales.addXAxesData(linearAxes);
+        options.setScales(cScales);
+
+        grafico_mixvl.setOptions(options);
         //grafico_mixqtde.setExtender("my_ext");
 		
 	}
@@ -222,6 +309,35 @@ public class BeanMixProduto implements Serializable {
 		int t = 0 ;
 		for(MixProduto m:lista) {
 			t = t + m.getQtde2021().intValue();
+		}
+		return t;
+	}
+	
+	public float getVl2018i(){
+		float t = 0 ;
+		for(MixProduto m:lista) {
+			t = t + m.getVl2018().floatValue();
+		}
+		return t;
+	}
+	public float getVl2019i(){
+		float t = 0 ;
+		for(MixProduto m:lista) {
+			t = t + m.getVl2019().floatValue();
+		}
+		return t;
+	}
+	public float getVl2020i(){
+		float t = 0 ;
+		for(MixProduto m:lista) {
+			t = t + m.getVl2020().floatValue();
+		}
+		return t;
+	}
+	public float getVl2021i(){
+		float t = 0 ;
+		for(MixProduto m:lista) {
+			t = t + m.getVl2021().floatValue();
 		}
 		return t;
 	}
@@ -300,6 +416,46 @@ public class BeanMixProduto implements Serializable {
 	}
 
 	
+	public Venda_Grupo getGrupo() {
+		return grupo;
+	}
+
+	public void setGrupo(Venda_Grupo grupo) {
+		this.grupo = grupo;
+	}
+
+	public List<Venda_Grupo> getListagrupos() {
+		return listagrupos;
+	}
+
+	public void setListagrupos(List<Venda_Grupo> listagrupos) {
+		this.listagrupos = listagrupos;
+	}
+
+	public String getProdutofiltro() {
+		return produtofiltro;
+	}
+
+	public void setProdutofiltro(String produtofiltro) {
+		this.produtofiltro = produtofiltro;
+	}
+
+	public String getProdutofiltro2() {
+		return produtofiltro2;
+	}
+
+	public void setProdutofiltro2(String produtofiltro2) {
+		this.produtofiltro2 = produtofiltro2;
+	}
+
+	public LineChartModel getGrafico_mixvl() {
+		return grafico_mixvl;
+	}
+
+	public void setGrafico_mixvl(LineChartModel grafico_mixvl) {
+		this.grafico_mixvl = grafico_mixvl;
+	}
+
 	public LineChartModel getGrafico_mixqtde() {
 		return grafico_mixqtde;
 	}
@@ -396,6 +552,22 @@ public class BeanMixProduto implements Serializable {
 		this.lista = lista;
 	}
 
+	public Produto getProduto() {
+		return produto;
+	}
+
+	public void setProduto(Produto produto) {
+		this.produto = produto;
+	}
+
+	public List<Produto> getProdutos() {
+		return produtos;
+	}
+
+	public void setProdutos(List<Produto> produtos) {
+		this.produtos = produtos;
+	}
+
 	/* pegar usuario conectado */
 	public String usuarioconectado() {
 		String nome;
@@ -424,4 +596,24 @@ public class BeanMixProduto implements Serializable {
 			//listagestor = servicogestor.consultagestor(vendedorfiltrado,vendedorfiltrado2);
 		}
 	}
+	
+	public void filtraporgrupo() {
+		List<Produto> fprodutos = new ArrayList<Produto>();
+		
+		if(getGrupo() != null) {
+			for(Produto p:produtos) {
+				if(p.getGrupoid().equals(getGrupo().idgrupo)) {
+					fprodutos.add(p);
+				}
+			}
+		}
+		
+		if(fprodutos.size() > 0) {
+			produtos.clear();
+			produtos.addAll(fprodutos);
+		}else {
+			produtos = servicoproduto.produtos();
+		}
+	}
+	
 }
