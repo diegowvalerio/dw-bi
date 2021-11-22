@@ -150,7 +150,7 @@ public interface DAOGenerico<E> {
 	
 	//elias
 	public List<HCliente> hclientes(String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2);
-	public List<MixProduto> mixprodutos(String vendedor1, String vendedor2, String gestor1, String gestor2, String produto1, String produto2, String grupo1, String grupo2);
+	public List<MixProduto> mixprodutos(String vendedor1, String vendedor2, String gestor1, String gestor2, String produto1, String produto2, String grupo1, String grupo2, String subgrupo1, String subgrupo2);
 	public List<Produto> produtos();
 	public List<Venda_Grupo> grupos();
 	public List<Venda_Subgrupo> subgrupos();

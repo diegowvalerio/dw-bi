@@ -55,7 +55,7 @@ function my_ext(){
 
 		<h:form id="form">
 			
-					<p:panelGrid columns="6" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+					<p:panelGrid columns="8" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
                              layout="grid" styleClass="ui-fluid card" id="filtroscli">
 					
 					<p:outputLabel value="Gestor:" for="gestor" />
@@ -86,7 +86,18 @@ function my_ext(){
 					<f:selectItems value="#{beanMixProduto.listagrupos}"
 						var="grups" itemLabel="#{grups.idgrupo} - #{grups.nomegrupo}"
 						itemValue="#{grupo}" />
-						<p:ajax listener="#{beanMixProduto.filtraporgrupo}" update=":form:produto" />
+						<p:ajax listener="#{beanMixProduto.filtraporgrupo}" update=":form:produto :form:subgrupo" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="SubGrupo:" for="subgrupo" />
+					<p:selectOneMenu id="subgrupo"
+					value="#{beanMixProduto.subgrupo}"
+					converter="conversorVendaSubGrupo" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanMixProduto.listaSubgrupos}"
+						var="sgrups" itemLabel="#{sgrups.idsubgrupo} - #{sgrups.nomesubgrupo}"
+						itemValue="#{subgrupo}" />
+						<p:ajax listener="#{beanMixProduto.filtraporsubgrupo}" update=":form:produto :form:grupo" />
 					</p:selectOneMenu>
 					
 				</p:panelGrid>	
@@ -101,7 +112,8 @@ function my_ext(){
 					<f:selectItem itemLabel="Selecionar" />
 					<f:selectItems value="#{beanMixProduto.produtos}"
 						var="produts" itemLabel="#{produts.produtoid} || #{produts.referencia} || #{produts.nomeproduto}"
-						itemValue="#{produto}" />
+						itemValue="#{produto}" /> 
+						<p:ajax listener="#{beanMixProduto.filtraporproduto}" update=":form:subgrupo :form:grupo" />
 					</p:selectOneMenu>
 					
 				</p:panelGrid>

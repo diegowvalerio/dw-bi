@@ -198,7 +198,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		for (Object[] row : lista) {
 			Venda_Subgrupo v = new Venda_Subgrupo();
 			v.setIdgrupo((BigDecimal) row[0]);
-			v.setIdsubgrupo((BigDecimal) row[0]);
+			v.setIdsubgrupo((BigDecimal) row[1]);
 			v.setNomesubgrupo((String) row[2]);
 			
 			list.add(v);
@@ -206,7 +206,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		return list;
 	}
 	
-	public List<MixProduto> mixprodutos(String vendedor1, String vendedor2, String gestor1, String gestor2, String produto1, String produto2, String grupo1, String grupo2){
+	public List<MixProduto> mixprodutos(String vendedor1, String vendedor2, String gestor1, String gestor2, String produto1, String produto2, String grupo1, String grupo2, String subgrupo1, String subgrupo2){
 		List<MixProduto> list = new ArrayList<>();
 		
 		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
@@ -241,6 +241,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " and V2.GESTORID between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 				+ " and it.produtoid between ' "+ produto1 + " ' and ' " + produto2 + " ' "
 				+ " and gr.GRUPOPRODUTOID between ' "+ grupo1 + " ' and ' " + grupo2 + " ' "
+				+ " and sub.SUBGRUPOPRODUTOID between ' "+ subgrupo1 + " ' and ' " + subgrupo2 + " ' "
 				+ " )mixpr on mixpr.produtoid = pr.produtoid  "
 				+ " "
 				+ " "
@@ -270,6 +271,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " and V2.GESTORID between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 				+ " and it.produtoid between ' "+ produto1 + " ' and ' " + produto2 + " ' "
 				+ " and gr.GRUPOPRODUTOID between ' "+ grupo1 + " ' and ' " + grupo2 + " ' "
+				+ " and sub.SUBGRUPOPRODUTOID between ' "+ subgrupo1 + " ' and ' " + subgrupo2 + " ' "
 				+ " )MIXQTDE GROUP BY MIXQTDE.produtoid "
 				+ " )MIXQTDE ON MIXQTDE.produtoid = PR.PRODUTOID "
 				+ " "
@@ -298,6 +300,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " and V2.GESTORID between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 				+ " and it.produtoid between ' "+ produto1 + " ' and ' " + produto2 + " ' "
 				+ " and gr.GRUPOPRODUTOID between ' "+ grupo1 + " ' and ' " + grupo2 + " ' "
+				+ " and sub.SUBGRUPOPRODUTOID between ' "+ subgrupo1 + " ' and ' " + subgrupo2 + " ' "
 				+ " )MIXVL GROUP BY MIXVL.produtoid "
 				+ " )MIXVL ON MIXVL.produtoid = PR.PRODUTOID "
 				+ " "

@@ -35,10 +35,12 @@ import br.com.dwbidiretor.classe.MixProduto;
 import br.com.dwbidiretor.classe.Produto;
 import br.com.dwbidiretor.classe.Vendedor;
 import br.com.dwbidiretor.classe.painel.Venda_Grupo;
+import br.com.dwbidiretor.classe.painel.Venda_Subgrupo;
 import br.com.dwbidiretor.servico.ServicoGestor;
 import br.com.dwbidiretor.servico.ServicoMixProduto;
 import br.com.dwbidiretor.servico.ServicoProduto;
 import br.com.dwbidiretor.servico.ServicoVendedor;
+import br.com.dwbidiretor.servico.painel.ServicoPainel_Diretor_VendaSubgrupo;
 import br.com.dwbidiretor.servico.painel.ServicoPainel_Diretor_Vendagrupo;
 
 @Named
@@ -73,6 +75,12 @@ public class BeanMixProduto implements Serializable {
 	private List<Venda_Grupo> listagrupos = new ArrayList<>();
 	@Inject
 	private ServicoPainel_Diretor_Vendagrupo servicogrupo;
+	
+	//filtro Subgrupo
+	private Venda_Subgrupo subgrupo = new Venda_Subgrupo();
+	private List<Venda_Subgrupo> listaSubgrupos = new ArrayList<>();
+	@Inject
+	private ServicoPainel_Diretor_VendaSubgrupo servicoSubgrupo;
 
 	private String vendedorlogado;
 	
@@ -85,6 +93,8 @@ public class BeanMixProduto implements Serializable {
 	private String produtofiltro2;
 	private String grupofiltro;
 	private String grupofiltro2;
+	private String subgrupofiltro;
+	private String subgrupofiltro2;
 
 	private LineChartModel grafico_mixqtde;
 	private LineChartModel grafico_mixvl;
@@ -140,6 +150,7 @@ public class BeanMixProduto implements Serializable {
 		listagestor = servicogestor.consultagestor(vendedorfiltrado,vendedorfiltrado2);
 		produtos = servicoproduto.produtos();
 		listagrupos = servicogrupo.grupos();
+		listaSubgrupos = servicoSubgrupo.subgrupos();
 		
 		session.removeAttribute("vendedor");
 		session.removeAttribute("gestor");
@@ -185,8 +196,17 @@ public class BeanMixProduto implements Serializable {
 			grupofiltro2 = grupo.getIdgrupo().toString();
 		}
 		
+		if (subgrupo == null){
+			subgrupofiltro = "0";
+			subgrupofiltro2 = "999999";
+			
+		}else{
+			subgrupofiltro = subgrupo.getIdsubgrupo().toString();
+			subgrupofiltro2 = subgrupo.getIdsubgrupo().toString();
+		}
 		
-		lista = servico.mixprodutos(vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, produtofiltro, produtofiltro2, grupofiltro, grupofiltro2);
+		
+		lista = servico.mixprodutos(vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, produtofiltro, produtofiltro2, grupofiltro, grupofiltro2, subgrupofiltro, subgrupofiltro2);
 		
 		geragraficomixqtde();
 		geragraficomixvl();
@@ -416,6 +436,54 @@ public class BeanMixProduto implements Serializable {
 	}
 
 	
+	public Venda_Subgrupo getSubgrupo() {
+		return subgrupo;
+	}
+
+	public void setSubgrupo(Venda_Subgrupo subgrupo) {
+		this.subgrupo = subgrupo;
+	}
+
+	public List<Venda_Subgrupo> getListaSubgrupos() {
+		return listaSubgrupos;
+	}
+
+	public void setListaSubgrupos(List<Venda_Subgrupo> listaSubgrupos) {
+		this.listaSubgrupos = listaSubgrupos;
+	}
+
+	public String getGrupofiltro() {
+		return grupofiltro;
+	}
+
+	public void setGrupofiltro(String grupofiltro) {
+		this.grupofiltro = grupofiltro;
+	}
+
+	public String getGrupofiltro2() {
+		return grupofiltro2;
+	}
+
+	public void setGrupofiltro2(String grupofiltro2) {
+		this.grupofiltro2 = grupofiltro2;
+	}
+
+	public String getSubgrupofiltro() {
+		return subgrupofiltro;
+	}
+
+	public void setSubgrupofiltro(String subgrupofiltro) {
+		this.subgrupofiltro = subgrupofiltro;
+	}
+
+	public String getSubgrupofiltro2() {
+		return subgrupofiltro2;
+	}
+
+	public void setSubgrupofiltro2(String subgrupofiltro2) {
+		this.subgrupofiltro2 = subgrupofiltro2;
+	}
+
 	public Venda_Grupo getGrupo() {
 		return grupo;
 	}
@@ -597,13 +665,37 @@ public class BeanMixProduto implements Serializable {
 		}
 	}
 	
-	public void filtraporgrupo() {
-		List<Produto> fprodutos = new ArrayList<Produto>();
+	public void filtraporproduto() {
+		if(getProduto() != null) {
+			for(Venda_Grupo sub: listagrupos) {
+				if(getProduto().getGrupoid().equals(sub.getIdgrupo())) {
+					grupo = sub;
+				}
+			}
+			for(Venda_Subgrupo sub: listaSubgrupos) {
+				if(getProduto().getSubgrupoid().equals(sub.getIdsubgrupo())) {
+					subgrupo = sub;
+				}
+			}
+		}
+	}
+	
+	public void filtraporsubgrupo() {
 		
-		if(getGrupo() != null) {
+		List<Produto> fprodutos = new ArrayList<Produto>();
+		List<Venda_Grupo> fsubs = new ArrayList<Venda_Grupo>();
+		listagrupos = servicogrupo.grupos();
+		
+		if(getSubgrupo() != null) {
 			for(Produto p:produtos) {
-				if(p.getGrupoid().equals(getGrupo().idgrupo)) {
+				if(p.getGrupoid().equals(getSubgrupo().idgrupo)) {
 					fprodutos.add(p);
+				}
+			}
+			
+			for(Venda_Grupo sub: listagrupos) {
+				if(sub.getIdgrupo().equals(getSubgrupo().idgrupo)) {
+					fsubs.add(sub);
 				}
 			}
 		}
@@ -614,6 +706,47 @@ public class BeanMixProduto implements Serializable {
 		}else {
 			produtos = servicoproduto.produtos();
 		}
+		
+		if(fsubs.size() > 0) {
+			listagrupos.clear();
+			listagrupos.addAll(fsubs);
+			grupo = listagrupos.get(0);
+		}
+		
+	}
+	
+	public void filtraporgrupo() {
+		
+		List<Produto> fprodutos = new ArrayList<Produto>();
+		List<Venda_Subgrupo> fsubs = new ArrayList<Venda_Subgrupo>();
+		listaSubgrupos = servicoSubgrupo.subgrupos();
+		
+		if(getGrupo() != null) {
+			for(Produto p:produtos) {
+				if(p.getGrupoid().equals(getGrupo().idgrupo)) {
+					fprodutos.add(p);
+				}
+			}
+			
+			for(Venda_Subgrupo sub: listaSubgrupos) {
+				if(sub.getIdgrupo().equals(getGrupo().idgrupo)) {
+					fsubs.add(sub);
+				}
+			}
+		}
+		
+		if(fprodutos.size() > 0) {
+			produtos.clear();
+			produtos.addAll(fprodutos);
+		}else {
+			produtos = servicoproduto.produtos();
+		}
+		
+		if(fsubs.size() > 0) {
+			listaSubgrupos.clear();
+			listaSubgrupos.addAll(fsubs);
+		}
+		
 	}
 	
 }

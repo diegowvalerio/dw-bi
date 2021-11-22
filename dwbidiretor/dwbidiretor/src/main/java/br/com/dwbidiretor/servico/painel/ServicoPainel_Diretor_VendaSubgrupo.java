@@ -21,4 +21,8 @@ public class ServicoPainel_Diretor_VendaSubgrupo implements Serializable{
 		return dao_vendagrupo.venda_subgrupo(ano, mes,idgrupo);
 	}	
 	
+	public List<Venda_Subgrupo> subgrupos(){
+		return dao_vendagrupo.subgrupos();
+	}
+	
 }
