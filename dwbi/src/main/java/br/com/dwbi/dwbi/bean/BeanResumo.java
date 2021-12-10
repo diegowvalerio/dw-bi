@@ -14,6 +14,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -39,6 +40,7 @@ import br.com.dwbi.dwbi.servico.ServicoClientesNovos;
 import br.com.dwbi.dwbi.servico.ServicoMetaVenda;
 import br.com.dwbi.dwbi.servico.ServicoVendasemGeral;
 import br.com.dwbi.dwbi.servico.ServicoVendedor;
+import br.com.dwbi.dwbi.servico.ServicoSigeUsuario;
 
 @Named
 @ViewScoped
@@ -81,6 +83,10 @@ public class BeanResumo implements Serializable {
 	private ServicoCliente servicocliente;
 	private List<Cliente> listacliente = new ArrayList<>();
 	
+	
+	@Inject
+	private ServicoSigeUsuario servicousuario;
+	
 	//filtros
 	private String vendedorlogado;
 
@@ -91,9 +97,15 @@ public class BeanResumo implements Serializable {
 	private String vendedorfiltrado2;
 	private String clientefiltrado;
 	private String clientefiltrado2;
+	
+	private String latitude;
+	private String longitude;
 
 	@PostConstruct
 	public void init() {
+		SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date d = new Date();
+		servicousuario.registralog("acesso a pagina de inicio", "VENDEDOR", formatador.format(d), latitude, longitude);
 		
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
@@ -152,10 +164,18 @@ public class BeanResumo implements Serializable {
 		
 		/*gerar grafico*/
 		createAnimatedModels();
+		
 	}
 	
+	public void ipr() {
+		System.out.println("ip:"+longitude);
+		SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date d = new Date();
+		servicousuario.registralog("acesso a pagina de inicio -> IP", "VENDEDOR", formatador.format(d), latitude, longitude);
+	}
+			
 	public void filtrar(){
-	
+		
 		vendedorfiltrado = "0";
 		vendedorfiltrado2 = "999999";
 			
@@ -185,6 +205,16 @@ public class BeanResumo implements Serializable {
 		/*gerar grafico*/
 		createAnimatedModels();
 	}
+	
+	public void ajaxListener() {
+	    //System.out.println(latitude+"/"+longitude); // Look, (new) value is already set.
+	    
+	    SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date d = new Date();
+		servicousuario.registralog("acesso a pagina de inicio LOCAL", "VENDEDOR", formatador.format(d), latitude, longitude);
+	}
+	
+	
 	public List<Cliente> completaCliente(String nome) {
 		String n = nome.toUpperCase();
 		return servicocliente.consultacliente(n);
@@ -232,6 +262,22 @@ public class BeanResumo implements Serializable {
 	
 	public List<VendasEmGeral> getListabrinde() {
 		return listabrinde;
+	}
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
 	}
 
 	public void setListabrinde(List<VendasEmGeral> listabrinde) {

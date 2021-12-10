@@ -41,6 +41,7 @@ import br.com.dwbidiretor.servico.ServicoCliente;
 import br.com.dwbidiretor.servico.ServicoClientesNovos;
 import br.com.dwbidiretor.servico.ServicoGestor;
 import br.com.dwbidiretor.servico.ServicoMetaVenda;
+import br.com.dwbidiretor.servico.ServicoSigeUsuario;
 import br.com.dwbidiretor.servico.ServicoVendasemGeral;
 import br.com.dwbidiretor.servico.ServicoVendedor;
 
@@ -93,6 +94,9 @@ public class BeanResumo implements Serializable {
 	private ServicoMetaVenda servicometavenda;
 	private List<MetaVenda> listametavenda = new ArrayList<>();
 	
+	@Inject
+	private ServicoSigeUsuario servicousuario;
+	
 	//filtros
 	private String vendedorlogado;
 
@@ -121,10 +125,18 @@ public class BeanResumo implements Serializable {
 	
 	private String mes;
 	private String ano;
+	
+	private String latitude;
+	private String longitude;
+	private String aparelho;
 
 	@PostConstruct
 	public void init() {
-			
+				
+		SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date d = new Date();
+		//servicousuario.registralog("acesso a pagina de inicio", "DIRETOR", formatador.format(d), latitude, longitude);
+					
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
 		data_grafico =c.getTime();
@@ -194,6 +206,13 @@ public class BeanResumo implements Serializable {
 		createAnimatedModels();
 	}
 	
+	public void ipr() {
+		System.out.println("ip:"+longitude+" aparelho:"+aparelho);
+		SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date d = new Date();
+		servicousuario.registralog("acesso a pagina de inicio -> IP", "DIRETOR", formatador.format(d), latitude, longitude,aparelho);
+	}
+	
 	public void filtrar(){
 		if (vendedor == null){
 			vendedorfiltrado = "0";
@@ -239,9 +258,34 @@ public class BeanResumo implements Serializable {
 		/*gerar grafico*/
 		createAnimatedModels();
 	}
+	
 	public List<Cliente> completaCliente(String nome) {
 		String n = nome.toUpperCase();
 		return servicocliente.consultacliente(n);
+	}
+
+	public String getAparelho() {
+		return aparelho;
+	}
+
+	public void setAparelho(String aparelho) {
+		this.aparelho = aparelho;
+	}
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
 	}
 
 	public List<VendasEmGeral> getListabonificacaoexpositor() {

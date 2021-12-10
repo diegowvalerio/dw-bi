@@ -50,17 +50,9 @@
 
 		<h:form id="form">
 			
-					<p:panelGrid columns="7" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+					<p:panelGrid columns="5" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
                              layout="grid" styleClass="ui-fluid card" id="filtroscli">
 					
-					<p:outputLabel value="Gestor:" for="gestor" />
-					<p:selectOneMenu id="gestor" value="#{beanHCliente.gestor}"
-						converter="conversorGestor">
-						<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
-						<f:selectItems value="#{beanHCliente.listagestor}" var="gestor"
-							itemLabel="#{gestor.nomegestor}"
-							itemValue="#{gestor}" />
-					</p:selectOneMenu>
 						
 					<p:outputLabel value="Vendedor:" for="vendedor" />
 					<p:selectOneMenu id="vendedor"
@@ -70,7 +62,6 @@
 					<f:selectItems value="#{beanHCliente.listavendedor}"
 						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
 						itemValue="#{vendedor}" />
-						<p:ajax listener="#{beanHCliente.filtragestor}" update=":form:gestor" />
 					</p:selectOneMenu>
 					
 					<p:outputLabel value="Cliente" for="cliente" />
@@ -101,10 +92,6 @@
 						<p:dataTable id="hcliente" var="clientes"  scrollHeight="600" style="font-size:12px; border-color: black;"
 							value="#{beanHCliente.lista}" scrollable="true" rowStyleClass="#{clientes.status == 'ATIVO' ? 'color_ativo' : null or clientes.status == 'SEMI-ATIVO' ? 'color_semiativo' : null or clientes.status == 'INATIVO' ? 'color_inativo' : null}" >
 							
-							 					 
-           					<p:column headerText="Gestor" width="60" style="border-color: black;">
-                				<h:outputText value="#{clientes.gestor}" />
-            				</p:column>
             				
             				<p:column headerText="Cód. Vend"  width="20" style="border-color: black;">
 								<h:outputText value="#{clientes.codigovendedor}" />

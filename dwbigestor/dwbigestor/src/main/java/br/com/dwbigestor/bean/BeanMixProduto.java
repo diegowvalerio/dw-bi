@@ -1,4 +1,4 @@
-package br.com.dwbidiretor.bean;
+package br.com.dwbigestor.bean;
 
 import java.awt.Color;
 import java.io.Serializable;
@@ -30,20 +30,18 @@ import org.w3c.dom.css.RGBColor;
 
 import com.bea.xml.stream.samples.Parse;
 
-import br.com.dwbidiretor.classe.Cliente;
-import br.com.dwbidiretor.classe.Gestor;
-import br.com.dwbidiretor.classe.MixProduto;
-import br.com.dwbidiretor.classe.Produto;
-import br.com.dwbidiretor.classe.Vendedor;
-import br.com.dwbidiretor.classe.painel.Venda_Grupo;
-import br.com.dwbidiretor.classe.painel.Venda_Subgrupo;
-import br.com.dwbidiretor.servico.ServicoCliente;
-import br.com.dwbidiretor.servico.ServicoGestor;
-import br.com.dwbidiretor.servico.ServicoMixProduto;
-import br.com.dwbidiretor.servico.ServicoProduto;
-import br.com.dwbidiretor.servico.ServicoVendedor;
-import br.com.dwbidiretor.servico.painel.ServicoPainel_Diretor_VendaSubgrupo;
-import br.com.dwbidiretor.servico.painel.ServicoPainel_Diretor_Vendagrupo;
+import br.com.dwbigestor.classe.Cliente;
+import br.com.dwbigestor.classe.MixProduto;
+import br.com.dwbigestor.classe.Produto;
+import br.com.dwbigestor.classe.Vendedor;
+import br.com.dwbigestor.classe.Venda_Grupo;
+import br.com.dwbigestor.classe.Venda_Subgrupo;
+import br.com.dwbigestor.servico.ServicoCliente;
+import br.com.dwbigestor.servico.ServicoMixProduto;
+import br.com.dwbigestor.servico.ServicoProduto;
+import br.com.dwbigestor.servico.ServicoVendedor;
+import br.com.dwbigestor.servico.ServicoPainel_Diretor_VendaSubgrupo;
+import br.com.dwbigestor.servico.ServicoPainel_Diretor_Vendagrupo;
 
 @Named
 @ViewScoped
@@ -59,12 +57,6 @@ public class BeanMixProduto implements Serializable {
 	@Inject
 	private ServicoVendedor servicovendedor;
 	private List<Vendedor> listavendedor = new ArrayList<>();
-	
-	//filtro gestor
-	private Gestor gestor = new Gestor();
-	@Inject
-	private ServicoGestor servicogestor;
-	private List<Gestor> listagestor = new ArrayList<>();
 	
 	//filtro produto
 	private Produto produto = new Produto();
@@ -135,30 +127,9 @@ public class BeanMixProduto implements Serializable {
 			vendedorfiltrado = vendedor.getCodigovendedor().toString();
 			vendedorfiltrado2 = vendedor.getCodigovendedor().toString();
 		}
-		//verifica filtro gestor
-		if (session.getAttribute("gestor") != null){
-			gestor = (Gestor) session.getAttribute("gestor");
-			if (gestor == null){
-				gestorfiltrado = "0";
-				gestorfiltrado2 = "999999";
-				
-			}else{
-				gestorfiltrado = gestor.getGestorid().toString();
-				gestorfiltrado2 = gestor.getGestorid().toString();
-			}
-		}
-		if (gestor.getGestorid() == null){
-			gestorfiltrado = "0";
-			gestorfiltrado2 = "999999";
-			
-		}else{
-			gestorfiltrado = gestor.getGestorid().toString();
-			gestorfiltrado2 = gestor.getGestorid().toString();
-		}//fim filtro gestor
 		
 		
 		listavendedor = servicovendedor.consultavendedor();
-		listagestor = servicogestor.consultagestor(vendedorfiltrado,vendedorfiltrado2);
 		produtos = servicoproduto.produtos();
 		listagrupos = servicogrupo.grupos();
 		listaSubgrupos = servicoSubgrupo.subgrupos();
@@ -180,14 +151,6 @@ public class BeanMixProduto implements Serializable {
 		}else{
 			vendedorfiltrado = vendedor.getCodigovendedor().toString();
 			vendedorfiltrado2 = vendedor.getCodigovendedor().toString();
-		}
-		if (gestor == null){
-			gestorfiltrado = "0";
-			gestorfiltrado2 = "999999";
-			
-		}else{
-			gestorfiltrado = gestor.getGestorid().toString();
-			gestorfiltrado2 = gestor.getGestorid().toString();
 		}
 		
 		if (produto == null){
@@ -585,22 +548,6 @@ public class BeanMixProduto implements Serializable {
 		this.grafico_mixqtde = grafico_mixqtde;
 	}
 
-	public Gestor getGestor() {
-		return gestor;
-	}
-
-	public void setGestor(Gestor gestor) {
-		this.gestor = gestor;
-	}
-
-	public List<Gestor> getListagestor() {
-		return listagestor;
-	}
-
-	public void setListagestor(List<Gestor> listagestor) {
-		this.listagestor = listagestor;
-	}
-
 	public String getGestorfiltrado() {
 		return gestorfiltrado;
 	}
@@ -703,20 +650,6 @@ public class BeanMixProduto implements Serializable {
 		return nome;
 	}
 	
-	public void filtragestor() {
-		if (getVendedor() != null){
-			List<Gestor> listagestorf = new ArrayList<>();
-			gestor = new Gestor();
-			listagestorf = servicogestor.consultagestor(getVendedor().getCodigovendedor().toString(),getVendedor().getCodigovendedor().toString());
-			if(listagestorf.size()>0) {
-				gestor = listagestorf.get(0);
-			}
-		}else{
-			//listagestor = new ArrayList<>();
-			gestor = new Gestor();
-			//listagestor = servicogestor.consultagestor(vendedorfiltrado,vendedorfiltrado2);
-		}
-	}
 	
 	public void filtraporproduto() {
 		if(getProduto() != null) {

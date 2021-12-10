@@ -1,4 +1,4 @@
-package br.com.dwbidiretor.classe;
+package br.com.dwbigestor.classe;
 
 import java.io.Serializable;
 import java.lang.String;

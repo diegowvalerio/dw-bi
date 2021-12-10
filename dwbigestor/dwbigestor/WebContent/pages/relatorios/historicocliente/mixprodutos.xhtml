@@ -55,18 +55,9 @@ function my_ext(){
 
 		<h:form id="form">
 			
-					<p:panelGrid columns="8" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+					<p:panelGrid columns="6" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
                              layout="grid" styleClass="ui-fluid card" id="filtroscli">
 					
-					<p:outputLabel value="Gestor:" for="gestor" />
-					<p:selectOneMenu id="gestor" value="#{beanMixProduto.gestor}"
-						converter="conversorGestor">
-						<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
-						<f:selectItems value="#{beanMixProduto.listagestor}" var="gestor"
-							itemLabel="#{gestor.nomegestor}"
-							itemValue="#{gestor}" />
-					</p:selectOneMenu>
-						
 					<p:outputLabel value="Vendedor:" for="vendedor" />
 					<p:selectOneMenu id="vendedor"
 					value="#{beanMixProduto.vendedor}"
@@ -75,7 +66,6 @@ function my_ext(){
 					<f:selectItems value="#{beanMixProduto.listavendedor}"
 						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
 						itemValue="#{vendedor}" />
-						<p:ajax listener="#{beanMixProduto.filtragestor}" update=":form:gestor" />
 					</p:selectOneMenu>
 					
 					<p:outputLabel value="Grupo:" for="grupo" />

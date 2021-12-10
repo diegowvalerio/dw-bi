@@ -6,7 +6,7 @@
 	xmlns:adm="http://github.com/adminfaces"
 	template="/WEB-INF/templates/template.xhtml">
 
-	<ui:define name="head-end">
+	<ui:define name="head-end">	
 		<style type="text/css">
 .ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
 	padding: 0.5em 0;
@@ -22,6 +22,42 @@
 	padding: 0;
 }
 </style>
+<script type="text/javascript">
+
+function checkDevice() { 
+	 if( navigator.userAgent.match(/Android/i)
+	 || navigator.userAgent.match(/webOS/i)
+	 || navigator.userAgent.match(/iPhone/i)
+	 || navigator.userAgent.match(/iPad/i)
+	 || navigator.userAgent.match(/iPod/i)
+	 || navigator.userAgent.match(/BlackBerry/i)
+	 || navigator.userAgent.match(/Windows Phone/i)
+	 ){
+		 document.getElementById("form:aparelho").value = "mobile"; // está utilizando celular
+	  }
+	 else {
+		 document.getElementById("form:aparelho").value = "desktop"; // não é celular
+	  }
+	}
+	
+async function getIP() {
+    try {
+        const res = await fetch('https://api.ipify.org?format=json');
+        const jsonObj = (res.json()).then(data => document.getElementById("form:ipr").value = data.ip);
+    } catch (err) {
+    	document.getElementById("form:ipr").value = err;
+        
+    }  
+    checkDevice();
+    rc();
+    document.getElementById('form:plocalip').style.display = "none";
+}
+
+getIP();
+
+
+
+</script>
 	</ui:define>
 
 	<ui:define name="title">
@@ -35,7 +71,15 @@
 	<ui:define name="body">
 		
 		<adm:breadcrumb title="Resumo" />
+		
 		<h:form id="form">
+		
+		<p:panel id="plocalip">
+			<p:inputText id="ipr" value="#{beanResumo.longitude}" />
+			<p:inputText id="aparelho" value="#{beanResumo.aparelho}" />
+			<p:remoteCommand name="rc"  delay="1000" process="@parent" action="#{beanResumo.ipr()}"></p:remoteCommand>
+		</p:panel>
+		
 		<span class="info-box-text">Dados a partir de : 01/04/2018</span>
 		
 			<section class="content">

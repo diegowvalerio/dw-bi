@@ -15,5 +15,6 @@ public interface DAOSIGEGenerico<E> {
 	public boolean excluir(Integer id);
 	
 	public List<SigeUsuario> consultar();
+	public void registralog(String conteudo, String pagina, String data, String latitude, String longetude);
 	
 }

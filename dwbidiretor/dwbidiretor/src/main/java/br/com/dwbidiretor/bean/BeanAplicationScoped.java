@@ -32,6 +32,9 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import br.com.dwbidiretor.classe.NotasClienteEmail;
 import br.com.dwbidiretor.servico.ServicoNotasClienteEmail;
 
@@ -76,6 +79,41 @@ public class BeanAplicationScoped implements Serializable {
 		};
 		timer.scheduleAtFixedRate(tarefa, 0, 1000);
 		
+	}
+	
+	public void  registralog(String conteudo, String pagina, String data) {
+		
+		try {
+			Connection conexaoSige = ObterConexaoSige();
+
+			Statement statement = conexaoSige.createStatement();
+			String query = "INSERT INTO dwbi_log(usuario,conteudo,tipo,datahora) values('"+usuarioconectado()+"', '"+conteudo+"', '"+pagina+"', '"+data.toString()+"') "
+					       +" SELECT idlogin,usuario,senha from dwbi_login where usuario = '"+ usuarioconectado() +"'" ;
+			
+			statement.executeQuery(query);
+			statement.closeOnCompletion();
+			conexaoSige.close();
+			
+			System.out.println("ok");
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		
+		System.out.println("ok 2");
+		
+	}
+	
+	public String usuarioconectado() {
+		String nome;
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		if (principal instanceof UserDetails) {
+			nome = ((UserDetails) principal).getUsername();
+		} else {
+			nome = principal.toString();
+		}
+		 System.out.println(nome);
+		return nome;
 	}
 	
 	public void enviaemail() {
@@ -475,6 +513,19 @@ public class BeanAplicationScoped implements Serializable {
 			return conexao;
 		}
 	
+		
+	private static Connection ObterConexaoSige() {
+			Connection conexao = null;
+			try {
+				Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+				conexao = DriverManager.getConnection("jdbc:sqlserver://SIGE\\SQLEXPRESS:1433;databaseName=SATLBASE;user=DBCLIENTE;password=@rv0re24Xcv");
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return conexao;
+		}
 	/* pegar chamar o timer do scoped */
 	public String teste() {
 		

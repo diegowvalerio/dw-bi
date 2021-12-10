@@ -34,6 +34,5 @@ public interface DAOSIGEGenerico<E> {
 	public E salvar_acesso(E e);
 	public E excluir_acesso(E e);
 	
-	
-	
+	public void registralog(String conteudo, String pagina, String data, String latitude, String longetude, String aparelho);
 }

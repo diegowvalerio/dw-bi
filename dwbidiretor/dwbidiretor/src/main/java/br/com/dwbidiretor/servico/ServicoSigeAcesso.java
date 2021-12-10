@@ -30,6 +30,6 @@ public class ServicoSigeAcesso implements Serializable{
 	public SigeAcesso excluir_acesso(SigeAcesso e){
 		return dao.excluir_acesso(e);
 	}
-	
+		
 	
 }

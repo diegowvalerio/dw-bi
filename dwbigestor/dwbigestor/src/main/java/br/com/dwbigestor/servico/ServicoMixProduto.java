@@ -1,4 +1,4 @@
-package br.com.dwbidiretor.servico;
+package br.com.dwbigestor.servico;
 
 import java.io.Serializable;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import br.com.dwbidiretor.classe.MixProduto;
-import br.com.dwbidiretor.dao.DAOMixProduto;
+import br.com.dwbigestor.classe.MixProduto;
+import br.com.dwbigestor.dao.DAOMixProduto;
 
 @Dependent
 public class ServicoMixProduto implements Serializable{

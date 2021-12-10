@@ -27,6 +27,7 @@ import org.primefaces.model.chart.ChartSeries;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import br.com.dwbigestor.servico.ServicoSigeUsuario;
 import br.com.dwbigestor.classe.Cliente;
 import br.com.dwbigestor.classe.ClientesNovos;
 import br.com.dwbigestor.classe.MetaVenda;
@@ -82,6 +83,9 @@ public class BeanResumo implements Serializable {
 	private ServicoMetaVenda servicometavenda;
 	private List<MetaVenda> listametavenda = new ArrayList<>();
 	
+	@Inject
+	private ServicoSigeUsuario servicousuario;
+	
 	//filtros
 	private String vendedorlogado;
 
@@ -103,9 +107,17 @@ public class BeanResumo implements Serializable {
 	private float tot_trocadefeito;
 	private float tot_trocanegocio;
 	private float tot_venda;
+	
+	private String latitude;
+	private String longitude;
 
 	@PostConstruct
 	public void init() {
+		
+		SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date d = new Date();
+		servicousuario.registralog("acesso a pagina de inicio", "GESTOR", formatador.format(d), latitude, longitude);
+		
 		
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
@@ -165,6 +177,13 @@ public class BeanResumo implements Serializable {
 		createAnimatedModels();
 	}
 	
+	public void ipr() {
+		System.out.println("ip:"+longitude);
+		SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date d = new Date();
+		servicousuario.registralog("acesso a pagina de inicio -> IP", "GESTOR", formatador.format(d), latitude, longitude);
+	}
+	
 	public void filtrar(){
 		if (vendedor == null){
 			vendedorfiltrado = "0";
@@ -200,11 +219,36 @@ public class BeanResumo implements Serializable {
 		/*gerar grafico*/
 		createAnimatedModels();
 	}
+	
+	public void ajaxListener() {
+	    //System.out.println(latitude+"/"+longitude); // Look, (new) value is already set.
+	    
+	    SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date d = new Date();
+		servicousuario.registralog("acesso a pagina de inicio LOCAL", "GESTOR", formatador.format(d), latitude, longitude);
+	}
+	
 	public List<Cliente> completaCliente(String nome) {
 		String n = nome.toUpperCase();
 		return servicocliente.consultacliente(n);
 	}
 	
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+
 	public List<VendasEmGeral> getListafaturamento() {
 		return listafaturamento;
 	}

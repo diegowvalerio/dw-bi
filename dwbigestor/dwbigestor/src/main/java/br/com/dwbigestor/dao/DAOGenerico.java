@@ -5,6 +5,11 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import br.com.dwbigestor.classe.HCliente;
+import br.com.dwbigestor.classe.MixProduto;
+import br.com.dwbigestor.classe.Produto;
+import br.com.dwbigestor.classe.Venda_Grupo;
+import br.com.dwbigestor.classe.Venda_Subgrupo;
 import br.com.dwbigestor.classe.Cliente;
 import br.com.dwbigestor.classe.ClientesNovos;
 import br.com.dwbigestor.classe.MetaVenda;
@@ -80,4 +85,12 @@ public interface DAOGenerico<E> {
 	
 	public List<Cliente> consultacliente(String palavra);
 	
+	//elias
+	public List<HCliente> hclientes(String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2);
+	public List<MixProduto> mixprodutos(String vendedor1, String vendedor2, String gestor1, String gestor2, String produto1, String produto2, String grupo1, String grupo2, String subgrupo1, String subgrupo2,String cliente1, String cliente2);
+	public List<Produto> produtos();
+	public List<Venda_Grupo> grupos();
+	public List<Venda_Subgrupo> subgrupos();
+	public List<Cliente> clientes();
+
 }

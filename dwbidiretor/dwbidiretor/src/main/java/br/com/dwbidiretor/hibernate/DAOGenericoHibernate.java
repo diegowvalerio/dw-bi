@@ -206,7 +206,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		return list;
 	}
 	
-	public List<MixProduto> mixprodutos(String vendedor1, String vendedor2, String gestor1, String gestor2, String produto1, String produto2, String grupo1, String grupo2, String subgrupo1, String subgrupo2){
+	public List<MixProduto> mixprodutos(String vendedor1, String vendedor2, String gestor1, String gestor2, String produto1, String produto2, String grupo1, String grupo2, String subgrupo1, String subgrupo2,String cliente1, String cliente2){
 		List<MixProduto> list = new ArrayList<>();
 		
 		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
@@ -242,6 +242,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " and it.produtoid between ' "+ produto1 + " ' and ' " + produto2 + " ' "
 				+ " and gr.GRUPOPRODUTOID between ' "+ grupo1 + " ' and ' " + grupo2 + " ' "
 				+ " and sub.SUBGRUPOPRODUTOID between ' "+ subgrupo1 + " ' and ' " + subgrupo2 + " ' "
+				+ " and p.cadcftvid between ' "+ cliente1 + " ' and ' " + cliente2 + " ' "
 				+ " )mixpr on mixpr.produtoid = pr.produtoid  "
 				+ " "
 				+ " "
@@ -272,6 +273,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " and it.produtoid between ' "+ produto1 + " ' and ' " + produto2 + " ' "
 				+ " and gr.GRUPOPRODUTOID between ' "+ grupo1 + " ' and ' " + grupo2 + " ' "
 				+ " and sub.SUBGRUPOPRODUTOID between ' "+ subgrupo1 + " ' and ' " + subgrupo2 + " ' "
+				+ " and p.cadcftvid between ' "+ cliente1 + " ' and ' " + cliente2 + " ' "
 				+ " )MIXQTDE GROUP BY MIXQTDE.produtoid "
 				+ " )MIXQTDE ON MIXQTDE.produtoid = PR.PRODUTOID "
 				+ " "
@@ -301,6 +303,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " and it.produtoid between ' "+ produto1 + " ' and ' " + produto2 + " ' "
 				+ " and gr.GRUPOPRODUTOID between ' "+ grupo1 + " ' and ' " + grupo2 + " ' "
 				+ " and sub.SUBGRUPOPRODUTOID between ' "+ subgrupo1 + " ' and ' " + subgrupo2 + " ' "
+				+ " and p.cadcftvid between ' "+ cliente1 + " ' and ' " + cliente2 + " ' "
 				+ " )MIXVL GROUP BY MIXVL.produtoid "
 				+ " )MIXVL ON MIXVL.produtoid = PR.PRODUTOID "
 				+ " "
@@ -412,14 +415,20 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " freq.vendas, "
 				+ " freq.primeira, "
 				+ " freq.ultima, "
-				+ " freq.frequencia "
+				+ " freq.frequencia, "
+				+ " C.CNPJCPF_CADCFTV cnpjcpf, "
+				+ " en.BAIRRO_ENDCADCFTV bairro, "
+				+ " case when round(sysdate - freq.ultima) < = 90 then 'ATIVO' "
+				+ " when round(sysdate - freq.ultima) > 90 and round(sysdate - freq.ultima) < = 180 then 'SEMI-ATIVO' "
+				+ " when round(sysdate - freq.ultima) > 180 then 'INATIVO' "
+				+ " ELSE 'INATIVO' END AS STATUS "
 				
 				+ " FROM CADCFTV C "
 				+ " INNER JOIN CLIENTE CL ON CL.CADCFTVID = C.CADCFTVID "
 				+ " INNER JOIN CADCFTV V ON V.CADCFTVID = CL.VENDEDORID1 "
 				+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = CL.VENDEDORID1 "
 				+ "  INNER JOIN GESTOR G ON G.GESTORID = V2.GESTORID "
-				+ " LEFT join (SELECT V.CADCFTVID,CI.UF_CIDADE, ci.nome_cidade, V.END_ENDCADCFTV, V.CEP_ENDCADCFTV, V.NRO_ENDCADCFTV FROM ENDCADCFTV V "
+				+ " LEFT join (SELECT V.CADCFTVID,CI.UF_CIDADE, ci.nome_cidade, V.END_ENDCADCFTV, V.CEP_ENDCADCFTV, V.NRO_ENDCADCFTV, V.BAIRRO_ENDCADCFTV FROM ENDCADCFTV V "
 				+ " inner join( SELECT max(ENDCADCFTVID) d , CADCFTVID cod FROM ENDCADCFTV  "
 				+ " group by cadcftvid )x on x.d = v.ENDCADCFTVID and x.cod = v.CADCFTVID "
 				+ " INNER JOIN CIDADE CI ON CI.CIDADEID = V.CIDADEID ) EN ON EN.CADCFTVID = c.CADCFTVID "
@@ -774,6 +783,9 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			hCliente.setPrimeiravenda((Date) row[67]);
 			hCliente.setUltimavenda((Date) row[68]);
 			hCliente.setFrequenciamedia((BigDecimal) row[69]);
+			hCliente.setCnpjcpf((String) row[70]);
+			hCliente.setBairro((String) row[71]);
+			hCliente.setStatus((String) row[72]);
 			
 			list.add(hCliente);
 		}
@@ -4184,6 +4196,36 @@ public List<Cliente> consultacliente(String palavra) {
 			list.add(cliente);
 		}
 		return list;
+}
+
+public List<Cliente> clientes() {
+	List<Cliente> list = new ArrayList<>();
+
+	javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+					" SELECT " 
+					+ " V.CADCFTVID cliente, " 
+					+ " v.NOME_CADCFTV nome_cliente, "
+					+ " v.CNPJCPF_CADCFTV cnpj_cpf "  
+					
+					+ " from cadcftv v "
+					//+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  " + usuarioconectado()
+					//+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
+					+ " INNER JOIN CLIENTE V2 ON V2.CADCFTVID = V.CADCFTVID "						
+					+ " WHERE v.ATIVO_CADCFTV = 'SIM' AND v.FUNCAO_PRINCIPAL_CADCFTV = 'CLIENTE' "
+					+ " order by v.cadcftvid ");
+
+	List<Object[]> lista = query.getResultList();
+
+	for (Object[] row : lista) {
+		Cliente cliente = new Cliente();
+
+		cliente.setCodigocliente((BigDecimal) row[0]);
+		cliente.setNomecliente((String) row[1]);
+		cliente.setCpfcnpj((String) row[2]);
+		
+		list.add(cliente);
+	}
+	return list;
 }
 	
 	public List<Gestor> consultagestor(String vendedor1, String vendedor2) {

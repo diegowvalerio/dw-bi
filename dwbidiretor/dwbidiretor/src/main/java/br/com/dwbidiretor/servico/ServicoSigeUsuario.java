@@ -41,4 +41,7 @@ public class ServicoSigeUsuario implements Serializable{
 		dao.salvar(usuario);
 	}
 	
+	public void registralog(String conteudo, String pagina, String data, String latitude, String longetude, String aparelho){
+		dao.registralog(conteudo, pagina, data, latitude, longetude, aparelho);
+	}
 }
