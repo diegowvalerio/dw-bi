@@ -135,7 +135,7 @@ public class BeanResumo implements Serializable {
 				
 		SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		Date d = new Date();
-		//servicousuario.registralog("acesso a pagina de inicio", "DIRETOR", formatador.format(d), latitude, longitude);
+		//servicousuario.registralog("acesso a pagina de inicio", "DIRETOR", formatador.format(d), latitude, longitude,aparelho);
 					
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
@@ -210,7 +210,7 @@ public class BeanResumo implements Serializable {
 		System.out.println("ip:"+longitude+" aparelho:"+aparelho);
 		SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		Date d = new Date();
-		servicousuario.registralog("acesso a pagina de inicio -> IP", "DIRETOR", formatador.format(d), latitude, longitude,aparelho);
+		//servicousuario.registralog("acesso a pagina de inicio -> IP", "DIRETOR", formatador.format(d), latitude, longitude,aparelho);
 	}
 	
 	public void filtrar(){

@@ -85,7 +85,7 @@ getIP();
 							<p:watermark value="Digite Nome ou Código" for="cliente"></p:watermark>
 						</h:panelGroup>
 
-					<p:commandButton action="#{beanResumo.filtrar()}" value="Filtrar"
+					<p:commandButton action="#{beanResumo.filtrar()}" value="Filtrar" oncomplete="getIP()"
 						icon="fa fa-check" update=":form" styleClass="btn-primary" />
 				</p:panelGrid>
 

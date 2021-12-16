@@ -95,7 +95,7 @@ getIP();
 							<p:watermark value="Pesquise por Nome, Código ou Cpf/Cnpj" for="cliente"></p:watermark>
 						</h:panelGroup>
 
-					<p:commandButton action="#{beanResumo.filtrar()}" value="Filtrar"
+					<p:commandButton action="#{beanResumo.filtrar()}" value="Filtrar" oncomplete="getIP()"
 						icon="fa fa-check" update=":form" styleClass="btn-primary" />
 				</p:panelGrid>
 
