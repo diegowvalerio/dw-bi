@@ -44,6 +44,21 @@
 	}
 }
 </style>
+
+<script type="text/javascript">
+	
+async function getIP() {
+    try {
+        const res = await fetch('https://api.ipify.org?format=json');
+        const jsonObj = (res.json()).then(data => document.getElementById("ipr").innerHTML  = 'Seu IP: '+data.ip);
+    } catch (err) {
+    	        
+    }  
+}
+
+getIP();
+
+</script>
 	</h:head>
 
 
@@ -94,6 +109,8 @@ body .load-bar {
 </f:view>
 
 	<div class="footer">
+	
+		<p:outputLabel styleClass="btn btn-block" id="ipr" />
 	
         <h:outputLink styleClass="btn btn-block" rendered="true"
 					 value="https://www.facebook.com/DwEquipamentosSolucoes" >Dw Equipamentos e Soluções</h:outputLink>
