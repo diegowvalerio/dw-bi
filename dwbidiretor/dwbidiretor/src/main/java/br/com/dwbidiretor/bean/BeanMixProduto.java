@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -110,8 +112,14 @@ public class BeanMixProduto implements Serializable {
 	private LineChartModel grafico_mixqtde;
 	private LineChartModel grafico_mixvl;
 	
+	private Date data_grafico = new Date();
+	private Date data_grafico2 = new Date();
+	
 	@PostConstruct
 	public void init() {
+		GregorianCalendar gc= new GregorianCalendar();
+		gc.set(2000, 00, 01);
+		data_grafico.setTime(gc.getTimeInMillis());
 		
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
 				.getRequest();
@@ -227,7 +235,7 @@ public class BeanMixProduto implements Serializable {
 		}
 		
 		
-		lista = servico.mixprodutos(vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, produtofiltro, produtofiltro2, grupofiltro, grupofiltro2, subgrupofiltro, subgrupofiltro2, clientefiltrado, clientefiltrado2);
+		lista = servico.mixprodutos(vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, produtofiltro, produtofiltro2, grupofiltro, grupofiltro2, subgrupofiltro, subgrupofiltro2, clientefiltrado, clientefiltrado2,data_grafico, data_grafico2);
 		
 		geragraficomixqtde();
 		geragraficomixvl();
@@ -253,6 +261,9 @@ public class BeanMixProduto implements Serializable {
 		
 		values.add(getQtde2021i());
 		labels.add("2021");
+		
+		values.add(getQtde2022i());
+		labels.add("2022");
 		
 		hbarDataSet.setData(values);
 		hbarDataSet.setFill(true);
@@ -299,6 +310,9 @@ public class BeanMixProduto implements Serializable {
 		
 		values.add(getVl2021i());
 		labels.add("2021");
+		
+		values.add(getVl2022i());
+		labels.add("2022");
 		
 		hbarDataSet.setData(values);
 		hbarDataSet.setFill(true);
@@ -353,7 +367,13 @@ public class BeanMixProduto implements Serializable {
 		}
 		return t;
 	}
-	
+	public int getQtde2022i(){
+		int t = 0 ;
+		for(MixProduto m:lista) {
+			t = t + m.getQtde2022().intValue();
+		}
+		return t;
+	}
 	public float getVl2018i(){
 		float t = 0 ;
 		for(MixProduto m:lista) {
@@ -382,7 +402,13 @@ public class BeanMixProduto implements Serializable {
 		}
 		return t;
 	}
-	
+	public float getVl2022i(){
+		float t = 0 ;
+		for(MixProduto m:lista) {
+			t = t + m.getVl2022().floatValue();
+		}
+		return t;
+	}
 	
 	public String getQtde2018(){
 		int t = 0 ;
@@ -409,6 +435,13 @@ public class BeanMixProduto implements Serializable {
 		int t = 0 ;
 		for(MixProduto m:lista) {
 			t = t + m.getQtde2021().intValue();
+		}
+		return NumberFormat.getNumberInstance().format(t);
+	}
+	public String getQtde2022(){
+		int t = 0 ;
+		for(MixProduto m:lista) {
+			t = t + m.getQtde2022().intValue();
 		}
 		return NumberFormat.getNumberInstance().format(t);
 	}
@@ -445,6 +478,13 @@ public class BeanMixProduto implements Serializable {
 		float t = 0 ;
 		for(MixProduto m:lista) {
 			t = t + m.getVl2021().floatValue();
+		}
+		return NumberFormat.getCurrencyInstance().format(t);
+	}
+	public String getVl2022(){
+		float t = 0 ;
+		for(MixProduto m:lista) {
+			t = t + m.getVl2022().floatValue();
 		}
 		return NumberFormat.getCurrencyInstance().format(t);
 	}
@@ -687,6 +727,22 @@ public class BeanMixProduto implements Serializable {
 
 	public void setProdutos(List<Produto> produtos) {
 		this.produtos = produtos;
+	}
+
+	public Date getData_grafico() {
+		return data_grafico;
+	}
+
+	public void setData_grafico(Date data_grafico) {
+		this.data_grafico = data_grafico;
+	}
+
+	public Date getData_grafico2() {
+		return data_grafico2;
+	}
+
+	public void setData_grafico2(Date data_grafico2) {
+		this.data_grafico2 = data_grafico2;
 	}
 
 	/* pegar usuario conectado */

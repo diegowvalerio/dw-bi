@@ -78,6 +78,21 @@ public class HCliente implements Serializable {
 	private BigDecimal novembro2021;
 	private BigDecimal dezembro2021;
 	private BigDecimal total2021;
+	
+	private BigDecimal janeiro2022;
+	private BigDecimal fevereiro2022;
+	private BigDecimal marco2022;
+	private BigDecimal abril2022;
+	private BigDecimal maio2022;
+	private BigDecimal junho2022;
+	private BigDecimal julho2022;
+	private BigDecimal agosto2022;
+	private BigDecimal setembro2022;
+	private BigDecimal outrubo2022;
+	private BigDecimal novembro2022;
+	private BigDecimal dezembro2022;
+	private BigDecimal total2022;
+	
 	private BigDecimal totalgeral;
 	private BigDecimal mixqtde;
 	private BigDecimal mixqtdemedio;
@@ -676,6 +691,110 @@ public class HCliente implements Serializable {
 
 	public void setTotal2021(BigDecimal total2021) {
 		this.total2021 = total2021;
+	}
+
+	public BigDecimal getJaneiro2022() {
+		return janeiro2022;
+	}
+
+	public void setJaneiro2022(BigDecimal janeiro2022) {
+		this.janeiro2022 = janeiro2022;
+	}
+
+	public BigDecimal getFevereiro2022() {
+		return fevereiro2022;
+	}
+
+	public void setFevereiro2022(BigDecimal fevereiro2022) {
+		this.fevereiro2022 = fevereiro2022;
+	}
+
+	public BigDecimal getMarco2022() {
+		return marco2022;
+	}
+
+	public void setMarco2022(BigDecimal marco2022) {
+		this.marco2022 = marco2022;
+	}
+
+	public BigDecimal getAbril2022() {
+		return abril2022;
+	}
+
+	public void setAbril2022(BigDecimal abril2022) {
+		this.abril2022 = abril2022;
+	}
+
+	public BigDecimal getMaio2022() {
+		return maio2022;
+	}
+
+	public void setMaio2022(BigDecimal maio2022) {
+		this.maio2022 = maio2022;
+	}
+
+	public BigDecimal getJunho2022() {
+		return junho2022;
+	}
+
+	public void setJunho2022(BigDecimal junho2022) {
+		this.junho2022 = junho2022;
+	}
+
+	public BigDecimal getJulho2022() {
+		return julho2022;
+	}
+
+	public void setJulho2022(BigDecimal julho2022) {
+		this.julho2022 = julho2022;
+	}
+
+	public BigDecimal getAgosto2022() {
+		return agosto2022;
+	}
+
+	public void setAgosto2022(BigDecimal agosto2022) {
+		this.agosto2022 = agosto2022;
+	}
+
+	public BigDecimal getSetembro2022() {
+		return setembro2022;
+	}
+
+	public void setSetembro2022(BigDecimal setembro2022) {
+		this.setembro2022 = setembro2022;
+	}
+
+	public BigDecimal getOutrubo2022() {
+		return outrubo2022;
+	}
+
+	public void setOutrubo2022(BigDecimal outrubo2022) {
+		this.outrubo2022 = outrubo2022;
+	}
+
+	public BigDecimal getNovembro2022() {
+		return novembro2022;
+	}
+
+	public void setNovembro2022(BigDecimal novembro2022) {
+		this.novembro2022 = novembro2022;
+	}
+
+	public BigDecimal getDezembro2022() {
+		return dezembro2022;
+	}
+
+	public void setDezembro2022(BigDecimal dezembro2022) {
+		this.dezembro2022 = dezembro2022;
+	}
+
+	public BigDecimal getTotal2022() {
+		return total2022;
+	}
+
+	public void setTotal2022(BigDecimal total2022) {
+		this.total2022 = total2022;
 	}
 
 	

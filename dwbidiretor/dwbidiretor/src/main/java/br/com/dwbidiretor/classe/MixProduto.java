@@ -18,11 +18,13 @@ public class MixProduto implements Serializable {
 	private BigDecimal qtde2019;
 	private BigDecimal qtde2020;
 	private BigDecimal qtde2021;
+	private BigDecimal qtde2022;
 	private BigDecimal qtdetotal;
 	private BigDecimal vl2018;
 	private BigDecimal vl2019;
 	private BigDecimal vl2020;
 	private BigDecimal vl2021;
+	private BigDecimal vl2022;
 	private BigDecimal vltotal;
 		
 	public MixProduto() {
@@ -123,6 +125,22 @@ public class MixProduto implements Serializable {
 
 	public void setVltotal(BigDecimal vltotal) {
 		this.vltotal = vltotal;
+	}
+
+	public BigDecimal getQtde2022() {
+		return qtde2022;
+	}
+
+	public void setQtde2022(BigDecimal qtde2022) {
+		this.qtde2022 = qtde2022;
+	}
+
+	public BigDecimal getVl2022() {
+		return vl2022;
+	}
+
+	public void setVl2022(BigDecimal vl2022) {
+		this.vl2022 = vl2022;
 	}
 
 }
