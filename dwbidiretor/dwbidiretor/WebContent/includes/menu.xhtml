@@ -9,6 +9,12 @@
 				<i class="fa fa-home"></i>
 				<span>Inicio</span>
 			</p:link></li>
+			
+	<li class="sidebar-menu"><p:link href="/dwbidiretor/pages/projetos/projetos.xhtml" rendered="#{beanControleAcesso.acesso('diretor_projetos')}"> 
+		<i class="fa fa-rocket"></i>
+		<span>Projetos</span>
+		</p:link>	
+	</li>		
 	
 	<li class="treeview"><p:link href="#" rendered="#{beanControleAcesso.acesso('diretor_painel')}"> <i class="fa fa-th-list"></i>
 		<span>Painel</span> <span class="pull-right-container"> 
@@ -136,6 +142,12 @@
 		<li><p:link href="/dwbidiretor/pages/relatorios/dadoscliente/dadoscliente.xhtml"  rendered="#{beanControleAcesso.acesso('diretor_dadoscliente')}">
 					<i class="fa fa-folder"></i>
 					<span>Dados Cliente</span>
+				</p:link>
+		</li>
+		
+		<li><p:link href="/dwbidiretor/pages/relatorios/reativacaocliente/reativacaocliente.xhtml"  rendered="#{beanControleAcesso.acesso('diretor_reativacaocliente')}">
+					<i class="fa fa-folder"></i>
+					<span>Reativação Cliente</span>
 				</p:link>
 		</li>
 		

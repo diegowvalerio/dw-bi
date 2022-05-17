@@ -48,6 +48,7 @@ import br.com.dwbidiretor.classe.PedidoItem;
 import br.com.dwbidiretor.classe.PedidosConferidos;
 import br.com.dwbidiretor.classe.PrazoPedido;
 import br.com.dwbidiretor.classe.Produto;
+import br.com.dwbidiretor.classe.ReativacaoCliente;
 import br.com.dwbidiretor.classe.RetornoAfinacao;
 import br.com.dwbidiretor.classe.TabelaPreco;
 import br.com.dwbidiretor.classe.VendaAnoMes;
@@ -111,7 +112,39 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 	public List<E> consultar() {
 		return manager.createQuery("from " + classeEntidade.getSimpleName()).getResultList();
 	}
+	
+	//banco sige projetos
+	@Override
+	public E Ssalvar(E e) {
+		managerSige.persist(e);
+		return e;
+	}
 
+	@Override
+	public E Salterar(E e) {
+		return managerSige.merge(e);
+	}
+
+	@Override
+	public boolean Sexcluir(Integer id) {
+		E e = Sconsultar(id);
+		managerSige.remove(e);
+		return true;
+	}
+
+	@Override
+	public E Sconsultar(Integer id) {
+		return (E) managerSige.find(classeEntidade, id);
+	}
+	
+	@Override
+	public List<E> Sconsultar() {
+		return managerSige.createQuery("from " + classeEntidade.getSimpleName()).getResultList();
+	}
+	
+	//fim sige projetos
+
+	
 	/* grafico */
 	@SuppressWarnings({ "unchecked" })
 	@Override
@@ -205,6 +238,107 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			list.add(v);
 		}
 		return list;
+	}
+	
+	public List<ReativacaoCliente> reativacaocliente(String vendedor1, String vendedor2, String gestor1, String gestor2,Date data1, Date data2){
+		List<ReativacaoCliente> list = new ArrayList<>();
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		String dataFormatada = formato.format(data1);
+		String dataFormatada2 = formato.format(data2);
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				" select * from( "
+						+ " select  "
+						+ " row_number() OVER( "
+						+ "         PARTITION BY C.CADCFTVID "
+						+ "         ORDER BY pnul.dt DESC "
+						+ "     ) row_num, "
+						+ " C.CADCFTVID CLIENTE, "
+						+ " C.NOME_CADCFTV NOMECLIENTE, "
+						+ " C.CNPJCPF_CADCFTV cnpjcpf, "
+						+ " en.uf_cidade uf, "
+						+ " en.nome_cidade cidade, "
+						+ " freq.primeira, "
+						+ " pnul.dt pnultima, "
+						+ " freq.ultima, "
+						+ " round(freq.ultima - pnul.dt) dias_pnul_ultima, "
+						+ " g.gestorid gestor, "
+						+ " g.NOME_GESTOR, "
+						+ " V.CADCFTVID VENDEDOR,  "
+						+ " V.NOME_CADCFTV NOME_VENDEDOR "
+						+ "  "
+						+ " FROM CADCFTV C  "
+						+ " INNER JOIN CLIENTE CL ON CL.CADCFTVID = C.CADCFTVID "
+						+ " INNER JOIN CADCFTV V ON V.CADCFTVID = CL.VENDEDORID1  "
+						+ " inner join vendedor v2 on v2.CADCFTVID = v.CADCFTVID "
+						+ " inner join gestor g on g.GESTORID = v2.GESTORID "
+						+ " LEFT join  "
+						+ " ( "
+						+ " SELECT V.CADCFTVID,CI.UF_CIDADE, ci.nome_cidade, V.END_ENDCADCFTV FROM ENDCADCFTV V "
+						+ " inner join( "
+						+ " SELECT max(ENDCADCFTVID) d , CADCFTVID cod FROM ENDCADCFTV  "
+						+ " group by cadcftvid "
+						+ " )x on x.d = v.ENDCADCFTVID and x.cod = v.CADCFTVID "
+						+ " INNER JOIN CIDADE CI ON CI.CIDADEID = V.CIDADEID "
+						+ " ) EN ON EN.CADCFTVID = c.CADCFTVID "
+						+ "  "
+						+ " left join(  "
+						+ " select  "
+						+ " p.CADCFTVID,  "
+						+ " count(p.CADCFTVID) vendas,  "
+						+ " min(P.DT_PEDIDOVENDA) primeira,  "
+						+ " max(P.DT_PEDIDOVENDA) ultima,  "
+						+ " round((max(P.DT_PEDIDOVENDA) - min(P.DT_PEDIDOVENDA)) /count(p.CADCFTVID)) frequencia  "
+						+ " from pedidovenda p  "
+						+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+						+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO')  "
+						+ " AND CF.TIPOOPERACAO_CFOP = 'VENDA'  "
+						+ " group by p.CADCFTVID  "
+						+ " )freq on freq.CADCFTVID = c.CADCFTVID  "
+						+ "  "
+						+ " left join( "
+						+ " select  "
+						+ " p.CADCFTVID,  "
+						+ " P.DT_PEDIDOVENDA dt "
+						+ " from pedidovenda p  "
+						+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+						+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') AND CF.TIPOOPERACAO_CFOP = 'VENDA'  "
+						+ " )pnul on pnul.CADCFTVID = c.CADCFTVID  "
+						+ "  "
+						+ " WHERE C.FUNCAO_PRINCIPAL_CADCFTV = 'CLIENTE'  "
+						+ " AND C.ATIVO_CADCFTV = 'SIM'  "
+						+ " order by c.cadcftvid "
+						+ "  "
+						+ "  "
+						+ " )geral "
+						+ " where geral.row_num = 2 "
+						+ " and geral.dias_pnul_ultima >= 180 "
+						+ " and geral.vendedor between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+						+ " and geral.gestor between  ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+						+ " and geral.ultima between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
+						+ " order by geral.ultima desc ,geral.dias_pnul_ultima  ");
+		
+					List<Object[]> lista = query.getResultList();
+						for (Object[] row : lista) {
+							ReativacaoCliente reativacaoCliente= new ReativacaoCliente();
+							
+							reativacaoCliente.setClienteid((BigDecimal) row[1]);
+							reativacaoCliente.setNomecliente((String) row[2]);
+							reativacaoCliente.setCnpjcliente((String) row[3]);
+							reativacaoCliente.setUfcliente((String) row[4]);
+							reativacaoCliente.setCidadecliente((String) row[5]);
+							reativacaoCliente.setPrimeiracompra((Date) row[6]);
+							reativacaoCliente.setPnultimacompra((Date) row[7]);
+							reativacaoCliente.setUltimacompra((Date) row[8]);
+							reativacaoCliente.setQtdediaspnultimacompra((BigDecimal) row[9]);
+							reativacaoCliente.setGestorid((BigDecimal) row[10]);
+							reativacaoCliente.setNomegestor((String) row[11]);
+							reativacaoCliente.setVendedorid((BigDecimal) row[12]);
+							reativacaoCliente.setNomevendedor((String) row[13]);
+							
+							list.add(reativacaoCliente);
+					}	
+				return list;
 	}
 	
 	public List<CidadeVenda> cidadevenda(String vendedor1, String vendedor2, String gestor1, String gestor2,Date data1, Date data2,Integer filtra){

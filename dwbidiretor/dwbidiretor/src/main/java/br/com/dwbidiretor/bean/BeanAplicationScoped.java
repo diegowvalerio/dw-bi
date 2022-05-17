@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -35,6 +36,7 @@ import javax.mail.internet.MimeMessage;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import br.com.dwbidiretor.classe.Email_produto_estoqueminimo;
 import br.com.dwbidiretor.classe.NotasClienteEmail;
 import br.com.dwbidiretor.servico.ServicoNotasClienteEmail;
 
@@ -54,6 +56,8 @@ public class BeanAplicationScoped implements Serializable {
 	private ServicoNotasClienteEmail servico;
 	private List<NotasClienteEmail> lista = new ArrayList<>();
 	
+	private Email_produto_estoqueminimo email_produtos = new Email_produto_estoqueminimo();
+	private List<Email_produto_estoqueminimo> lista_produtos = new ArrayList<>();	
 
 	@PostConstruct
 	public void init() { 
@@ -69,6 +73,7 @@ public class BeanAplicationScoped implements Serializable {
 					
 					if(hora.equals("20:1:0")) { //20:1:0
 						enviaemail();
+						enviaemail_produtos_importados_saldoabaixo_minimo();
 						
 					}
 					}
@@ -195,7 +200,7 @@ public class BeanAplicationScoped implements Serializable {
 				notasClienteEmail.setEmail(resultSet.getString("EMAIL_EMAILCADCFTV"));
 				
 				lista.add(notasClienteEmail);
-				System.out.println(resultSet.getString("NOME_CADCFTV"));
+				//System.out.println(resultSet.getString("NOME_CADCFTV"));
 			}
 			statement.closeOnCompletion();
 			conexao.close();
@@ -205,7 +210,7 @@ public class BeanAplicationScoped implements Serializable {
         
 		
 		//System.out.println(ano+"-"+mes+"-"+dia);
-		System.out.println("lista:"+lista.size());
+		//System.out.println("lista:"+lista.size());
 		
 		if (lista.size() > 0) {
 			for (NotasClienteEmail nota : lista) {
@@ -238,7 +243,7 @@ public class BeanAplicationScoped implements Serializable {
 				});
 
 				/** Ativa Debug para sessão */
-				session.setDebug(true);
+				//session.setDebug(true);
 
 				try {
 
@@ -269,7 +274,7 @@ public class BeanAplicationScoped implements Serializable {
 					/** Método para enviar a mensagem criada */
 					Transport.send(message);
 
-					System.out.println("Feito!!!");
+					//System.out.println("Feito!!!");
 
 				} catch (MessagingException e) {
 					throw new RuntimeException(e);
@@ -279,175 +284,61 @@ public class BeanAplicationScoped implements Serializable {
 		}
 	  }	
 
-	public void enviaemail_TESTE() {
-		lista.clear();
+	public void enviaemail_produtos_importados_saldoabaixo_minimo() {
+		lista_produtos.clear();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		int day = cal.get(Calendar.DAY_OF_WEEK);
 		
-		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		String data = df.format(horaatual);
-		
-		String dia = data.substring(0,2);
-		//String dia = "15";
-		String mes = data.substring(3,5);
-		String ano = data.substring(6,10);
-		
-		try {
-			Connection conexao = ObterConexao();
+		if (day != 1 && day != 7) {
+			try {
+				Connection conexao = ObterConexao();
 
-			Statement statement = conexao.createStatement();
-			String query = "select\r\n"
-					+ "\r\n"
-					+ "gr.CADCFTVGRUPO AS CADCFTVID,\r\n"
-					+ "gr.NOME_CADCFTV AS NOME_CADCFTV,\r\n"
-					+ "rtrim(email.EMAIL_EMAILCADCFTV) EMAIL_EMAILCADCFTV\r\n"
-					+ "\r\n"
-					+ "\r\n"
-					+ "from pedidovenda p\r\n"
-					+ "INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID\r\n"
-					+ "INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID \r\n"
-					+ "INNER JOIN CADCFTV gr ON gr.CADCFTVID = CI.CADCFTVID \r\n"
-					+ "inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid\r\n"
-					+ "inner join formapagto pg on pg.formapagtoid = p.formapagtoid\r\n"
-					+ "INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID\r\n"
-					+ "\r\n"
-					+ "left join( \r\n"
-					+ "select * from( \r\n"
-					+ "select \r\n"
-					+ "ROW_NUMBER() OVER(PARTITION BY e.CADCFTVID ORDER BY e.CADCFTVID ASC) AS nun, \r\n"
-					+ "e.CADCFTVID, \r\n"
-					+ "e.EMAIL_EMAILCADCFTV \r\n"
-					+ "from EMAILCADCFTV e \r\n"
-					+ "group by \r\n"
-					+ "e.CADCFTVID, \r\n"
-					+ "e.EMAIL_EMAILCADCFTV)x \r\n"
-					+ "where x.nun = 1 \r\n"
-					+ ") email on email.CADCFTVID = CI.CADCFTVID \r\n"
-					+ "\r\n"
-					+ "left join FONECADCFTV fone on fone.CADCFTVID  = CI.CADCFTVID  and fone.TIPO_FONECADCFTV ='COMERCIAL'\r\n"
-					+ "left join FONECADCFTV fone2 on fone2.CADCFTVID  = CI.CADCFTVID  and fone2.TIPO_FONECADCFTV ='COMERCIAL2'\r\n"
-					+ "            \r\n"
-					+ "LEFT join \r\n"
-					+ "(\r\n"
-					+ "SELECT  max(v.endcadcftvid), V.CADCFTVID,CI.UF_CIDADE, ci.nome_cidade FROM ENDCADCFTV V\r\n"
-					+ "INNER JOIN CIDADE CI ON CI.CIDADEID = V.CIDADEID\r\n"
-					+ "GROUP BY V.CADCFTVID, CI.UF_CIDADE, ci.nome_cidade\r\n"
-					+ ") EN ON EN.CADCFTVID = CI.CADCFTVID \r\n"
-					+ "\r\n"
-					+ "\r\n"
-					+ "where p.status_pedidovenda in ('FATURADO')\r\n"
-					+ "and TO_CHAR(P.DT_FATURAMENTO_PEDIDOVENDA,'YYYY') in ('2021')\r\n"
-					+ "and TO_CHAR(P.DT_FATURAMENTO_PEDIDOVENDA,'MM') between '01' and '12'\r\n"
-					+ "AND CF.tipooperacao_cfop= 'VENDA'\r\n"
-					+ "--and  gr.CADCFTVGRUPO = '18904'\r\n"
-					+ "AND email.EMAIL_EMAILCADCFTV IS NOT NULL\r\n"
-					+ "and  gr.CADCFTVGRUPO in\r\n"
-					+ "('18904',\r\n"
-					+ "'847',\r\n"
-					+ "'18937',\r\n"
-					+ "'879',\r\n"
-					+ "'4037',\r\n"
-					+ "'10107',\r\n"
-					+ "'1637',\r\n"
-					+ "'12632',\r\n"
-					+ "'15664',\r\n"
-					+ "'5506',\r\n"
-					+ "'5146',\r\n"
-					+ "'15842',\r\n"
-					+ "'17560',\r\n"
-					+ "'16981',\r\n"
-					+ "'17777',\r\n"
-					+ "'12502',\r\n"
-					+ "'17450',\r\n"
-					+ "'18385',\r\n"
-					+ "'16307',\r\n"
-					+ "'3803',\r\n"
-					+ "'16994',\r\n"
-					+ "'14818',\r\n"
-					+ "'17507',\r\n"
-					+ "'3422',\r\n"
-					+ "'15267',\r\n"
-					+ "'155',\r\n"
-					+ "'19369',\r\n"
-					+ "'885',\r\n"
-					+ "'1767',\r\n"
-					+ "'19598',\r\n"
-					+ "'17769',\r\n"
-					+ "'6360',\r\n"
-					+ "'15092',\r\n"
-					+ "'19527',\r\n"
-					+ "'15898',\r\n"
-					+ "'15111',\r\n"
-					+ "'19174',\r\n"
-					+ "'602',\r\n"
-					+ "'23418',\r\n"
-					+ "'17794',\r\n"
-					+ "'14474',\r\n"
-					+ "'11037',\r\n"
-					+ "'19528',\r\n"
-					+ "'18179',\r\n"
-					+ "'16326',\r\n"
-					+ "'32086',\r\n"
-					+ "'2901',\r\n"
-					+ "'6032',\r\n"
-					+ "'16434',\r\n"
-					+ "'15068',\r\n"
-					+ "'5334',\r\n"
-					+ "'5725',\r\n"
-					+ "'13446',\r\n"
-					+ "'6296',\r\n"
-					+ "'117',\r\n"
-					+ "'2920',\r\n"
-					+ "'4355',\r\n"
-					+ "'5840',\r\n"
-					+ "'14829',\r\n"
-					+ "'4192',\r\n"
-					+ "'10036')\r\n"
-					+ "\r\n"
-					+ "group by\r\n"
-					+ "gr.CADCFTVGRUPO,\r\n"
-					+ "gr.NOME_CADCFTV,\r\n"
-					+ "email.EMAIL_EMAILCADCFTV\r\n"
-					
-					+ "\r\n"
-					+ " ";
-			
-			ResultSet resultSet = statement.executeQuery(query);
-			while(resultSet.next()) {
-				NotasClienteEmail notasClienteEmail = new NotasClienteEmail();
-				notasClienteEmail.setCodigocliente(resultSet.getBigDecimal("CADCFTVID"));
-				notasClienteEmail.setNomecliente(resultSet.getString("NOME_CADCFTV"));
-				notasClienteEmail.setEmail(resultSet.getString("EMAIL_EMAILCADCFTV"));
-				
-				lista.add(notasClienteEmail);
-				System.out.println(resultSet.getString("NOME_CADCFTV"));
+				Statement statement = conexao.createStatement();
+				String query = " select " + " p.produtoid, " + " p.NOME_PRODUTO, "
+						+ " ALM.SALDOATU_ALMOXARIFADO_PRODUTO SALDO_ATUAL, "
+						+ " PC.QT_ESTMIN_PRODUTO_QTDCOMPRA SALDO_MINIMO " + " from produto p "
+						+ " INNER JOIN PRODUTO_QTDCOMPRA  PC ON PC.PRODUTOID = P.PRODUTOID "
+						+ " INNER JOIN ALMOXARIFADO_PRODUTO ALM ON ALM.PRODUTOID = P.PRODUTOID AND ALM.ALMOXARIFADOID = 1 "
+						+ " where p.TIPOPRODUTOID = 86 " + " AND p.status_produto = 'ATIVO' "
+						+ " and ALM.SALDOATU_ALMOXARIFADO_PRODUTO <= PC.QT_ESTMIN_PRODUTO_QTDCOMPRA ";
+
+				ResultSet resultSet = statement.executeQuery(query);
+				while (resultSet.next()) {
+					email_produtos = new Email_produto_estoqueminimo();
+					email_produtos.setProdutoid(resultSet.getBigDecimal("produtoid"));
+					email_produtos.setNomeproduto(resultSet.getString("NOME_PRODUTO"));
+					email_produtos.setSaldoatual(resultSet.getBigDecimal("SALDO_ATUAL"));
+					email_produtos.setSaldominimo(resultSet.getBigDecimal("SALDO_MINIMO"));
+
+					lista_produtos.add(email_produtos);
+					// System.out.println(resultSet.getString("produtoid"));
+				}
+				statement.closeOnCompletion();
+				conexao.close();
+			} catch (SQLException ex) {
+				ex.printStackTrace();
 			}
-			statement.closeOnCompletion();
-			conexao.close();
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		}
-        
-		
-		//System.out.println(ano+"-"+mes+"-"+dia);
-		System.out.println("lista:"+lista.size());
-		
-		if (lista.size() > 0) {
-			for (NotasClienteEmail nota : lista) {
-				
-				Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
-				Matcher m = p.matcher(nota.getEmail());
-				boolean matchFound = m.matches();
 
-				if (matchFound) {
-				
+			// System.out.println("lista_produtos:"+lista_produtos.size());
+
+			if (lista_produtos.size() > 0) {
+				String tabela = "<h3>Lista de itens com saldo atual menor ou igual ao definido como minimo.</h3> <br></br> <table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" bgcolor=\"#FFF\" border-color:#FFFFFF\" style=\"border-collapse: collapse;border-color:#FFFFFF\">   <tr>   <td bgcolor=\"#0082b8\" style=\"padding: 5px 11px 5px 11px;\"><p style=\"color:#FFFFFF; text-align: center; font-weight: bold;\">Cód. Produto</p></td>   <td bgcolor=\"#0082b8\" style=\"padding: 5px 11px 5px 11px;\"><p style=\"color:#FFFFFF; text-align: center; font-weight: bold;\">Nome Produto</p></td>   <td bgcolor=\"#0082b8\" style=\"padding: 5px 11px 5px 11px;\"><p style=\"color:#FFFFFF; text-align: center; font-weight: bold;\">Saldo Mínimo</p></td>   <td bgcolor=\"#0082b8\" style=\"padding: 5px 11px 5px 11px;\"><p style=\"color:#FFFFFF; text-align: center; font-weight: bold;\">Saldo Atual</p></td> </tr> ";
+				for (Email_produto_estoqueminimo produto : lista_produtos) {
+
+					tabela += "<tr bgcolor=\"#FFFFFF\" >   <td style=\"padding: 0px 5px 0px 5px;\"><p style=\"text-align: left;\">"
+							+ produto.getProdutoid()
+							+ "</p></td>   <td style=\"padding: 0px 5px 0px 5px;\"><p style=\"text-align: left;\">"
+							+ produto.getNomeproduto()
+							+ "</p></td>   <td style=\"padding: 0px 5px 0px 5px;\"><p style=\"text-align: center;\">"
+							+ produto.getSaldominimo()
+							+ "</p></td>   <td style=\"padding: 0px 5px 0px 5px;\"><p style=\"text-align: center;\">"
+							+ produto.getSaldoatual() + "</p></td> </tr> ";
+				}
+
+				tabela += " <tr bgcolor=\"#0082b8\" style=\"height:20px;\"> <th colspan=6> </th></tr>  </table>";
+
 				Properties props = new Properties();
-				/** Parâmetros de conexão com servidor Gmail */
-				/*
-				 * props.put("mail.smtp.host", "smtp.gmail.com");
-				 * props.put("mail.smtp.socketFactory.port", "465");
-				 * props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-				 * props.put("mail.smtp.auth", "true"); props.put("mail.smtp.port", "465");
-				 */
-
 				props.put("mail.smtp.host", "mail.marchezanmetais.com.br");
 				props.put("mail.smtp.socketFactory.port", "465");
 				props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
@@ -456,46 +347,34 @@ public class BeanAplicationScoped implements Serializable {
 
 				Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
 					protected PasswordAuthentication getPasswordAuthentication() {
-						return new PasswordAuthentication("diretoriageral@marchezanmetais.com.br", "march@!metais$geral");
+						return new PasswordAuthentication("informatica@marchezanmetais.com.br", "@rv0re24Xcv");
 					}
 				});
 
 				/** Ativa Debug para sessão */
-				session.setDebug(true);
+				// session.setDebug(true);
 
 				try {
 
 					Message message = new MimeMessage(session);
-					message.setFrom(new InternetAddress("diretoriageral@marchezanmetais.com.br"));
+					message.setFrom(new InternetAddress("informatica@marchezanmetais.com.br"));
 					// Remetente
 
 					Address[] toUser = InternetAddress // Destinatário(s)
-							.parse(nota.getEmail());
-							//.parse("informatica@marchezanmetais.com.br ");
+							.parse("informatica@marchezanmetais.com.br, producao@marchezanmetais.com.br, comercial.gerencia@marchezanmetais.com.br, pcp@marchezanmetais.com.br, compras@marchezanmetais.com.br ");
 
 					message.setRecipients(Message.RecipientType.TO, toUser);
-					message.setSubject("COMUNICADO");// Assunto
-					message.setText("Olá "+nota.getNomecliente()+". \r\n"
-							+ "Viemos, por meio deste, informar que Jonas Inácio da Silva, que ocupava o cargo de Gerente Nacional de Vendas da Marchezan, a partir de hoje dia 04/10, não faz mais parte do quadro de Colaboradores da empresa. \r\n"
-							+ "Continuaremos realizando nosso trabalho e parceria junto a você nosso cliente. \r\n"
-							+ "\r\n"
-							+ "A nova gestão será realizada pelo profissional Elias Danilo Loureno, que passa a integrar o quadro de Colaboradores da Marchezan a partir de hoje, assumindo o cargo da Gerência Nacional de Vendas, o mesmo possui experiência a mais de 16 anos na área Comercial no segmento de metais Sanitários de grandes empresas e vem para somar junto a nós. \r\n"
-							+ "\r\n"
-							+ "Acreditamos que sua experiência irá contribuir para que, cada vez mais, a Marchezan possa desenvolver um ótimo trabalho junto a você.\r\n"
-							+ "Atenciosamente, \r\n"
-							+ "\r\n"
-							+ "Diretoria Marchezan. \r\n"
-							+ "\r\n");
+					message.setSubject("Aviso de Estoque Minimo - Produtos Importados");// Assunto
+					message.setContent(tabela, "text/html; charset=utf-8");
 
 					/** Método para enviar a mensagem criada */
 					Transport.send(message);
 
-					System.out.println("Feito!!!");
+					// System.out.println("Feito!!!");
 
 				} catch (MessagingException e) {
 					throw new RuntimeException(e);
 				}
-			  }
 			}
 		}
 	  }	

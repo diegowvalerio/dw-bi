@@ -25,6 +25,7 @@ import br.com.dwbidiretor.classe.PedidoItem;
 import br.com.dwbidiretor.classe.PedidosConferidos;
 import br.com.dwbidiretor.classe.PrazoPedido;
 import br.com.dwbidiretor.classe.Produto;
+import br.com.dwbidiretor.classe.ReativacaoCliente;
 import br.com.dwbidiretor.classe.RetornoAfinacao;
 import br.com.dwbidiretor.classe.TabelaPreco;
 import br.com.dwbidiretor.classe.VendaAnoMes;
@@ -49,6 +50,13 @@ public interface DAOGenerico<E> {
 	public boolean excluir(Integer id);
 	public E consultar(Integer id);
 	public List<E> consultar();
+	
+	//banco sige
+	public E Ssalvar(E e);
+	public E Salterar(E e);
+	public boolean Sexcluir(Integer id);
+	public E Sconsultar(Integer id);
+	public List<E> Sconsultar();
 	
 	
 	/*grafico*/
@@ -158,6 +166,7 @@ public interface DAOGenerico<E> {
 	public List<Venda_Grupo> grupos();
 	public List<Venda_Subgrupo> subgrupos();
 	public List<CidadeVenda> cidadevenda(String vendedor1, String vendedor2, String gestor1, String gestor2,Date data1, Date data2, Integer filtra);
+	public List<ReativacaoCliente> reativacaocliente(String vendedor1, String vendedor2, String gestor1, String gestor2,Date data1, Date data2);
 	
 	//painel diretor
 	public List<Diretor_01> diretor_01(String ano, String mes);

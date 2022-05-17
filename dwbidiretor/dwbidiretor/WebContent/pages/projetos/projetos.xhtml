@@ -1,0 +1,94 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+       <i class="fa fa-rocket"></i> Projetos 
+    </ui:define>
+
+	<ui:define name="description">
+
+	</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Projetos" />
+
+		<h:form id="form">
+			<section class="content">
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<p:commandButton action="cadastro_projeto?faces-redirect=true"
+						ajax="false" icon="fa fa-plus" value="Novo"
+						styleClass="btn-primary" />
+						
+					<p:spacer width="5" />
+					<p:separator />
+					
+					<p:dataTable id="lista" widgetVar="lista" rows="10"
+						value="#{beanProjeto.lista}" var="lista"
+						rowKey="#{lista.idprojeto}" paginator="true"
+						paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+						currentPageReportTemplate="" rowsPerPageTemplate="5,10,15,20,30">
+						
+							<p:column headerText="Cód." filterBy="#{lista.idprojeto}"
+								sortBy="#{lista.idprojeto}" filterMatchMode="contains">
+								<h:outputLabel value="#{lista.idprojeto}" />
+							</p:column>
+
+							<p:column headerText="Nome" filterBy="#{lista.nome}"
+								sortBy="#{lista.nome}" filterMatchMode="contains">
+								<h:outputLabel value="#{lista.nome}" />
+							</p:column>
+
+							<p:column width="15%" headerText="Operações"
+								style="text-align:center">
+								<p:commandButton action="#{beanProjeto.excluir()}" ajax="false" id="excluir"
+									immediate="true" partialSubmit="true" process="@this" styleClass="btn-danger"
+									oncomplete="#{beanProjeto.lista}" icon="fa fa-trash"
+									onclick="if(!confirm('Confirma a exclusão ?')) return false;">
+									<f:setPropertyActionListener value="#{lista}"
+										target="#{beanProjeto.projeto}" />
+								</p:commandButton>
+								<p:tooltip for="excluir" value="Excluir" position="top" showEffect="clip" hideEffect="fold"/>
+
+								<p:commandButton icon="fa fa-edit" id="edita" styleClass="btn-warning"
+									action="#{beanProjeto.encaminha()}">
+									<f:setPropertyActionListener value="#{lista}"
+										target="#{beanProjeto.projeto}" />
+								</p:commandButton>
+								<p:tooltip for="edita" value="Editar" position="top" showEffect="clip" hideEffect="fold"/>
+
+							</p:column>
+
+
+						</p:dataTable>						
+				</div>
+			  </div>
+			</section>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

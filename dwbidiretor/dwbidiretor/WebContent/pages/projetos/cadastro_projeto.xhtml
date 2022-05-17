@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="title">
+        Cadastro Projeto
+    </ui:define>
+
+	<ui:define name="body">
+		<f:metadata>
+		</f:metadata>
+
+		<adm:breadcrumb title="Cadastro Projeto" />
+		<p:panel>
+			<h:form id="form">
+				<p:growl id="erros" showDetail="true" sticky="false" />
+				<div class="box box-primary">
+					<p:panelGrid columns="12" id="paineld" style="font-style: italic;"
+						columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-1,ui-grid-col-1,ui-grid-col-1,ui-grid-col-1,ui-grid-col-1,ui-grid-col-1,ui-grid-col-1,ui-grid-col-1,ui-grid-col-2"
+						layout="grid" styleClass="ui-fluid card">
+
+
+						<p:outputLabel value="Nome:" for="nome" />
+						<p:inputText id="nome" value="#{beanProjeto.projeto.nome}"  autocomplete="off"
+							required="true" onkeyup="this.value=this.value.toUpperCase()" />
+
+						<p:outputLabel value="Data Cadastro:" for="dtcadastro" />
+						<p:calendar autocomplete="#{beanProjeto.data}" locale="pt_BR"
+							id="dtcadastro" disabled="true"
+							value="#{beanProjeto.projeto.dtcadastro}" pattern="dd/MM/yyyy"
+							mask="true" required="true" />
+
+						<p:outputLabel value="Data Inicio:" for="dtinicio" />
+						<p:calendar locale="pt_BR" id="dtinicio" readonlyInput="true"
+							value="#{beanProjeto.projeto.dtinicio}" pattern="dd/MM/yyyy"
+							mask="true" required="true">
+							
+						</p:calendar>
+
+						<p:outputLabel value="Data Prevista:" for="dtprevista" />
+						<p:calendar locale="pt_BR" id="dtprevista" readonlyInput="true"
+							value="#{beanProjeto.projeto.dtprevista}" pattern="dd/MM/yyyy"
+							mask="true" required="true">
+							
+						</p:calendar>
+
+						<p:outputLabel value="Data Conclusão" for="dtconclusao" />
+						<p:calendar locale="pt_BR" id="dtconclusao" disabled="true"
+							value="#{beanProjeto.projeto.dtconclusao}" pattern="dd/MM/yyyy"
+							mask="true" required="true" />
+
+						<p:outputLabel value="Status:" for="status" />
+						<p:inputText id="status" value="#{beanProjeto.projeto.status}"
+							required="true" disabled="true" />
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" id="paineld2" style="font-style: italic;"
+						columnClasses="ui-grid-col-1,ui-grid-col-12" layout="grid"
+						styleClass="ui-fluid card">
+
+						<p:outputLabel value="Descrição:" for="descricao" />
+						<p:inputTextarea id="descricao" rows="02" required="true"
+							onkeyup="this.value=this.value.toUpperCase()"
+							style="width: 100% !important;"
+							value="#{beanProjeto.projeto.descricao}" autoResize="false" />
+
+					</p:panelGrid>
+
+
+					<p:commandButton id="nve" icon="fa fa-plus"
+						styleClass="btn-primary"
+						style="margin-top: 10px; horizontal-align:left;"
+						action="#{beanProjeto.addEtapa()}"
+						oncomplete="PF('dialogp').show()" update=":form:dlg">
+						<f:setPropertyActionListener target="#{beanProjeto.etapa.projeto}"
+							value="#{beanProjeto.projeto}" />
+					</p:commandButton>
+
+					<div class="row">
+						<div class="col-md-12">
+							<div class="box box-info">
+								<h:panelGrid columns="1" id="paineld3"
+									columnClasses="left,right" width="100%" >
+
+									<p:dataTable id="tabela" value="#{beanProjeto.listaetapas}"
+										var="etapas" editable="true" editMode="cell"
+										widgetVar="etapas" draggableRows="true" style="font-style: italic; font-size: 12px;"
+										sortBy="#{etapas.ordenacao}">
+
+										<p:ajax event="rowReorder"
+											listener="#{beanProjeto.onRowReorder}"
+											update=":form:paineld3" />
+
+										<f:facet name="header">Etapas</f:facet>
+										
+										<p:column headerText="Nome" width="10%">#{etapas.nome}</p:column>
+										<p:column headerText="Autoridade" width="5%">#{etapas.autoridade}</p:column>
+										<p:column headerText="Responsabilidade" width="7%">#{etapas.responsabilidade}</p:column>
+										<p:column headerText="Cadastro" width="5%" >
+											<h:outputText value="#{etapas.dtcadastro}">
+												<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Inicio" width="4%">
+											<h:outputText value="#{etapas.dtinicio}">
+												<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Previsão" width="4%">
+											<h:outputText value="#{etapas.dtprevista}">
+												<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Conclusão" width="4%">
+											<h:outputText value="#{etapas.dtconclusao}">
+												<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Status" width="5%">#{etapas.status}</p:column>
+
+										<p:column width="3%" headerText="#"
+											style="text-align:center">
+											<p:commandButton action="#{beanProjeto.remove()}"
+												ajax="false" immediate="true" partialSubmit="true"
+												process="@this" oncomplete="#{beanProjeto.listaetapas}"
+												icon="fa fa-trash" styleClass="btn-danger btn-xs"
+												onclick="if(!confirm('Confirma a exclusão ?')) return false;">
+												<f:setPropertyActionListener value="#{etapas}"
+													target="#{beanProjeto.etapa}" />
+											</p:commandButton>
+
+											<p:commandButton oncomplete="PF('dialogp').show();"
+												update=":form:dlg" icon="fa fa-edit"
+												styleClass="btn-warning btn-xs">
+												<f:setPropertyActionListener value="#{etapas}"
+													target="#{beanProjeto.etapa}" />
+											</p:commandButton>
+ 
+											<p:commandButton icon="fa fa-plus" 
+												styleClass="btn-info btn-xs" actionListener="#{beanProjeto.addEtapaItem(etapas)}"
+												oncomplete="PF('dialogp2').show()" update=":form:dlg2">
+											</p:commandButton>
+										</p:column>
+
+										<p:column headerText="Items da Etapa">											
+											<p:dataTable value="#{etapas.items}"  var="items" widgetVar="items" draggableRows="false"
+												sortBy="#{items.ordenacao}" style="font-style: italic; font-size: 12px;">
+												
+												<p:column headerText="#" width="4%" rendered="false">#{items.ordenacao}</p:column>
+												<p:column headerText="Responsável" width="11%">#{items.responsavel}</p:column>
+												<p:column headerText="Descrição">#{items.descricao}</p:column>
+
+												<p:column headerText="Previsto" width="6%">#{items.valorprevisto}</p:column>
+												<p:column headerText="Real" width="6%">#{items.valorconcluido}</p:column>
+												
+												<p:column headerText="Cadastro" width="9%">
+													<h:outputText value="#{items.dtcadastro}">
+														<f:convertDateTime pattern="dd/MM/yyyy" />
+													</h:outputText>
+												</p:column>
+												<p:column headerText="Inicio" width="9%">
+													<h:outputText value="#{items.dtinicio}">
+														<f:convertDateTime pattern="dd/MM/yyyy" />
+													</h:outputText>
+												</p:column>
+												<p:column headerText="Previsão" width="9%">
+													<h:outputText value="#{items.dtprevista}">
+														<f:convertDateTime pattern="dd/MM/yyyy" />
+													</h:outputText>
+												</p:column>
+												<p:column headerText="Conclusão" width="9%">
+													<h:outputText value="#{items.dtconclusao}">
+														<f:convertDateTime pattern="dd/MM/yyyy" />
+													</h:outputText>
+												</p:column>
+												<p:column headerText="Status" width="10%">#{items.status}</p:column>
+												<p:column headerText="Observação" width="10%">#{items.statusobservacao}</p:column>
+
+												<p:column width="6%" headerText="#"
+													style="text-align:center">
+													<p:commandButton action="#{beanProjeto.removeItem()}" id="removeitem"
+														ajax="false" immediate="true" partialSubmit="true"
+														process="@this" oncomplete="#{beanProjeto.etapa.items}"
+														icon="fa fa-trash" styleClass="btn-danger btn-xs"
+														onclick="if(!confirm('Confirma a exclusão ?')) return false;">
+														<f:setPropertyActionListener value="#{items}"
+															target="#{beanProjeto.item}" />
+													</p:commandButton>
+													<p:tooltip for="removeitem" value="Excluir Item da Etapa" position="right" showEffect="clip" hideEffect="fold"/>
+
+													<p:commandButton oncomplete="PF('dialogp2').show();" id="editaritem"
+														update=":form:dlg2" icon="fa fa-edit" styleClass="btn-warning btn-xs" >
+														<f:setPropertyActionListener value="#{items}"
+															target="#{beanProjeto.item}" />
+													</p:commandButton>
+													<p:tooltip for="editaritem" value="Editar Item da Etapa" position="right" showEffect="clip" hideEffect="fold"/>
+													
+													<p:commandButton ajax="false" immediate="true" partialSubmit="true" styleClass=" bg-olive btn-xs" id="subirnivel"
+														process="@this" icon="fa fa-level-up"  actionListener="#{beanProjeto.altonivel(items)}" />	
+														<p:tooltip for="subirnivel" value="Subir na Ordem" position="right" showEffect="clip" hideEffect="fold"/>
+													
+													<p:commandButton ajax="false" immediate="true" partialSubmit="true" styleClass=" bg-purple btn-xs" id="descernivel"
+														process="@this" icon="fa fa-level-down"  actionListener="#{beanProjeto.baixonivel(items)}" />
+														<p:tooltip for="descernivel" value="Descer na Ordem" position="right" showEffect="clip" hideEffect="fold"/>
+												</p:column>
+												
+											</p:dataTable>
+										</p:column>
+
+									</p:dataTable>
+
+								</h:panelGrid>
+							</div>
+						</div>
+					</div>
+					<p:separator></p:separator>
+
+					<p:commandButton action="#{beanProjeto.salvar()}" value="Salvar"
+						icon="fa fa-check" styleClass="btn-primary" update="erros" />
+
+					
+					<p:dialog id="dlg" header="Etapa" widgetVar="dialogp"
+						appendToBody="true" draggable="false" modal="true">
+						<div class="box box-primary">
+							<p:panelGrid id="painelDados" columns="2" layout="grid"
+								styleClass="ui-fluid card">
+
+								<p:outputLabel value="Nome:" for="enome" />
+								<p:inputText id="enome" value="#{beanProjeto.etapa.nome}" autocomplete="off"
+									onkeyup="this.value=this.value.toUpperCase()" />
+
+								<p:outputLabel value="Autoridade:" for="autoridade" />
+								<p:inputText id="autoridade" autocomplete="off"
+									value="#{beanProjeto.etapa.autoridade}"
+									onkeyup="this.value=this.value.toUpperCase()" />
+
+								<p:outputLabel value="Responsabilidade:" for="responsabilidade" />
+								<p:inputText id="responsabilidade" autocomplete="off"
+									value="#{beanProjeto.etapa.responsabilidade}"
+									onkeyup="this.value=this.value.toUpperCase()" />
+
+								<p:outputLabel value="Data Inicio:" for="edtinicio" />
+								<p:calendar locale="pt_BR" id="edtinicio" readonlyInput="true"
+									value="#{beanProjeto.etapa.dtinicio}" pattern="dd/MM/yyyy"
+									mask="true" mindate="#{beanProjeto.projeto.dtinicio}" maxdate="#{beanProjeto.projeto.dtprevista}">
+								</p:calendar>
+
+								<p:outputLabel value="Data Prevista:" for="edtprevista" />
+								<p:calendar locale="pt_BR" id="edtprevista" readonlyInput="true"
+									value="#{beanProjeto.etapa.dtprevista}" pattern="dd/MM/yyyy"
+									mask="true" mindate="#{beanProjeto.projeto.dtinicio}" maxdate="#{beanProjeto.projeto.dtprevista}">
+								</p:calendar>
+
+								<p:outputLabel value="Data Conclusão" for="edtconclusao" />
+								<p:calendar locale="pt_BR" id="edtconclusao" disabled="true"
+									value="#{beanProjeto.etapa.dtconclusao}" pattern="dd/MM/yyyy"
+									mask="true"  />
+
+								<p:outputLabel value="Status:" for="estatus" />
+								<p:inputText id="estatus" value="#{beanProjeto.etapa.status}"
+									required="true" disabled="true" />
+
+							</p:panelGrid>
+
+							<p:commandButton id="sle2" icon="fa fa-check"
+								styleClass="btn-primary"
+								action="#{beanProjeto.editarsalvarEtapa()}" value="Salvar"
+								ajax="false" update="erros">
+							</p:commandButton>
+						</div>
+					</p:dialog>
+					
+					<p:dialog id="dlg2" header="Item da Etapa" widgetVar="dialogp2"
+						appendToBody="true" draggable="false" modal="true">
+						<div class="box box-primary">
+							<p:panelGrid id="painelDados5" columns="2" layout="grid"
+								styleClass="ui-fluid card">
+
+								<p:outputLabel value="Responsavél:" for="responsavel" />
+								<p:inputText id="responsavel" value="#{beanProjeto.item.responsavel}" autocomplete="off"
+									onkeyup="this.value=this.value.toUpperCase()" />
+
+								<p:outputLabel value="Descrição:" for="eidescricao" />
+								<p:inputText id="eidescricao" autocomplete="off"
+									value="#{beanProjeto.item.descricao}"
+									onkeyup="this.value=this.value.toUpperCase()" />
+									
+								<p:outputLabel value="Custo Previsto:" for="valorprevisto" />
+								<p:inputNumber id="valorprevisto" emptyValue="true"
+								value="#{beanProjeto.item.valorprevisto}" />
+								
+								<p:outputLabel value="Custo Real" for="valorconcluido" />
+								<p:inputNumber id="valorconcluido" emptyValue="true"
+								value="#{beanProjeto.item.valorconcluido}" />		
+									
+								<p:outputLabel value="Data Inicio:" for="eidtinicio" />
+								<p:calendar locale="pt_BR" id="eidtinicio" readonlyInput="true"
+									value="#{beanProjeto.item.dtinicio}" pattern="dd/MM/yyyy"
+									mask="true" mindate="#{beanProjeto.item.etapa.dtinicio}" maxdate="#{beanProjeto.item.etapa.dtprevista}">
+								</p:calendar>
+
+								<p:outputLabel value="Data Prevista:" for="eidtprevista" />
+								<p:calendar locale="pt_BR" id="eidtprevista" readonlyInput="true"
+									value="#{beanProjeto.item.dtprevista}" pattern="dd/MM/yyyy"
+									mask="true" mindate="#{beanProjeto.item.etapa.dtinicio}" maxdate="#{beanProjeto.item.etapa.dtprevista}">
+								</p:calendar>
+
+								<p:outputLabel value="Data Conclusão" for="eidtconclusao" />
+								<p:calendar locale="pt_BR" id="eidtconclusao" disabled="true"
+									value="#{beanProjeto.item.dtconclusao}" pattern="dd/MM/yyyy"
+									mask="true"  />
+
+								<p:outputLabel value="Status:" for="eistatus" />
+								<p:inputText id="eistatus" value="#{beanProjeto.item.status}"
+									required="true" disabled="true" />	
+									
+								<p:outputLabel value="Status Observação" for="statusobservacao" />
+								<p:inputText id="statusobservacao" autocomplete="off"
+									value="#{beanProjeto.item.statusobservacao}"
+									onkeyup="this.value=this.value.toUpperCase()" />	
+
+							</p:panelGrid>
+							<p:commandButton id="sle3" icon="fa fa-check"
+								styleClass="btn-primary"
+								action="#{beanProjeto.editarsalvarEtapaItem()}" value="Salvar"
+								ajax="false" update="erros">
+							</p:commandButton>
+						</div>
+					</p:dialog>
+					
+				</div>
+			</h:form>
+		</p:panel>
+	</ui:define>
+
+</ui:composition>
