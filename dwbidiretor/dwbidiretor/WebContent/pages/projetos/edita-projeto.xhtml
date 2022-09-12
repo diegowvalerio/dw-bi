@@ -251,8 +251,8 @@
 										</p:column>
 
 										<p:column headerText="Items da Etapa">											
-											<p:dataTable value="#{etapas.items}"  var="items" widgetVar="items" draggableRows="false"
-												sortBy="#{items.ordenacao}" style="font-style: italic; font-size: 12px;">
+											<p:dataTable value="#{etapas.items}"  var="items" widgetVar="items" draggableRows="false" id="items" 
+												sortBy="#{items.ordenacao}" style="font-style: italic; font-size: 12px;" >
 												
 												<p:column headerText="#" width="4%" rendered="false">#{items.ordenacao}</p:column>
 												<p:column headerText="Responsável" width="11%">#{items.responsavel}</p:column>

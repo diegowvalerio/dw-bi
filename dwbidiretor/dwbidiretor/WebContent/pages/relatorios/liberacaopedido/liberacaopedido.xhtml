@@ -1,0 +1,194 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+
+<style type="text/css">  
+            .color_100 {  
+                background-color: #CEF6E3;  
+            }  
+            
+            .color_m100 {  
+                background-color: #A9E2F3;  
+            }
+            
+            .color_0 {  
+                background-color: #F5A9D0;  
+            }
+     </style>
+	</ui:define>
+
+	<ui:define name="title">
+ 	 Liberação Pedido
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Liberação Pedido" />
+
+		<h:form id="form">
+		
+		<p:commandButton action="pedidoliberado?faces-redirect=true"
+						ajax="false" value="Relatorio de Pedidos"
+						styleClass="btn-primary" />
+						
+			<p:panelGrid columns="3"
+				columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+				layout="grid" styleClass="ui-fluid card" id="filtroscli">
+
+				<p:outputLabel value="Pedido" for="pedido" />
+				<p:inputText value="#{beanLiberacaoPedido.pedido}" id="pedido">
+				</p:inputText>
+
+				<p:commandButton action="#{beanLiberacaoPedido.filtrar()}"
+					value="Filtrar" icon="fa fa-check" update=":form:paineld"
+					styleClass="btn-primary" />
+
+			</p:panelGrid>
+										
+			<p:panelGrid columns="1" id="paineld">												
+				<p:dataTable id="lista" var="listas" value="#{beanLiberacaoPedido.lista}" >
+
+					<p:column headerText="Pedido" width="5%">
+						<h:outputText value="#{listas.pedido}" />
+					</p:column>
+					
+					<p:column  headerText="Data Pedido" width="5%">
+						<h:outputText value="#{listas.datapedido}" >
+							<f:convertDateTime pattern="dd/MM/yyyy"/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Cliente" width="5%">
+						<h:outputText value="#{listas.codigocliente}" />
+					</p:column>
+
+					<p:column headerText="Nome">
+						<h:outputText value="#{listas.nomecliente}" />
+					</p:column>
+
+					<p:column headerText="Valor" width="5%">
+						<h:outputText value="#{listas.valortotalpedido}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Tipo" width="5%">
+						<h:outputText value="#{listas.tipopedido}" />
+					</p:column>
+					
+					<p:column headerText="Status" width="5%">
+						<h:outputText value="#{listas.statuspedido}" />
+					</p:column>
+					
+					<p:column headerText="Vendedor" >
+						<h:outputText value="#{listas.nomevendedor}" />
+					</p:column>
+					
+					<p:column headerText="Gestor" width="10%">
+						<h:outputText value="#{listas.nomegestor}" />
+					</p:column>
+					
+					
+					<p:column headerText="Liberado?" width="8%">
+						<h:outputText value="#{listas.liberado}" />
+					</p:column>
+					
+					<p:column width="8%" headerText="#" style="text-align:center">
+						<p:commandButton oncomplete="PF('dialog').show();" actionListener="#{beanLiberacaoPedido.addLog()}"
+								update=":form:painelDados" icon="fa fa-edit">
+						</p:commandButton>
+						
+						<p:commandButton oncomplete="PF('dialog2').show();"
+								update=":form:painelDados2" icon="fa fa-eye">
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>				
+			</p:panelGrid>
+
+		<p:dialog id="dlg" header="Pedido" widgetVar="dialog"
+					 responsive="true" modal="true">
+					<p:panelGrid id="painelDados" columns="2">
+					
+						<p:outputLabel value="Status:" for="status" />
+						<p:selectOneMenu id="status" value="#{beanLiberacaoPedido.clog.status}">
+							<f:selectItem itemLabel="Selecionar" noSelectionOption="true" />
+							<f:selectItem itemLabel="Liberado" itemValue="LIBERADO" />
+							<f:selectItem itemLabel="Não Liberado" itemValue="NAO-LIBERADO" />
+						</p:selectOneMenu>	
+						
+						<p:outputLabel value="Descrição" for="descricao" />
+						<p:inputText id="descricao" value="#{beanLiberacaoPedido.clog.descricao}" onkeyup="this.value=this.value.toUpperCase()" maxlength="250"/>
+												
+						
+					</p:panelGrid>
+					<p:commandButton icon="fa fa-check" styleClass="btn-primary"
+						action="#{beanLiberacaoPedido.salvar()}" ajax="false" />
+		</p:dialog>
+		
+		<p:dialog id="dlg2"  widgetVar="dialog2"
+					 responsive="true" modal="true" width="70%">
+					
+					<p:panelGrid id="painelDados2" columns="2">
+					
+					<p:dataTable id="lista2" var="listas" value="#{beanLiberacaoPedido.logs}"  >
+					<f:facet name="header">
+        				Log de Liberação Pedido
+    				</f:facet>
+
+					<p:column headerText="Pedido" width="5%">
+						<h:outputText value="#{listas.pedido}" />
+					</p:column>
+					
+					<p:column  headerText="Data" width="12%">
+						<h:outputText value="#{listas.data}" >
+							<f:convertDateTime locale="pt-BR" timeZone="GMT-03:00" pattern="dd/MM/yyyy HH:mm:ss"/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Liberado?" width="10%">
+						<h:outputText value="#{listas.status}" />
+					</p:column>
+					
+					<p:column headerText="Observação" >
+						<h:outputText value="#{listas.descricao}" />
+					</p:column>
+					
+					<p:column headerText="Usuario" width="8%">
+						<h:outputText value="#{listas.usuario}" />
+					</p:column>
+						
+					</p:dataTable>	
+					
+					</p:panelGrid>
+		</p:dialog>
+				
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

@@ -12,10 +12,10 @@ import javax.persistence.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-public class VendasEmGeral implements Serializable {
+public class CPedido implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	
+	//criado para verificar um pedido e realizar a liberação pelo comercial, e depois verificar a inadimplencia desses pedidos que foram liberado pelo comercial
 	@Id
 	private BigDecimal pedido;
 	
@@ -23,29 +23,15 @@ public class VendasEmGeral implements Serializable {
 	private String nomecliente;
 	private Date datapedido;
 	private BigDecimal valortotalpedido;
-	private String prazo;
 	private String tipopedido;
-	private String tipooperacaocfop;
 	private String statuspedido;
 	private String nomevendedor;
-	
-	private Date dataliberadogestor;
-	
-	private BigDecimal valortotalliquidopedido;
-	private BigDecimal perc_lucro;
-
 	private String nomegestor;
+	
+	private String liberado;
 
-	public VendasEmGeral() {
+	public CPedido() {
 		super();
-	}
-
-	public Date getDataliberadogestor() {
-		return dataliberadogestor;
-	}
-
-	public void setDataliberadogestor(Date dataliberadogestor) {
-		this.dataliberadogestor = dataliberadogestor;
 	}
 
 	public BigDecimal getCodigocliente() {
@@ -88,14 +74,6 @@ public class VendasEmGeral implements Serializable {
 		this.valortotalpedido = valortotalpedido;
 	}
 
-	public String getPrazo() {
-		return prazo;
-	}
-
-	public void setPrazo(String prazo) {
-		this.prazo = prazo;
-	}
-
 	public String getTipopedido() {
 		return tipopedido;
 	}
@@ -104,37 +82,12 @@ public class VendasEmGeral implements Serializable {
 		this.tipopedido = tipopedido;
 	}
 
-	public String getTipooperacaocfop() {
-		return tipooperacaocfop;
-	}
-
-	public void setTipooperacaocfop(String tipooperacaocfop) {
-		this.tipooperacaocfop = tipooperacaocfop;
-	}
-
 	public String getStatuspedido() {
 		return statuspedido;
 	}
 
 	public void setStatuspedido(String statuspedido) {
 		this.statuspedido = statuspedido;
-	}
-
-
-	public BigDecimal getValortotalliquidopedido() {
-		return valortotalliquidopedido;
-	}
-
-	public void setValortotalliquidopedido(BigDecimal valortotalliquidopedido) {
-		this.valortotalliquidopedido = valortotalliquidopedido;
-	}
-
-	public BigDecimal getPerc_lucro() {
-		return perc_lucro;
-	}
-
-	public void setPerc_lucro(BigDecimal perc_lucro) {
-		this.perc_lucro = perc_lucro;
 	}
 
 	public String getNomegestor() {
@@ -161,7 +114,7 @@ public class VendasEmGeral implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		VendasEmGeral other = (VendasEmGeral) obj;
+		CPedido other = (CPedido) obj;
 		if (pedido == null) {
 			if (other.pedido != null)
 				return false;
@@ -176,6 +129,14 @@ public class VendasEmGeral implements Serializable {
 
 	public void setNomevendedor(String nomevendedor) {
 		this.nomevendedor = nomevendedor;
+	}
+
+	public String getLiberado() {
+		return liberado;
+	}
+
+	public void setLiberado(String liberado) {
+		this.liberado = liberado;
 	}
 	
 	

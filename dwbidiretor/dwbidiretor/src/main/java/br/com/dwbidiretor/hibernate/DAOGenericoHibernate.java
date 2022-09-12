@@ -29,8 +29,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.dwbidiretor.classe.AnaliseClientePedido;
+import br.com.dwbidiretor.classe.CPedido;
+import br.com.dwbidiretor.classe.CPedidoLog;
 import br.com.dwbidiretor.classe.CidadeVenda;
 import br.com.dwbidiretor.classe.Cliente;
+import br.com.dwbidiretor.classe.ClientesAtivosAno;
 import br.com.dwbidiretor.classe.ClientesNovos;
 import br.com.dwbidiretor.classe.DadosCliente;
 import br.com.dwbidiretor.classe.FasePedido;
@@ -172,6 +175,181 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		return nome;
 	}
 	
+	public List<CPedido> cpedido(BigDecimal pedido){
+		List<CPedido> p = new ArrayList<>();
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				"select "
+				+ " p.pedidovendaid, "
+				+ " p.CADCFTVID cliente, "
+				+ " c.NOME_CADCFTV nomecliente, "
+				+ " p.DT_PEDIDOVENDA, "
+				+ " p.VL_TOTALPROD_PEDIDOVENDA valor, "
+				+ " tp.DESC_TIPO_PEDIDO tipopedido, "
+				+ " p.STATUS_PEDIDOVENDA status, "
+				+ " c.NOME_CADCFTV nomevendedor, "
+				+ " g.NOME_GESTOR "
+				+ " "
+				+ " from pedidovenda p "
+				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+				+ " inner join TIPO_PEDIDO tp on tp.TIPOPEDIDOID = p.TIPOPEDIDOID "
+				+ " inner join CADCFTV c on c.CADCFTVID = p.CADCFTVID "
+				+ " inner join CADCFTV v on v.CADCFTVID = p.VENDEDOR1ID "
+				+ " inner join vendedor vv on vv.CADCFTVID = v.CADCFTVID "
+				+ " inner join gestor g on g.GESTORID = vv.GESTORID "
+				+ " "
+				+ " where p.pedidovendaid = '"+pedido+"' ");
+		
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			CPedido ped = new CPedido();
+			
+			ped.setPedido((BigDecimal)row[0]);
+			ped.setCodigocliente((BigDecimal)row[1]);
+			ped.setNomecliente((String)row[2]);
+			ped.setDatapedido((Date)row[3]);
+			ped.setValortotalpedido((BigDecimal)row[4]);
+			ped.setTipopedido((String)row[5]);
+			ped.setStatuspedido((String)row[6]);
+			ped.setNomevendedor((String)row[7]);
+			ped.setNomegestor((String)row[8]);
+			
+			javax.persistence.Query query2 = (javax.persistence.Query) managerSige.createNativeQuery(
+			" SELECT "
+			+ " idlog, "
+			+ " data, "
+			+ " descricao, "
+			+ " status, "
+			+ " pedido, "
+			+ " usuario "
+			+ " FROM dwbi_pedidolog "
+			+ " inner join( "
+			+ " select "
+			+ " MAX(idlog) id, "
+			+ " pedido ped "
+			+ " from dwbi_pedidolog "
+			+ " group by pedido "
+			+ " )x on x.id = idlog "
+			+ " where pedido = '"+ped.getPedido().toString()+"'");
+			List<Object[]> lista2 = query2.getResultList();
+			for (Object[] row2 : lista2) {
+				ped.setLiberado((String)row2[3]);
+			}
+
+			p.add(ped);
+		}
+		return p;
+	}
+	
+	public List<CPedido> cpedidoLista(Date data1, Date data2, String status){
+		List<CPedido> p = new ArrayList<>();
+		//data para o sige
+		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+		String dataFormatada = formato.format(data1);
+		
+		//ajustar data +1 para filtrar corretamente no sige
+		Calendar cal = Calendar.getInstance(); 
+		cal.setTime(data2); 
+		cal.add(Calendar.DATE, 1);
+		data2 = cal.getTime();
+		
+		String dataFormatada2 = formato.format(data2);
+		
+		//System.out.println(dataFormatada+"-"+dataFormatada2);
+		
+		javax.persistence.Query query2 = (javax.persistence.Query) managerSige.createNativeQuery(
+				" SELECT "
+				+ " idlog, "
+				+ " data, "
+				+ " descricao, "
+				+ " status, "
+				+ " pedido, "
+				+ " usuario "
+				+ " FROM dwbi_pedidolog "
+				+ " inner join( "
+				+ " select "
+				+ " MAX(idlog) id, "
+				+ " pedido ped "
+				+ " from dwbi_pedidolog "
+				+ " group by pedido "
+				+ " )x on x.id = idlog "
+				+ " where data between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
+				+ " and status = '"+status+"'");
+		
+				List<Object[]> lista2 = query2.getResultList();
+				for (Object[] row2 : lista2) {
+					CPedido ped = new CPedido();
+					
+					ped.setLiberado((String)row2[3]);
+
+					javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+							"select "
+							+ " p.pedidovendaid, "
+							+ " p.CADCFTVID cliente, "
+							+ " c.NOME_CADCFTV nomecliente, "
+							+ " p.DT_PEDIDOVENDA, "
+							+ " p.VL_TOTALPROD_PEDIDOVENDA valor, "
+							+ " tp.DESC_TIPO_PEDIDO tipopedido, "
+							+ " p.STATUS_PEDIDOVENDA status, "
+							+ " c.NOME_CADCFTV nomevendedor, "
+							+ " g.NOME_GESTOR "
+							+ " "
+							+ " from pedidovenda p "
+							+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+							+ " inner join TIPO_PEDIDO tp on tp.TIPOPEDIDOID = p.TIPOPEDIDOID "
+							+ " inner join CADCFTV c on c.CADCFTVID = p.CADCFTVID "
+							+ " inner join CADCFTV v on v.CADCFTVID = p.VENDEDOR1ID "
+							+ " inner join vendedor vv on vv.CADCFTVID = v.CADCFTVID "
+							+ " inner join gestor g on g.GESTORID = vv.GESTORID "
+							+ " "
+							+ " where p.pedidovendaid = '"+(String)row2[4]+"' ");
+					
+					List<Object[]> lista = query.getResultList();
+					for (Object[] row : lista) {
+						
+						ped.setPedido((BigDecimal)row[0]);
+						ped.setCodigocliente((BigDecimal)row[1]);
+						ped.setNomecliente((String)row[2]);
+						ped.setDatapedido((Date)row[3]);
+						ped.setValortotalpedido((BigDecimal)row[4]);
+						ped.setTipopedido((String)row[5]);
+						ped.setStatuspedido((String)row[6]);
+						ped.setNomevendedor((String)row[7]);
+						ped.setNomegestor((String)row[8]);
+						
+						p.add(ped);
+					}			
+				}		
+		return p;
+	}
+	
+	public List<CPedidoLog> cpedidolog(String pedido){
+		List<CPedidoLog> p = new ArrayList<>();
+		javax.persistence.Query query2 = (javax.persistence.Query) managerSige.createNativeQuery(
+				" SELECT "
+				+ " idlog, "
+				+ " data, "
+				+ " descricao, "
+				+ " status, "
+				+ " pedido, "
+				+ " usuario "
+				+ " FROM dwbi_pedidolog "
+				+ " where pedido = '"+pedido+"'");
+				List<Object[]> lista2 = query2.getResultList();
+				for (Object[] row2 : lista2) {
+					CPedidoLog ped = new CPedidoLog();
+					
+					ped.setIdlog((Integer) row2[0]);
+					ped.setData((Date) row2[1]);
+					ped.setDescricao((String)row2[2]);
+					ped.setStatus((String)row2[3]);
+					ped.setPedido((String)row2[4]);
+					ped.setUsuario((String) row2[5]);
+					
+					p.add(ped);
+				}
+			return p;
+	}
+	
 	public List<Produto> produtos(){
 		List<Produto> list = new ArrayList<>();
 		
@@ -237,6 +415,213 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			
 			list.add(v);
 		}
+		return list;
+	}
+	
+	public List<ClientesAtivosAno> clientesativosano(String vendedor1, String vendedor2, String gestor1, String gestor2, String ano){
+		List<ClientesAtivosAno> list = new ArrayList<>();
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				" select  "
+				+ "G.NOME_GESTOR, "
+				+ "V.CADCFTVID VENDEDOR, "
+				+ "V.NOME_CADCFTV NOMEVENDEDOR, "
+				+ "'"+ano+"' ANO, "
+				+ "COUNT(JANEIRO.MES) JANEIRO, "
+				+ "COUNT(FEV.MES) FEVEREIRO, "
+				+ "count(mar.mes) MARCO, "
+				+ "COUNT(ABRIL.MES) ABRIL, "
+				+ "COUNT(MAIO.MES) MAIO, "
+				+ "COUNT(JUNHO.MES) JUNHO, "
+				+ "COUNT(JULHO.MES) JULHO, "
+				+ "COUNT(AGOS.MES) AGOSTO, "
+				+ "COUNT(SETEM.MES) SETEMBRO, "
+				+ "COUNT(OUTO.MES) OUTUBRO, "
+				+ "COUNT(NOV.MES) NOVEMBRO, "
+				+ "COUNT(DEZ.MES) DEZEMBRO "
+				+ " "
+				+ "from CADCFTV c "
+				+ "inner join cliente cl on cl.CADCFTVID = c.CADCFTVID "
+				+ "INNER JOIN CADCFTV V ON V.CADCFTVID = CL.VENDEDORID1 "
+				+ "INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = CL.VENDEDORID1 "
+				+ "INNER JOIN GESTOR G ON G.GESTORID = V2.GESTORID "
+				+ " "
+				+ "left join(  "
+				+ "select  "
+				+ "p.CADCFTVID, "
+				+ "'01' MES "
+				+ "from pedidovenda p  "
+				+ "INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+				+ "where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO')  "
+				+ "AND CF.TIPOOPERACAO_CFOP = 'VENDA'  "
+				+ "AND p.DT_PEDIDOVENDA BETWEEN ADD_MONTHS(TO_DATE('31/01/"+ano+"')+1,-6) AND TO_DATE('31/01/"+ano+"') "
+				+ "group by p.CADCFTVID  "
+				+ ")JANEIRO on JANEIRO.CADCFTVID = c.CADCFTVID  "
+				+ " "
+				+ " "
+				+ "left join(  "
+				+ "select  "
+				+ "p.CADCFTVID, "
+				+ "'02' MES "
+				+ "from pedidovenda p  "
+				+ "INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+				+ "where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO')  "
+				+ "AND CF.TIPOOPERACAO_CFOP = 'VENDA'  "
+				+ "AND p.DT_PEDIDOVENDA BETWEEN ADD_MONTHS(TO_DATE('28/02/"+ano+"')+1,-6) AND TO_DATE('28/02/"+ano+"') "
+				+ "group by p.CADCFTVID  "
+				+ ")FEV on FEV.CADCFTVID = c.CADCFTVID  "
+				+ " "
+				+ "left join(  "
+				+ "select  "
+				+ "p.CADCFTVID, "
+				+ "'03' MES "
+				+ "from pedidovenda p  "
+				+ "INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+				+ "where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO')  "
+				+ "AND CF.TIPOOPERACAO_CFOP = 'VENDA'  "
+				+ "AND p.DT_PEDIDOVENDA BETWEEN ADD_MONTHS(TO_DATE('31/03/"+ano+"')+1,-6) AND TO_DATE('31/03/"+ano+"') "
+				+ "group by p.CADCFTVID  "
+				+ ")mar on mar.CADCFTVID = c.CADCFTVID  "
+				+ " "
+				+ "left join(  "
+				+ "select  "
+				+ "p.CADCFTVID, "
+				+ "'04' MES "
+				+ "from pedidovenda p  "
+				+ "INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+				+ "where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO')  "
+				+ "AND CF.TIPOOPERACAO_CFOP = 'VENDA'  "
+				+ "AND p.DT_PEDIDOVENDA BETWEEN ADD_MONTHS(TO_DATE('30/04/"+ano+"')+1,-6) AND TO_DATE('30/04/"+ano+"') "
+				+ "group by p.CADCFTVID  "
+				+ ")ABRIL on ABRIL.CADCFTVID = c.CADCFTVID  "
+				+ " "
+				+ "left join(  "
+				+ "select  "
+				+ "p.CADCFTVID, "
+				+ "'05' MES "
+				+ "from pedidovenda p  "
+				+ "INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+				+ "where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO')  "
+				+ "AND CF.TIPOOPERACAO_CFOP = 'VENDA'  "
+				+ "AND p.DT_PEDIDOVENDA BETWEEN ADD_MONTHS(TO_DATE('31/05/"+ano+"')+1,-6) AND TO_DATE('31/05/"+ano+"') "
+				+ "group by p.CADCFTVID  "
+				+ ")MAIO on MAIO.CADCFTVID = c.CADCFTVID  "
+				+ " "
+				+ "left join(  "
+				+ "select  "
+				+ "p.CADCFTVID, "
+				+ "'06' MES "
+				+ "from pedidovenda p  "
+				+ "INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+				+ "where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO')  "
+				+ "AND CF.TIPOOPERACAO_CFOP = 'VENDA'  "
+				+ "AND p.DT_PEDIDOVENDA BETWEEN ADD_MONTHS(TO_DATE('30/06/"+ano+"')+1,-6) AND TO_DATE('30/06/"+ano+"') "
+				+ "group by p.CADCFTVID  "
+				+ ")JUNHO on JUNHO.CADCFTVID = c.CADCFTVID  "
+				+ " "
+				+ " "
+				+ "left join(  "
+				+ "select  "
+				+ "p.CADCFTVID, "
+				+ "'07' MES "
+				+ "from pedidovenda p  "
+				+ "INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+				+ "where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO')  "
+				+ "AND CF.TIPOOPERACAO_CFOP = 'VENDA'  "
+				+ "AND p.DT_PEDIDOVENDA BETWEEN ADD_MONTHS(TO_DATE('31/07/"+ano+"')+1,-6) AND TO_DATE('31/07/"+ano+"') "
+				+ "group by p.CADCFTVID  "
+				+ ")JULHO on JULHO.CADCFTVID = c.CADCFTVID  "
+				+ " "
+				+ "left join(  "
+				+ "select  "
+				+ "p.CADCFTVID, "
+				+ "'08' MES "
+				+ "from pedidovenda p  "
+				+ "INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+				+ "where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO')  "
+				+ "AND CF.TIPOOPERACAO_CFOP = 'VENDA'  "
+				+ "AND p.DT_PEDIDOVENDA BETWEEN ADD_MONTHS(TO_DATE('31/08/"+ano+"')+1,-6) AND TO_DATE('31/08/"+ano+"') "
+				+ "group by p.CADCFTVID  "
+				+ ")AGOS on AGOS.CADCFTVID = c.CADCFTVID  "
+				+ " "
+				+ "left join(  "
+				+ "select  "
+				+ "p.CADCFTVID, "
+				+ "'09' MES "
+				+ "from pedidovenda p  "
+				+ "INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+				+ "where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO')  "
+				+ "AND CF.TIPOOPERACAO_CFOP = 'VENDA'  "
+				+ "AND p.DT_PEDIDOVENDA BETWEEN ADD_MONTHS(TO_DATE('30/09/"+ano+"')+1,-6) AND TO_DATE('30/09/"+ano+"') "
+				+ "group by p.CADCFTVID  "
+				+ ")SETEM on SETEM.CADCFTVID = c.CADCFTVID "
+				+ " "
+				+ "left join(  "
+				+ "select  "
+				+ "p.CADCFTVID, "
+				+ "'10' MES "
+				+ "from pedidovenda p  "
+				+ "INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+				+ "where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO')  "
+				+ "AND CF.TIPOOPERACAO_CFOP = 'VENDA'  "
+				+ "AND p.DT_PEDIDOVENDA BETWEEN ADD_MONTHS(TO_DATE('31/10/"+ano+"')+1,-6) AND TO_DATE('31/10/"+ano+"') "
+				+ "group by p.CADCFTVID  "
+				+ ")OUTO on OUTO.CADCFTVID = c.CADCFTVID "
+				+ " "
+				+ "left join(  "
+				+ "select  "
+				+ "p.CADCFTVID, "
+				+ "'11' MES "
+				+ "from pedidovenda p  "
+				+ "INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+				+ "where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO')  "
+				+ "AND CF.TIPOOPERACAO_CFOP = 'VENDA'  "
+				+ "AND p.DT_PEDIDOVENDA BETWEEN ADD_MONTHS(TO_DATE('30/11/"+ano+"')+1,-6) AND TO_DATE('30/11/"+ano+"') "
+				+ "group by p.CADCFTVID  "
+				+ ")NOV on NOV.CADCFTVID = c.CADCFTVID "
+				+ " "
+				+ "left join(  "
+				+ "select  "
+				+ "p.CADCFTVID, "
+				+ "'12' MES "
+				+ "from pedidovenda p  "
+				+ "INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+				+ "where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO')  "
+				+ "AND CF.TIPOOPERACAO_CFOP = 'VENDA'  "
+				+ "AND p.DT_PEDIDOVENDA BETWEEN ADD_MONTHS(TO_DATE('31/12/"+ano+"')+1,-6) AND TO_DATE('31/12/"+ano+"') "
+				+ "group by p.CADCFTVID  "
+				+ ")DEZ on DEZ.CADCFTVID = c.CADCFTVID "
+				+ " "
+				+ "WHERE v.cadcftvid BETWEEN ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+				+ "AND v2.gestorid BETWEEN ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+				+ " "
+				+ "GROUP BY "
+				+ "G.NOME_GESTOR,V.CADCFTVID,V.NOME_CADCFTV ");
+		
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			ClientesAtivosAno cliente= new ClientesAtivosAno();
+			
+			cliente.setGestor((String) row[0]);
+			cliente.setCodigovendedor((BigDecimal) row[1]);
+			cliente.setNomevendedor((String) row[2]);
+			cliente.setAno((String) row[3]);
+			cliente.setJaneiro((BigDecimal) row[4]);
+			cliente.setFevereiro((BigDecimal) row[5]);
+			cliente.setMarco((BigDecimal) row[6]);
+			cliente.setAbril((BigDecimal) row[7]);
+			cliente.setMaio((BigDecimal) row[8]);
+			cliente.setJunho((BigDecimal) row[9]);
+			cliente.setJulho((BigDecimal) row[10]);
+			cliente.setAgosto((BigDecimal) row[11]);
+			cliente.setSetembro((BigDecimal) row[12]);
+			cliente.setOutubro((BigDecimal) row[13]);
+			cliente.setNovembro((BigDecimal) row[14]);
+			cliente.setDezembro((BigDecimal) row[15]);
+			
+			list.add(cliente);
+	}
+		
 		return list;
 	}
 	
@@ -2217,7 +2602,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " p.status_pedidovenda, "
 						+ " v.NOME_CADCFTV nome_vendedor, "
 						+ " itens.TOTALLIQUIDO_PEDIDO,"
-						+ " itens.perc_lucro "
+						+ " itens.perc_lucro, "
+						+ " g.nome_gestor "
 						+ " from pedidovenda p "
 						+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
 						+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID "
@@ -2244,6 +2630,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " ) itens on itens.pedidovendaid = p.pedidovendaid "
 						
 						+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
+						+ " inner join gestor g on g.gestorid = v2.gestorid "
 						+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
 						+ " AND CF.tipooperacao_cfop = 'VENDA' "
 						+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
@@ -2272,6 +2659,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			
 			vendasEmGeral.setValortotalliquidopedido((BigDecimal) row[10] );
 			vendasEmGeral.setPerc_lucro((BigDecimal) row[11] );
+			vendasEmGeral.setNomegestor((String) row[12]);
 			
 			list.add(vendasEmGeral);
 		}

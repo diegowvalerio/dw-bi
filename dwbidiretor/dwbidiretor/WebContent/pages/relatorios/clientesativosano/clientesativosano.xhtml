@@ -1,0 +1,150 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+       Clientes Ativos x Ano - Mês
+    </ui:define>
+
+	<ui:define name="description">
+        (clientes ativos = clientes que compraram em até 180 dias)
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Cidades" />
+
+		<h:form id="form">
+			<p:panelGrid columns="6"
+				columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+				layout="grid" styleClass="ui-fluid card" id="filtroscli">
+				
+					<p:outputLabel value="Gestor:" for="gestor" />
+					<p:selectOneMenu id="gestor" value="#{beanClientesAtivosAno.gestor}"
+						converter="conversorGestor">
+						<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
+						<f:selectItems value="#{beanClientesAtivosAno.listagestor}" var="gestor"
+							itemLabel="#{gestor.nomegestor}"
+							itemValue="#{gestor}" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="Vendedor:" for="vendedor" />
+					<p:selectOneMenu id="vendedor" value="#{beanClientesAtivosAno.vendedor}"
+						converter="conversorVendedor" filter="true" filterMatchMode="contains">
+						<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
+						<f:selectItems value="#{beanClientesAtivosAno.listavendedor}" var="vendedor"
+							itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
+							itemValue="#{vendedor}" />
+							<p:ajax listener="#{beanClientesAtivosAno.filtragestor}" update=":form:gestor" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="Ano:" for="ano2" />	
+            		<p:inputText id="ano2" value="#{beanClientesAtivosAno.ano}" />
+					
+					<p:commandButton action="#{beanClientesAtivosAno.filtrar()}" value="Filtrar"
+						icon="fa fa-check" update=":form:paineld" styleClass="btn-primary" />
+					
+			</p:panelGrid>	
+			
+						
+			<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
+						<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="cliente" fileName="clientesativos-ano-mes" pageOnly="true"/>
+						</h:commandLink>
+								
+						<p:dataTable id="cliente" var="clientes"  value="#{beanClientesAtivosAno.lista}"  >
+						
+							<p:column headerText="Gestor"  width="10%">
+								<h:outputText value="#{clientes.gestor}" />
+							</p:column>		
+							
+							<p:column headerText="Cód."  width="4%">
+								<h:outputText value="#{clientes.codigovendedor}" />
+							</p:column>	
+							
+							<p:column headerText="Nome Vendedor" >
+								<h:outputText value="#{clientes.nomevendedor}" />
+							</p:column>
+							
+							<p:column headerText="Ano" width="3%">
+								<h:outputText value="#{clientes.ano}" />
+							</p:column>
+							
+							<p:column headerText="Jan" width="3%">
+								<h:outputText value="#{clientes.janeiro}" />
+							</p:column>	
+							
+							<p:column headerText="Fev" width="3%">
+								<h:outputText value="#{clientes.fevereiro}" />
+							</p:column>	
+							
+							<p:column headerText="Mar" width="3%">
+								<h:outputText value="#{clientes.janeiro}" />
+							</p:column>	
+							
+							<p:column headerText="Abr" width="3%">
+								<h:outputText value="#{clientes.abril}" />
+							</p:column>	
+							
+							<p:column headerText="Mai" width="3%">
+								<h:outputText value="#{clientes.maio}" />
+							</p:column>	
+							
+							<p:column headerText="Jun" width="3%">
+								<h:outputText value="#{clientes.junho}" />
+							</p:column>	
+							
+							<p:column headerText="Jul" width="3%">
+								<h:outputText value="#{clientes.julho}" />
+							</p:column>	
+							
+							<p:column headerText="Ago" width="3%">
+								<h:outputText value="#{clientes.agosto}" />
+							</p:column>	
+							
+							<p:column headerText="Set" width="3%">
+								<h:outputText value="#{clientes.setembro}" />
+							</p:column>	
+							
+							<p:column headerText="Out" width="3%">
+								<h:outputText value="#{clientes.outubro}" />
+							</p:column>	
+							
+							<p:column headerText="Nov" width="3%">
+								<h:outputText value="#{clientes.novembro}" />
+							</p:column>	
+							
+							<p:column headerText="Dez" width="3%">
+								<h:outputText value="#{clientes.dezembro}" />
+							</p:column>									
+
+						</p:dataTable>
+												
+			</h:panelGrid>
+					
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

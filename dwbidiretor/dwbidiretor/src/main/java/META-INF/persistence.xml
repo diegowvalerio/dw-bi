@@ -9,6 +9,7 @@
 		<class>br.com.dwbidiretor.classe.Projeto</class>
 		<class>br.com.dwbidiretor.classe.Etapa</class>
 		<class>br.com.dwbidiretor.classe.Etapa_Item</class>
+		<class>br.com.dwbidiretor.classe.CPedidoLog</class>
 	<properties>
 			<property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@MSERVER2:1521:AWORKSDB" />
 			<property name="javax.persistence.jdbc.user" value="SEVEN" />

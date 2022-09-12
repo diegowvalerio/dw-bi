@@ -1,0 +1,146 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+
+<style type="text/css">  
+            .color_100 {  
+                background-color: #CEF6E3;  
+            }  
+            
+            .color_m100 {  
+                background-color: #A9E2F3;  
+            }
+            
+            .color_0 {  
+                background-color: #F5A9D0;  
+            }
+     </style>
+	</ui:define>
+
+	<ui:define name="title">
+ 	 Relatorio de Pedidos
+    </ui:define>
+
+	<ui:define name="description">
+         
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Relatorio de Pedidos" />
+
+		<h:form id="form">
+			<p:growl id="erros" showDetail="true" sticky="false" />
+						
+			<p:panelGrid columns="7"
+				columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+				layout="grid" styleClass="ui-fluid card" id="filtroscli">
+
+				<p:outputLabel value=" Data:  " for="data_grafico" />
+					<p:calendar locale="pt_BR" id="data_grafico"
+						value="#{beanLiberacaoPedido.data_grafico}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico2" />
+					<p:calendar locale="pt_BR" id="data_grafico2"
+						value="#{beanLiberacaoPedido.data_grafico2}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+					
+					<p:outputLabel value="Status:" for="status" />
+						<p:selectOneMenu id="status" value="#{beanLiberacaoPedido.status}">
+							<f:selectItem itemLabel="Selecionar" noSelectionOption="true" />
+							<f:selectItem itemLabel="Liberado" itemValue="LIBERADO" />
+							<f:selectItem itemLabel="Não Liberado" itemValue="NAO-LIBERADO" />
+					</p:selectOneMenu>
+
+				<p:commandButton action="#{beanLiberacaoPedido.filtrar2()}"
+					value="Filtrar" icon="fa fa-check" update=":form:paineld erros"
+					styleClass="btn-primary" />
+
+			</p:panelGrid>
+										
+			<p:panelGrid columns="1" id="paineld">
+					
+				<h:commandLink value="Excel" >
+				<i class="fa fa-download" aria-hidden="true"></i>
+							<p:dataExporter type="xls" target="lista" fileName="listapedidos-liberacao" pageOnly="true"/>
+				</h:commandLink>
+														
+				<p:dataTable id="lista" var="listas" value="#{beanLiberacaoPedido.lista}" >
+
+					<p:column headerText="Pedido" width="5%">
+						<h:outputText value="#{listas.pedido}" />
+					</p:column>
+					
+					<p:column  headerText="Data Pedido" width="5%">
+						<h:outputText value="#{listas.datapedido}" >
+							<f:convertDateTime pattern="dd/MM/yyyy"/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Cliente" width="5%">
+						<h:outputText value="#{listas.codigocliente}" />
+					</p:column>
+
+					<p:column headerText="Nome">
+						<h:outputText value="#{listas.nomecliente}" />
+					</p:column>
+
+					<p:column headerText="Valor" width="5%">
+						<h:outputText value="#{listas.valortotalpedido}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Tipo" width="5%">
+						<h:outputText value="#{listas.tipopedido}" />
+					</p:column>
+					
+					<p:column headerText="Status" width="5%">
+						<h:outputText value="#{listas.statuspedido}" />
+					</p:column>
+					
+					<p:column headerText="Vendedor" >
+						<h:outputText value="#{listas.nomevendedor}" />
+					</p:column>
+					
+					<p:column headerText="Gestor" width="10%">
+						<h:outputText value="#{listas.nomegestor}" />
+					</p:column>
+					
+					
+					<p:column headerText="Liberado?" width="8%">
+						<h:outputText value="#{listas.liberado}" />
+					</p:column>
+
+				</p:dataTable>				
+			</p:panelGrid>
+	
+				
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

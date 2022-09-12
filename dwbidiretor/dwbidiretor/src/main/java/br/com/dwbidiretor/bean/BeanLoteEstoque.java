@@ -74,18 +74,32 @@ public class BeanLoteEstoque implements Serializable {
 					+ " SUM(IT.QT_PEDIDOVENDA_ITEM) QTDE, "
 					+ " AL.SALDOATU_ALMOXARIFADO_PRODUTO SALDO, "
 					+ " CASE WHEN round(nvl(AL.SALDOATU_ALMOXARIFADO_PRODUTO,0)/SUM(IT.QT_PEDIDOVENDA_ITEM)*100,2) > 100 THEN 100  "
-					+ " ELSE round(nvl(AL.SALDOATU_ALMOXARIFADO_PRODUTO,0)/SUM(IT.QT_PEDIDOVENDA_ITEM)*100,2) END PERC_ATENDIDO "
+					+ " ELSE round(nvl(AL.SALDOATU_ALMOXARIFADO_PRODUTO,0)/SUM(IT.QT_PEDIDOVENDA_ITEM)*100,2) END PERC_ATENDIDO,"
+					+ " media.media3meses "
 					+ " from lote "
 					+ " inner join LOTE_ITEM on LOTE_ITEM.LOTEID = lote.LOTEID "
 					+ " INNER JOIN PEDIDOVENDA_ITEM IT ON IT.PEDIDOVENDAITEMID = LOTE_ITEM.PEDIDOVENDAITEMID "
 					+ " INNER JOIN ALMOXARIFADO_PRODUTO AL ON AL.PRODUTOID = IT.PRODUTOID AND AL.ALMOXARIFADOID = 1 "
+					
+					+ " left join( "
+					+ " select  "
+					+ " it.produtoid, "
+					+ " trunc(nvl(sum(IT.QT_PEDIDOVENDA_ITEM),0)/3 )media3meses "
+					+ " from pedidovenda_item it "
+					+ " inner join pedidovenda p on p.pedidovendaid = it.pedidovendaid "
+					+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+					+ " and p.DT_PEDIDOVENDA between ADD_MONTHS(TRUNC(SYSDATE,'MM'),-3) and ADD_MONTHS(TRUNC(LAST_DAY(SYSDATE),'DD'),-1) "
+					+ " group by it.produtoid "
+					+ " ) media on media.produtoid = it.produtoid "
+							
 					+ " WHERE lote.LOTEID = "+lote
 					+ " GROUP BY "
 					+ " lote.loteid, "
 					+ " DT_LOTE, "
 					+ " IT.PRODUTOID, "
 					+ " IT.DS_PRODUTO_PEDIDOVENDA_ITEM, "
-					+ " AL.SALDOATU_ALMOXARIFADO_PRODUTO "
+					+ " AL.SALDOATU_ALMOXARIFADO_PRODUTO, "
+					+ " media.media3meses "
 					+ " order by IT.DS_PRODUTO_PEDIDOVENDA_ITEM ";
 			ResultSet resultSet = statement.executeQuery(query);
 			while(resultSet.next()) {
@@ -97,6 +111,7 @@ public class BeanLoteEstoque implements Serializable {
 				loteEstoque.setQtde(resultSet.getBigDecimal("QTDE"));
 				loteEstoque.setSaldo(resultSet.getBigDecimal("SALDO"));
 				loteEstoque.setPerc_atendido(resultSet.getBigDecimal("PERC_ATENDIDO"));
+				loteEstoque.setMedia3meses(resultSet.getBigDecimal("media3meses"));
 				
 				lista.add(loteEstoque);
 			}

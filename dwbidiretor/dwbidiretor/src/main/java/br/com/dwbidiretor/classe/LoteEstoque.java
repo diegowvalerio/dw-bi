@@ -20,6 +20,7 @@ public class LoteEstoque implements Serializable {
 	private BigDecimal qtde; 
 	private BigDecimal saldo;
 	private BigDecimal perc_atendido;
+	private BigDecimal media3meses;
 	
 	public LoteEstoque() {
 		super();
@@ -79,6 +80,14 @@ public class LoteEstoque implements Serializable {
 
 	public void setPerc_atendido(BigDecimal perc_atendido) {
 		this.perc_atendido = perc_atendido;
+	}
+
+	public BigDecimal getMedia3meses() {
+		return media3meses;
+	}
+
+	public void setMedia3meses(BigDecimal media3meses) {
+		this.media3meses = media3meses;
 	}
 
 	
