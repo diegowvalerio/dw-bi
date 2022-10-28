@@ -1,0 +1,136 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Total Investimento
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Total Investimento" />
+
+		<h:form id="form">
+				<p:panelGrid columns="8" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
+
+					<p:outputLabel value=" Data:  " for="data_grafico" />
+					<p:calendar locale="pt_BR" id="data_grafico"
+						value="#{beanTotalInvestimento.data_grafico}" pattern="dd/MM/yyyy"
+						mask="true" required="true" readonlyInput="true">
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico2" />
+					<p:calendar locale="pt_BR" id="data_grafico2"
+						value="#{beanTotalInvestimento.data_grafico2}" pattern="dd/MM/yyyy"
+						mask="true" required="true" readonlyInput="true">
+					</p:calendar>
+					
+					<p:outputLabel value="Gestor:" for="gestor" />
+					<p:selectOneMenu id="gestor" value="#{beanTotalInvestimento.gestor}"
+						converter="conversorGestor">
+						<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
+						<f:selectItems value="#{beanTotalInvestimento.listagestor}" var="gestor"
+							itemLabel="#{gestor.nomegestor}"
+							itemValue="#{gestor}" />
+					</p:selectOneMenu>
+						
+					<p:outputLabel value="Vendedor:" for="vendedor" />
+					<p:selectOneMenu id="vendedor"
+					value="#{beanTotalInvestimento.vendedor}"
+					converter="conversorVendedor" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanTotalInvestimento.listavendedor}"
+						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
+						itemValue="#{vendedor}" />
+						<p:ajax listener="#{beanTotalInvestimento.filtragestor}" update=":form:gestor" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="Cliente" for="cliente" />
+						<h:panelGroup>
+							<p:autoComplete id="cliente" 
+								value="#{beanTotalInvestimento.cliente}"
+								completeMethod="#{beanTotalInvestimento.completaCliente}" var="c"
+								itemLabel="#{c.nomecliente}" itemValue="#{c}" forceSelection="true"
+								converter="conversorCliente" />
+							<p:watermark value="Digite Nome ou Código" for="cliente"></p:watermark>
+						</h:panelGroup>
+
+					<p:commandButton action="#{beanTotalInvestimento.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld"
+						styleClass="btn-primary" />
+
+				</p:panelGrid>
+			
+					<p:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
+						<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="venda" fileName="entradapedido-investimento" pageOnly="true"/>
+						</h:commandLink>
+						
+						<p:dataTable id="venda" var="vendas"  value="#{beanTotalInvestimento.listavenda}" >
+							
+							<p:column headerText="Vendedor" sortBy="#{vendas.nomevendedor}">
+								<h:outputText value="#{vendas.nomevendedor}" />
+							</p:column>
+							
+							<p:column headerText="Cod."  width="3%">
+								<h:outputText value="#{vendas.codigocliente}" />
+							</p:column>
+							
+							<p:column headerText="Cliente" sortBy="#{vendas.nomecliente}">
+								<h:outputText value="#{vendas.nomecliente}" />
+							</p:column>
+
+							<p:column  headerText="Pedido" sortBy="#{vendas.pedido}" width="7%">
+								<h:outputText value="#{vendas.pedido}" />
+							</p:column>
+
+							<p:column  headerText="Data Pedido" sortBy="#{vendas.datapedido}" width="6%">
+								<h:outputText value="#{vendas.datapedido}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Vlr Total Pedido" width="6%"
+								sortBy="#{vendas.valortotalpedido}">
+								<h:outputText value="#{vendas.valortotalpedido}">
+									
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Tipo Pedido" sortBy="#{vendas.tipopedido}" >
+								<h:outputText value="#{vendas.tipopedido}" />
+							</p:column>							
+							
+						</p:dataTable>
+					</p:panelGrid>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

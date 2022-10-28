@@ -1,0 +1,215 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+
+<style type="text/css">  
+            .color_100 {  
+                background-color: #CEF6E3;  
+            }  
+            
+            .color_m100 {  
+                background-color: #A9E2F3;  
+            }
+            
+            .color_0 {  
+                background-color: #F5A9D0;  
+            }
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Pedido Liberado x Financeiro
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Pedido Liberado x Financeiro" />
+
+		<h:form id="form">
+				<p:panelGrid columns="8" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
+
+					<p:outputLabel value=" Data da Nota:  " for="data_grafico" />
+					<p:calendar locale="pt_BR" id="data_grafico"
+						value="#{beanCPedidoFin.data_grafico}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico2" />
+					<p:calendar locale="pt_BR" id="data_grafico2"
+						value="#{beanCPedidoFin.data_grafico2}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+					
+					<p:outputLabel value="Gestor:" for="gestor" />
+					<p:selectOneMenu id="gestor" value="#{beanCPedidoFin.gestor}"
+						converter="conversorGestor">
+						<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
+						<f:selectItems value="#{beanCPedidoFin.listagestor}" var="gestor"
+							itemLabel="#{gestor.nomegestor}"
+							itemValue="#{gestor}" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="Vendedor:" for="vendedor" />
+					<p:selectOneMenu id="vendedor"
+					value="#{beanCPedidoFin.vendedor}"
+					converter="conversorVendedor" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanCPedidoFin.listavendedor}"
+						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
+						itemValue="#{vendedor}" />
+						<p:ajax listener="#{beanCPedidoFin.filtragestor}" update=":form:gestor" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="Cliente:" for="cliente" />
+					<p:selectOneMenu id="cliente"
+					value="#{beanCPedidoFin.cliente}"
+					converter="conversorCliente" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanCPedidoFin.listacliente}"
+						var="clientes" itemLabel="#{clientes.codigocliente} - #{clientes.nomecliente}"
+						itemValue="#{cliente}" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="Status do Titulo:" for="status" />
+						<p:selectOneMenu id="status" value="#{beanCPedidoFin.status}">
+							<f:selectItem itemLabel="Selecionar" noSelectionOption="true" />
+							<f:selectItem itemLabel="Todos" itemValue="TODOS" />
+							<f:selectItem itemLabel="Aberto" itemValue="ABERTO" />
+							<f:selectItem itemLabel="Quitado" itemValue="QUITADA" />
+							<f:selectItem itemLabel="Agrupado" itemValue="AGRUPADA" />
+					</p:selectOneMenu>
+					
+					<p:selectBooleanCheckbox value="#{beanCPedidoFin.selecionado}" id="bovencido"/>
+					<p:tooltip for="bovencido" value="Só Exibir VENCIDOS" position="top"/>					
+
+					<p:commandButton action="#{beanCPedidoFin.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld"
+						styleClass="btn-primary" />
+
+				</p:panelGrid>
+					
+					<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="venda" fileName="pedidoliberado-financeiro" pageOnly="true"/>
+			        </h:commandLink>
+			
+				
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
+						<p:dataTable id="venda" var="vendas" rowStyleClass="#{vendas.bo_vencido == 1 ? 'color_0' : null}"
+						value="#{beanCPedidoFin.lista}" resizableColumns="true">
+							
+							<p:column  headerText="Pedido" sortBy="#{vendas.pedido}">
+								<h:outputText value="#{vendas.pedido}" />
+							</p:column>
+							
+							<p:column headerText="Cliente" sortBy="#{vendas.nomecliente}">
+								<h:outputText value="#{vendas.nomecliente}" />
+							</p:column>
+							
+							<p:column headerText="Vendedor" sortBy="#{vendas.nomevendedor}">
+								<h:outputText value="#{vendas.nomevendedor}" />
+							</p:column>
+									
+							<p:column headerText="Gestor" sortBy="#{vendas.nomegestor}">
+								<h:outputText value="#{vendas.nomegestor}" />
+							</p:column>
+							
+							<p:column headerText="Status Pedido" sortBy="#{vendas.statuspedido}">
+								<h:outputText value="#{vendas.statuspedido}" />
+							</p:column>
+							
+							<p:column headerText="Nota" sortBy="#{vendas.nrnota}">
+								<h:outputText value="#{vendas.nrnota}" />
+							</p:column>
+
+							<p:column  headerText="Data Nota" sortBy="#{vendas.datafaturamento}">
+								<h:outputText value="#{vendas.datafaturamento}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Status Nota" sortBy="#{vendas.statusnota}">
+								<h:outputText value="#{vendas.statusnota}" />
+							</p:column>
+							
+							<p:column headerText="Titulo" sortBy="#{vendas.tituloid}">
+								<h:outputText value="#{vendas.tituloid}" />
+							</p:column>
+							
+							<p:column headerText="Nr Documento" sortBy="#{vendas.nrdocumento}">
+								<h:outputText value="#{vendas.nrdocumento}" />
+							</p:column>
+							
+							<p:column headerText="Nr Parcela" sortBy="#{vendas.nrparcela}">
+								<h:outputText value="#{vendas.nrparcela}" />
+							</p:column>
+							
+							<p:column headerText="Status Titulo" sortBy="#{vendas.statustitulo}">
+								<h:outputText value="#{vendas.statustitulo}" />
+							</p:column>
+							
+							<p:column  headerText="Data Titulo" sortBy="#{vendas.datatitulo}">
+								<h:outputText value="#{vendas.datatitulo}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Origem" sortBy="#{vendas.origem}">
+								<h:outputText value="#{vendas.origem}" />
+							</p:column>
+						
+							<p:column headerText="Valor"
+								sortBy="#{vendas.valortitulo}">
+								<h:outputText value="#{vendas.valortitulo}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>	
+							
+							<p:column  headerText="Data Vencimento" sortBy="#{vendas.datavencimento}">
+								<h:outputText value="#{vendas.datavencimento}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>	
+							
+							<p:column  headerText="Data Quitação" sortBy="#{vendas.dataquitacao}">
+								<h:outputText value="#{vendas.dataquitacao}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>	
+							
+							<p:column headerText="Vencido(1= SIM / 0= NÃO)" sortBy="#{vendas.bo_vencido}" visible="false">
+								<h:outputText value="#{vendas.bo_vencido}" />
+							</p:column>
+				
+						</p:dataTable>
+					</h:panelGrid>
+					
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

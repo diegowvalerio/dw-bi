@@ -29,6 +29,9 @@ public class CPedido implements Serializable {
 	private String nomegestor;
 	
 	private String liberado;
+	private String usuario;
+	private Date dataliberado;
+	private String observacao;
 
 	public CPedido() {
 		super();
@@ -96,6 +99,30 @@ public class CPedido implements Serializable {
 
 	public void setNomegestor(String nomegestor) {
 		this.nomegestor = nomegestor;
+	}
+
+	public String getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(String usuario) {
+		this.usuario = usuario;
+	}
+
+	public Date getDataliberado() {
+		return dataliberado;
+	}
+
+	public void setDataliberado(Date dataliberado) {
+		this.dataliberado = dataliberado;
+	}
+
+	public String getObservacao() {
+		return observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
 	}
 
 	@Override

@@ -361,7 +361,7 @@ public class BeanAplicationScoped implements Serializable {
 					// Remetente
 
 					Address[] toUser = InternetAddress // Destinatário(s)
-							.parse("informatica@marchezanmetais.com.br, producao@marchezanmetais.com.br, comercial.gerencia@marchezanmetais.com.br, pcp@marchezanmetais.com.br, compras@marchezanmetais.com.br ");
+							.parse("informatica@marchezanmetais.com.br, producao@marchezanmetais.com.br, comercial.gerencia@marchezanmetais.com.br, pcp@marchezanmetais.com.br, compras@marchezanmetais.com.br, importacao@marchezanmetais.com.br ");
 
 					message.setRecipients(Message.RecipientType.TO, toUser);
 					message.setSubject("Aviso de Estoque Minimo - Produtos Importados");// Assunto

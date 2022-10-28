@@ -467,8 +467,11 @@ getIP();
 								<div class="progress">
 									<div class="progress-bar" style="width: 100%"></div>
 								</div>
-								<span class="progress-description"> <h:outputText
-										value="#{beanResumo.percentual_investimento_entrada_pedido}" />%
+								
+								<span class="progress-description"> <h:commandLink
+										action="#{beanResumo.encaminha17()}"
+										styleClass="fa fa-arrow-circle-right small-box-footer"
+										value="#{beanResumo.percentual_investimento_entrada_pedido} %" />
 								</span>
 							</div>
 							<!-- /.info-box-content -->

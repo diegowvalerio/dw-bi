@@ -30,6 +30,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.dwbidiretor.classe.AnaliseClientePedido;
 import br.com.dwbidiretor.classe.CPedido;
+import br.com.dwbidiretor.classe.CPedidoFin;
 import br.com.dwbidiretor.classe.CPedidoLog;
 import br.com.dwbidiretor.classe.CidadeVenda;
 import br.com.dwbidiretor.classe.Cliente;
@@ -175,6 +176,120 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		return nome;
 	}
 	
+	public List<CPedidoFin> cpedidofin(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2, String status, int bo_vencido ){
+		List<CPedidoFin> p = new ArrayList<>();
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		String dataFormatada = formato.format(data1);
+		String dataFormatada2 = formato.format(data2);
+		
+		javax.persistence.Query query2 = (javax.persistence.Query) managerSige.createNativeQuery(
+				" SELECT "
+				+ " idlog, "
+				+ " data, "
+				+ " descricao, "
+				+ " status, "
+				+ " pedido, "
+				+ " usuario "
+				+ " FROM dwbi_pedidolog "
+				+ " inner join( "
+				+ " select "
+				+ " MAX(idlog) id, "
+				+ " pedido ped "
+				+ " from dwbi_pedidolog "
+				+ " group by pedido "
+				+ " )x on x.id = idlog "
+				+ " where status = 'LIBERADO' ");
+		List<Object[]> lista2 = query2.getResultList();
+		for (Object[] row2 : lista2) {
+			
+			javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+					" select  "
+							+ " pedido.pedidovendaid pedido, "
+							+ " c.NOME_CADCFTV cliente, "
+							+ " vv.NOME_CADCFTV vendedor, "
+							+ " g.NOME_GESTOR, "
+							+ " pedido.STATUS_PEDIDOVENDA statuspedido, "
+							+ " nota.NR_NOTA_PEDIDOVENDA nrnota, "
+							+ " nota.DT_FATURAMENTO_PEDIDOVENDA datafaturamento, "
+							+ " nota.STATUS_PEDIDOVENDA statusnota, "
+							+ " receber.ctareceberid, "
+							+ " receber.NR_DOCUMENTO_CTARECEBER nrdocumento, "
+							+ " receber.NR_PARCELA_CTARECEBER nrparcela, "
+							+ " receber.STATUS_CTARECEBER statustitulo, "
+							+ " receber.DT_CTARECEB dt_cadastro, "
+							+ " receber.ORIGEM_CTARECEBER origem, "
+							+ " receber.VL_TITULO_CTARECEBER valortitulo, "
+							+ " receber.DT_VENCTO_CTARECEBER dt_vencimento, "
+							+ " receber.DT_QUITACAO_CTARECEBER dt_quitacao, "
+							+ " case when receber.STATUS_CTARECEBER  = 'ABERTO' AND receber.DT_VENCTO_CTARECEBER < (SYSDATE-1) THEN 1 ELSE 0 END BO_VENCIDO "
+							+ " from pedidovenda pedido "
+							+ " inner join pedidovenda_item pedidoitem on pedidoitem.pedidovendaid = pedido.pedidovendaid  "
+							+ " left join pedidovenda_item notaitem on notaitem.ORIGEM_PEDIDOVENDA_ITEM = pedidoitem.pedidovendaitemid  "
+							+ " left join pedidovenda nota on nota.pedidovendaid = notaitem.pedidovendaid "
+							+ " left join CTARECEBER receber on receber.VENDAID = nota.pedidovendaid "
+							+ " inner join CADCFTV c on c.CADCFTVID = pedido.CADCFTVID "
+							//+ " inner join cliente cl on cl.CADCFTVID = c.CADCFTVID "
+							+ " inner join vendedor v on v.CADCFTVID = pedido.VENDEDOR1ID "
+							+ " inner join CADCFTV vv on vv.CADCFTVID = v.CADCFTVID "
+							+ " inner join gestor g on g.GESTORID = v.GESTORID "
+							+ " where pedido.PEDIDOVENDAID = "+(String)row2[4]
+							+ " and v.cadcftvid BETWEEN ' " + vendedor1 + " ' and ' " + vendedor2 + " '"	
+							+ " AND g.gestorid BETWEEN ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+							+ " and pedido.cadcftvid between ' "+ cliente1 + " ' and ' " + cliente2 + " ' "
+							+ " and nota.DT_FATURAMENTO_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
+							+ " AND (receber.STATUS_CTARECEBER  = '"+status+"' OR 'TODOS' = '"+status+"' ) "
+							+ " and (receber.STATUS_CTARECEBER  = 'ABERTO' AND receber.DT_VENCTO_CTARECEBER < (SYSDATE-1) and 1 = "+bo_vencido+" or 0 = "+bo_vencido+") "
+							+ " group by "
+							+ " pedido.pedidovendaid , "
+							+ " c.NOME_CADCFTV, "
+							+ " vv.NOME_CADCFTV , "
+							+ " g.NOME_GESTOR, "
+							+ " pedido.STATUS_PEDIDOVENDA, "
+							+ " nota.NR_NOTA_PEDIDOVENDA , "
+							+ " nota.DT_FATURAMENTO_PEDIDOVENDA, "
+							+ " nota.STATUS_PEDIDOVENDA , "
+							+ " receber.NR_DOCUMENTO_CTARECEBER , "
+							+ " receber.NR_PARCELA_CTARECEBER , "
+							+ " receber.STATUS_CTARECEBER , "
+							+ " receber.DT_CTARECEB, "
+							+ " receber.DT_QUITACAO_CTARECEBER , "
+							+ " receber.DT_VENCTO_CTARECEBER , "
+							+ " receber.VL_TITULO_CTARECEBER , "
+							+ " receber.ORIGEM_CTARECEBER, "
+							+ " receber.ctareceberid "
+							+ " order by receber.ctareceberid ");		
+			
+			List<Object[]> lista = query.getResultList();
+			for (Object[] row : lista) {
+				CPedidoFin ped = new CPedidoFin();
+				
+				ped.setPedido((BigDecimal)row[0]);
+				ped.setNomecliente((String)row[1]);
+				ped.setNomevendedor((String)row[2]);
+				ped.setNomegestor((String)row[3]);
+				ped.setStatuspedido((String)row[4]);
+				ped.setNrnota((String)row[5]);
+				ped.setDatafaturamento((Date)row[6]);
+				ped.setStatusnota((String)row[7]);
+				ped.setTituloid((BigDecimal)row[8]);
+				ped.setNrdocumento((String)row[9]);
+				ped.setNrparcela((String)row[10]);
+				ped.setStatustitulo((String)row[11]);
+				ped.setDatatitulo((Date)row[12]);
+				ped.setOrigem((String)row[13]);
+				ped.setValortitulo((BigDecimal)row[14]);
+				ped.setDatavencimento((Date)row[15]);
+				ped.setDataquitacao((Date)row[16]);
+				ped.setBo_vencido((BigDecimal)row[17]);
+				
+				p.add(ped);
+			}
+		}
+		
+		
+		return p;
+	}
+	
 	public List<CPedido> cpedido(BigDecimal pedido){
 		List<CPedido> p = new ArrayList<>();
 		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
@@ -233,6 +348,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			List<Object[]> lista2 = query2.getResultList();
 			for (Object[] row2 : lista2) {
 				ped.setLiberado((String)row2[3]);
+				ped.setUsuario((String)row2[5]);
+				ped.setDataliberado((Date)row2[1]);
 			}
 
 			p.add(ped);
@@ -280,6 +397,9 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 					CPedido ped = new CPedido();
 					
 					ped.setLiberado((String)row2[3]);
+					ped.setUsuario((String)row2[5]);
+					ped.setDataliberado((Date)row2[1]);
+					ped.setObservacao((String) row2[2]);
 
 					javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
 							"select "
@@ -850,9 +970,10 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " inner join produto pr on pr.produtoid = it.produtoid "
 				+ " inner join SUBGRUPOPRODUTO sub on sub.SUBGRUPOPRODUTOID = pr.SUBGRUPOPRODUTOID "
 				+ " inner join GRUPOPRODUTO gr on gr.GRUPOPRODUTOID = sub.GRUPOPRODUTOID "
+				+ " inner join cliente cl on cl.cadcftvid = p.cadcftvid "
 				+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
 				+ " AND CF.TIPOOPERACAO_CFOP = 'VENDA'  "
-				+ " and P.VENDEDOR1ID between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+				+ " and cl.VENDEDORID1 between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 				+ " and V2.GESTORID between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 				+ " and it.produtoid between ' "+ produto1 + " ' and ' " + produto2 + " ' "
 				+ " and gr.GRUPOPRODUTOID between ' "+ grupo1 + " ' and ' " + grupo2 + " ' "
@@ -883,10 +1004,11 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " inner join produto pr on pr.produtoid = it.produtoid "
 				+ " inner join SUBGRUPOPRODUTO sub on sub.SUBGRUPOPRODUTOID = pr.SUBGRUPOPRODUTOID "
 				+ " inner join GRUPOPRODUTO gr on gr.GRUPOPRODUTOID = sub.GRUPOPRODUTOID "
+				+ " inner join cliente cl on cl.cadcftvid = p.cadcftvid "
 				+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
 				+ " and p.ORIGEM_PEDIDOVENDA <> 'SIMETRICA' "
 				+ " AND CF.TIPOOPERACAO_CFOP = 'VENDA' "
-				+ " and P.VENDEDOR1ID between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+				+ " and cl.VENDEDORID1 between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 				+ " and V2.GESTORID between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 				+ " and it.produtoid between ' "+ produto1 + " ' and ' " + produto2 + " ' "
 				+ " and gr.GRUPOPRODUTOID between ' "+ grupo1 + " ' and ' " + grupo2 + " ' "
@@ -917,9 +1039,10 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " inner join produto pr on pr.produtoid = it.produtoid "
 				+ " inner join SUBGRUPOPRODUTO sub on sub.SUBGRUPOPRODUTOID = pr.SUBGRUPOPRODUTOID "
 				+ " inner join GRUPOPRODUTO gr on gr.GRUPOPRODUTOID = sub.GRUPOPRODUTOID "
+				+ " inner join cliente cl on cl.cadcftvid = p.cadcftvid "
 				+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
 				+ " AND CF.TIPOOPERACAO_CFOP = 'VENDA' "
-				+ " and P.VENDEDOR1ID between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+				+ " and cl.VENDEDORID1 between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 				+ " and V2.GESTORID between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
 				+ " and it.produtoid between ' "+ produto1 + " ' and ' " + produto2 + " ' "
 				+ " and gr.GRUPOPRODUTOID between ' "+ grupo1 + " ' and ' " + grupo2 + " ' "
@@ -4144,6 +4267,83 @@ public List<VendasEmGeral> investimentoemgeral(Date data1, Date data2, String ve
 					return list;
 					
 				}
+		
+		public List<VendasEmGeral> investimentoemgeral_3(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
+			List<VendasEmGeral> list = new ArrayList<>();
+			
+			//ajuste de data para bater certo
+			Calendar cal = Calendar.getInstance(); 
+			cal.setTime(data2); 
+			cal.add(Calendar.DATE, 1);
+			data2 = cal.getTime();
+			
+			SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+			String dataFormatada = formato.format(data1);
+			String dataFormatada2 = formato.format(data2);
+
+			javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+					// "SELECT * FROM("
+							" select " 
+							+ " CI.CADCFTVID AS CLIENTE, " 
+							+ " CI.NOME_CADCFTV AS NOME_CLIENTE, "
+							+ " p.pedidovendaid pedido, " 
+							+ " P.DT_PEDIDOVENDA AS DATAPEDIDO, "
+							+ " p.vl_totalprod_pedidovenda, " 
+							+ " pg.nome_formapagto as prazo, "
+							+ " t.desc_tipo_pedido as tipo_pedido, " 
+							+ " CF.tipooperacao_cfop, " 
+							+ " p.status_pedidovenda, "
+							+ " v.NOME_CADCFTV nome_vendedor, "
+							+ " liberado.DT_ROTEIRO_PEDIDO "
+							+ " from pedidovenda p "
+							+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
+							+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID "
+							+ " inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid "
+							+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid "
+							+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+							+ " inner join roteiro r on r.roteiroid = p.roteiroid "
+							+ " inner join TIPO_PEDIDO_ROTEIRO tr on tr.ROTEIROID = r.ROTEIROID and tr.TIPOPEDIDOID = p.TIPOPEDIDOID "
+							+ " inner join (select max(rp.ROTEIROPEDIDOID) r,rp.pedidovendaid, min(trunc(rp.DT_ROTEIRO_PEDIDO)) as DT_ROTEIRO_PEDIDO from ROTEIRO_PEDIDO rp "
+							+ " inner join pedidovenda p on p.pedidovendaid = rp.pedidovendaid "
+							+ " inner join TIPO_PEDIDO_ROTEIRO tr on tr.ROTEIROID = rp.ROTEIROID and tr.TIPOPEDIDOID = p.TIPOPEDIDOID "
+							+ " where tr.ORDEM_ROTEIRO >3 group by rp.pedidovendaid "
+							+ " ) liberado on liberado.pedidovendaid = p.pedidovendaid "
+							+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
+							+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+							+ " AND CF.tipooperacao_cfop <> 'VENDA' "
+							+ " and liberado.DT_ROTEIRO_PEDIDO between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
+							+ " and p.TIPOPEDIDOID in (4,3,5,14,13,2,16) and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+							+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+							+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
+							//+ " and tr.ORDEM_ROTEIRO > 3 "
+							+ " ORDER BY P.PEDIDOVENDAID  ");
+
+			List<Object[]> lista = query.getResultList();
+			
+			
+
+			for (Object[] row : lista) {
+				VendasEmGeral vendasEmGeral = new VendasEmGeral();
+
+				vendasEmGeral.setCodigocliente((BigDecimal) row[0]);
+				vendasEmGeral.setNomecliente((String) row[1] );
+				vendasEmGeral.setPedido((BigDecimal) row[2] );
+				vendasEmGeral.setDatapedido((Date) row[3] );
+				vendasEmGeral.setValortotalpedido((BigDecimal) row[4] );
+				vendasEmGeral.setPrazo((String) row[5] );
+				vendasEmGeral.setTipopedido((String) row[6] );
+				vendasEmGeral.setTipooperacaocfop((String) row[7] );
+				vendasEmGeral.setStatuspedido((String) row[8] );
+				vendasEmGeral.setNomevendedor((String) row[9] );
+				vendasEmGeral.setDataliberadogestor((Date) row[10] );
+				
+				
+				
+				list.add(vendasEmGeral);
+			}
+
+			return list;
+		}
 		
 	//pedidos de bonifica��o
 	public List<VendasEmGeral> bonificacaoemgeral(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {

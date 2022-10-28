@@ -25,4 +25,9 @@ public class ServicoCliente implements Serializable{
 		return pro;
 	}
 	
+	public List<Cliente> clientes(){
+		return dao.clientes();
+	}
+	
+	
 }

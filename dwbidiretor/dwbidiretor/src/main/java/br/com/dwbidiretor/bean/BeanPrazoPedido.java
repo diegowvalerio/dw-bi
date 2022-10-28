@@ -106,8 +106,13 @@ public class BeanPrazoPedido implements Serializable {
 			        p.setDias_conferencia(d);
 			        
 			        if(p.getDt_financeiro() == null) {
-			        	p.setDt_financeiro(p.getDt_digitacao());
+			        	if(p.getDt_conferencia() != null) {
+			        		p.setDt_financeiro(p.getDt_conferencia());	
+			        	}else {
+			        		p.setDt_financeiro(p.getDt_digitacao());
+			        	}
 			        }
+			        
 			        a = sdf.parse(p.getDt_financeiro());
 					b = sdf.parse(p.getDt_conferencia());
 					dt = b.getTime() - a.getTime();
@@ -138,7 +143,11 @@ public class BeanPrazoPedido implements Serializable {
 			        p.setDias_analisegestor(d);
 			        
 			        if(p.getDt_financeiro() == null) {
-			        	p.setDt_financeiro(p.getDt_digitacao());
+			        	if(p.getDt_conferencia() != null) {
+			        		p.setDt_financeiro(p.getDt_conferencia());	
+			        	}else {
+			        		p.setDt_financeiro(p.getDt_digitacao());
+			        	}
 			        }
 			        if(p.getDt_conferencia() == null) {
 			        	p.setDt_conferencia(p.getDt_financeiro());
@@ -185,7 +194,11 @@ public class BeanPrazoPedido implements Serializable {
 			        p.setDias_color(d);
 			        
 			        if(p.getDt_financeiro() == null) {
-			        	p.setDt_financeiro(p.getDt_digitacao());
+			        	if(p.getDt_conferencia() != null) {
+			        		p.setDt_financeiro(p.getDt_conferencia());	
+			        	}else {
+			        		p.setDt_financeiro(p.getDt_digitacao());
+			        	}
 			        }
 			        if(p.getDt_conferencia() == null) {
 			        	p.setDt_conferencia(p.getDt_financeiro());
@@ -244,7 +257,11 @@ public class BeanPrazoPedido implements Serializable {
 			        p.setDias_programacao(d);
 			        
 			        if(p.getDt_financeiro() == null) {
-			        	p.setDt_financeiro(p.getDt_digitacao());
+			        	if(p.getDt_conferencia() != null) {
+			        		p.setDt_financeiro(p.getDt_conferencia());	
+			        	}else {
+			        		p.setDt_financeiro(p.getDt_digitacao());
+			        	}
 			        }
 			        if(p.getDt_conferencia() == null) {
 			        	p.setDt_conferencia(p.getDt_financeiro());
@@ -309,7 +326,11 @@ public class BeanPrazoPedido implements Serializable {
 				
 				if(p.getFase_atual().equals("PRODUCAO COLOR")) {
 					if(p.getDt_financeiro() == null) {
-			        	p.setDt_financeiro(p.getDt_digitacao());
+			        	if(p.getDt_conferencia() != null) {
+			        		p.setDt_financeiro(p.getDt_conferencia());	
+			        	}else {
+			        		p.setDt_financeiro(p.getDt_digitacao());
+			        	}
 			        }
 			        if(p.getDt_conferencia() == null) {
 			        	p.setDt_conferencia(p.getDt_financeiro());
@@ -408,7 +429,11 @@ public class BeanPrazoPedido implements Serializable {
 			        p.setDias_producao(d);
 			        
 			        if(p.getDt_financeiro() == null) {
-			        	p.setDt_financeiro(p.getDt_digitacao());
+			        	if(p.getDt_conferencia() != null) {
+			        		p.setDt_financeiro(p.getDt_conferencia());	
+			        	}else {
+			        		p.setDt_financeiro(p.getDt_digitacao());
+			        	}
 			        }
 			        if(p.getDt_conferencia() == null) {
 			        	p.setDt_conferencia(p.getDt_financeiro());
@@ -530,7 +555,11 @@ public class BeanPrazoPedido implements Serializable {
 			        p.setDias_expedicao(d);
 			        
 			        if(p.getDt_financeiro() == null) {
-			        	p.setDt_financeiro(p.getDt_digitacao());
+			        	if(p.getDt_conferencia() != null) {
+			        		p.setDt_financeiro(p.getDt_conferencia());	
+			        	}else {
+			        		p.setDt_financeiro(p.getDt_digitacao());
+			        	}
 			        }
 			        if(p.getDt_conferencia() == null) {
 			        	p.setDt_conferencia(p.getDt_financeiro());
@@ -659,7 +688,11 @@ public class BeanPrazoPedido implements Serializable {
 			        p.setDias_faturamento(d);
 			        
 			        if(p.getDt_financeiro() == null) {
-			        	p.setDt_financeiro(p.getDt_digitacao());
+			        	if(p.getDt_conferencia() != null) {
+			        		p.setDt_financeiro(p.getDt_conferencia());	
+			        	}else {
+			        		p.setDt_financeiro(p.getDt_digitacao());
+			        	}
 			        }
 			        if(p.getDt_conferencia() == null) {
 			        	p.setDt_conferencia(p.getDt_financeiro());
@@ -791,12 +824,20 @@ public class BeanPrazoPedido implements Serializable {
 						d= 0;
 					}
 			        p.setDias_digitacao(d);
+			        
+			        if(p.getStatus().equals("IMPORTADO")) {
+				        p.setDias_faturamento(0);
+			        }
 				}
 				
 				if(p.getFase_atual().equals("POS VENDA")) {
 			        
 			        if(p.getDt_financeiro() == null) {
-			        	p.setDt_financeiro(p.getDt_digitacao());
+			        	if(p.getDt_conferencia() != null) {
+			        		p.setDt_financeiro(p.getDt_conferencia());	
+			        	}else {
+			        		p.setDt_financeiro(p.getDt_digitacao());
+			        	}
 			        }
 			        if(p.getDt_conferencia() == null) {
 			        	p.setDt_conferencia(p.getDt_financeiro());

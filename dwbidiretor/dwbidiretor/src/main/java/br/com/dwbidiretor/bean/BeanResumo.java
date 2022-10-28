@@ -818,6 +818,17 @@ public class BeanResumo implements Serializable {
 
 		return "/pages/relatorios/clientesnovos/clientesnovos_efetivado.xhtml";
 	}
+	
+	public String encaminha17() {
+		FacesContext fc = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
+		session.setAttribute("vendedor", this.vendedor);
+		session.setAttribute("gestor", this.gestor);
+		session.setAttribute("data1", this.data_grafico);
+		session.setAttribute("data2", this.data_grafico2);
+
+		return "/pages/relatorios/vendaemgeral/totalinvestimento.xhtml";
+	}
 	/* pegar usuario conectado */
 	public String usuarioconectado() {
 		String nome;

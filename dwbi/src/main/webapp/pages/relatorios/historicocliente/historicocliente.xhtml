@@ -1,0 +1,573 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+
+.color_ativo {  
+    background-color: #F0FFFF;  
+  }  
+            
+.color_semiativo {  
+    background-color: #FFF8DC;  
+  }
+            
+.color_inativo {  
+  background-color: #E8E8E8;  
+  }
+</style>
+
+	</ui:define>
+
+	<ui:define name="title">
+        Clientes
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Clientes" />
+
+		<h:form id="form">
+			
+					<p:panelGrid columns="3" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
+					
+					<p:outputLabel value="Cliente:" for="cliente" />
+					<p:selectOneMenu id="cliente"
+					value="#{beanHCliente.cliente}"
+					converter="conversorCliente" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanHCliente.listacliente}"
+						var="clientes" itemLabel="#{clientes.codigocliente} - #{clientes.nomecliente}"
+						itemValue="#{cliente}" />
+					</p:selectOneMenu>
+					
+					<p:commandButton action="#{beanHCliente.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld"
+						styleClass="btn-primary" />
+
+					</p:panelGrid>
+					
+			<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="hcliente" fileName="clientes" pageOnly="true"/>
+			</h:commandLink>
+			
+					<div class="box box-primary" >
+					<div style="overflow:scroll;width:100%;overflow:auto">
+					
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
+									
+						<p:dataTable id="hcliente" var="clientes"  scrollHeight="600" style="font-size:12px; border-color: black;"
+							value="#{beanHCliente.lista}" scrollable="true" rowStyleClass="#{clientes.status == 'ATIVO' ? 'color_ativo' : null or clientes.status == 'SEMI-ATIVO' ? 'color_semiativo' : null or clientes.status == 'INATIVO' ? 'color_inativo' : null}" >
+							
+							
+							<p:column headerText="Cód. Cliente"   width="30" style="border-color: black;">
+								<h:outputText value="#{clientes.codigocliente}" />
+							</p:column>
+							
+							<p:column headerText="Cliente"   width="450" style="border-color: black;">
+								<h:outputText value="#{clientes.nomecliente}" />
+							</p:column>
+							
+							<p:column headerText="Status"   width="80" style="border-color: black;">
+								<h:outputText value="#{clientes.status}" />
+							</p:column>
+							
+							<p:column headerText="Cnpj"   width="100" style="border-color: black;">
+								<h:outputText value="#{clientes.cnpjcpf}" />
+							</p:column>
+							
+							<p:column headerText="UF"   width="20" style="border-color: black;">
+								<h:outputText value="#{clientes.uf}" />
+							</p:column>
+							
+							<p:column headerText="Cidade"  width="200" style="border-color: black;">
+								<h:outputText value="#{clientes.cidade}" />
+							</p:column>
+							
+							<p:column headerText="Endereço" width="300" style="border-color: black;">
+								<h:outputText value="#{clientes.endereco}" />
+							</p:column>
+							
+							<p:column headerText="Bairro"  width="200" style="border-color: black;">
+								<h:outputText value="#{clientes.bairro}" />
+							</p:column>
+							
+							<p:column headerText="N°" width="60" style="border-color: black;">
+								<h:outputText value="#{clientes.numeroendereco}" />
+							</p:column>
+							
+							<p:column headerText="Cep" width="80" style="border-color: black;">
+								<h:outputText value="#{clientes.cep}" />
+							</p:column>
+							
+							<p:column headerText="Jan 2018" width="40"
+								style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.janeiro2018}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Fev 2018" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.fevereiro2018}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Mar 2018" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.marco2018}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Abr 2018" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.abril2018}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Mai 2018" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.maio2018}">
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Jun 2018" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.junho2018}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Jul 2018" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.julho2018}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Ago 2018" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.agosto2018}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Set 2018" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.setembro2018}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Out 2018" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.outrubo2018}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Nov 2018" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.novembro2018}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Dez 2018" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.dezembro2018}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Total 2018" width="40" 
+									style="background-color: lightblue;border-color: black;">
+								<h:outputText value="#{clientes.total2018}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Jan 2019" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.janeiro2019}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Fev 2019" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.fevereiro2019}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Mar 2019" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.marco2019}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Abr 2019" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.abril2019}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Mai 2019" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.maio2019}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Jun 2019" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.junho2019}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Jul 2019" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.julho2019}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Ago 2019" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.agosto2019}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Set 2019" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.setembro2019}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Out 2019" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.outrubo2019}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Nov 2019" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.novembro2019}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Dez 2019" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.dezembro2019}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Total 2019" width="40"
+								style="background-color: lightblue;border-color: black;">
+								<h:outputText value="#{clientes.total2019}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Jan 2020" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.janeiro2020}">
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Fev 2020" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.fevereiro2020}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Mar 2020" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.marco2020}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Abr 2020" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.abril2020}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Mai 2020" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.maio2020}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Jun 2020" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.junho2020}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Jul 2020" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.julho2020}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Ago 2020" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.agosto2020}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Set 2020" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.setembro2020}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Out 2020" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.outrubo2020}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Nov 2020" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.novembro2020}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Dez 2020" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.dezembro2020}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Total 2020" width="40"
+								style="background-color: lightblue;border-color: black;">
+								<h:outputText value="#{clientes.total2020}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Jan 2021" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.janeiro2021}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Fev 2021" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.fevereiro2021}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Mar 2021" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.marco2021}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Abr 2021" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.abril2021}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Mai 2021" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.maio2021}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Jun 2021" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.junho2021}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Jul 2021" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.julho2021}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Ago 2021" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.agosto2021}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Set 2021" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.setembro2021}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Out 2021" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.outrubo2021}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Nov 2021" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.novembro2021}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Dez 2021" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.dezembro2021}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Total 2021" width="40"
+								style="background-color: lightblue;border-color: black;">
+								<h:outputText value="#{clientes.total2021}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Jan 2022" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.janeiro2022}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Fev 2022" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.fevereiro2022}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Mar 2022" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.marco2022}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Abr 2022" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.abril2022}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Mai 2022" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.maio2022}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Jun 2022" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.junho2022}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Jul 2022" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.julho2022}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Ago 2022" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.agosto2022}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Set 2022" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.setembro2022}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Out 2022" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.outrubo2022}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Nov 2022" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.novembro2022}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Dez 2022" width="40"
+							style="background-color: LightGrey;border-color: black;">
+								<h:outputText value="#{clientes.dezembro2022}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Total 2022" width="40"
+								style="background-color: lightblue;border-color: black;">
+								<h:outputText value="#{clientes.total2022}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Total Geral" width="40"
+								style="background-color: #FF8247;border-color: black;">
+								<h:outputText value="#{clientes.totalgeral}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Ticket Médio" width="40"
+								style="background-color: #FFA54F;border-color: black;">
+								<h:outputText value="#{clientes.ticketmedio}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Mix" width="30"
+								style="background-color: lightgreen;border-color: black;">
+								<h:outputText value="#{clientes.mixqtde}" />
+							</p:column>
+							<p:column headerText="Mix Médio" width="30"
+								style="background-color: #9AFF9A;border-color: black;">
+								<h:outputText value="#{clientes.mixqtdemedio}" />
+							</p:column>
+							
+							<p:column headerText="N° Vendas" width="30"
+								style="background-color: #E0FFFF;border-color: black;">
+								<h:outputText value="#{clientes.nvendas}" />
+							</p:column>
+							<p:column headerText="Primeira Venda" width="50"
+								style="background-color: #E0FFFF;border-color: black;">
+								<h:outputText value="#{clientes.primeiravenda}">
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Última Venda" width="50"
+								style="background-color: #E0FFFF;border-color: black;">
+								<h:outputText value="#{clientes.ultimavenda}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Fre. Média" width="30"
+								style="background-color: #B0E0E6;border-color: black;">
+								<h:outputText value="#{clientes.frequenciamedia}" />
+							</p:column>
+							
+							
+						</p:dataTable>
+					</h:panelGrid>
+					</div>
+					</div>
+				
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

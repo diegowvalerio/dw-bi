@@ -7,6 +7,7 @@ import java.util.List;
 
 import br.com.dwbidiretor.classe.AnaliseClientePedido;
 import br.com.dwbidiretor.classe.CPedido;
+import br.com.dwbidiretor.classe.CPedidoFin;
 import br.com.dwbidiretor.classe.CPedidoLog;
 import br.com.dwbidiretor.classe.CidadeVenda;
 import br.com.dwbidiretor.classe.Cliente;
@@ -109,6 +110,8 @@ public interface DAOGenerico<E> {
 	
 	public List<VendasEmGeral> investimentoemgeral_2(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2);
 	
+	public List<VendasEmGeral> investimentoemgeral_3(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2);
+	
 	public List<VendasEmGeralItem> investimentoemgeralitem(BigDecimal pedido);
 	
 	public List<InvestimentoVendedor> investimentovendedor(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2);
@@ -176,6 +179,7 @@ public interface DAOGenerico<E> {
 	public List<CPedido> cpedido(BigDecimal pedido);
 	public List<CPedido> cpedidoLista(Date data1, Date data2, String status);
 	public List<CPedidoLog> cpedidolog(String pedido);
+	public List<CPedidoFin> cpedidofin(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2, String status, int bo_vencido );
 	
 	//painel diretor
 	public List<Diretor_01> diretor_01(String ano, String mes);
