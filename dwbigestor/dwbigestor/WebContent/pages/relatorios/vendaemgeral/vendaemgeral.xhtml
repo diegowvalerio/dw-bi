@@ -36,7 +36,7 @@
 		<adm:breadcrumb title="Venda em Geral" />
 
 		<h:form id="form">
-				<p:panelGrid columns="6" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+				<p:panelGrid columns="9" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
                              layout="grid" styleClass="ui-fluid card" id="filtroscli">
 
 					<p:outputLabel value=" Data:  " for="data_grafico" />
@@ -51,15 +51,6 @@
 						mask="true" required="true" readonlyInput="true">
 					</p:calendar>
 					
-					<p:outputLabel value="Vendedor:" for="vendedor" />
-					<p:selectOneMenu id="vendedor"
-					value="#{beanVendasemGeral.vendedor}"
-					converter="conversorVendedor">
-					<f:selectItem itemLabel="Selecionar" />
-					<f:selectItems value="#{beanVendasemGeral.listavendedor}"
-						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
-						itemValue="#{vendedor}" />
-					</p:selectOneMenu>
 					
 					<p:outputLabel value="Cliente" for="cliente" />
 						<h:panelGroup>
@@ -70,6 +61,19 @@
 								converter="conversorCliente" />
 							<p:watermark value="Digite Nome ou Código" for="cliente"></p:watermark>
 						</h:panelGroup>
+						
+						
+					<p:outputLabel value="Vendedor:" for="vendedor" />
+					<p:selectOneMenu id="vendedor"
+					value="#{beanVendasemGeral.vendedor}"
+					converter="conversorVendedor">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanVendasemGeral.listavendedor}"
+						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
+						itemValue="#{vendedor}" />
+					</p:selectOneMenu>
+					
+					
 
 					<p:commandButton action="#{beanVendasemGeral.filtrar()}"
 						value="Filtrar" icon="fa fa-check" update=":form:paineld"
@@ -80,6 +84,10 @@
 				<div style="overflow:scroll;width:100%;overflow:auto">
 				
 					<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
+					<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="venda" fileName="vendas" pageOnly="true"/>
+						</h:commandLink>
+						
 						<p:dataTable id="venda" var="vendas"  scrollable="true"
 							value="#{beanVendasemGeral.listavenda}" resizableColumns="true">
 
@@ -89,11 +97,19 @@
 								<p:columnToggler datasource="venda" trigger="toggler" />
 							</f:facet>
 							
-							<p:column headerText="Vendedor" sortBy="#{vendas.nomevendedor}">
+							<p:column headerText="Vendedor" sortBy="#{vendas.vendedor}">
+								<h:outputText value="#{vendas.vendedor}" />
+							</p:column>
+							
+							<p:column headerText="Nome Vendedor" sortBy="#{vendas.nomevendedor}">
 								<h:outputText value="#{vendas.nomevendedor}" />
 							</p:column>
 							
-							<p:column headerText="Cliente" sortBy="#{vendas.nomecliente}">
+							<p:column headerText="Cliente" sortBy="#{vendas.codigocliente}">
+								<h:outputText value="#{vendas.codigocliente}" />
+							</p:column>
+							
+							<p:column headerText="Nome Cliente" sortBy="#{vendas.nomecliente}">
 								<h:outputText value="#{vendas.nomecliente}" />
 							</p:column>
 

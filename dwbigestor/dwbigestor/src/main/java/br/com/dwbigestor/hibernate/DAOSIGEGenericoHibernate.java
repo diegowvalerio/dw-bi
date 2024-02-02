@@ -75,7 +75,7 @@ public class DAOSIGEGenericoHibernate<E> implements DAOSIGEGenerico<E>, Serializ
 	@Override
 	public void registralog(String conteudo, String pagina, String data, String latitude, String longetude) {
 		javax.persistence.Query query2 = (javax.persistence.Query) manager.createNativeQuery(
-				" INSERT INTO dwbi_log(usuario,conteudo,tipo,datahora, latitude, longitude) values('"+usuarioconectado()+"', '"+conteudo+"', '"+pagina+"', '"+data+"','"+latitude+"', '"+longetude+"') "
+				" INSERT INTO dwbi_log(usuario,conteudo,tipo,datahora, ip) values('"+usuarioconectado()+"', '"+conteudo+"', '"+pagina+"', '"+data+"', '"+longetude+"') "
 					       +" SELECT idlogin,usuario,senha from dwbi_login where usuario = '"+ usuarioconectado() +"'");
 		
 		try {

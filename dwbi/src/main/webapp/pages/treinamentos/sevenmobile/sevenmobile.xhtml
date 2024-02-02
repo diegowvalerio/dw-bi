@@ -31,8 +31,9 @@
 	<ui:define name="body">
 		<adm:breadcrumb title="Treinamentos" />
 		<h:form id="form">
-			<div class="card">				
+				
 				<p:accordionPanel widgetVar="">
+				
 					<p:tab title="Introdução" >
 						<p class="p-m-0">Este material tem como intuito, exemplificar
 							e facilitar a instalação e o uso do aplicativo Seven Mobile. Abaixo temos uma sequência de instruções : </p>
@@ -43,9 +44,9 @@
 						<p class="p-m-0">O aplicativo Seven Mobile não está disponivél na loja virtual PlayStore, sendo nescessário realizar o download diretamente do site da Marchezan Metais.</p>
 						<p class="p-m-0">Confira o vídeo abaixo:</p>
 						
-						<video width="500" height="500" controls="controls" >
+						<video width="300" height="600" controls="controls" >
 							<source
-								src="/dwbi/pages/treinamentos/sevenmobile/instalacao.mp4"
+								src="/dwbi/pages/treinamentos/sevenmobile/instalacao.webm"
 								type="video/mp4">
 							</source>
 						</video>
@@ -56,74 +57,87 @@
 						<p class="p-m-0">Nesta etapa vamos precisar do <b>login</b> e <b>senha</b>, caso não saiba qual informação inserir nos campos de login e senha, entre em contato com a empresa.</p>
 						<p class="p-m-0">Confira o vídeo abaixo:</p>
 						
-						<video width="500" height="500" controls="controls" >
+						<video width="300" height="600" controls="controls" >
 							<source
-								src="/dwbi/pages/treinamentos/sevenmobile/instalacao.mp4"
+								src="/dwbi/pages/treinamentos/sevenmobile/conf-inicial.webm"
 								type="video/mp4">
 							</source>
 						</video>
 					</p:tab>
 					
-					<p:tab title="Clientes">
-						<p class="p-m-0">Já dentro do aplicativo, temos algumas opções que se referem aos clientes:</p>
+					<p:tab title="Atualizar Dados">
+						<p class="p-m-0">Recomendamos realizar a sincronização de dados periodicamente para manter os preços e produtos atualizados em seu aplicativo.</p>
+						<p class="p-m-0">Confira o vídeo abaixo:</p>
 						
-						<p:accordionPanel widgetVar="" activeIndex="-1">
-							
-							<p:tab title="Novo Cliente">
-								<p class="p-m-0">Opção para cadastrar novos clientes.</p>
-
-								<video width="500" height="500" controls="controls">
-									<source
-										src="/dwbi/pages/treinamentos/sevenmobile/instalacao.mp4"
-										type="video/mp4"></source>
-								</video>
-							</p:tab>
-							
-							<p:tab title="Clientes Próximos">
-								<p class="p-m-0">Exibe no mapa a localização dos clientes.</p>
-								<video width="500" height="500" controls="controls">
-									<source
-										src="/dwbi/pages/treinamentos/sevenmobile/instalacao.mp4"
-										type="video/mp4"></source>
-								</video>
-							</p:tab>
-							
-							<p:tab title="Clientes Inadimplentes">
-								<p class="p-m-0">Lista de clientes que possuem titulos em atraso.</p>
-								<video width="500" height="500" controls="controls">
-									<source
-										src="/dwbi/pages/treinamentos/sevenmobile/instalacao.mp4"
-										type="video/mp4"></source>
-								</video>
-							</p:tab>
-						</p:accordionPanel>
-
+						<video width="300" height="600" controls="controls"  >
+							<source
+								src="/dwbi/pages/treinamentos/sevenmobile/atualizardados.webm">
+							</source>
+						</video>
+					
+				</p:tab>
+				
+				<p:tab title="Produtos">
+						<p class="p-m-0">Confira o vídeo abaixo:</p>
 						
-					</p:tab>
+						<video width="300" height="600" controls="controls"  >
+							<source
+								src="/dwbi/pages/treinamentos/sevenmobile/produtos.webm">
+							</source>
+						</video>
 					
-					<p:tab title="Produtos">
+				</p:tab>
+				
+				<p:tab title="Inadimplentes (Titulos em atraso)">
+						<p class="p-m-0">Confira o vídeo abaixo:</p>
+						
+						<video width="300" height="600" controls="controls"  >
+							<source
+								src="/dwbi/pages/treinamentos/sevenmobile/inadimplencia.webm">
+							</source>
+						</video>
 					
-					</p:tab>
+				</p:tab>
+				
+			
+				<p:tab title="Clientes" >
+				
+						<p class="p-m-0">Consulta de clientes:</p>
+						
+						<video width="300" height="600" controls="controls"  >
+							<source
+								src="/dwbi/pages/treinamentos/sevenmobile/clientes.webm">
+							</source>
+						</video>
+						
+						<p class="p-m-0">Cadastro de clientes:</p>
+						<video width="300" height="600" controls="controls"  >
+							<source
+								src="/dwbi/pages/treinamentos/sevenmobile/cadastrocliente.webm">
+							</source>
+						</video>
+						
+						<p class="p-m-0">Simulando Cadastro Cliente que já existe:</p>
+						<video width="300" height="600" controls="controls"  >
+							<source
+								src="/dwbi/pages/treinamentos/sevenmobile/clientejaexiste.webm">
+							</source>
+						</video>
+				</p:tab>
+				
+				<p:tab title="Pedido / Orçamento">
+						<p class="p-m-0">Confira o vídeo abaixo:</p>
+						
+						<video width="300" height="600" controls="controls"  >
+							<source
+								src="/dwbi/pages/treinamentos/sevenmobile/pedido-orcamento.webm">
+							</source>
+						</video>
 					
-					<p:tab title="Orçamentos">
-					
-					</p:tab>
-					
-					<p:tab title="Pedidos">
-					
-					</p:tab>
-					
-					<p:tab title="Sincronização">
-					
-					</p:tab>
-					
-					<p:tab title="Atualização de Versão">
-					
-					</p:tab>
+				</p:tab>
 					
 				</p:accordionPanel>
 
-			</div>
 		</h:form>
 	</ui:define>
 

@@ -32,6 +32,7 @@ public class BeanHCliente implements Serializable {
 
 	private HCliente hcliente = new HCliente();
 	private Vendedor vendedor = new Vendedor();
+	private Vendedor vendedor2 = new Vendedor();
 	@Inject
 	private ServicoHCliente servico;
 	private List<HCliente> lista = new ArrayList<>();
@@ -60,10 +61,17 @@ public class BeanHCliente implements Serializable {
 	private String gestorfiltrado2;
 	private String clientefiltrado;
 	private String clientefiltrado2;
-
+	private String uf;
+	private String regiao;
+	private String vendedorfiltrado3;
+	private String status;
+	
+	//totais
+	private int ativo,inativo,semiativo,critico,total = 0;
 
 	@PostConstruct
 	public void init() {
+		status = "1";
 		
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
 				.getRequest();
@@ -170,9 +178,122 @@ public class BeanHCliente implements Serializable {
 			clientefiltrado2 = cliente.getCodigocliente().toString();
 		}
 		
-		lista = servico.hclientes(vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, clientefiltrado, clientefiltrado2);
+		if (vendedor2 == null){
+			vendedorfiltrado3 = "0";
+			
+		}else{
+			vendedorfiltrado3 = vendedor2.getCodigovendedor().toString();
+		}
+		
+		lista = servico.hclientes(vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, clientefiltrado, clientefiltrado2, uf, regiao,vendedorfiltrado3,status);
+		
+		calculatotais();
 	}
 	
+	private void calculatotais() {
+		ativo = 0;
+		inativo =0;
+		semiativo = 0;
+		critico = 0;
+		total = 0;
+		if(lista.size()>0) {
+			for(HCliente c:lista) {
+				if(c.getStatus().equals("ATIVO")) {
+					ativo++;
+				}
+				if(c.getStatus().equals("INATIVO")) {
+					inativo++;
+				}
+				if(c.getStatus().equals("SEMI-ATIVO")) {
+					semiativo++;
+				}
+				if(c.getStatus().equals("CRITICO")) {
+					critico++;
+				}
+				total++;
+			}
+		}
+	}
+	
+	public Vendedor getVendedor2() {
+		return vendedor2;
+	}
+
+	public void setVendedor2(Vendedor vendedor2) {
+		this.vendedor2 = vendedor2;
+	}
+
+	public String getVendedorfiltrado3() {
+		return vendedorfiltrado3;
+	}
+
+	public void setVendedorfiltrado3(String vendedorfiltrado3) {
+		this.vendedorfiltrado3 = vendedorfiltrado3;
+	}
+	
+	public String getUf() {
+		return uf;
+	}
+
+	public void setUf(String uf) {
+		this.uf = uf;
+	}
+
+	public String getRegiao() {
+		return regiao;
+	}
+
+	public void setRegiao(String regiao) {
+		this.regiao = regiao;
+	}
+
+	public int getTotal() {
+		return total;
+	}
+
+	public void setTotal(int total) {
+		this.total = total;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public int getAtivo() {
+		return ativo;
+	}
+
+	public void setAtivo(int ativo) {
+		this.ativo = ativo;
+	}
+
+	public int getInativo() {
+		return inativo;
+	}
+
+	public void setInativo(int inativo) {
+		this.inativo = inativo;
+	}
+
+	public int getSemiativo() {
+		return semiativo;
+	}
+
+	public void setSemiativo(int semiativo) {
+		this.semiativo = semiativo;
+	}
+
+	public int getCritico() {
+		return critico;
+	}
+
+	public void setCritico(int critico) {
+		this.critico = critico;
+	}
 
 	public List<Cliente> completaCliente(String nome) {
 		String n = nome.toUpperCase();

@@ -22,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.dwbidiretor.classe.Cliente;
 import br.com.dwbidiretor.classe.Gestor;
+import br.com.dwbidiretor.classe.PercaProduto;
 import br.com.dwbidiretor.classe.VendasEmGeral;
 import br.com.dwbidiretor.classe.VendasEmGeralItem;
 import br.com.dwbidiretor.classe.Vendedor;
@@ -187,6 +188,16 @@ public class BeanTotalInvestimento implements Serializable {
 	public List<Cliente> completaCliente(String nome) {
 		String n = nome.toUpperCase();
 		return servicocliente.consultacliente(n);
+	}
+	
+	public String gettotal() {
+		float total = 0;
+
+		for (VendasEmGeral p : getListavenda()) {
+			total = total + p.getValortotalpedido().floatValue();
+		}
+
+		return new DecimalFormat("###,###.###").format(total);
 	}
 	
 	public Cliente getCliente() {

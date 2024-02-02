@@ -78,6 +78,26 @@ public class BeanPrazoPedido implements Serializable {
 			        p.setDias_digitacao(d);
 				}
 				
+				if(p.getFase_atual().equals("ANALISE COMERCIAL")) {
+					a = sdf.parse(p.getDt_analise());
+					b = new Date();
+					dt = b.getTime() - a.getTime();
+					dt = dt / 86400000L;	
+					d = (int) dt;
+			        p.setDias_analise(d);
+			        
+			        
+			        a = sdf.parse(p.getDt_digitacao());
+					b = sdf.parse(p.getDt_analise());
+					dt = b.getTime() - a.getTime();
+					dt = dt / 86400000L;	
+					d = (int) dt;
+					if(d < 0) {
+						d= 0;
+					}
+			        p.setDias_digitacao(d);
+				}
+				
 				if(p.getFase_atual().equals("FINANCEIRO")) {
 					a = sdf.parse(p.getDt_financeiro());
 					b = new Date();
@@ -86,8 +106,26 @@ public class BeanPrazoPedido implements Serializable {
 					d = (int) dt;
 			        p.setDias_financeiro(d);
 			        
-			        a = sdf.parse(p.getDt_digitacao());
+			        if(p.getDt_analise() == null) {
+			        	if(p.getDt_financeiro() != null) {
+			        		p.setDt_analise(p.getDt_financeiro());	
+			        	}else {
+			        		p.setDt_analise(p.getDt_digitacao());
+			        	}
+			        }
+			        
+			        a = sdf.parse(p.getDt_analise());
 					b = sdf.parse(p.getDt_financeiro());
+					dt = b.getTime() - a.getTime();
+					dt = dt / 86400000L;	
+					d = (int) dt;
+					if(d < 0) {
+						d= 0;
+					}
+			        p.setDias_analise(d);
+			        
+			        a = sdf.parse(p.getDt_digitacao());
+					b = sdf.parse(p.getDt_analise());
 					dt = b.getTime() - a.getTime();
 					dt = dt / 86400000L;	
 					d = (int) dt;
@@ -105,14 +143,27 @@ public class BeanPrazoPedido implements Serializable {
 					d = (int) dt;
 			        p.setDias_conferencia(d);
 			        
-			        if(p.getDt_financeiro() == null) {
-			        	if(p.getDt_conferencia() != null) {
-			        		p.setDt_financeiro(p.getDt_conferencia());	
+			        if(p.getDt_analise() == null) {
+			        	if(p.getDt_financeiro() != null) {
+			        		p.setDt_analise(p.getDt_financeiro());	
 			        	}else {
-			        		p.setDt_financeiro(p.getDt_digitacao());
+			        		p.setDt_analise(p.getDt_digitacao());
 			        	}
 			        }
+			        if(p.getDt_financeiro() == null) {
+			        	p.setDt_financeiro(p.getDt_analise());
+			        }
 			        
+			        a = sdf.parse(p.getDt_analise());
+					b = sdf.parse(p.getDt_financeiro());
+					dt = b.getTime() - a.getTime();
+					dt = dt / 86400000L;	
+					d = (int) dt;
+					if(d < 0) {
+						d= 0;
+					}
+			        p.setDias_analise(d);
+			        	
 			        a = sdf.parse(p.getDt_financeiro());
 					b = sdf.parse(p.getDt_conferencia());
 					dt = b.getTime() - a.getTime();
@@ -124,7 +175,7 @@ public class BeanPrazoPedido implements Serializable {
 			        p.setDias_financeiro(d);
 			        
 			        a = sdf.parse(p.getDt_digitacao());
-					b = sdf.parse(p.getDt_financeiro());
+					b = sdf.parse(p.getDt_analise());
 					dt = b.getTime() - a.getTime();
 					dt = dt / 86400000L;	
 					d = (int) dt;
@@ -142,16 +193,29 @@ public class BeanPrazoPedido implements Serializable {
 					d = (int) dt;
 			        p.setDias_analisegestor(d);
 			        
-			        if(p.getDt_financeiro() == null) {
-			        	if(p.getDt_conferencia() != null) {
-			        		p.setDt_financeiro(p.getDt_conferencia());	
+			        if(p.getDt_analise() == null) {
+			        	if(p.getDt_financeiro() != null) {
+			        		p.setDt_analise(p.getDt_financeiro());	
 			        	}else {
-			        		p.setDt_financeiro(p.getDt_digitacao());
+			        		p.setDt_analise(p.getDt_digitacao());
 			        	}
+			        }
+			        if(p.getDt_financeiro() == null) {
+			        	p.setDt_financeiro(p.getDt_analise());
 			        }
 			        if(p.getDt_conferencia() == null) {
 			        	p.setDt_conferencia(p.getDt_financeiro());
 			        }
+			        
+			        a = sdf.parse(p.getDt_analise());
+					b = sdf.parse(p.getDt_financeiro());
+					dt = b.getTime() - a.getTime();
+					dt = dt / 86400000L;	
+					d = (int) dt;
+					if(d < 0) {
+						d= 0;
+					}
+			        p.setDias_analise(d);
 			        
 			        a = sdf.parse(p.getDt_financeiro());
 					b = sdf.parse(p.getDt_conferencia());
@@ -175,7 +239,7 @@ public class BeanPrazoPedido implements Serializable {
 			        
 			       
 			        a = sdf.parse(p.getDt_digitacao());
-					b = sdf.parse(p.getDt_financeiro());
+					b = sdf.parse(p.getDt_analise());
 					dt = b.getTime() - a.getTime();
 					dt = dt / 86400000L;	
 					d = (int) dt;
@@ -193,12 +257,15 @@ public class BeanPrazoPedido implements Serializable {
 					d = (int) dt;
 			        p.setDias_color(d);
 			        
-			        if(p.getDt_financeiro() == null) {
-			        	if(p.getDt_conferencia() != null) {
-			        		p.setDt_financeiro(p.getDt_conferencia());	
+			        if(p.getDt_analise() == null) {
+			        	if(p.getDt_financeiro() != null) {
+			        		p.setDt_analise(p.getDt_financeiro());	
 			        	}else {
-			        		p.setDt_financeiro(p.getDt_digitacao());
+			        		p.setDt_analise(p.getDt_digitacao());
 			        	}
+			        }
+			        if(p.getDt_financeiro() == null) {
+			        	p.setDt_financeiro(p.getDt_analise());
 			        }
 			        if(p.getDt_conferencia() == null) {
 			        	p.setDt_conferencia(p.getDt_financeiro());
@@ -206,6 +273,16 @@ public class BeanPrazoPedido implements Serializable {
 			        if(p.getDt_analisegestor() == null) {
 			        	p.setDt_analisegestor(p.getDt_conferencia());
 			        }
+			        
+			        a = sdf.parse(p.getDt_analise());
+					b = sdf.parse(p.getDt_financeiro());
+					dt = b.getTime() - a.getTime();
+					dt = dt / 86400000L;	
+					d = (int) dt;
+					if(d < 0) {
+						d= 0;
+					}
+			        p.setDias_analise(d);
 			        
 			        a = sdf.parse(p.getDt_financeiro());
 					b = sdf.parse(p.getDt_conferencia());
@@ -238,7 +315,7 @@ public class BeanPrazoPedido implements Serializable {
 			        p.setDias_analisegestor(d);
 			        
 			        a = sdf.parse(p.getDt_digitacao());
-					b = sdf.parse(p.getDt_financeiro());
+					b = sdf.parse(p.getDt_analise());
 					dt = b.getTime() - a.getTime();
 					dt = dt / 86400000L;	
 					d = (int) dt;
@@ -256,12 +333,15 @@ public class BeanPrazoPedido implements Serializable {
 					d = (int) dt;
 			        p.setDias_programacao(d);
 			        
-			        if(p.getDt_financeiro() == null) {
-			        	if(p.getDt_conferencia() != null) {
-			        		p.setDt_financeiro(p.getDt_conferencia());	
+			        if(p.getDt_analise() == null) {
+			        	if(p.getDt_financeiro() != null) {
+			        		p.setDt_analise(p.getDt_financeiro());	
 			        	}else {
-			        		p.setDt_financeiro(p.getDt_digitacao());
+			        		p.setDt_analise(p.getDt_digitacao());
 			        	}
+			        }
+			        if(p.getDt_financeiro() == null) {
+			        	p.setDt_financeiro(p.getDt_analise());
 			        }
 			        if(p.getDt_conferencia() == null) {
 			        	p.setDt_conferencia(p.getDt_financeiro());
@@ -272,6 +352,16 @@ public class BeanPrazoPedido implements Serializable {
 			        if(p.getDt_color() == null) {
 			        	p.setDt_color(p.getDt_analisegestor());
 			        }
+			        
+			        a = sdf.parse(p.getDt_analise());
+					b = sdf.parse(p.getDt_financeiro());
+					dt = b.getTime() - a.getTime();
+					dt = dt / 86400000L;	
+					d = (int) dt;
+					if(d < 0) {
+						d= 0;
+					}
+			        p.setDias_analise(d);
 			        
 			        a = sdf.parse(p.getDt_financeiro());
 					b = sdf.parse(p.getDt_conferencia());
@@ -314,7 +404,7 @@ public class BeanPrazoPedido implements Serializable {
 			        p.setDias_color(d);
 			        
 			        a = sdf.parse(p.getDt_digitacao());
-					b = sdf.parse(p.getDt_financeiro());
+					b = sdf.parse(p.getDt_analise());
 					dt = b.getTime() - a.getTime();
 					dt = dt / 86400000L;	
 					d = (int) dt;
@@ -325,12 +415,15 @@ public class BeanPrazoPedido implements Serializable {
 				}
 				
 				if(p.getFase_atual().equals("PRODUCAO COLOR")) {
-					if(p.getDt_financeiro() == null) {
-			        	if(p.getDt_conferencia() != null) {
-			        		p.setDt_financeiro(p.getDt_conferencia());	
+					if(p.getDt_analise() == null) {
+			        	if(p.getDt_financeiro() != null) {
+			        		p.setDt_analise(p.getDt_financeiro());	
 			        	}else {
-			        		p.setDt_financeiro(p.getDt_digitacao());
+			        		p.setDt_analise(p.getDt_digitacao());
 			        	}
+			        }
+					if(p.getDt_financeiro() == null) {
+			        	p.setDt_financeiro(p.getDt_analise());
 			        }
 			        if(p.getDt_conferencia() == null) {
 			        	p.setDt_conferencia(p.getDt_financeiro());
@@ -358,6 +451,15 @@ public class BeanPrazoPedido implements Serializable {
 					}
 			        p.setDias_producaocolor(d);
 			        
+			        a = sdf.parse(p.getDt_analise());
+					b = sdf.parse(p.getDt_financeiro());
+					dt = b.getTime() - a.getTime();
+					dt = dt / 86400000L;	
+					d = (int) dt;
+					if(d < 0) {
+						d= 0;
+					}
+			        p.setDias_analise(d);
 			        
 			        a = sdf.parse(p.getDt_financeiro());
 					b = sdf.parse(p.getDt_conferencia());
@@ -410,7 +512,7 @@ public class BeanPrazoPedido implements Serializable {
 			        p.setDias_programacao(d);
 			        
 			        a = sdf.parse(p.getDt_digitacao());
-					b = sdf.parse(p.getDt_financeiro());
+					b = sdf.parse(p.getDt_analise());
 					dt = b.getTime() - a.getTime();
 					dt = dt / 86400000L;	
 					d = (int) dt;
@@ -428,12 +530,15 @@ public class BeanPrazoPedido implements Serializable {
 					d = (int) dt;
 			        p.setDias_producao(d);
 			        
-			        if(p.getDt_financeiro() == null) {
-			        	if(p.getDt_conferencia() != null) {
-			        		p.setDt_financeiro(p.getDt_conferencia());	
+			        if(p.getDt_analise() == null) {
+			        	if(p.getDt_financeiro() != null) {
+			        		p.setDt_analise(p.getDt_financeiro());	
 			        	}else {
-			        		p.setDt_financeiro(p.getDt_digitacao());
+			        		p.setDt_analise(p.getDt_digitacao());
 			        	}
+			        }
+			        if(p.getDt_financeiro() == null) {
+			        	p.setDt_financeiro(p.getDt_analise());
 			        }
 			        if(p.getDt_conferencia() == null) {
 			        	p.setDt_conferencia(p.getDt_financeiro());
@@ -450,6 +555,16 @@ public class BeanPrazoPedido implements Serializable {
 			        if(p.getDt_producaocolor() == null) {
 			        	p.setDt_producaocolor(p.getDt_programacao());
 			        }
+			        
+			        a = sdf.parse(p.getDt_analise());
+					b = sdf.parse(p.getDt_financeiro());
+					dt = b.getTime() - a.getTime();
+					dt = dt / 86400000L;	
+					d = (int) dt;
+					if(d < 0) {
+						d= 0;
+					}
+			        p.setDias_analise(d);
 			        
 			        a = sdf.parse(p.getDt_financeiro());
 					b = sdf.parse(p.getDt_conferencia());
@@ -536,7 +651,7 @@ public class BeanPrazoPedido implements Serializable {
 					}
 			        
 			        a = sdf.parse(p.getDt_digitacao());
-					b = sdf.parse(p.getDt_financeiro());
+					b = sdf.parse(p.getDt_analise());
 					dt = b.getTime() - a.getTime();
 					dt = dt / 86400000L;	
 					d = (int) dt;
@@ -554,12 +669,15 @@ public class BeanPrazoPedido implements Serializable {
 					d = (int) dt;
 			        p.setDias_expedicao(d);
 			        
-			        if(p.getDt_financeiro() == null) {
-			        	if(p.getDt_conferencia() != null) {
-			        		p.setDt_financeiro(p.getDt_conferencia());	
+			        if(p.getDt_analise() == null) {
+			        	if(p.getDt_financeiro() != null) {
+			        		p.setDt_analise(p.getDt_financeiro());	
 			        	}else {
-			        		p.setDt_financeiro(p.getDt_digitacao());
+			        		p.setDt_analise(p.getDt_digitacao());
 			        	}
+			        }
+			        if(p.getDt_financeiro() == null) {
+			        	p.setDt_financeiro(p.getDt_analise());
 			        }
 			        if(p.getDt_conferencia() == null) {
 			        	p.setDt_conferencia(p.getDt_financeiro());
@@ -579,6 +697,16 @@ public class BeanPrazoPedido implements Serializable {
 			        if(p.getDt_producao() == null) {
 			        	p.setDt_producao(p.getDt_producaocolor());
 			        }
+			        
+			        a = sdf.parse(p.getDt_analise());
+					b = sdf.parse(p.getDt_financeiro());
+					dt = b.getTime() - a.getTime();
+					dt = dt / 86400000L;	
+					d = (int) dt;
+					if(d < 0) {
+						d= 0;
+					}
+			        p.setDias_analise(d);
 			        
 			        a = sdf.parse(p.getDt_financeiro());
 					b = sdf.parse(p.getDt_conferencia());
@@ -669,7 +797,7 @@ public class BeanPrazoPedido implements Serializable {
 			        p.setDias_producao(d);
 			        
 			        a = sdf.parse(p.getDt_digitacao());
-					b = sdf.parse(p.getDt_financeiro());
+					b = sdf.parse(p.getDt_analise());
 					dt = b.getTime() - a.getTime();
 					dt = dt / 86400000L;	
 					d = (int) dt;
@@ -687,12 +815,15 @@ public class BeanPrazoPedido implements Serializable {
 					d = (int) dt;
 			        p.setDias_faturamento(d);
 			        
-			        if(p.getDt_financeiro() == null) {
-			        	if(p.getDt_conferencia() != null) {
-			        		p.setDt_financeiro(p.getDt_conferencia());	
+			        if(p.getDt_analise() == null) {
+			        	if(p.getDt_financeiro() != null) {
+			        		p.setDt_analise(p.getDt_financeiro());	
 			        	}else {
-			        		p.setDt_financeiro(p.getDt_digitacao());
+			        		p.setDt_analise(p.getDt_digitacao());
 			        	}
+			        }
+			        if(p.getDt_financeiro() == null) {
+			        	p.setDt_financeiro(p.getDt_analise());
 			        }
 			        if(p.getDt_conferencia() == null) {
 			        	p.setDt_conferencia(p.getDt_financeiro());
@@ -717,6 +848,16 @@ public class BeanPrazoPedido implements Serializable {
 			        	p.setDt_expedicao(p.getDt_producao());
 			        }
 			        
+					a = sdf.parse(p.getDt_analise());
+					b = sdf.parse(p.getDt_financeiro());
+					dt = b.getTime() - a.getTime();
+					dt = dt / 86400000L;	
+					d = (int) dt;
+					if(d < 0) {
+						d= 0;
+					}
+			        p.setDias_analise(d);
+			        	
 			        a = sdf.parse(p.getDt_financeiro());
 					b = sdf.parse(p.getDt_conferencia());
 					dt = b.getTime() - a.getTime();
@@ -816,7 +957,7 @@ public class BeanPrazoPedido implements Serializable {
 			        p.setDias_expedicao(d);
 			        
 			        a = sdf.parse(p.getDt_digitacao());
-					b = sdf.parse(p.getDt_financeiro());
+					b = sdf.parse(p.getDt_analise());
 					dt = b.getTime() - a.getTime();
 					dt = dt / 86400000L;	
 					d = (int) dt;
@@ -832,12 +973,15 @@ public class BeanPrazoPedido implements Serializable {
 				
 				if(p.getFase_atual().equals("POS VENDA")) {
 			        
-			        if(p.getDt_financeiro() == null) {
-			        	if(p.getDt_conferencia() != null) {
-			        		p.setDt_financeiro(p.getDt_conferencia());	
+			        if(p.getDt_analise() == null) {
+			        	if(p.getDt_financeiro() != null) {
+			        		p.setDt_analise(p.getDt_financeiro());	
 			        	}else {
-			        		p.setDt_financeiro(p.getDt_digitacao());
+			        		p.setDt_analise(p.getDt_digitacao());
 			        	}
+			        }
+			        if(p.getDt_financeiro() == null) {
+			        	p.setDt_financeiro(p.getDt_analise());
 			        }
 			        if(p.getDt_conferencia() == null) {
 			        	p.setDt_conferencia(p.getDt_financeiro());
@@ -863,6 +1007,16 @@ public class BeanPrazoPedido implements Serializable {
 			        if(p.getDt_faturamento() == null) {
 			        	p.setDt_faturamento(p.getDt_expedicao());
 			        }
+			        
+			        a = sdf.parse(p.getDt_analise());
+					b = sdf.parse(p.getDt_financeiro());
+					dt = b.getTime() - a.getTime();
+					dt = dt / 86400000L;	
+					d = (int) dt;
+					if(d < 0) {
+						d= 0;
+					}
+			        p.setDias_analise(d);
 			        
 			        a = sdf.parse(p.getDt_financeiro());
 					b = sdf.parse(p.getDt_conferencia());
@@ -973,7 +1127,7 @@ public class BeanPrazoPedido implements Serializable {
 			        p.setDias_faturamento(d);
 			        
 			        a = sdf.parse(p.getDt_digitacao());
-					b = sdf.parse(p.getDt_financeiro());
+					b = sdf.parse(p.getDt_analise());
 					dt = b.getTime() - a.getTime();
 					dt = dt / 86400000L;	
 					d = (int) dt;
@@ -992,7 +1146,7 @@ public class BeanPrazoPedido implements Serializable {
 			        }
 				}
 				
-		        d = p.getDias_digitacao() + p.getDias_financeiro() + p.getDias_conferencia()
+		        d = p.getDias_digitacao() + p.getDias_analise() +p.getDias_financeiro() + p.getDias_conferencia()
 		        	+ p.getDias_analisegestor()+ p.getDias_color()+ p.getDias_programacao() 
 		        	+ p.getDias_producaocolor() + p.getDias_producao()+ p.getDias_expedicao()
 		        	+ p.getDias_faturamento();

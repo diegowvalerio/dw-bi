@@ -31,6 +31,7 @@ import com.microsoft.sqlserver.jdbc.SQLServerException;
 
 import br.com.dwbidiretor.classe.RetornoAfinacao;
 import br.com.dwbidiretor.classe.SigeAcesso;
+import br.com.dwbidiretor.classe.SigeLog;
 import br.com.dwbidiretor.classe.SigeModulo;
 import br.com.dwbidiretor.classe.SigeUsuario;
 import br.com.dwbidiretor.classe.VendaAnoMes;
@@ -75,7 +76,7 @@ public class DAOSIGEGenericoHibernate<E> implements DAOSIGEGenerico<E>, Serializ
 	@Override
 	public void registralog(String conteudo, String pagina, String data, String latitude, String longetude, String aparelho) {
 		javax.persistence.Query query2 = (javax.persistence.Query) manager.createNativeQuery(
-				" INSERT INTO dwbi_log(usuario,conteudo,tipo,datahora, latitude, longitude, aparelho) values('"+usuarioconectado()+"', '"+conteudo+"', '"+pagina+"', '"+data+"','"+latitude+"', '"+longetude+"', '"+aparelho+"') "
+				" INSERT INTO dwbi_log(usuario,conteudo,tipo,datahora, ip, aparelho) values('"+usuarioconectado()+"', '"+conteudo+"', '"+pagina+"', '"+data+"','"+longetude+"', '"+aparelho+"') "
 					       +" SELECT idlogin,usuario,senha from dwbi_login where usuario = '"+ usuarioconectado() +"'");
 		
 		try {
@@ -84,6 +85,38 @@ public class DAOSIGEGenericoHibernate<E> implements DAOSIGEGenerico<E>, Serializ
 			System.out.println(e2);
 		}
 		
+	}
+	
+	public List<SigeLog> consultalog(String usuario, String conteudo,String datahora, String ip, String tipo){
+		List<SigeLog> list = new ArrayList<>();
+
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				// "SELECT * FROM("
+				" select id,usuario,conteudo,tipo,datahora,ip,aparelho from dwbi_log "
+				+ " where usuario like '%"+usuario+"%' "
+				+ " AND conteudo like '%"+conteudo+"%' "
+				+ " and datahora like '%"+datahora+"%' "
+				+ " and ip like '%"+ip+"%'"
+				+ " and (tipo = '"+tipo+"' or 'TODOS' = '"+tipo+"')");
+		// query.setParameter("vendedorlogado", usuarioconectado());
+		List<Object[]> lista = query.getResultList();
+
+		for (Object[] row : lista) {
+			SigeLog sigeusuario = new SigeLog();
+
+			sigeusuario.setIdlog((Integer) row[0]);
+			sigeusuario.setUsuario((String) row[1]);
+			sigeusuario.setConteudo((String) row[2]);
+			sigeusuario.setTipo((String) row[3]);
+			sigeusuario.setDatahora((String) row[4]);
+			sigeusuario.setIp((String) row[5]);
+			sigeusuario.setAparelho((String) row[6]);
+			
+			list.add(sigeusuario);
+
+		}
+		
+		return list;
 	}
 
 	@Override

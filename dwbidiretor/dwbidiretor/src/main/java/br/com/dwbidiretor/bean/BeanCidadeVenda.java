@@ -40,7 +40,7 @@ public class BeanCidadeVenda implements Serializable {
 	@Inject
 	private ServicoVendedor servicovendedor;
 	private List<Vendedor> listavendedor = new ArrayList<>();
-	
+
 	//filtro gestor
 	private Gestor gestor = new Gestor();
 	@Inject

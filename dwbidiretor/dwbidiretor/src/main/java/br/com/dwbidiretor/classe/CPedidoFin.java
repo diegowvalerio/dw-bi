@@ -36,17 +36,17 @@ public class CPedidoFin implements Serializable {
 	private Date datavencimento;
 	private Date dataquitacao;
 	
-	private BigDecimal bo_vencido; // 1 - vencido / 0 - aberto
+	private Integer bo_vencido; // 1 - vencido / 0 - aberto
 
 	public CPedidoFin() {
 		super();
 	}
 
-	public BigDecimal getBo_vencido() {
+	public Integer getBo_vencido() {
 		return bo_vencido;
 	}
 
-	public void setBo_vencido(BigDecimal bo_vencido) {
+	public void setBo_vencido(Integer bo_vencido) {
 		this.bo_vencido = bo_vencido;
 	}
 

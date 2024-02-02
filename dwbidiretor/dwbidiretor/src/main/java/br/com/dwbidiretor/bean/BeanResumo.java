@@ -61,6 +61,7 @@ public class BeanResumo implements Serializable {
 	private List<VendasEmGeral> listabrinde = new ArrayList<>();
 	private List<VendasEmGeral> listaamostrapaga = new ArrayList<>();
 	private List<VendasEmGeral> listatrocadefeito = new ArrayList<>();
+	private List<VendasEmGeral> listatrocadefeitodiferente = new ArrayList<>();
 	private List<VendasEmGeral> listatrocanegocio = new ArrayList<>();
 	private List<VendasEmGeral> listainvestimento = new ArrayList<>();
 	private List<VendasEmGeral> listainvestimento_2 = new ArrayList<>();
@@ -120,6 +121,7 @@ public class BeanResumo implements Serializable {
 	private float tot_expositor;
 	private float tot_brinde;
 	private float tot_trocadefeito;
+	private float tot_trocadefeitodiferente;
 	private float tot_trocanegocio;
 	private float tot_venda;
 	
@@ -132,6 +134,11 @@ public class BeanResumo implements Serializable {
 
 	@PostConstruct
 	public void init() {
+		
+		vendedor = null;
+		gestor = null;
+		cliente = null;
+				
 				
 		SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		Date d = new Date();
@@ -170,6 +177,7 @@ public class BeanResumo implements Serializable {
 			
 			listaamostrapaga = servico.amostrapagaemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 			listatrocadefeito = servico.trocadefeitoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
+			listatrocadefeitodiferente = servico.trocadefeitodiferente(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 			listatrocanegocio = servico.trocanegocioemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 			listainvestimento = servico.investimentooemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 			listainvestimento_2 = servico.investimentooemgeral_2(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
@@ -185,6 +193,7 @@ public class BeanResumo implements Serializable {
 			listabrinde = servico.brindeemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 			listaamostrapaga = servico.amostrapagaemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 			listatrocadefeito = servico.trocadefeitoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
+			listatrocadefeitodiferente = servico.trocadefeitodiferente(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 			listatrocanegocio = servico.trocanegocioemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 			listainvestimento = servico.investimentooemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 			listainvestimento_2 = servico.investimentooemgeral_2(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);			
@@ -201,6 +210,9 @@ public class BeanResumo implements Serializable {
 
 		session.removeAttribute("data1");
 		session.removeAttribute("data2");
+		session.removeAttribute("vendedor");
+		session.removeAttribute("gestor");
+		session.removeAttribute("cliente");
 		
 		/*gerar grafico*/
 		createAnimatedModels();
@@ -249,6 +261,7 @@ public class BeanResumo implements Serializable {
 		listabrinde = servico.brindeemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 		listaamostrapaga = servico.amostrapagaemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 		listatrocadefeito = servico.trocadefeitoemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
+		listatrocadefeitodiferente = servico.trocadefeitodiferente(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 		listatrocanegocio = servico.trocanegocioemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 		listainvestimento = servico.investimentooemgeral(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);
 		listainvestimento_2 = servico.investimentooemgeral_2(data_grafico, data_grafico2,vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,clientefiltrado, clientefiltrado2);		
@@ -262,6 +275,22 @@ public class BeanResumo implements Serializable {
 	public List<Cliente> completaCliente(String nome) {
 		String n = nome.toUpperCase();
 		return servicocliente.consultacliente(n);
+	}
+
+	public List<VendasEmGeral> getListatrocadefeitodiferente() {
+		return listatrocadefeitodiferente;
+	}
+
+	public void setListatrocadefeitodiferente(List<VendasEmGeral> listatrocadefeitodiferente) {
+		this.listatrocadefeitodiferente = listatrocadefeitodiferente;
+	}
+
+	public float getTot_trocadefeitodiferente() {
+		return tot_trocadefeitodiferente;
+	}
+
+	public void setTot_trocadefeitodiferente(float tot_trocadefeitodiferente) {
+		this.tot_trocadefeitodiferente = tot_trocadefeitodiferente;
 	}
 
 	public String getAparelho() {
@@ -635,6 +664,7 @@ public class BeanResumo implements Serializable {
 	public String encaminha2() {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
+		
 		session.setAttribute("cliente", this.cliente);
 		session.setAttribute("vendedor", this.vendedor);
 		session.setAttribute("gestor", this.gestor);
@@ -664,6 +694,8 @@ public class BeanResumo implements Serializable {
 		session.setAttribute("gestor", this.gestor);
 		session.setAttribute("ano", this.ano);
 		session.setAttribute("mes", this.mes);
+		session.setAttribute("data1", this.data_grafico);
+		session.setAttribute("data2", this.data_grafico2);
 		return "/pages/relatorios/vendedormetavenda/vendedormetavenda.xhtml";
 	}
 	
@@ -756,6 +788,18 @@ public class BeanResumo implements Serializable {
 		session.setAttribute("data2", this.data_grafico2);
 
 		return "/pages/relatorios/vendaemgeral/trocadefeitoemgeral.xhtml";
+	}
+	
+	public String encaminha20() {
+		FacesContext fc = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
+		session.setAttribute("cliente", this.cliente);
+		session.setAttribute("vendedor", this.vendedor);
+		session.setAttribute("gestor", this.gestor);
+		session.setAttribute("data1", this.data_grafico);
+		session.setAttribute("data2", this.data_grafico2);
+
+		return "/pages/relatorios/vendaemgeral/trocadefeitodiferente.xhtml";
 	}
 	
 	public String encaminha12() {
@@ -878,6 +922,15 @@ public class BeanResumo implements Serializable {
 			total = total + venda.getValortotalpedido().floatValue();
 		}
 		tot_trocadefeito = total;
+		return new DecimalFormat("###,###.##").format(total);
+	}
+	public String getValorTotalTrocaDefeitoDiferente() {
+		float total = 0;
+		tot_trocadefeitodiferente = 0;
+		for (VendasEmGeral venda : getListatrocadefeitodiferente()) {
+			total = total + venda.getValortotalpedido().floatValue();
+		}
+		tot_trocadefeitodiferente = total;
 		return new DecimalFormat("###,###.##").format(total);
 	}
 	public String getValorTotalTrocaNegocio() {
@@ -1080,7 +1133,15 @@ public class BeanResumo implements Serializable {
 
 		return total;
 	}	
-	
+	public int getTrocaDefeitoDiferentedodia() {
+		int total = 0;
+
+		for (VendasEmGeral amostra : getListatrocadefeitodiferente()) {
+			total++;
+		}
+
+		return total;
+	}
 	public int getTrocaNegociododia() {
 		int total = 0;
 
@@ -1368,6 +1429,35 @@ public class BeanResumo implements Serializable {
 
 	}
 	
+	public float getPercentualSobPedido_TrocaDefeitoDiferente() {
+		
+		float tvenda = 0;
+		
+		float tdefeito = 0;
+		
+		for (VendasEmGeral venda : getListavenda()) {
+			tvenda = tvenda + venda.getValortotalpedido().floatValue();
+		}
+		if(tvenda ==0){
+			tvenda = 1;
+		}
+		
+		for (VendasEmGeral defeito : getListatrocadefeitodiferente()) {
+			tdefeito = tdefeito + defeito.getValortotalpedido().floatValue();
+		}
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(tdefeito == 0){
+			tdefeito = 1;
+			atingido = 100;
+		}else{
+			atingido = (tdefeito / tvenda )*100;
+		}
+		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+
+	}
 	public float getPercentualSobPedido_TrocaNegocio() {
 		
 		float tvenda = 0;
@@ -1439,15 +1529,18 @@ public class BeanResumo implements Serializable {
 		NumberFormat formatarFloat= new DecimalFormat("0.00");
 		formatarFloat.setMaximumFractionDigits(2);
 		
-		atingido = t / total;
 		
-		return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
-		//return atingido;
+		if(t == 0 && atingido ==0) {
+			return 0;
+		}else {
+			atingido = t / total;
+			return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+		}
 	}
 	
 	public void createAnimatedModels() {
 		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		String data = df.format(data_grafico);
+		String data = df.format(data_grafico2);
 		
 		mes = data.substring(3,5);
 		ano = data.substring(6,10);
@@ -1474,12 +1567,12 @@ public class BeanResumo implements Serializable {
 	@SuppressWarnings("null")
 	public BarChartModel initBarModel() {
 		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		String data = df.format(data_grafico);
+		String data = df.format(data_grafico2);
 		
 		mes = data.substring(3,5);
 		ano = data.substring(6,10);
 		    	
-    	listametavenda = servicometavenda.metavenda(vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,ano,mes);
+    	listametavenda = servicometavenda.metavenda(vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2,ano,mes,data_grafico, data_grafico2);
     	
     	 BarChartModel model = new BarChartModel();
          

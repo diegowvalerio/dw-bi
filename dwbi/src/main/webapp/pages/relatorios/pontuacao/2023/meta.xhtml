@@ -1,0 +1,324 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+
+<style type="text/css">  
+            .color_100 {  
+                background-color: #CEF6E3;  
+            }  
+            
+            .color_m100 {  
+                background-color: #A9E2F3;  
+            }
+            
+            .color_0 {  
+                background-color: #F5A9D0;  
+            }
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+       Pontuação - Meta - 2023
+    </ui:define>
+
+	<ui:define name="description">
+       Não considere os valores de meses futuros, os valores serão recalculos conforme o fechamente de cada mês. ! 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Pontuação - Meta - 2023" />
+
+		<h:form id="form">
+						
+					<h:panelGrid columns="1" id="paineld" style="width:100%">					
+						<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="venda" fileName="pontuacao-meta" pageOnly="true" />
+			       		</h:commandLink>
+			       		
+						<p:dataTable id="venda" var="vendas"	value="#{beanPT_Meta.lista}" resizableColumns="true" style="font-size: 12px;width:100%">
+						
+						<p:columnGroup type="header" >
+								<p:row>
+									<p:column colspan="10" headerText="1º Trimestre" style="border: 1px solid;background-color: #eceafb;"/>
+									<p:column colspan="10" headerText="2º Trimestre" style="border: 1px solid;background-color: #eceafb;"/>
+									<p:column colspan="10" headerText="3º Trimestre" style="border: 1px solid;background-color: #eceafb;"/>
+									<p:column colspan="10" headerText="4º Trimestre" style="border: 1px solid;background-color: #eceafb;"/>
+									<p:column colspan="1"  headerText="Total" style="border: 1px solid;background-color: #8cffd8; width:4px"/>
+								</p:row>
+								<p:row>
+									
+									<p:column colspan="3" headerText="01"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="3" headerText="02"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="3" headerText="03"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column headerText="Total"  style="border: 1px solid;background-color: #eceafb;"/>
+									
+									<p:column colspan="3" headerText="04"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="3" headerText="05"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="3" headerText="06"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column headerText="Total"  style="border: 1px solid;background-color: #eceafb;"/>
+									
+									<p:column colspan="3" headerText="07"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="3" headerText="08"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="3" headerText="09"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column headerText="Total"  style="border: 1px solid;background-color: #eceafb;"/>
+									
+									<p:column colspan="3" headerText="10"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="3" headerText="11"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="3" headerText="12"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column headerText="Total"  style="border: 1px solid;background-color: #eceafb;"/>
+									
+									<p:column colspan="1"  headerText="" style="border: 1px solid;background-color: #8cffd8;"/>
+									
+								</p:row>
+								
+								<p:row>
+									
+									<p:column colspan="1" headerText="Meta"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Valor"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									
+									<p:column colspan="1" headerText="Meta"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Valor"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									
+									<p:column colspan="1" headerText="Meta"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Valor"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column headerText="1°T"  style="border: 1px solid; text-align: Left;background-color: #eceafb;"/>
+									
+									<p:column colspan="1" headerText="Meta"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Valor"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									
+									<p:column colspan="1" headerText="Meta"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Valor"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									
+									<p:column colspan="1" headerText="Meta"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Valor"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column headerText="2°T"  style="border: 1px solid; text-align: Left;background-color: #eceafb;"/>
+									
+									<p:column colspan="1" headerText="Meta"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Valor"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									
+									<p:column colspan="1" headerText="Meta"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Valor"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									
+									<p:column colspan="1" headerText="Meta"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Valor"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column headerText="3°T"  style="border: 1px solid; text-align: Left;background-color: #eceafb;"/>
+									
+									<p:column colspan="1" headerText="Meta"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Valor"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									
+									<p:column colspan="1" headerText="Meta"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Valor"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									
+									<p:column colspan="1" headerText="Meta"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Valor"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column headerText="4°T"  style="border: 1px solid; text-align: Left;background-color: #eceafb;"/>
+									
+									<p:column colspan="1" headerText="Anual"  style="border: 1px solid; text-align: Left;background-color: #8cffd8;"/>
+									
+									
+								</p:row>	
+							</p:columnGroup>
+							
+							<p:column headerText="Meta"  >
+								<h:outputText value="#{vendas.meta}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Valor"  >
+								<h:outputText value="#{vendas.valor}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Pontos"  style="background-color: #faebd7;">
+								<h:outputText value="#{vendas.pontos}" />
+							</p:column>
+							<p:column headerText="Meta"  >
+								<h:outputText value="#{vendas.meta2}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Valor" >
+								<h:outputText value="#{vendas.valor2}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Pontos"  style="background-color: #faebd7;">
+								<h:outputText value="#{vendas.pontos2}" />
+							</p:column>
+							<p:column headerText="Meta"  >
+								<h:outputText value="#{vendas.meta3}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Valor"  >
+								<h:outputText value="#{vendas.valor3}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Pontos"  style="background-color: #faebd7;">
+								<h:outputText value="#{vendas.pontos3}" />
+							</p:column>
+							<p:column headerText="1°T" style="background-color: #eceafb;" >
+								<h:outputText value="#{vendas.totaltri1}" />
+							</p:column>
+							
+							
+							<p:column headerText="Meta"  >
+								<h:outputText value="#{vendas.meta4}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Valor"  >
+								<h:outputText value="#{vendas.valor4}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Pontos"  style="background-color: #faebd7;">
+								<h:outputText value="#{vendas.pontos4}" />
+							</p:column>
+							<p:column headerText="Meta"  >
+								<h:outputText value="#{vendas.meta5}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Valor"  >
+								<h:outputText value="#{vendas.valor5}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Pontos"  style="background-color: #faebd7;">
+								<h:outputText value="#{vendas.pontos5}" />
+							</p:column>
+							<p:column headerText="Meta"  >
+								<h:outputText value="#{vendas.meta6}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Valor"  >
+								<h:outputText value="#{vendas.valor6}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Pontos" style="background-color: #faebd7;">
+								<h:outputText value="#{vendas.pontos6}" />
+							</p:column>
+							<p:column headerText="2°T"  style="background-color: #eceafb;" >
+								<h:outputText value="#{vendas.totaltri2}" />
+							</p:column>
+							
+							
+							<p:column headerText="Meta"  >
+								<h:outputText value="#{vendas.meta7}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Valor"  >
+								<h:outputText value="#{vendas.valor7}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Pontos"  style="background-color: #faebd7;">
+								<h:outputText value="#{vendas.pontos7}" />
+							</p:column>
+							<p:column headerText="Meta"  >
+								<h:outputText value="#{vendas.meta8}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Valor"  >
+								<h:outputText value="#{vendas.valor8}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Pontos"  style="background-color: #faebd7;">
+								<h:outputText value="#{vendas.pontos8}" />
+							</p:column>
+							<p:column headerText="Meta"  >
+								<h:outputText value="#{vendas.meta9}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Valor"  >
+								<h:outputText value="#{vendas.valor9}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Pontos" style="background-color: #faebd7;">
+								<h:outputText value="#{vendas.pontos9}" />
+							</p:column>
+							<p:column headerText="3°T"  style="background-color: #eceafb;" >
+								<h:outputText value="#{vendas.totaltri3}" />
+							</p:column>
+							
+							
+							<p:column headerText="Meta"  >
+								<h:outputText value="#{vendas.meta10}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Valor"  >
+								<h:outputText value="#{vendas.valor10}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Pontos"  style="background-color: #faebd7;">
+								<h:outputText value="#{vendas.pontos10}" />
+							</p:column>
+							<p:column headerText="Meta"  >
+								<h:outputText value="#{vendas.meta11}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Valor"  >
+								<h:outputText value="#{vendas.valor11}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Pontos"  style="background-color: #faebd7;">
+								<h:outputText value="#{vendas.pontos11}" />
+							</p:column>
+							<p:column headerText="Meta"  >
+								<h:outputText value="#{vendas.meta12}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Valor"  >
+								<h:outputText value="#{vendas.valor12}" ><f:convertNumber type="currency" currencySymbol="" /> </h:outputText>
+							</p:column>
+							<p:column headerText="Pontos" style="background-color: #faebd7;">
+								<h:outputText value="#{vendas.pontos12}" />
+							</p:column>
+							<p:column headerText="4°T"  style="background-color: #eceafb;" >
+								<h:outputText value="#{vendas.totaltri4}" />
+							</p:column>
+							
+							<p:column headerText="Anual"  style="background-color: #8cffd8;" >
+								<h:outputText value="#{vendas.totalanual}" />
+							</p:column>
+							
+							<p:columnGroup type="footer">
+								<p:row>
+									<p:column colspan="9" style="text-align:right"
+										footerText="Total 1º Trimestre:" />
+									<p:column footerText="#{beanPT_Meta.total1}" />
+									
+									<p:column colspan="9" style="text-align:right"
+										footerText="Total 2º Trimestre:" />
+									<p:column footerText="#{beanPT_Meta.total2}" />
+									
+									<p:column colspan="9" style="text-align:right"
+										footerText="Total 3º Trimestre:" />
+									<p:column footerText="#{beanPT_Meta.total3}" />
+									
+									<p:column colspan="9" style="text-align:right"
+										footerText="Total 4º Trimestre:" />
+									<p:column footerText="#{beanPT_Meta.total4}" />
+									
+									<p:column footerText="#{beanPT_Meta.totalanual}" />
+								</p:row>
+							</p:columnGroup>
+							
+						</p:dataTable>
+						
+					</h:panelGrid>
+					
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

@@ -3,6 +3,7 @@ package br.com.dwbidiretor.classe;
 import java.io.Serializable;
 import java.lang.String;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.*;
@@ -94,16 +95,47 @@ public class HCliente implements Serializable {
 	private BigDecimal total2022;
 	
 	private BigDecimal totalgeral;
-	private BigDecimal mixqtde;
+	private BigInteger mixqtde;
 	private BigDecimal mixqtdemedio;
 	private BigDecimal ticketmedio;
-	private BigDecimal nvendas;
+	private BigInteger nvendas;
 	private Date primeiravenda;
 	private Date ultimavenda;
-	private BigDecimal frequenciamedia;
+	private Double frequenciamedia;
 	private String cnpjcpf;
 	private String bairro;
 	private String status;
+	
+	private BigDecimal janeiro2023;
+	private BigDecimal fevereiro2023;
+	private BigDecimal marco2023;
+	private BigDecimal abril2023;
+	private BigDecimal maio2023;
+	private BigDecimal junho2023;
+	private BigDecimal julho2023;
+	private BigDecimal agosto2023;
+	private BigDecimal setembro2023;
+	private BigDecimal outrubo2023;
+	private BigDecimal novembro2023;
+	private BigDecimal dezembro2023;
+	private BigDecimal total2023;
+	
+	private BigDecimal vendedorultimo;
+	private String nomevendedorultimo;
+	
+	private BigDecimal janeiro2024;
+	private BigDecimal fevereiro2024;
+	private BigDecimal marco2024;
+	private BigDecimal abril2024;
+	private BigDecimal maio2024;
+	private BigDecimal junho2024;
+	private BigDecimal julho2024;
+	private BigDecimal agosto2024;
+	private BigDecimal setembro2024;
+	private BigDecimal outrubo2024;
+	private BigDecimal novembro2024;
+	private BigDecimal dezembro2024;
+	private BigDecimal total2024;
 	
 	public HCliente() {
 		super();
@@ -133,11 +165,11 @@ public class HCliente implements Serializable {
 		this.bairro = bairro;
 	}
 
-	public BigDecimal getNvendas() {
+	public BigInteger getNvendas() {
 		return nvendas;
 	}
 
-	public void setNvendas(BigDecimal nvendas) {
+	public void setNvendas(BigInteger nvendas) {
 		this.nvendas = nvendas;
 	}
 
@@ -157,11 +189,11 @@ public class HCliente implements Serializable {
 		this.ultimavenda = ultimavenda;
 	}
 
-	public BigDecimal getFrequenciamedia() {
+	public Double getFrequenciamedia() {
 		return frequenciamedia;
 	}
 
-	public void setFrequenciamedia(BigDecimal frequenciamedia) {
+	public void setFrequenciamedia(Double frequenciamedia) {
 		this.frequenciamedia = frequenciamedia;
 	}
 
@@ -189,11 +221,11 @@ public class HCliente implements Serializable {
 		this.totalgeral = totalgeral;
 	}
 
-	public BigDecimal getMixqtde() {
+	public BigInteger getMixqtde() {
 		return mixqtde;
 	}
 
-	public void setMixqtde(BigDecimal mixqtde) {
+	public void setMixqtde(BigInteger mixqtde) {
 		this.mixqtde = mixqtde;
 	}
 
@@ -795,6 +827,230 @@ public class HCliente implements Serializable {
 
 	public void setTotal2022(BigDecimal total2022) {
 		this.total2022 = total2022;
+	}
+
+	public BigDecimal getJaneiro2023() {
+		return janeiro2023;
+	}
+
+	public void setJaneiro2023(BigDecimal janeiro2023) {
+		this.janeiro2023 = janeiro2023;
+	}
+
+	public BigDecimal getFevereiro2023() {
+		return fevereiro2023;
+	}
+
+	public void setFevereiro2023(BigDecimal fevereiro2023) {
+		this.fevereiro2023 = fevereiro2023;
+	}
+
+	public BigDecimal getMarco2023() {
+		return marco2023;
+	}
+
+	public void setMarco2023(BigDecimal marco2023) {
+		this.marco2023 = marco2023;
+	}
+
+	public BigDecimal getAbril2023() {
+		return abril2023;
+	}
+
+	public void setAbril2023(BigDecimal abril2023) {
+		this.abril2023 = abril2023;
+	}
+
+	public BigDecimal getMaio2023() {
+		return maio2023;
+	}
+
+	public void setMaio2023(BigDecimal maio2023) {
+		this.maio2023 = maio2023;
+	}
+
+	public BigDecimal getJunho2023() {
+		return junho2023;
+	}
+
+	public void setJunho2023(BigDecimal junho2023) {
+		this.junho2023 = junho2023;
+	}
+
+	public BigDecimal getJulho2023() {
+		return julho2023;
+	}
+
+	public void setJulho2023(BigDecimal julho2023) {
+		this.julho2023 = julho2023;
+	}
+
+	public BigDecimal getAgosto2023() {
+		return agosto2023;
+	}
+
+	public void setAgosto2023(BigDecimal agosto2023) {
+		this.agosto2023 = agosto2023;
+	}
+
+	public BigDecimal getSetembro2023() {
+		return setembro2023;
+	}
+
+	public void setSetembro2023(BigDecimal setembro2023) {
+		this.setembro2023 = setembro2023;
+	}
+
+	public BigDecimal getOutrubo2023() {
+		return outrubo2023;
+	}
+
+	public void setOutrubo2023(BigDecimal outrubo2023) {
+		this.outrubo2023 = outrubo2023;
+	}
+
+	public BigDecimal getNovembro2023() {
+		return novembro2023;
+	}
+
+	public void setNovembro2023(BigDecimal novembro2023) {
+		this.novembro2023 = novembro2023;
+	}
+
+	public BigDecimal getDezembro2023() {
+		return dezembro2023;
+	}
+
+	public void setDezembro2023(BigDecimal dezembro2023) {
+		this.dezembro2023 = dezembro2023;
+	}
+
+	public BigDecimal getTotal2023() {
+		return total2023;
+	}
+
+	public void setTotal2023(BigDecimal total2023) {
+		this.total2023 = total2023;
+	}
+
+	public BigDecimal getVendedorultimo() {
+		return vendedorultimo;
+	}
+
+	public void setVendedorultimo(BigDecimal vendedorultimo) {
+		this.vendedorultimo = vendedorultimo;
+	}
+
+	public String getNomevendedorultimo() {
+		return nomevendedorultimo;
+	}
+
+	public void setNomevendedorultimo(String nomevendedorultimo) {
+		this.nomevendedorultimo = nomevendedorultimo;
+	}
+
+	public BigDecimal getJaneiro2024() {
+		return janeiro2024;
+	}
+
+	public void setJaneiro2024(BigDecimal janeiro2024) {
+		this.janeiro2024 = janeiro2024;
+	}
+
+	public BigDecimal getFevereiro2024() {
+		return fevereiro2024;
+	}
+
+	public void setFevereiro2024(BigDecimal fevereiro2024) {
+		this.fevereiro2024 = fevereiro2024;
+	}
+
+	public BigDecimal getMarco2024() {
+		return marco2024;
+	}
+
+	public void setMarco2024(BigDecimal marco2024) {
+		this.marco2024 = marco2024;
+	}
+
+	public BigDecimal getAbril2024() {
+		return abril2024;
+	}
+
+	public void setAbril2024(BigDecimal abril2024) {
+		this.abril2024 = abril2024;
+	}
+
+	public BigDecimal getMaio2024() {
+		return maio2024;
+	}
+
+	public void setMaio2024(BigDecimal maio2024) {
+		this.maio2024 = maio2024;
+	}
+
+	public BigDecimal getJunho2024() {
+		return junho2024;
+	}
+
+	public void setJunho2024(BigDecimal junho2024) {
+		this.junho2024 = junho2024;
+	}
+
+	public BigDecimal getJulho2024() {
+		return julho2024;
+	}
+
+	public void setJulho2024(BigDecimal julho2024) {
+		this.julho2024 = julho2024;
+	}
+
+	public BigDecimal getAgosto2024() {
+		return agosto2024;
+	}
+
+	public void setAgosto2024(BigDecimal agosto2024) {
+		this.agosto2024 = agosto2024;
+	}
+
+	public BigDecimal getSetembro2024() {
+		return setembro2024;
+	}
+
+	public void setSetembro2024(BigDecimal setembro2024) {
+		this.setembro2024 = setembro2024;
+	}
+
+	public BigDecimal getOutrubo2024() {
+		return outrubo2024;
+	}
+
+	public void setOutrubo2024(BigDecimal outrubo2024) {
+		this.outrubo2024 = outrubo2024;
+	}
+
+	public BigDecimal getNovembro2024() {
+		return novembro2024;
+	}
+
+	public void setNovembro2024(BigDecimal novembro2024) {
+		this.novembro2024 = novembro2024;
+	}
+
+	public BigDecimal getDezembro2024() {
+		return dezembro2024;
+	}
+
+	public void setDezembro2024(BigDecimal dezembro2024) {
+		this.dezembro2024 = dezembro2024;
+	}
+
+	public BigDecimal getTotal2024() {
+		return total2024;
+	}
+
+	public void setTotal2024(BigDecimal total2024) {
+		this.total2024 = total2024;
 	}
 
 	

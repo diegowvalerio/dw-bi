@@ -3,19 +3,17 @@
 	<persistence-unit name="crudPU" transaction-type="JTA">
 		<class>br.com.dwbi.classe.SigeUsuario</class>
 	
-	<properties>
-			
-			<property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@MSERVER2:1521:AWORKSDB" />
-			<property name="javax.persistence.jdbc.user" value="SEVEN" />
+	<properties>			
+			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://srverp:5432/AWORKSDB" />
+			<property name="javax.persistence.jdbc.user" value="seven" />
 			<property name="javax.persistence.jdbc.password" value="SEVEN" />
-			<property name="javax.persistence.jdbc.driver" value="oracle.jdbc.driver.OracleDriver" />
+			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
 			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider" />
 			<property name="hibernate.hbm2ddl.auto" value="none" />
-			<property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect" />
-      		
+			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
 			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.format_sql" value="true" />
-		</properties>
+	</properties>	
 		
 	</persistence-unit>
 	

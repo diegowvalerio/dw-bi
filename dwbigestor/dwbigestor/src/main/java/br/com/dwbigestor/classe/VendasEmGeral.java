@@ -29,10 +29,27 @@ public class VendasEmGeral implements Serializable {
 	private String statuspedido;
 	private String nomevendedor;
 
-		
+	private BigDecimal perc_lucro;	
+	private BigDecimal vendedor;
 
 	public VendasEmGeral() {
 		super();
+	}
+
+	public BigDecimal getVendedor() {
+		return vendedor;
+	}
+
+	public void setVendedor(BigDecimal vendedor) {
+		this.vendedor = vendedor;
+	}
+
+	public BigDecimal getPerc_lucro() {
+		return perc_lucro;
+	}
+
+	public void setPerc_lucro(BigDecimal perc_lucro) {
+		this.perc_lucro = perc_lucro;
 	}
 
 	public BigDecimal getCodigocliente() {

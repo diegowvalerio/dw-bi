@@ -1,0 +1,390 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+
+<script type="text/javascript">
+function my_ext(){  
+	this.cfg.config.enablePlugins = true;
+	var options = {
+            options: {
+            	series:[{
+            	      pointLabels: {
+            	         show: true,
+            	         hideZeros:false
+            	      }
+            	   }]
+            }
+         };
+	
+    $.extend(true, this.cfg.config, options);
+};
+   
+   
+function fullscreen(){
+	var el = document.getElementById("gf1");
+
+	  // Supports most browsers and their versions.
+	  var requestMethod = el.requestFullScreen || el.webkitRequestFullScreen 
+	  || el.mozRequestFullScreen || el.msRequestFullScreen;
+
+	  if (requestMethod) {
+
+	    // Native full screen.
+	    requestMethod.call(el);
+
+	  } else if (typeof window.ActiveXObject !== "undefined") {
+
+	    // Older IE.
+	    var wscript = new ActiveXObject("WScript.Shell");
+
+	    if (wscript !== null) {
+	      wscript.SendKeys("{F11}");
+	    }
+	  }
+} ; 
+
+function fullscreen2(){
+	var el = document.getElementById("gf2");
+
+	  // Supports most browsers and their versions.
+	  var requestMethod = el.requestFullScreen || el.webkitRequestFullScreen 
+	  || el.mozRequestFullScreen || el.msRequestFullScreen;
+
+	  if (requestMethod) {
+
+	    // Native full screen.
+	    requestMethod.call(el);
+
+	  } else if (typeof window.ActiveXObject !== "undefined") {
+
+	    // Older IE.
+	    var wscript = new ActiveXObject("WScript.Shell");
+
+	    if (wscript !== null) {
+	      wscript.SendKeys("{F11}");
+	    }
+	  }
+} ; 
+
+function fullscreen3(){
+	var el = document.getElementById("gf3");
+
+	  // Supports most browsers and their versions.
+	  var requestMethod = el.requestFullScreen || el.webkitRequestFullScreen 
+	  || el.mozRequestFullScreen || el.msRequestFullScreen;
+
+	  if (requestMethod) {
+
+	    // Native full screen.
+	    requestMethod.call(el);
+
+	  } else if (typeof window.ActiveXObject !== "undefined") {
+
+	    // Older IE.
+	    var wscript = new ActiveXObject("WScript.Shell");
+
+	    if (wscript !== null) {
+	      wscript.SendKeys("{F11}");
+	    }
+	  }
+} ; 
+
+function fullscreen5(){
+	var el = document.getElementById("gf5");
+
+	  // Supports most browsers and their versions.
+	  var requestMethod = el.requestFullScreen || el.webkitRequestFullScreen 
+	  || el.mozRequestFullScreen || el.msRequestFullScreen;
+
+	  if (requestMethod) {
+
+	    // Native full screen.
+	    requestMethod.call(el);
+
+	  } else if (typeof window.ActiveXObject !== "undefined") {
+
+	    // Older IE.
+	    var wscript = new ActiveXObject("WScript.Shell");
+
+	    if (wscript !== null) {
+	      wscript.SendKeys("{F11}");
+	    }
+	  }
+} ; 
+</script>
+
+	</ui:define>
+
+	<ui:define name="title">
+       Clientes Ativos - Novos
+    </ui:define>
+
+	<ui:define name="description">
+       
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Clientes" />
+
+		<h:form id="form">
+			<p:panelGrid columns="6"
+				columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+				layout="grid" styleClass="ui-fluid card" id="filtroscli">
+					
+					<p:outputLabel value="Ano:" for="ano2" />	
+            		<p:inputText id="ano2" value="#{beanClientesAtivos.ano}" />
+					
+					<p:commandButton action="#{beanClientesAtivos.filtrar()}" value="Filtrar"
+						icon="fa fa-check" update=":form" styleClass="btn-primary" />
+					
+			</p:panelGrid>
+				
+				<p:separator></p:separator>
+				
+			<div class="row" >
+			
+					<div class="col-md-6">
+							<div class="box box-default" id="gf1">
+								<div class="box-header with-border">
+									<h3 class="box-title">Clientes Ativos (180)</h3>
+
+									<div class="box-tools pull-right">
+										<button type="button" class="btn btn-box-tool"
+											data-widget="collapse">
+											<i class="fa fa-minus"></i>
+										</button>
+										<button type="button" class="btn btn-box-tool" onclick="fullscreen()">
+											<i class="fa fa-desktop"></i>
+										</button>
+									</div>
+									<!-- /.box-tools -->
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body" >
+								<p:tabView dynamic="false" cache="false" id="tabview2">
+									<p:tab title="Gráfico" id="grafico2">
+									<p:barChart model="#{beanClientesAtivos.ativos}" >
+									</p:barChart>
+									</p:tab>
+									<p:tab title="Dados" id="dados2">
+									<p:dataTable id="tabela2" value="#{beanClientesAtivos.lista}" var="lista" scrollable="true" scrollHeight="300">
+											<p:column headerText="Ano" width="5%">
+												<h:outputText value="#{lista.ano}" />
+											</p:column>
+											
+											<p:column headerText="Mês" width="5%">
+												<h:outputText value="#{lista.mes}" />
+											</p:column>
+											
+											<p:column headerText="Mês" width="5%">
+												<h:outputText value="#{lista.nmes}" />
+											</p:column>
+																						
+											<p:column headerText="Ativos" >
+												<h:outputText value="#{lista.qtde}"  >
+						 							<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 						</h:outputText>
+											</p:column>
+										</p:dataTable>
+									</p:tab>
+									</p:tabView>
+								</div>
+								<!-- /.box-body -->
+							</div>
+							<!-- /.box -->
+						</div>
+						
+						
+						<div class="col-md-6">
+							<div class="box box-default" id="gf2">
+								<div class="box-header with-border">
+									<h3 class="box-title">Clientes Novos (Primeira Compra x Cadastro)</h3>
+
+									<div class="box-tools pull-right">
+										<button type="button" class="btn btn-box-tool"
+											data-widget="collapse">
+											<i class="fa fa-minus"></i>
+										</button>
+										<button type="button" class="btn btn-box-tool" onclick="fullscreen2()">
+											<i class="fa fa-desktop"></i>
+										</button>
+									</div>
+									<!-- /.box-tools -->
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body" >
+								<p:tabView dynamic="false" cache="false" id="tabview3">
+									<p:tab title="Gráfico" id="grafico3">
+									<p:barChart model="#{beanClientesAtivos.novos}" >
+									</p:barChart>
+									</p:tab>
+									<p:tab title="Dados" id="dados3">
+									<p:dataTable id="tabela2" value="#{beanClientesAtivos.lista2}" var="lista" scrollable="true" scrollHeight="300">
+											<p:column headerText="Ano" width="5%">
+												<h:outputText value="#{lista.ano}" />
+											</p:column>
+											
+											<p:column headerText="Mês" width="5%">
+												<h:outputText value="#{lista.mes}" />
+											</p:column>
+											
+											<p:column headerText="Mês" width="5%">
+												<h:outputText value="#{lista.nmes}" />
+											</p:column>
+																						
+											<p:column headerText="Compra" >
+												<h:outputText value="#{lista.novosvenda}"  >
+						 							<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 						</h:outputText>
+											</p:column>
+											
+											<p:column headerText="Cadastro" >
+												<h:outputText value="#{lista.novoscadastro}"  >
+						 							<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 						</h:outputText>
+											</p:column>
+										</p:dataTable>
+									</p:tab>
+									</p:tabView>
+								</div>
+								<!-- /.box-body -->
+							</div>
+							<!-- /.box -->
+						</div>
+						
+						<div class="col-md-6">
+							<div class="box box-default" id="gf3">
+								<div class="box-header with-border">
+									<h3 class="box-title">Orçamentos (Cancelados - Abertos)</h3>
+
+									<div class="box-tools pull-right">
+										<button type="button" class="btn btn-box-tool"
+											data-widget="collapse">
+											<i class="fa fa-minus"></i>
+										</button>
+										<button type="button" class="btn btn-box-tool" onclick="fullscreen3()">
+											<i class="fa fa-desktop"></i>
+										</button>
+									</div>
+									<!-- /.box-tools -->
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body" >
+								<p:tabView dynamic="false" cache="false" id="tabview4">
+									<p:tab title="Gráfico" id="grafico4">
+									<p:barChart model="#{beanClientesAtivos.orca}" >
+									</p:barChart>
+									</p:tab>
+									<p:tab title="Dados" id="dados4">
+									<p:dataTable id="tabela2" value="#{beanClientesAtivos.lista3}" var="lista" scrollable="true" scrollHeight="300">
+											<p:column headerText="Ano" width="5%">
+												<h:outputText value="#{lista.ano}" />
+											</p:column>
+											
+											<p:column headerText="Mês" width="5%">
+												<h:outputText value="#{lista.mes}" />
+											</p:column>
+											
+											<p:column headerText="Mês" width="5%">
+												<h:outputText value="#{lista.nmes}" />
+											</p:column>
+																						
+											<p:column headerText="Cancelados" >
+												<h:outputText value="#{lista.cancelados}"  >
+						 							<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 						</h:outputText>
+											</p:column>
+											
+											<p:column headerText="Abertos" >
+												<h:outputText value="#{lista.abertos}"  >
+						 							<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 						</h:outputText>
+											</p:column>
+										</p:dataTable>
+									</p:tab>
+									</p:tabView>
+								</div>
+								<!-- /.box-body -->
+							</div>
+							<!-- /.box -->
+						</div>
+						
+						<div class="col-md-6">
+							<div class="box box-default" id="gf5">
+								<div class="box-header with-border">
+									<h3 class="box-title">Clientes Ativos (90)</h3>
+
+									<div class="box-tools pull-right">
+										<button type="button" class="btn btn-box-tool"
+											data-widget="collapse">
+											<i class="fa fa-minus"></i>
+										</button>
+										<button type="button" class="btn btn-box-tool" onclick="fullscreen5()">
+											<i class="fa fa-desktop"></i>
+										</button>
+									</div>
+									<!-- /.box-tools -->
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body" >
+								<p:tabView dynamic="false" cache="false" id="tabview5">
+									<p:tab title="Gráfico" id="grafico5">
+									<p:barChart model="#{beanClientesAtivos.ativos90}" >
+									</p:barChart>
+									</p:tab>
+									<p:tab title="Dados" id="dados5">
+									<p:dataTable id="tabela5" value="#{beanClientesAtivos.lista90}" var="lista" scrollable="true" scrollHeight="300">
+											<p:column headerText="Ano" width="5%">
+												<h:outputText value="#{lista.ano}" />
+											</p:column>
+											
+											<p:column headerText="Mês" width="5%">
+												<h:outputText value="#{lista.mes}" />
+											</p:column>
+											
+											<p:column headerText="Mês" width="5%">
+												<h:outputText value="#{lista.nmes}" />
+											</p:column>
+																						
+											<p:column headerText="Ativos" >
+												<h:outputText value="#{lista.qtde}"  >
+						 							<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 						</h:outputText>
+											</p:column>
+										</p:dataTable>
+									</p:tab>
+									</p:tabView>
+								</div>
+								<!-- /.box-body -->
+							</div>
+							<!-- /.box -->
+						</div>
+			
+			</div>
+					
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

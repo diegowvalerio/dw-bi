@@ -80,6 +80,10 @@
 				<div style="overflow:scroll;width:100%;overflow:auto">
 				
 					<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
+					<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="venda" fileName="vendas" pageOnly="true"/>
+						</h:commandLink>
+						
 						<p:dataTable id="venda" var="vendas"  scrollable="true"
 							value="#{beanAmostraPagaemGeral.listavenda}" resizableColumns="true">
 

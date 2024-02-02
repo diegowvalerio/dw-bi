@@ -1,0 +1,167 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+       Vendas UF x Ano/Mês
+    </ui:define>
+
+	<ui:define name="description">
+        
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Vendas UF x Ano/Mês" />
+
+		<h:form id="form">
+			<p:panelGrid columns="5"
+				columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+				layout="grid" styleClass="ui-fluid card" id="filtroscli">
+				
+					<p:outputLabel value="Ano:" for="ano" />	
+            		<p:inputText id="ano" value="#{beanVendaUF.ano}" />
+            		
+            		<p:outputLabel value="Mês:" for="mes" />	
+            		<p:inputText id="mes" value="#{beanVendaUF.mes}" />
+					
+					<p:commandButton action="#{beanVendaUF.filtrar()}" value="Filtrar"
+						icon="fa fa-check" update=":form:paineld :form:paineld2" styleClass="btn-primary" />
+					
+			</p:panelGrid>	
+			<p:separator></p:separator>	
+			
+			<div class="box box-primary" >
+			<div style="overflow:scroll;width:100%;overflow:auto">
+			
+			<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%" style="font-size: smaller;">
+						<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="vendasuf" fileName="vendasuf" pageOnly="true"/>
+						</h:commandLink>
+								
+						<p:dataTable id="vendasuf" var="vendasuf"  value="#{beanVendaUF.lista}" scrollable="true">
+						
+							<f:facet name="header">Faturamento</f:facet>
+							
+							<p:column width="20" headerText="UF"><h:outputText value="#{vendasuf.uf}" /> <f:facet name="footer"><h:outputText value="Total:" /></f:facet></p:column>			
+							
+							<p:column width="60" headerText="01"><h:outputText value="#{vendasuf.dia1}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total1}" /></f:facet></p:column>	
+							<p:column width="60" headerText="02"><h:outputText value="#{vendasuf.dia2}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total2}" /></f:facet></p:column>
+							<p:column width="60" headerText="03"><h:outputText value="#{vendasuf.dia3}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total3}" /></f:facet></p:column>
+							<p:column width="60" headerText="04"><h:outputText value="#{vendasuf.dia4}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total4}" /></f:facet></p:column>
+							<p:column width="60" headerText="05"><h:outputText value="#{vendasuf.dia5}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total5}" /></f:facet></p:column>
+							<p:column width="60" headerText="06"><h:outputText value="#{vendasuf.dia6}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total6}" /></f:facet></p:column>
+							<p:column width="60" headerText="07"><h:outputText value="#{vendasuf.dia7}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total7}" /></f:facet></p:column>
+							<p:column width="60" headerText="08"><h:outputText value="#{vendasuf.dia8}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total8}" /></f:facet></p:column>
+							<p:column width="60" headerText="09"><h:outputText value="#{vendasuf.dia9}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total9}" /></f:facet></p:column>
+							<p:column width="60" headerText="10"><h:outputText value="#{vendasuf.dia10}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total10}" /></f:facet></p:column>
+							<p:column width="60" headerText="11"><h:outputText value="#{vendasuf.dia11}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total11}" /></f:facet></p:column>
+							<p:column width="60" headerText="12"><h:outputText value="#{vendasuf.dia12}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total12}" /></f:facet></p:column>
+							<p:column width="60" headerText="13"><h:outputText value="#{vendasuf.dia13}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total13}" /></f:facet></p:column>
+							<p:column width="60" headerText="14"><h:outputText value="#{vendasuf.dia14}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total14}" /></f:facet></p:column>
+							<p:column width="60" headerText="15"><h:outputText value="#{vendasuf.dia15}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total15}" /></f:facet></p:column>
+							<p:column width="60" headerText="16"><h:outputText value="#{vendasuf.dia16}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total16}" /></f:facet></p:column>
+							<p:column width="60" headerText="17"><h:outputText value="#{vendasuf.dia17}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total17}" /></f:facet></p:column>
+							<p:column width="60" headerText="18"><h:outputText value="#{vendasuf.dia18}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total18}" /></f:facet></p:column>
+							<p:column width="60" headerText="19"><h:outputText value="#{vendasuf.dia19}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total19}" /></f:facet></p:column>
+							<p:column width="60" headerText="20"><h:outputText value="#{vendasuf.dia20}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total20}" /></f:facet></p:column>
+							<p:column width="60" headerText="21"><h:outputText value="#{vendasuf.dia21}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total21}" /></f:facet></p:column>
+							<p:column width="60" headerText="22"><h:outputText value="#{vendasuf.dia22}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total22}" /></f:facet></p:column>
+							<p:column width="60" headerText="23"><h:outputText value="#{vendasuf.dia23}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total23}" /></f:facet></p:column>
+							<p:column width="60" headerText="24"><h:outputText value="#{vendasuf.dia24}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total24}" /></f:facet></p:column>
+							<p:column width="60" headerText="25"><h:outputText value="#{vendasuf.dia25}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total25}" /></f:facet></p:column>
+							<p:column width="60" headerText="26"><h:outputText value="#{vendasuf.dia26}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total26}" /></f:facet></p:column>
+							<p:column width="60" headerText="27"><h:outputText value="#{vendasuf.dia27}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total27}" /></f:facet></p:column>
+							<p:column width="60" headerText="28"><h:outputText value="#{vendasuf.dia28}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total28}" /></f:facet></p:column>
+							<p:column width="60" headerText="29"><h:outputText value="#{vendasuf.dia29}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total29}" /></f:facet></p:column>
+							<p:column width="60" headerText="30"><h:outputText value="#{vendasuf.dia30}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total30}" /></f:facet></p:column>
+							<p:column width="60" headerText="31"><h:outputText value="#{vendasuf.dia31}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total31}" /></f:facet></p:column>
+								
+									
+
+						</p:dataTable>
+												
+			</h:panelGrid>
+			</div>
+			</div>
+			
+			<p:separator></p:separator>
+			
+			<div class="box box-primary" >
+			<div style="overflow:scroll;width:100%;overflow:auto">
+			<h:panelGrid columns="1" id="paineld2" columnClasses="left,right" width="100%" style="font-size: smaller;">
+						<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="vendasuf2" fileName="vendasufpedido" pageOnly="true"/>
+						</h:commandLink>
+								
+						<p:dataTable id="vendasuf2" var="vendasuf2"  value="#{beanVendaUF.lista2}" scrollable="true">
+						
+							<f:facet name="header">Pedido</f:facet>
+							
+							<p:column width="20" headerText="UF"><h:outputText value="#{vendasuf2.uf}" /> <f:facet name="footer"><h:outputText value="Total:" /></f:facet></p:column>			
+							
+							<p:column width="60" headerText="01"><h:outputText value="#{vendasuf2.dia1}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total1x}" /></f:facet></p:column>	
+							<p:column width="60" headerText="02"><h:outputText value="#{vendasuf2.dia2}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total2x}" /></f:facet></p:column>
+							<p:column width="60" headerText="03"><h:outputText value="#{vendasuf2.dia3}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total3x}" /></f:facet></p:column>
+							<p:column width="60" headerText="04"><h:outputText value="#{vendasuf2.dia4}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total4x}" /></f:facet></p:column>
+							<p:column width="60" headerText="05"><h:outputText value="#{vendasuf2.dia5}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total5x}" /></f:facet></p:column>
+							<p:column width="60" headerText="06"><h:outputText value="#{vendasuf2.dia6}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total6x}" /></f:facet></p:column>
+							<p:column width="60" headerText="07"><h:outputText value="#{vendasuf2.dia7}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total7x}" /></f:facet></p:column>
+							<p:column width="60" headerText="08"><h:outputText value="#{vendasuf2.dia8}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total8x}" /></f:facet></p:column>
+							<p:column width="60" headerText="09"><h:outputText value="#{vendasuf2.dia9}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total9x}" /></f:facet></p:column>
+							<p:column width="60" headerText="10"><h:outputText value="#{vendasuf2.dia10}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total10x}" /></f:facet></p:column>
+							<p:column width="60" headerText="11"><h:outputText value="#{vendasuf2.dia11}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total11x}" /></f:facet></p:column>
+							<p:column width="60" headerText="12"><h:outputText value="#{vendasuf2.dia12}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total12x}" /></f:facet></p:column>
+							<p:column width="60" headerText="13"><h:outputText value="#{vendasuf2.dia13}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total13x}" /></f:facet></p:column>
+							<p:column width="60" headerText="14"><h:outputText value="#{vendasuf2.dia14}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total14x}" /></f:facet></p:column>
+							<p:column width="60" headerText="15"><h:outputText value="#{vendasuf2.dia15}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total15x}" /></f:facet></p:column>
+							<p:column width="60" headerText="16"><h:outputText value="#{vendasuf2.dia16}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total16x}" /></f:facet></p:column>
+							<p:column width="60" headerText="17"><h:outputText value="#{vendasuf2.dia17}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total17x}" /></f:facet></p:column>
+							<p:column width="60" headerText="18"><h:outputText value="#{vendasuf2.dia18}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total18x}" /></f:facet></p:column>
+							<p:column width="60" headerText="19"><h:outputText value="#{vendasuf2.dia19}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total19x}" /></f:facet></p:column>
+							<p:column width="60" headerText="20"><h:outputText value="#{vendasuf2.dia20}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total20x}" /></f:facet></p:column>
+							<p:column width="60" headerText="21"><h:outputText value="#{vendasuf2.dia21}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total21x}" /></f:facet></p:column>
+							<p:column width="60" headerText="22"><h:outputText value="#{vendasuf2.dia22}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total22x}" /></f:facet></p:column>
+							<p:column width="60" headerText="23"><h:outputText value="#{vendasuf2.dia23}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total23x}" /></f:facet></p:column>
+							<p:column width="60" headerText="24"><h:outputText value="#{vendasuf2.dia24}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total24x}" /></f:facet></p:column>
+							<p:column width="60" headerText="25"><h:outputText value="#{vendasuf2.dia25}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total25x}" /></f:facet></p:column>
+							<p:column width="60" headerText="26"><h:outputText value="#{vendasuf2.dia26}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total26x}" /></f:facet></p:column>
+							<p:column width="60" headerText="27"><h:outputText value="#{vendasuf2.dia27}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total27x}" /></f:facet></p:column>
+							<p:column width="60" headerText="28"><h:outputText value="#{vendasuf2.dia28}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total28x}" /></f:facet></p:column>
+							<p:column width="60" headerText="29"><h:outputText value="#{vendasuf2.dia29}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total29x}" /></f:facet></p:column>
+							<p:column width="60" headerText="30"><h:outputText value="#{vendasuf2.dia30}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total30x}" /></f:facet></p:column>
+							<p:column width="60" headerText="31"><h:outputText value="#{vendasuf2.dia31}"><f:convertNumber minFractionDigits="2" locale="pt-BR"/></h:outputText>	<f:facet name="footer"><h:outputText value="R$#{beanVendaUF.total31x}" /></f:facet></p:column>
+										 
+							
+							
+						</p:dataTable>							
+			</h:panelGrid>
+			</div>
+			</div>
+					
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

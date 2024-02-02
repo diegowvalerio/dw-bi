@@ -41,6 +41,9 @@ public class ServicoVendasemGeralItem implements Serializable{
 	public List<VendasEmGeralItem> trocadefeitoemgeralitem(BigDecimal pedido){
 		return dao.trocadefeitoemgeralitem(pedido);
 	}
+	public List<VendasEmGeralItem> trocadefeitodiferenteitem(BigDecimal pedido){
+		return dao.trocadefeitodiferenteitem(pedido);
+	}
 	public List<VendasEmGeralItem> trocanegocioemgeralitem(BigDecimal pedido){
 		return dao.trocanegocioemgeralitem(pedido);
 	}

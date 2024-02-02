@@ -1,0 +1,147 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+
+.color_ativo {  
+    background-color: #F0FFFF;  
+  } 
+
+.color_critico {  
+  background-color: #eb080830;  
+  } 
+</style>
+
+	</ui:define>
+
+	<ui:define name="title">
+        Boletos
+    </ui:define>
+
+	<ui:define name="description">
+        Somente boletos registrados no Banco ! 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Mix" />
+
+		<h:form id="form">
+			
+					<p:panelGrid columns="7" 
+                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
+					
+					<p:outputLabel value="Cliente:" for="cliente" />
+					<p:selectOneMenu id="cliente"
+					value="#{beanTitulo.cliente}"
+					converter="conversorCliente" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanTitulo.listacliente}"
+						var="clientes" itemLabel="#{clientes.codigocliente} - #{clientes.nomecliente}"
+						itemValue="#{cliente}" />
+					</p:selectOneMenu>
+					
+                    <p:outputLabel value="Status" for="status" />
+						<p:selectOneMenu id="status" value="#{beanTitulo.status}">
+							<f:selectItem itemLabel="A Vencer" itemValue="A VENCER" />
+							<f:selectItem itemLabel="Vencido" itemValue="VENCIDO" />
+							<f:selectItem itemLabel="Todos" itemValue="TODOS" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="Nº Nota" for="numero" />
+					<p:inputText id="numero"
+					value="#{beanTitulo.nota}"  />
+					         
+                     <p:commandButton action="#{beanTitulo.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld"
+						styleClass="btn-primary" />
+				
+				</p:panelGrid>
+								
+					<p:panelGrid columns="1" id="paineld" >
+									
+						<p:dataTable id="mixp" var="mixs"  style="font-size:12px;" value="#{beanTitulo.lista}" resizableColumns="false"
+						rowStyleClass="#{mixs.status2 == 'VENCIDO' ? 'color_critico' : 'color_ativo'}" >
+											 
+           					<p:column headerText="#"  width="2%" style="border-color: black;text-align: left;">
+                				<h:outputText value="#{mixs.sigla}" />
+            				</p:column>
+        					  						
+							<p:column headerText="Nº" width="3.5%"  style="border-color: black;">
+								<h:outputText value="#{mixs.nrdocumento}" />
+							</p:column>
+							
+							<p:column headerText="/" width="2%"  style="border-color: black;">
+								<h:outputText value="#{mixs.nrparcela}" />
+							</p:column>
+							
+							<p:column headerText="Cód." width="3.5%"  style="border-color: black;">
+								<h:outputText value="#{mixs.cliente}" />
+							</p:column>
+							
+							<p:column headerText="Nome Cliente" style="border-color: black;text-align: left;white-space:normal !important;">
+								<h:outputText value="#{mixs.nomecliente}" />
+							</p:column>
+							
+							<p:column headerText="UF" width="3%"  style="border-color: black;">
+								<h:outputText value="#{mixs.uf}" />
+							</p:column>
+							
+							<p:column headerText="Cidade" width="10%"  style="border-color: black;text-align: left;">
+								<h:outputText value="#{mixs.cidade}" />
+							</p:column>
+							
+							<p:column headerText="Tipo" width="5%"  style="border-color: black;">
+								<h:outputText value="#{mixs.formacobranca}" />
+							</p:column>
+							
+							<p:column headerText="Vencimento" width="5%"  style="border-color: black;">
+								<h:outputText value="#{mixs.dtvencimento}" />
+							</p:column>
+							
+							<p:column headerText="Status" width="5%"  style="border-color: black;">
+								<h:outputText value="#{mixs.status2}" />
+							</p:column>
+							
+							<p:column headerText="Origem" width="6%"  style="border-color: black;text-align: left;">
+								<h:outputText value="#{mixs.origem}" />
+							</p:column>
+							
+							<p:column headerText="Valor" width="5%"  style="border-color: black;">
+								<h:outputText value="#{mixs.valor}" />
+							</p:column>
+							
+							
+							<p:column  headerText="#" width="4%" style="border-color: black;text-align: left;">
+								<p:commandButton ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="btn-danger" value="PDF" style="padding: 0px 0px;">
+										<f:setPropertyActionListener value="#{mixs}" target="#{beanTitulo.titulo}" />
+                        				<p:fileDownload value="#{beanTitulo.baixar()}"/>
+                    			</p:commandButton>
+							</p:column>
+							
+						</p:dataTable>
+					</p:panelGrid>
+					
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

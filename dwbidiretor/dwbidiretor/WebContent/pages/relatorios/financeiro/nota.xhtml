@@ -1,0 +1,127 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+
+.color_ativo {  
+    background-color: #F0FFFF;  
+  } 
+
+.color_critico {  
+  background-color: #eb080830;  
+  } 
+</style>
+
+	</ui:define>
+
+	<ui:define name="title">
+        Notas Fiscais
+    </ui:define>
+
+	<ui:define name="description">
+        
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Mix" />
+
+		<h:form id="form">
+			
+					<p:panelGrid columns="7" 
+                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
+					
+					<p:outputLabel value="Cliente:" for="cliente" />
+					<p:selectOneMenu id="cliente"
+					value="#{beanNota.cliente}"
+					converter="conversorCliente" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanNota.listacliente}"
+						var="clientes" itemLabel="#{clientes.codigocliente} - #{clientes.nomecliente}"
+						itemValue="#{cliente}" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="Nº Nota" for="numero" />
+					<p:inputText id="numero"
+					value="#{beanNota.nota}"  />
+					         
+                     <p:commandButton action="#{beanNota.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld"
+						styleClass="btn-primary" />
+				
+				</p:panelGrid>
+								
+					<p:panelGrid columns="1" id="paineld" >
+									
+						<p:dataTable id="mixp" var="mixs"  style="font-size:12px;" value="#{beanNota.lista}" >
+											 
+           					<p:column headerText="#"  width="2%" style="border-color: black;text-align: left;">
+                				<h:outputText value="#{mixs.sigla}" />
+            				</p:column>
+            				
+            				<p:column headerText="Tipo" width="12%"  style="border-color: black;">
+								<h:outputText value="#{mixs.tipopedido}" />
+							</p:column>
+        					  						
+							<p:column headerText="Nº" width="3.5%"  style="border-color: black;">
+								<h:outputText value="#{mixs.nrnota}" />
+							</p:column>
+							
+							<p:column headerText="Cód." width="3%"  style="border-color: black;">
+								<h:outputText value="#{mixs.cliente}" />
+							</p:column>
+							
+							<p:column headerText="Nome Cliente" style="border-color: black;text-align: left;">
+								<h:outputText value="#{mixs.nomecliente}" />
+							</p:column>
+							
+							<p:column headerText="Data Nota" width="5%"  style="border-color: black;">
+								<h:outputText value="#{mixs.dtnota}" />
+							</p:column>
+							
+							<p:column headerText="Status" width="5%"  style="border-color: black;">
+								<h:outputText value="#{mixs.status}" />
+							</p:column>
+							
+							<p:column headerText="Valor" width="8%"  style="border-color: black;">
+								<h:outputText value="#{mixs.valor}" />
+							</p:column>
+							
+							<p:column  headerText="#" width="6%" style="border-color: black;text-align: left;">
+								<p:commandButton ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="btn-info" style="padding: 0px 0px;" value="XML">
+										<f:setPropertyActionListener value="#{mixs}" target="#{beanNota.notas}" />
+                        				<p:fileDownload value="#{beanNota.baixar()}"/>
+                    			</p:commandButton>
+                    			
+                    			<p:commandButton ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="btn-danger" style="padding: 0px 0px;" value="PDF">
+										<f:setPropertyActionListener value="#{mixs}" target="#{beanNota.notas}" />
+                        				<p:fileDownload value="#{beanNota.baixardanfe()}"/>
+                    			</p:commandButton>
+							</p:column>
+							
+						</p:dataTable>
+					</p:panelGrid>
+					
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

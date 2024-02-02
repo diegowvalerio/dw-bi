@@ -35,7 +35,12 @@ async function getIP() {
     document.getElementById('form:plocalip').style.display = "none";
 }
 
-getIP();
+function loader(){
+	window.onload = getIP();
+}
+
+
+window.onload = getIP();
 
 </script>
 
@@ -56,11 +61,11 @@ getIP();
 		
 		<p:panel id="plocalip">
 			<p:inputText id="ipr" value="#{beanResumo.longitude}" />
-			<p:remoteCommand name="rc"  delay="1000" process="@parent" action="#{beanResumo.ipr()}"></p:remoteCommand>
+			<p:remoteCommand name="rc"  delay="1000" process="@parent" action="#{beanResumo.ipr()}" ></p:remoteCommand>
 		</p:panel>
 		
 		<span class="info-box-text">Dados a partir de : 01/04/2018</span>
-			<section class="content">
+			
 				<p:panelGrid columns="6"
 					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 					layout="grid" styleClass="ui-fluid card">
@@ -95,12 +100,17 @@ getIP();
 							<p:watermark value="Pesquise por Nome, Código ou Cpf/Cnpj" for="cliente"></p:watermark>
 						</h:panelGroup>
 
-					<p:commandButton action="#{beanResumo.filtrar()}" value="Filtrar" oncomplete="getIP()"
-						icon="fa fa-check" update=":form" styleClass="btn-primary" />
+					<p:commandButton action="#{beanResumo.filtrar()}" value="Filtrar" oncomplete="loader()"
+						icon="fa fa-check" update=":geral" styleClass="btn-primary" />
 				</p:panelGrid>
 
 				<p:separator />
-
+				
+				</h:form>
+				
+				<h:form id="geral">
+				<h:outputText value="M: #{beanResumo.mediaLucrogeral} %"/>
+				
 				<div class="row">
 					<div class="col-md-3 col-sm-6 col-xs-12">
 						<div class="info-box ">
@@ -180,7 +190,7 @@ getIP();
 								class="ion ion-pie-graph"></i></span>
 
 							<div class="info-box-content">
-								<span class="info-box-text">Meta</span> <span
+								<span class="info-box-text">Meta - #{beanResumo.mes}/#{beanResumo.ano}</span> <span
 									class="info-box-number"><h:outputText
 										value="#{beanResumo.metaTotal}" /></span>
 
@@ -465,9 +475,7 @@ getIP();
 					<p:chart id="graficometavenda" type="bar" model="#{beanResumo.graficometavenda}" />
 
 				</h:panelGrid>
-
-
-			</section>
+				
 		</h:form>
 	</ui:define>
 

@@ -110,9 +110,15 @@ public class BeanResumo implements Serializable {
 	
 	private String latitude;
 	private String longitude;
+	
+	private String mes;
+	private String ano;
 
 	@PostConstruct
 	public void init() {
+		
+		cliente = null;
+		vendedor = null;
 		
 		SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		Date d = new Date();
@@ -173,6 +179,12 @@ public class BeanResumo implements Serializable {
 		session.removeAttribute("vendedor");
 		session.removeAttribute("cliente");
 		
+		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		String data = df.format(data_grafico);
+		
+		mes = data.substring(3,5);
+		ano = data.substring(6,10);
+		
 		/*gerar grafico*/
 		createAnimatedModels();
 	}
@@ -185,6 +197,29 @@ public class BeanResumo implements Serializable {
 	}
 	
 	public void filtrar(){
+		tot_amostra = 0;
+		tot_amostrapaga= 0;
+		tot_bonificacao= 0;
+		tot_bonificacaoexpositor= 0;
+		tot_expositor= 0;
+		tot_brinde= 0;
+		tot_trocadefeito= 0;
+		tot_trocanegocio= 0;
+		tot_venda= 0;
+		
+		listaamostra.clear();
+		listaamostrapaga.clear();
+		listabonificacao.clear();
+		listabonificacaoexpositor.clear();
+		listabrinde.clear();
+		listaexpositor.clear();
+		listafaturamento.clear();
+		listatrocadefeito.clear();
+		listaclientes.clear();
+		listatrocanegocio.clear();
+		listavenda.clear();
+		
+		
 		if (vendedor == null){
 			vendedorfiltrado = "0";
 			vendedorfiltrado2 = "999999";
@@ -557,7 +592,10 @@ public class BeanResumo implements Serializable {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
 		session.setAttribute("vendedor", this.vendedor);
-
+		session.setAttribute("ano", this.ano);
+		session.setAttribute("mes", this.mes);
+		session.setAttribute("data1", this.data_grafico);
+		session.setAttribute("data2", this.data_grafico2);
 		return "/pages/relatorios/vendedormetavenda/vendedormetavenda.xhtml";
 	}
 	
@@ -1057,6 +1095,32 @@ public float getPercentualSobPedido_BonificacaoExpositor() {
 
 	}
 	
+	public float getMediaLucrogeral() {
+		float total = 0;
+		float t = 0;
+		
+		for (VendasEmGeral venda : getListavenda()) {
+			float t2 = 0;
+			//t2 = (venda.getValortotalliquidopedido().floatValue() / venda.getValortotalpedido().floatValue())*100;
+			t2 = venda.getPerc_lucro().floatValue();
+			t = t + t2;
+			total++;
+			//System.out.println(t+" pedido:"+venda.getPedido().toString()+"- "+t2);
+		}
+		
+		float atingido = 0;
+		NumberFormat formatarFloat= new DecimalFormat("0.00");
+		formatarFloat.setMaximumFractionDigits(2);
+		
+		if(t == 0 && atingido ==0) {
+			return 0;
+		}else {
+			atingido = t / total;
+			return Float.parseFloat(formatarFloat.format(atingido).replace(",", "."));
+		}
+		
+	}
+	
 	public float getPercentualSobPedido_Brinde() {
 		
 		float tvenda = 0;
@@ -1150,7 +1214,7 @@ public float getPercentualSobPedido_BonificacaoExpositor() {
 		
 		Date d = new Date();
 		graficometavenda = initBarModel();
-		graficometavenda.setTitle("Meta x Venda ("+ Integer.valueOf(d.getMonth()+1) +"/"+hoje.get(Calendar.YEAR) +")");
+		graficometavenda.setTitle("Meta x Venda ("+mes+"/"+ano+")");
 		graficometavenda.setAnimate(true);
 		graficometavenda.setLegendPosition("ne");
 		graficometavenda.setSeriesColors("20B2AA,808080");
@@ -1167,8 +1231,13 @@ public float getPercentualSobPedido_BonificacaoExpositor() {
 	
 	@SuppressWarnings("null")
 	public BarChartModel initBarModel() {
+		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		String data = df.format(data_grafico2);
+		
+		mes = data.substring(3,5);
+		ano = data.substring(6,10);
     	
-    	listametavenda = servicometavenda.metavenda(vendedorfiltrado,vendedorfiltrado2);
+    	listametavenda = servicometavenda.metavenda(vendedorfiltrado,vendedorfiltrado2,ano,mes,data_grafico, data_grafico2);
     	
     	 BarChartModel model = new BarChartModel();
          
@@ -1241,6 +1310,22 @@ public float getPercentualSobPedido_BonificacaoExpositor() {
 		}else{
 			return Float.parseFloat(formatarFloat.format(0).replace(",", "."));
 		}
+	}
+
+	public String getMes() {
+		return mes;
+	}
+
+	public void setMes(String mes) {
+		this.mes = mes;
+	}
+
+	public String getAno() {
+		return ano;
+	}
+
+	public void setAno(String ano) {
+		this.ano = ano;
 	}
 
 

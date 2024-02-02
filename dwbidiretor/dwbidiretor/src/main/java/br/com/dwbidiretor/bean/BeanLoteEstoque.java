@@ -88,7 +88,7 @@ public class BeanLoteEstoque implements Serializable {
 					+ " from pedidovenda_item it "
 					+ " inner join pedidovenda p on p.pedidovendaid = it.pedidovendaid "
 					+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
-					+ " and p.DT_PEDIDOVENDA between ADD_MONTHS(TRUNC(SYSDATE,'MM'),-3) and ADD_MONTHS(TRUNC(LAST_DAY(SYSDATE),'DD'),-1) "
+					+ " and p.DT_PEDIDOVENDA between ADD_MONTHS(TRUNC(CURRENT_DATE,'MM'),-3) and ADD_MONTHS(TRUNC(LAST_DAY(CURRENT_DATE),'DD'),-1) "
 					+ " group by it.produtoid "
 					+ " ) media on media.produtoid = it.produtoid "
 							
@@ -137,8 +137,8 @@ public class BeanLoteEstoque implements Serializable {
 	private static Connection ObterConexao() {
 		Connection conexao = null;
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conexao = DriverManager.getConnection("jdbc:oracle:thin:@MSERVER2:1521:AWORKSDB", "SEVEN", "SEVEN");
+			Class.forName("org.postgresql.Driver");
+			conexao = DriverManager.getConnection("jdbc:postgresql://srverp:5432/AWORKSDB", "seven", "SEVEN");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {

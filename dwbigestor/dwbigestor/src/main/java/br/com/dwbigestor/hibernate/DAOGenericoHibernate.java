@@ -2,6 +2,7 @@ package br.com.dwbigestor.hibernate;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Blob;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.dwbigestor.classe.HCliente;
+import br.com.dwbigestor.classe.Mapa;
 import br.com.dwbigestor.classe.MixProduto;
 import br.com.dwbigestor.classe.Produto;
 import br.com.dwbigestor.classe.Venda_Grupo;
@@ -269,7 +271,9 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " t.desc_tipo_pedido as tipo_pedido, " 
 						+ " CF.tipooperacao_cfop, " 
 						+ " p.status_pedidovenda, "
-						+ " v.NOME_CADCFTV nome_vendedor "
+						+ " v.NOME_CADCFTV nome_vendedor, "
+						+ " itens.perc_lucro,"
+						+ " V.CADCFTVID "
 						+ " from pedidovenda p "
 						+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID "
 						+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID "
@@ -280,6 +284,23 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
 						+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
 						+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
+						
+						+ " left join( "
+						+ " SELECT  "
+						+ " x.pedidovendaid, "
+						+ " sum(x.TOTAL_VENDA) TOTAL_VENDA , "
+						+ " sum(x.TOTALLIQUIDO_PEDIDO) TOTALLIQUIDO_PEDIDO,"
+						+ " round((sum(x.TOTALLIQUIDO_PEDIDO) /sum(x.TOTAL_VENDA))*100,2) as perc_lucro"
+						+ " FROM( "
+						+ " select "
+						+ " p.pedidovendaid, "
+						+ "  case when IT.vl_total_pedidovenda_item = 0 then 1 else IT.vl_total_pedidovenda_item end TOTAL_VENDA,  "
+						+ " (IT.vl_total_pedidovenda_item - ( it.VL_CUSTOORIG_PEDIDOVENDA_ITEM  * it.qt_pedidovenda_item )) TOTALLIQUIDO_PEDIDO "
+						+ " from pedidovenda_item it "
+						+ " inner join pedidovenda p on p.pedidovendaid = it.pedidovendaid)X "
+						+ " group by x.pedidovendaid "
+						+ " ) itens on itens.pedidovendaid = p.pedidovendaid "
+
 						+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
 						+ " AND CF.tipooperacao_cfop = 'VENDA' " 
 						+ " AND V2.GESTORID = G.GESTORID "
@@ -305,7 +326,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			vendasEmGeral.setTipooperacaocfop((String) row[7] );
 			vendasEmGeral.setStatuspedido((String) row[8] );
 			vendasEmGeral.setNomevendedor((String) row[9] );
-			
+			vendasEmGeral.setPerc_lucro((BigDecimal) row[10] );
+			vendasEmGeral.setVendedor((BigDecimal) row[11]);
 			
 			
 			list.add(vendasEmGeral);
@@ -390,7 +412,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			vendasEmGeralItem.setNota((String) row2[14] );
 			vendasEmGeralItem.setDatanota((Date) row2[15] );
 			vendasEmGeralItem.setStatusnota((String) row2[16] );
-			vendasEmGeralItem.setImagem((Blob) row2[17] );
+			//vendasEmGeralItem.setImagem((Blob) row2[17] );
 			
 			list.add(vendasEmGeralItem);
 		}
@@ -537,7 +559,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				vendasEmGeralItem.setNota((String) row2[14] );
 				vendasEmGeralItem.setDatanota((Date) row2[15] );
 				vendasEmGeralItem.setStatusnota((String) row2[16] );
-				vendasEmGeralItem.setImagem((Blob) row2[17] );
+				//vendasEmGeralItem.setImagem((Blob) row2[17] );
 				
 				list.add(vendasEmGeralItem);
 			}
@@ -663,7 +685,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 							+ " ) x1 on x1.ORIGEM_PEDIDOVENDA_ITEM = IT.PEDIDOVENDAITEMID  and x1.produtoid = it.produtoid "
 
 							+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
-							+ " AND CF.tipooperacao_cfop <> 'VENDA' AND V2.GESTORID = G.GESTORID "
+							+ " AND CF.tipooperacao_cfop = 'VENDA' AND V2.GESTORID = G.GESTORID "
 							+ " and p.TIPOPEDIDOID = 6 and p.pedidovendaid = ' " + pedido + " ' " 
 							+ " ORDER BY P.PEDIDOVENDAID  ");
 			List<Object[]> lista2 = query2.getResultList();
@@ -682,7 +704,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				vendasEmGeralItem.setNota((String) row2[14] );
 				vendasEmGeralItem.setDatanota((Date) row2[15] );
 				vendasEmGeralItem.setStatusnota((String) row2[16] );
-				vendasEmGeralItem.setImagem((Blob) row2[17] );
+				//vendasEmGeralItem.setImagem((Blob) row2[17] );
 				
 				list.add(vendasEmGeralItem);
 			}
@@ -829,7 +851,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						vendasEmGeralItem.setNota((String) row2[14] );
 						vendasEmGeralItem.setDatanota((Date) row2[15] );
 						vendasEmGeralItem.setStatusnota((String) row2[16] );
-						vendasEmGeralItem.setImagem((Blob) row2[17] );
+						//vendasEmGeralItem.setImagem((Blob) row2[17] );
 						
 						list.add(vendasEmGeralItem);
 					}
@@ -975,7 +997,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						vendasEmGeralItem.setNota((String) row2[14] );
 						vendasEmGeralItem.setDatanota((Date) row2[15] );
 						vendasEmGeralItem.setStatusnota((String) row2[16] );
-						vendasEmGeralItem.setImagem((Blob) row2[17] );
+						//vendasEmGeralItem.setImagem((Blob) row2[17] );
 						
 						list.add(vendasEmGeralItem);
 					}
@@ -1122,7 +1144,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 							vendasEmGeralItem.setNota((String) row2[14] );
 							vendasEmGeralItem.setDatanota((Date) row2[15] );
 							vendasEmGeralItem.setStatusnota((String) row2[16] );
-							vendasEmGeralItem.setImagem((Blob) row2[17] );
+							//vendasEmGeralItem.setImagem((Blob) row2[17] );
 							
 							list.add(vendasEmGeralItem);
 						}
@@ -1268,7 +1290,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 					vendasEmGeralItem.setNota((String) row2[14] );
 					vendasEmGeralItem.setDatanota((Date) row2[15] );
 					vendasEmGeralItem.setStatusnota((String) row2[16] );
-					vendasEmGeralItem.setImagem((Blob) row2[17] );
+					//vendasEmGeralItem.setImagem((Blob) row2[17] );
 					
 					list.add(vendasEmGeralItem);
 				}
@@ -1414,7 +1436,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						vendasEmGeralItem.setNota((String) row2[14] );
 						vendasEmGeralItem.setDatanota((Date) row2[15] );
 						vendasEmGeralItem.setStatusnota((String) row2[16] );
-						vendasEmGeralItem.setImagem((Blob) row2[17] );
+						//vendasEmGeralItem.setImagem((Blob) row2[17] );
 						
 						list.add(vendasEmGeralItem);
 					}
@@ -1561,7 +1583,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 					vendasEmGeralItem.setNota((String) row2[14] );
 					vendasEmGeralItem.setDatanota((Date) row2[15] );
 					vendasEmGeralItem.setStatusnota((String) row2[16] );
-					vendasEmGeralItem.setImagem((Blob) row2[17] );
+					//vendasEmGeralItem.setImagem((Blob) row2[17] );
 					
 					list.add(vendasEmGeralItem);
 				}
@@ -1633,7 +1655,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " INNER JOIN CLIENTE V2 ON V2.CADCFTVID = V.CADCFTVID "	
 						+ " INNER JOIN VENDEDOR V3 ON V3.CADCFTVID = V2.VENDEDORID1 "
 						+ " WHERE v.ATIVO_CADCFTV = 'SIM' AND v.FUNCAO_PRINCIPAL_CADCFTV = 'CLIENTE' "
-						+ " and (v.nome_cadcftv like '%"+palavra+"%' or v.cadcftvid like '%"+palavra+"%' or v.CNPJCPF_CADCFTV like '"+palavra+"%' ) "
+						+ " and (v.nome_cadcftv like '%"+palavra+"%' or CAST(v.cadcftvid AS TEXT) like '%"+palavra+"%' or v.CNPJCPF_CADCFTV like '"+palavra+"%' ) "
 						+ " and V3.GESTORID = G.GESTORID  "
 						+ " order by v.cadcftvid ");
 
@@ -1716,14 +1738,18 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			vendasEmGeralItem.setNota((String) row2[14] );
 			vendasEmGeralItem.setDatanota((Date) row2[15] );
 			vendasEmGeralItem.setStatusnota((String) row2[16] );
-			vendasEmGeralItem.setImagem((Blob) row2[17] );
+			//vendasEmGeralItem.setImagem((Blob) row2[17] );
 			
 		}
 		return vendasEmGeralItem;
 	}
 	
-	public List<MetaVenda> metavenda(String vendedor1, String vendedor2) {
+	public List<MetaVenda> metavenda(String vendedor1, String vendedor2,String ano, String mes, Date data_grafico,Date data_grafico2) {
 		List<MetaVenda> list = new ArrayList<>();
+		
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		String dataFormatada = formato.format(data_grafico);
+		String dataFormatada2 = formato.format(data_grafico2);
 
 		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
 				" SELECT TIPO,MES,ANO,VALOR, CASE WHEN NOME_REGIAO is null THEN 'VAZIO' ELSE NOME_REGIAO END AS NOME_REGIAO FROM ( "
@@ -1740,8 +1766,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ "	INNER JOIN CADCFTV GR ON GR.CADCFTVID = " + usuarioconectado()
 				+ "	INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
 				+ "	INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = V.CADCFTVID and V2.GESTORID = G.GESTORID "
-				+ "	WHERE mv.MES_METAVENDEDOR = TO_NUMBER(TO_CHAR(SYSDATE,'MM')) "
-				+ "	and mv.ANO_METAVENDEDOR = TO_NUMBER(TO_CHAR(SYSDATE,'YYYY')) "
+				+ "	WHERE mv.MES_METAVENDEDOR = "+mes//TO_NUMBER(TO_CHAR(SYSDATE,'MM')) "
+				+ "	and mv.ANO_METAVENDEDOR = "+ano//TO_NUMBER(TO_CHAR(SYSDATE,'YYYY')) "
 				+ "	and v.ATIVO_CADCFTV = 'SIM' "
 				+ " and v2.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 				+ "	GROUP BY "
@@ -1751,8 +1777,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ "	UNION ALL  "
 				+ "	SELECT "
 				+ "	'VENDA' TIPO, "
-				+ "	TO_NUMBER(TO_CHAR(EN.DT_PEDIDOVENDA,'MM')) AS MES, "
-				+ "	TO_NUMBER(TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY')) AS ANO, "
+				+ "	"+mes+" AS MES, "
+				+ "	"+ano+" AS ANO, "
 				+ "	SUM(EN.VL_TOTALPROD_PEDIDOVENDA)as VALOR, "
 				+ "	RE.NOME_REGIAO "
 				+ "	FROM PEDIDOVENDA EN  "
@@ -1766,11 +1792,10 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 				+ "	AND EN.status_pedidovenda in ('IMPORTADO','ABERTO','BLOQUEADO','PARCIAL') "
 				+ "	AND V.GESTORID = G.GESTORID  "
-				+ "	AND TO_CHAR(EN.DT_PEDIDOVENDA,'MM') = TO_CHAR(SYSDATE,'MM') "
-				+ "	AND TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') = TO_CHAR(SYSDATE,'YYYY') "
+				//+ "	AND TO_CHAR(EN.DT_PEDIDOVENDA,'MM') = TO_CHAR(CURRENT_DATE,'MM') "
+				//+ "	AND TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') = TO_CHAR(CURRENT_DATE,'YYYY') "
+				+ " and EN.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
 				+ "	GROUP BY  "
-				+ "	TO_NUMBER(TO_CHAR(EN.DT_PEDIDOVENDA,'MM')), "
-				+ "	TO_NUMBER(TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY')), "
 				+ "	RE.NOME_REGIAO "
 				+ "	)X "
 				+ "	ORDER BY  "
@@ -1815,10 +1840,10 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+"and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
 				+"AND EN.status_pedidovenda in ('IMPORTADO','ABERTO','BLOQUEADO','PARCIAL')  "
 				+"AND V.GESTORID = G.GESTORID   "
-				+"AND TO_CHAR(EN.DT_PEDIDOVENDA,'MM') = TO_CHAR(SYSDATE,'MM')  "
-				+"AND TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') = TO_CHAR(SYSDATE,'YYYY')  "
-				+"AND mv.MES_METAVENDEDOR = TO_NUMBER(TO_CHAR(SYSDATE,'MM'))  "
-				+"and mv.ANO_METAVENDEDOR = TO_NUMBER(TO_CHAR(SYSDATE,'YYYY')) "
+				+"AND TO_CHAR(EN.DT_PEDIDOVENDA,'MM') = TO_CHAR(CURRENT_DATE,'MM')  "
+				+"AND TO_CHAR(EN.DT_PEDIDOVENDA,'YYYY') = TO_CHAR(CURRENT_DATE,'YYYY')  "
+				+"AND mv.MES_METAVENDEDOR = TO_NUMBER(TO_CHAR(CURRENT_DATE,'MM'))  "
+				+"and mv.ANO_METAVENDEDOR = TO_NUMBER(TO_CHAR(CURRENT_DATE,'YYYY')) "
 				+"GROUP BY EN.VENDEDOR1ID ,VEND.NOME_CADCFTV, mv.VALOR_METAVENDEDOR");
 				
 		List<Object[]> lista = query.getResultList();
@@ -1838,11 +1863,11 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		
 	}
 	
-	public List<HCliente> hclientes(String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2){
+	public List<HCliente> hclientes(String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2,String status){
 		List<HCliente> list = new ArrayList<>();
 		
 		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
-				" SELECT "
+				" select * from ( SELECT "
 				+ " C.CADCFTVID, "
 				+ " C.NOME_CADCFTV, "
 				+ " en.END_ENDCADCFTV ENDERECO, "
@@ -1909,19 +1934,20 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " VENDAS2021.NOVEMBRO2021, "
 				+ " VENDAS2021.DEZEMBRO2021, "
 				+ " VENDAS2021.TOTALANO2021,"
-				+ " nvl(VENDAS2018.TOTALANO2018,0) + nvl(VENDAS2019.TOTALANO2019,0) + nvl(VENDAS2020.TOTALANO2020,0) + nvl(VENDAS2021.TOTALANO2021,0) + nvl(VENDAS2022.TOTALANO2022,0) totalgeral, "
+				+ " nvl(VENDAS2018.TOTALANO2018,0) + nvl(VENDAS2019.TOTALANO2019,0) + nvl(VENDAS2020.TOTALANO2020,0) + nvl(VENDAS2021.TOTALANO2021,0) + nvl(VENDAS2022.TOTALANO2022,0)+ nvl(VENDAS2023.TOTALANO2023,0)+ nvl(VENDAS2024.TOTALANO2024,0) totalgeral, "
 				+ " mix.mixqtde, "
 				+ " mixmedio.qtmixmedio, "
-				+ " round((nvl(VENDAS2018.TOTALANO2018,0) + nvl(VENDAS2019.TOTALANO2019,0) + nvl(VENDAS2020.TOTALANO2020,0) + nvl(VENDAS2021.TOTALANO2021,0)+ nvl(VENDAS2022.TOTALANO2022,0))/mixmedio.qtvendas,2) ticketmedio,  "
+				+ " round((nvl(VENDAS2018.TOTALANO2018,0) + nvl(VENDAS2019.TOTALANO2019,0) + nvl(VENDAS2020.TOTALANO2020,0) + nvl(VENDAS2021.TOTALANO2021,0)+ nvl(VENDAS2022.TOTALANO2022,0)+ nvl(VENDAS2023.TOTALANO2023,0)+ nvl(VENDAS2024.TOTALANO2024,0))/mixmedio.qtvendas,2) ticketmedio,  "
 				+ " freq.vendas, "
 				+ " freq.primeira, "
 				+ " freq.ultima, "
 				+ " freq.frequencia, "
 				+ " C.CNPJCPF_CADCFTV cnpjcpf, "
 				+ " en.BAIRRO_ENDCADCFTV bairro, "
-				+ " case when round(sysdate - freq.ultima) < = 90 then 'ATIVO' "
-				+ " when round(sysdate - freq.ultima) > 90 and round(sysdate - freq.ultima) < = 180 then 'SEMI-ATIVO' "
-				+ " when round(sysdate - freq.ultima) > 180 then 'INATIVO' "
+				+ "  case  when round(extract(days from CURRENT_DATE - freq.ultima)) <= 90 then 'ATIVO' "
+				+ " when round(extract(days from CURRENT_DATE - freq.ultima)) > 90 and round(extract(days from CURRENT_DATE - freq.ultima)) <= 180 and (round(extract(days from CURRENT_DATE - freq.ultima))+extract(days from(date_trunc('month',current_date) + interval '1 month' - interval '1 day')- CURRENT_DATE)) >= 180 then 'CRITICO' "
+				+ " when round(extract(days from CURRENT_DATE - freq.ultima)) > 90 and round(extract(days from CURRENT_DATE - freq.ultima)) <= 180 then 'SEMI-ATIVO' "
+				+ " when round(extract(days from CURRENT_DATE - freq.ultima)) > 180 then 'INATIVO' "
 				+ " ELSE 'INATIVO' END AS STATUS, "
 				
 				+ " VENDAS2022.JANEIRO2022, "
@@ -1936,7 +1962,37 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " VENDAS2022.OUTUBRO2022, "
 				+ " VENDAS2022.NOVEMBRO2022, "
 				+ " VENDAS2022.DEZEMBRO2022, "
-				+ " VENDAS2022.TOTALANO2022 "				
+				+ " VENDAS2022.TOTALANO2022, "	
+				
+				+ " VENDAS2023.JANEIRO2023, "
+				+ " VENDAS2023.FEVEREIRO2023, "
+				+ " VENDAS2023.MARCO2023, "
+				+ " VENDAS2023.ABRIL2023, "
+				+ " VENDAS2023.MAIO2023, "
+				+ " VENDAS2023.JUNHO2023, "
+				+ " VENDAS2023.JULHO2023, "
+				+ " VENDAS2023.AGOSTO2023, "
+				+ " VENDAS2023.SETEMBRO2023, "
+				+ " VENDAS2023.OUTUBRO2023, "
+				+ " VENDAS2023.NOVEMBRO2023, "
+				+ " VENDAS2023.DEZEMBRO2023, "
+				+ " VENDAS2023.TOTALANO2023, "
+				+ " vendedorultimo.vendedor uvendedor, "
+				+ " vendedorultimo.nomevendedor unomevendedor, "
+
+				+ " VENDAS2024.JANEIRO2024, "
+				+ " VENDAS2024.FEVEREIRO2024, "
+				+ " VENDAS2024.MARCO2024, "
+				+ " VENDAS2024.ABRIL2024, "
+				+ " VENDAS2024.MAIO2024, "
+				+ " VENDAS2024.JUNHO2024, "
+				+ " VENDAS2024.JULHO2024, "
+				+ " VENDAS2024.AGOSTO2024, "
+				+ " VENDAS2024.SETEMBRO2024, "
+				+ " VENDAS2024.OUTUBRO2024, "
+				+ " VENDAS2024.NOVEMBRO2024, "
+				+ " VENDAS2024.DEZEMBRO2024, "
+				+ " VENDAS2024.TOTALANO2024 "				
 				
 				+ " FROM CADCFTV C "
 				+ " INNER JOIN CLIENTE CL ON CL.CADCFTVID = C.CADCFTVID "
@@ -2212,6 +2268,66 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " NOME_CLIENTE "
 				+ " ) VENDAS2022 ON VENDAS2022.CLIENTE = C.CADCFTVID "
 				
+				+ " LEFT JOIN( " + " select " + " CLIENTE, " + " NOME_CLIENTE, " + " "
+				+ " sum(janeiro) JANEIRO2023, " + " sum(fevereiro) FEVEREIRO2023, " + " sum(marco) MARCO2023, "
+				+ " sum(abril) ABRIL2023 ,  " + " sum(maio) MAIO2023, " + " sum(junho) JUNHO2023, "
+				+ " sum(julho) JULHO2023 , " + " sum(agosto) AGOSTO2023, " + " sum(setembro) SETEMBRO2023, "
+				+ " sum(outubro) OUTUBRO2023, " + " sum(novembro) NOVEMBRO2023, "
+				+ " sum(dezembro) DEZEMBRO2023, "
+				+ " sum(janeiro)+sum(fevereiro)+sum(marco)+sum(abril)+sum(maio)+sum(junho)+sum(julho)+sum(agosto)+sum(setembro)+sum(outubro)+sum(novembro)+sum(dezembro) totalano2023 "
+				+ " " + " from( " + " select " + " CI.CADCFTVID AS CLIENTE, "
+				+ " CI.NOME_CADCFTV AS NOME_CLIENTE, " + " "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '01' then p.VL_TOTALPROD_PEDIDOVENDA else 0 end as janeiro, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '02' then p.VL_TOTALPROD_PEDIDOVENDA else 0 end as fevereiro, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '03' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as marco, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '04' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as abril, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '05' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as maio, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '06' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as junho, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '07' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as julho, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '08' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as agosto, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '09' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as setembro, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '10' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as outubro, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '11' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as novembro, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '12' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as dezembro "
+				+ " " + " from pedidovenda p " + " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID "
+				+ " INNER JOIN CLIENTE CL ON CL.CADCFTVID = CI.CADCFTVID "
+				+ " INNER JOIN CADCFTV V ON V.CADCFTVID = CL.VENDEDORID1 "
+				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+				+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+				+ " AND CF.TIPOOPERACAO_CFOP = 'VENDA' " + " and TO_CHAR(P.DT_PEDIDOVENDA,'YYYY') in ('2023') "
+				+ " " + " )x " + " group by " + " CLIENTE, " + " NOME_CLIENTE "
+				+ " ) VENDAS2023 ON VENDAS2023.CLIENTE = C.CADCFTVID	 "
+				
+				+ " LEFT JOIN( " + " select " + " CLIENTE, " + " NOME_CLIENTE, " + " "
+				+ " sum(janeiro) JANEIRO2024, " + " sum(fevereiro) FEVEREIRO2024, " + " sum(marco) MARCO2024, "
+				+ " sum(abril) ABRIL2024 ,  " + " sum(maio) MAIO2024, " + " sum(junho) JUNHO2024, "
+				+ " sum(julho) JULHO2024 , " + " sum(agosto) AGOSTO2024, " + " sum(setembro) SETEMBRO2024, "
+				+ " sum(outubro) OUTUBRO2024, " + " sum(novembro) NOVEMBRO2024, "
+				+ " sum(dezembro) DEZEMBRO2024, "
+				+ " sum(janeiro)+sum(fevereiro)+sum(marco)+sum(abril)+sum(maio)+sum(junho)+sum(julho)+sum(agosto)+sum(setembro)+sum(outubro)+sum(novembro)+sum(dezembro) totalano2024 "
+				+ " " + " from( " + " select " + " CI.CADCFTVID AS CLIENTE, "
+				+ " CI.NOME_CADCFTV AS NOME_CLIENTE, " + " "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '01' then p.VL_TOTALPROD_PEDIDOVENDA else 0 end as janeiro, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '02' then p.VL_TOTALPROD_PEDIDOVENDA else 0 end as fevereiro, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '03' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as marco, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '04' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as abril, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '05' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as maio, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '06' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as junho, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '07' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as julho, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '08' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as agosto, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '09' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as setembro, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '10' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as outubro, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '11' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as novembro, "
+				+ " case when TO_CHAR(P.DT_PEDIDOVENDA,'MM')= '12' then P.VL_TOTALPROD_PEDIDOVENDA else 0 end as dezembro "
+				+ " " + " from pedidovenda p " + " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID "
+				+ " INNER JOIN CLIENTE CL ON CL.CADCFTVID = CI.CADCFTVID "
+				+ " INNER JOIN CADCFTV V ON V.CADCFTVID = CL.VENDEDORID1 "
+				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+				+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+				+ " AND CF.TIPOOPERACAO_CFOP = 'VENDA' " + " and TO_CHAR(P.DT_PEDIDOVENDA,'YYYY') in ('2024') "
+				+ " " + " )x " + " group by " + " CLIENTE, " + " NOME_CLIENTE "
+				+ " ) VENDAS2024 ON VENDAS2024.CLIENTE = C.CADCFTVID	 "				
+				
 				+ " left join ( "
 				+ " select "
 				+ " x.CADCFTVID, "
@@ -2257,13 +2373,32 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " count(p.CADCFTVID) vendas, "
 				+ " min(p.DT_PEDIDOVENDA) primeira, "
 				+ " max(p.DT_PEDIDOVENDA) ultima, "
-				+ " round((max(p.DT_PEDIDOVENDA) - min(p.DT_PEDIDOVENDA)) /count(p.CADCFTVID)) frequencia "
+				+ " round(extract(days from max(P.DT_PEDIDOVENDA) - min(P.DT_PEDIDOVENDA) )/count(p.CADCFTVID)) frequencia "
 				+ " from pedidovenda p "
 				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
 				+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
 				+ " AND CF.TIPOOPERACAO_CFOP = 'VENDA' "
 				+ " group by p.CADCFTVID "
 				+ " )freq on freq.CADCFTVID = c.CADCFTVID "
+				
+				+ " left join( "
+				+ " select "
+				+ " x.cadcftvid, "
+				+ " x.vendedor, "
+				+ " max(x.DT_PEDIDOVENDA) ultima, "
+				+ " v.nome_cadcftv nomevendedor "
+				+ " from (select "
+				+ " p.cadcftvid , "
+				+ " P.DT_PEDIDOVENDA, "
+				+ " case when p.origem_digitacao_pedidovenda = 'SISTEMA' and p.vendedor2id is not null then p.vendedor2id else p.vendedor1id end vendedor "
+				+ " from pedidovenda p "
+				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
+				+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+				+ " AND CF.TIPOOPERACAO_CFOP = 'VENDA' "
+				+ " )x "
+				+ " inner join cadcftv v on v.cadcftvid = x.vendedor "
+				+ " group by x.cadcftvid,x.vendedor,v.nome_cadcftv "
+				+ " )vendedorultimo on vendedorultimo.CADCFTVID = c.CADCFTVID "
 				
 				+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
 				+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "
@@ -2273,7 +2408,15 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				
 				+ " and C.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
 				+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
-				+"  AND V2.GESTORID = G.GESTORID   "
+				+"  AND V2.GESTORID = G.GESTORID  "
+				+ " and ( (round(extract(days from CURRENT_DATE - freq.ultima)) <= 90 and '"+status+"' = 'ATIVO') or "
+				 + "(round(extract(days from CURRENT_DATE - freq.ultima)) > 90 and round(extract(days from CURRENT_DATE - freq.ultima)) <= 180 and (round(extract(days from CURRENT_DATE - freq.ultima))+extract(days from(date_trunc('month',current_date) + interval '1 month' - interval '1 day')- CURRENT_DATE)) >= 180 and '"+status+"' = 'CRITICO') or "
+				 + "(round(extract(days from CURRENT_DATE - freq.ultima)) > 90 and round(extract(days from CURRENT_DATE - freq.ultima)) <= 180 and '"+status+"' = 'SEMI-ATIVO') or "
+				 + "(round(extract(days from CURRENT_DATE - freq.ultima)) > 180 and '"+status+"' = 'INATIVO') or "
+				 + "(freq.ultima is null and '"+status+"' = 'INATIVO') or "
+				 + "( 'TODOS' = '"+status+"')"
+				 + " ) "
+				+" )x "
 				);
 		
 		List<Object[]> lista = query.getResultList();
@@ -2345,14 +2488,15 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			hCliente.setNovembro2021((BigDecimal) row[59]);
 			hCliente.setDezembro2021((BigDecimal) row[60]);
 			hCliente.setTotal2021((BigDecimal) row[61]);
+			
 			hCliente.setTotalgeral((BigDecimal) row[62]);
-			hCliente.setMixqtde((BigDecimal) row[63]);
+			hCliente.setMixqtde((BigInteger) row[63]);
 			hCliente.setMixqtdemedio((BigDecimal) row[64]);
 			hCliente.setTicketmedio((BigDecimal) row[65]);
-			hCliente.setNvendas((BigDecimal) row[66]);
+			hCliente.setNvendas((BigInteger) row[66]);
 			hCliente.setPrimeiravenda((Date) row[67]);
 			hCliente.setUltimavenda((Date) row[68]);
-			hCliente.setFrequenciamedia((BigDecimal) row[69]);
+			hCliente.setFrequenciamedia((Double) row[69]);
 			hCliente.setCnpjcpf((String) row[70]);
 			hCliente.setBairro((String) row[71]);
 			hCliente.setStatus((String) row[72]);
@@ -2370,6 +2514,37 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			hCliente.setNovembro2022((BigDecimal) row[83]);
 			hCliente.setDezembro2022((BigDecimal) row[84]);
 			hCliente.setTotal2022((BigDecimal) row[85]);
+			
+			hCliente.setJaneiro2023((BigDecimal) row[86]);
+			hCliente.setFevereiro2023((BigDecimal) row[87]);
+			hCliente.setMarco2023((BigDecimal) row[88]);
+			hCliente.setAbril2023((BigDecimal) row[89]);
+			hCliente.setMaio2023((BigDecimal) row[90]);
+			hCliente.setJunho2023((BigDecimal) row[91]);
+			hCliente.setJulho2023((BigDecimal) row[92]);
+			hCliente.setAgosto2023((BigDecimal) row[93]);
+			hCliente.setSetembro2023((BigDecimal) row[94]);
+			hCliente.setOutrubo2023((BigDecimal) row[95]);
+			hCliente.setNovembro2023((BigDecimal) row[96]);
+			hCliente.setDezembro2023((BigDecimal) row[97]);
+			hCliente.setTotal2023((BigDecimal) row[98]);
+			
+			hCliente.setVendedorultimo((BigDecimal) row[99]);
+			hCliente.setNomevendedorultimo((String) row[100]);
+			
+			hCliente.setJaneiro2024((BigDecimal) row[101]);
+			hCliente.setFevereiro2024((BigDecimal) row[102]);
+			hCliente.setMarco2024((BigDecimal) row[103]);
+			hCliente.setAbril2024((BigDecimal) row[104]);
+			hCliente.setMaio2024((BigDecimal) row[105]);
+			hCliente.setJunho2024((BigDecimal) row[106]);
+			hCliente.setJulho2024((BigDecimal) row[107]);
+			hCliente.setAgosto2024((BigDecimal) row[108]);
+			hCliente.setSetembro2024((BigDecimal) row[109]);
+			hCliente.setOutrubo2024((BigDecimal) row[110]);
+			hCliente.setNovembro2024((BigDecimal) row[111]);
+			hCliente.setDezembro2024((BigDecimal) row[112]);
+			hCliente.setTotal2024((BigDecimal) row[113]);
 			
 			list.add(hCliente);
 		}
@@ -2395,7 +2570,9 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " MIXVL.VL2021 , "
 				+ " MIXVL.VLTOTAL,  "
 				+ " MIXQTDE.QTDE2022, "
-				+ " MIXVL.VL2022 "
+				+ " MIXVL.VL2022, "
+				+ " MIXQTDE.QTDE2023, "
+				+ " MIXVL.VL2023"
 				+ " from produto pr "
 				+ " "
 				+ " inner join( "
@@ -2404,11 +2581,13 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " from pedidovenda_item it "
 				+ " inner join pedidovenda p on p.pedidovendaid = it.pedidovendaid "
 				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
-				+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID "
 				+ " inner join produto pr on pr.produtoid = it.produtoid "
 				+ " inner join SUBGRUPOPRODUTO sub on sub.SUBGRUPOPRODUTOID = pr.SUBGRUPOPRODUTOID "
 				+ " inner join GRUPOPRODUTO gr on gr.GRUPOPRODUTOID = sub.GRUPOPRODUTOID "
 				+ " inner join cliente cl on cl.cadcftvid = p.cadcftvid "
+				+ " INNER JOIN CADCFTV GRr ON GRr.CADCFTVID =  " + usuarioconectado()
+				+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GRr.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GRr.CNPJCPF_CADCFTV "
+				+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = cl.VENDEDORID1  and v2.gestorid = g.gestorid"
 				+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
 				+ " AND CF.TIPOOPERACAO_CFOP = 'VENDA'  "
 				+ " and cl.VENDEDORID1 between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
@@ -2427,21 +2606,25 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " SUM(MIXQTDE.QTDE2020) QTDE2020, "
 				+ " SUM(MIXQTDE.QTDE2021) QTDE2021, "
 				+ " SUM(MIXQTDE.QTDE2022) QTDE2022, "
-				+ " SUM(MIXQTDE.QTDE2018)+SUM(MIXQTDE.QTDE2019)+ SUM(MIXQTDE.QTDE2020)+SUM(MIXQTDE.QTDE2021)+SUM(MIXQTDE.QTDE2022) QTDETOTAL "
+				+ " SUM(MIXQTDE.QTDE2023) QTDE2023, "
+				+ " SUM(MIXQTDE.QTDE2018)+SUM(MIXQTDE.QTDE2019)+ SUM(MIXQTDE.QTDE2020)+SUM(MIXQTDE.QTDE2021)+SUM(MIXQTDE.QTDE2022)+SUM(MIXQTDE.QTDE2023) QTDETOTAL "
 				+ " FROM(SELECT it.produtoid, "
 				+ " CASE WHEN TO_CHAR(P.DT_PEDIDOVENDA,'YYYY') = '2018' THEN it.QT_PEDIDOVENDA_ITEM ELSE 0 END QTDE2018, "
 				+ " CASE WHEN TO_CHAR(P.DT_PEDIDOVENDA,'YYYY') = '2019' THEN it.QT_PEDIDOVENDA_ITEM ELSE 0 END QTDE2019, "
 				+ " CASE WHEN TO_CHAR(P.DT_PEDIDOVENDA,'YYYY') = '2020' THEN it.QT_PEDIDOVENDA_ITEM ELSE 0 END QTDE2020, "
 				+ " CASE WHEN TO_CHAR(P.DT_PEDIDOVENDA,'YYYY') = '2021' THEN it.QT_PEDIDOVENDA_ITEM ELSE 0 END QTDE2021, "
-				+ " CASE WHEN TO_CHAR(P.DT_PEDIDOVENDA,'YYYY') = '2022' THEN it.QT_PEDIDOVENDA_ITEM ELSE 0 END QTDE2022  "
+				+ " CASE WHEN TO_CHAR(P.DT_PEDIDOVENDA,'YYYY') = '2022' THEN it.QT_PEDIDOVENDA_ITEM ELSE 0 END QTDE2022,  "
+				+ " CASE WHEN TO_CHAR(P.DT_PEDIDOVENDA,'YYYY') = '2023' THEN it.QT_PEDIDOVENDA_ITEM ELSE 0 END QTDE2023  "
 				+ " from pedidovenda_item it "
 				+ " inner join pedidovenda p on p.pedidovendaid = it.pedidovendaid "
 				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
-				+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = P.VENDEDOR1ID "
 				+ " inner join produto pr on pr.produtoid = it.produtoid "
 				+ " inner join SUBGRUPOPRODUTO sub on sub.SUBGRUPOPRODUTOID = pr.SUBGRUPOPRODUTOID "
 				+ " inner join GRUPOPRODUTO gr on gr.GRUPOPRODUTOID = sub.GRUPOPRODUTOID "
 				+ " inner join cliente cl on cl.cadcftvid = p.cadcftvid "
+				+ " INNER JOIN CADCFTV GRr ON GRr.CADCFTVID =  " + usuarioconectado()
+				+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GRr.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GRr.CNPJCPF_CADCFTV "
+				+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = cl.VENDEDORID1  and v2.gestorid = g.gestorid"
 				+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
 				+ " and p.ORIGEM_PEDIDOVENDA <> 'SIMETRICA' "
 				+ " AND CF.TIPOOPERACAO_CFOP = 'VENDA' "
@@ -2461,21 +2644,25 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " SUM(MIXVL.VL2020) VL2020, "
 				+ " SUM(MIXVL.VL2021) VL2021, "
 				+ " SUM(MIXVL.VL2022) VL2022, "
-				+ " SUM(MIXVL.VL2018)+SUM(MIXVL.VL2019)+ SUM(MIXVL.VL2020)+SUM(MIXVL.VL2021)+SUM(MIXVL.VL2022) VLTOTAL "
+				+ " SUM(MIXVL.VL2023) VL2023, "
+				+ " SUM(MIXVL.VL2018)+SUM(MIXVL.VL2019)+ SUM(MIXVL.VL2020)+SUM(MIXVL.VL2021)+SUM(MIXVL.VL2022)+SUM(MIXVL.VL2023) VLTOTAL "
 				+ " FROM(SELECT it.produtoid, "
 				+ " CASE WHEN TO_CHAR(P.DT_PEDIDOVENDA,'YYYY') = '2018' THEN it.VL_TOTAL_PEDIDOVENDA_ITEM ELSE 0 END VL2018, "
 				+ " CASE WHEN TO_CHAR(P.DT_PEDIDOVENDA,'YYYY') = '2019' THEN it.VL_TOTAL_PEDIDOVENDA_ITEM ELSE 0 END VL2019, "
 				+ " CASE WHEN TO_CHAR(P.DT_PEDIDOVENDA,'YYYY') = '2020' THEN it.VL_TOTAL_PEDIDOVENDA_ITEM ELSE 0 END VL2020, "
 				+ " CASE WHEN TO_CHAR(P.DT_PEDIDOVENDA,'YYYY') = '2021' THEN it.VL_TOTAL_PEDIDOVENDA_ITEM ELSE 0 END VL2021, "
-				+ " CASE WHEN TO_CHAR(P.DT_PEDIDOVENDA,'YYYY') = '2022' THEN it.VL_TOTAL_PEDIDOVENDA_ITEM ELSE 0 END VL2022  "
+				+ " CASE WHEN TO_CHAR(P.DT_PEDIDOVENDA,'YYYY') = '2022' THEN it.VL_TOTAL_PEDIDOVENDA_ITEM ELSE 0 END VL2022,  "
+				+ " CASE WHEN TO_CHAR(P.DT_PEDIDOVENDA,'YYYY') = '2023' THEN it.VL_TOTAL_PEDIDOVENDA_ITEM ELSE 0 END VL2023  "
 				+ " from pedidovenda_item it "
 				+ " inner join pedidovenda p on p.pedidovendaid = it.pedidovendaid "
 				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID "
-				+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = P.VENDEDOR1ID "
 				+ " inner join produto pr on pr.produtoid = it.produtoid "
 				+ " inner join SUBGRUPOPRODUTO sub on sub.SUBGRUPOPRODUTOID = pr.SUBGRUPOPRODUTOID "
 				+ " inner join GRUPOPRODUTO gr on gr.GRUPOPRODUTOID = sub.GRUPOPRODUTOID "
 				+ " inner join cliente cl on cl.cadcftvid = p.cadcftvid "
+				+ " INNER JOIN CADCFTV GRr ON GRr.CADCFTVID =  " + usuarioconectado()
+				+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GRr.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GRr.CNPJCPF_CADCFTV "
+				+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = cl.VENDEDORID1  and v2.gestorid = g.gestorid"
 				+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
 				+ " AND CF.TIPOOPERACAO_CFOP = 'VENDA' "
 				+ " and cl.VENDEDORID1 between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
@@ -2512,6 +2699,9 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			
 			mix.setQtde2022((BigDecimal)row[12]);
 			mix.setVl2022((BigDecimal)row[13]);
+			
+			mix.setQtde2023((BigDecimal)row[14]);
+			mix.setVl2023((BigDecimal)row[15]);
 			
 			
 			list.add(mix);
@@ -2619,5 +2809,107 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		}
 		return list;
 	}	
-	
+
+	public List<Mapa> mapa(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2) {
+		List<Mapa> list = new ArrayList<>();
+		
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		String dataFormatada = formato.format(data1);
+		String dataFormatada2 = formato.format(data2);
+
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+						" select " 
+						+ " clt.vendedorid1,  "
+						+ " vw.apelido_cadcftv as nome_vendedor , "
+						+ " v.cadcftvid, "
+						+ " c.apelido_cadcftv , "
+						+ " CI.NOME_CIDADE, "
+						+ " CI.UF_CIDADE, "
+						+ " v.tipo_endcadcftv, "
+						+ " v.end_endcadcftv, "
+						+ " v.bairro_endcadcftv, "
+						+ " v.cep_endcadcftv, "
+						+ " v.nro_endcadcftv, "
+						+ " V.latitude, v.longitude, "
+						+ " to_char(x.dt,'dd/mm/yyyy') as ultima_compra, "
+						+ " r.NOME_REGIAO,"
+						+ " NVL(x1.TOTALPRODUTO,0) TOTAL "
+
+						+ " from CADCFTV c "
+						+ " INNER JOIN CLIENTE CLt ON CLt.CADCFTVID = C.CADCFTVID "
+						+ " inner join CADCFTV vw on vw.cadcftvid = clt.vendedorid1 "
+
+						+ " LEFT join  "
+						+ " ( "
+						+ " SELECT  max(v.endcadcftvid) endid, V.CADCFTVID,CI.UF_CIDADE, ci.nome_cidade FROM ENDCADCFTV V "
+						+ " INNER JOIN CIDADE CI ON CI.CIDADEID = V.CIDADEID "
+						+ " GROUP BY V.CADCFTVID, CI.UF_CIDADE, ci.nome_cidade "
+						+ " ) EN ON EN.CADCFTVID = C.CADCFTVID "
+
+						+ " inner join ENDCADCFTV V on v.cadcftvid = c.cadcftvid and v.endcadcftvid = en.endid "
+						+ " INNER JOIN CIDADE CI ON CI.CIDADEID = V.CIDADEID "
+
+						+ " inner join regiao r on r.REGIAOID = CLt.REGIAOID "
+
+						+ " left join "
+						+ " (select max(dt_pedidovenda) as dt, cadcftvid from pedidovenda "
+						+ " where status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') GROUP BY cadcftvid "
+						+ " )x on x.cadcftvid = c.cadcftvid "
+						
+						+ " left join ( "
+						+ "	select "
+						+ "	cadcftvid, "
+						+ "	SUM(VL_TOTALPROD_PEDIDOVENDA) AS TOTALPRODUTO "
+						+ "	from pedidovenda p "
+						+ "	INNER JOIN CFOP CF ON CF.CFOPID = p.CFOPID "
+						+ "	where status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO','IMPORTADO') "
+						+ "	AND CF.tipooperacao_cfop= 'VENDA' "
+						+ "and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
+						+ "GROUP BY cadcftvid  "
+						+ ")x1 on x1.cadcftvid = c.cadcftvid "
+						
+						+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = vw.cadcftvid "
+						+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
+						+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV   "
+						+ " where C.funcao_principal_cadcftv = 'CLIENTE' "
+						+ " AND c.ATIVO_CADCFTV = 'SIM' "
+						+ " and vw.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+						//+ " and v2.gestorid between ' " + gestor1 + " ' and ' " + gestor2 + " ' "
+						+ " and v2.gestorid = g.gestorid "
+						
+						
+						+ " and V.LATITUDE <> '-999' "
+						+ "and V.LONGITUDE <> '-998' "
+
+						+ " order by  "
+						+ " clt.vendedorid1 desc " );
+
+		List<Object[]> lista = query.getResultList();
+		
+		
+
+		for (Object[] row : lista) {
+			Mapa mapa = new Mapa();
+			
+			mapa.setVendedor((BigDecimal) row[0]);
+			mapa.setNomevendedor((String) row[1]);
+			mapa.setCliente((BigDecimal) row[2]);
+			mapa.setNomecliente((String) row[3]);
+			
+			mapa.setCidade((String) row[4]);
+			mapa.setUf((String) row[5]);
+			mapa.setEndereco((String) row[7]);
+			mapa.setBairro((String) row[8]);
+			mapa.setCep((String) row[9]);
+			mapa.setNumero((String) row[10]);
+			
+			mapa.setLatitude((BigDecimal) row[11]);
+			mapa.setLongitude((BigDecimal) row[12]);
+			mapa.setUltimacompra((String) row[13]);
+			mapa.setTotalperiodo((BigDecimal) row[15]);
+			list.add(mapa);
+		}
+
+		return list;
+	}	
 }

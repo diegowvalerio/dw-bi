@@ -1,0 +1,127 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+
+<style type="text/css">  
+            .color_100 {  
+                background-color: #CEF6E3;  
+            }  
+            
+            .color_m100 {  
+                background-color: #A9E2F3;  
+            }
+            
+            .color_0 {  
+                background-color: #F5A9D0;  
+            }
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+       Log de Acesso
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Log de Acesso" />
+
+		<h:form id="form">
+				<p:panelGrid columns="11" 
+                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
+					
+					<p:outputLabel value="Tipo" for="tipo" />
+						<p:selectOneMenu id="tipo" value="#{beanSigeLog.tipo}">
+							<f:selectItem itemLabel="Selecionar" noSelectionOption="true" />
+							<f:selectItem itemLabel="Todos" itemValue="TODOS" />
+							<f:selectItem itemLabel="Diretor" itemValue="DIRETOR" />
+							<f:selectItem itemLabel="Gestor" itemValue="GESTOR" />
+							<f:selectItem itemLabel="Vendedor" itemValue="VENDEDOR" />
+					</p:selectOneMenu>	
+				
+					
+					<p:outputLabel value="Usuario:" for="usuario" />
+					<p:inputText id="usuario" value="#{beanSigeLog.usuario}" />	
+					
+					<p:outputLabel value="Conteudo:" for="conteudo" />
+					<p:inputText id="conteudo" value="#{beanSigeLog.conteudo}" />
+					
+					<p:outputLabel value="Data/hora" for="datahora" />
+					<p:inputText id="datahora" value="#{beanSigeLog.datahora}" />		
+					
+					<p:outputLabel value="Ip:" for="ip" />
+					<p:inputText id="ip" value="#{beanSigeLog.ip}" />						
+
+					<p:commandButton action="#{beanSigeLog.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld"
+						styleClass="btn-primary" />
+
+				</p:panelGrid>
+					
+					<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="venda" fileName="log" pageOnly="true"/>
+			        </h:commandLink>
+			
+				
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
+						<p:dataTable id="venda" var="vendas"	value="#{beanSigeLog.lista}" resizableColumns="true">
+							
+							<p:column  headerText="id" sortBy="#{vendas.idlog}" width="2%">
+								<h:outputText value="#{vendas.idlog}" />
+							</p:column>
+							
+							<p:column  headerText="Usuario" sortBy="#{vendas.usuario}" >
+								<h:outputText value="#{vendas.usuario}" />
+							</p:column>
+							
+							<p:column  headerText="Conteudo" sortBy="#{vendas.conteudo}" >
+								<h:outputText value="#{vendas.conteudo}" />
+							</p:column>
+							
+							<p:column headerText="Data/Hora" >
+								<h:outputText value="#{vendas.datahora}" />
+							</p:column>
+							
+							<p:column headerText="Tipo"  sortBy="#{vendas.tipo}" >
+								<h:outputText value="#{vendas.tipo}" />
+							</p:column>
+							
+							<p:column headerText="Ip" sortBy="#{vendas.ip}">
+								<h:outputText value="#{vendas.ip}" />
+							</p:column>
+							
+							<p:column headerText="Aparelho" sortBy="#{vendas.aparelho}" >
+								<h:outputText value="#{vendas.aparelho}" />
+							</p:column>
+									
+						</p:dataTable>
+					</h:panelGrid>
+					
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

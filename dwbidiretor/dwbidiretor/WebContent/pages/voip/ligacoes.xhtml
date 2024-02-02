@@ -1,0 +1,139 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+
+	</ui:define>
+	
+	<ui:define name="description">
+        Limite de resultados: 10.000
+    </ui:define>
+
+	<ui:define name="body">
+
+		<h:form id="form">
+		<p:growl id="erros" showDetail="true" sticky="false" />
+			<div class="box box-primary">
+				<div class="box-header with-border">
+				
+				<p:panelGrid columns="5" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+                             layout="grid" styleClass="ui-fluid card" id="filtros">
+                             
+					<p:outputLabel value=" Data:  " for="data_grafico" />
+					<p:calendar locale="pt_BR" id="data_grafico"
+						value="#{beanLigacoes.data_grafico}" pattern="dd/MM/yyyy"
+						mask="true" required="true" readonlyInput="true">
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico2" />
+					<p:calendar locale="pt_BR" id="data_grafico2"
+						value="#{beanLigacoes.data_grafico2}" pattern="dd/MM/yyyy"
+						mask="true" required="true" readonlyInput="true">
+					</p:calendar>
+
+					<p:commandButton action="#{beanLigacoes.filtrar()}" value="Filtrar"
+						icon="fa fa-check" update=":form:paineld :form:painelr" styleClass="btn-primary" />
+
+					</p:panelGrid>
+					
+					</div>
+					
+					<div class="box-header with-border">
+					
+					
+					
+					<p:panelGrid columns="8" id="painelr" columnClasses="left,right"
+						width="100%">
+						<p:outputLabel value="#"></p:outputLabel>
+						<p:outputLabel value="#{beanLigacoes.ligacaoh.reason}"></p:outputLabel>
+						<p:outputLabel value="Ligações:"></p:outputLabel>
+						<p:outputLabel value="#{beanLigacoes.ligacaoh.total_records}"></p:outputLabel>
+						<p:outputLabel value="Tamanho:"></p:outputLabel>
+						<p:outputLabel value="#{beanLigacoes.ligacaoh.total_size}"></p:outputLabel>
+						<p:commandButton action="#{beanLigacoes.verificaselecionados()}" update=":form:erros" value="Teste"/>
+						<p:commandButton value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthick-1-s" styleClass="btn-info">
+                        <p:fileDownload value="#{beanLigacoes.download()}"/>
+                    	</p:commandButton>
+                    
+						
+					</p:panelGrid>	
+					
+					<p:panelGrid columns="1" id="paineld" columnClasses="left,right"
+						width="100%">
+						
+						<p:dataTable id="liga" var="ligacoes" value="#{beanLigacoes.ligacoes}" sortBy="#{ligacoes.record_id}"
+						selection="#{beanLigacoes.selecionadas}"	rowKey="#{ligacoes.record_id}" style="margin-bottom:0"
+						rows="500" paginator="true" paginatorPosition="bottom" 
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+						currentPageReportTemplate="" rowsPerPageTemplate="500,1000,1500,2000">
+						
+						<p:column selectionMode="multiple" style="width:4%;text-align:center"/>
+
+							<p:column headerText="#" sortBy="#{ligacoes.record_id}" width="8%">
+								<h:outputText value="#{ligacoes.record_id}" />
+							</p:column>
+
+							<p:column headerText="Data/Hora">
+								<h:outputText value="#{ligacoes.calldate}"/>
+							</p:column>
+							
+							<p:column headerText="Origem" sortBy="#{ligacoes.clid}">
+								<h:outputText value="#{ligacoes.clid}" />
+							</p:column>
+
+							<p:column headerText="Usuario"  sortBy="#{ligacoes.source}">
+								<h:outputText value="#{ligacoes.source}" />
+							</p:column>
+
+							<p:column headerText="Destino" sortBy="#{ligacoes.destination}">
+								<h:outputText value="#{ligacoes.destination}" />
+							</p:column>
+
+							<p:column headerText="Tempo">
+								<h:outputText value="#{ligacoes.duration2}" />
+							</p:column>
+
+							<p:column headerText="Tamanho">
+								<h:outputText value="#{ligacoes.size}" />
+							</p:column>
+							
+							<p:column  headerText="#" width="4%">
+								<p:commandButton ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" 
+									icon="ui-icon-arrowthick-1-s" styleClass="btn-info">
+										<f:setPropertyActionListener value="#{ligacoes}" target="#{beanLigacoes.ligacao}" />
+                        				<p:fileDownload value="#{beanLigacoes.baixar()}"/>
+                    			</p:commandButton>
+							</p:column>
+
+						</p:dataTable>
+					</p:panelGrid>
+
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

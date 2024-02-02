@@ -72,7 +72,7 @@ public class BeanAplicationScoped implements Serializable {
 					String hora = horaatual.getHours()+":"+horaatual.getMinutes()+":"+horaatual.getSeconds();
 					
 					if(hora.equals("20:1:0")) { //20:1:0
-						enviaemail();
+						//enviaemail();
 						enviaemail_produtos_importados_saldoabaixo_minimo();
 						
 					}
@@ -347,7 +347,7 @@ public class BeanAplicationScoped implements Serializable {
 
 				Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
 					protected PasswordAuthentication getPasswordAuthentication() {
-						return new PasswordAuthentication("informatica@marchezanmetais.com.br", "@rv0re24Xcv");
+						return new PasswordAuthentication("informatica@marchezanmetais.com.br", "Wrv0re24Xcv");
 					}
 				});
 
@@ -410,6 +410,8 @@ public class BeanAplicationScoped implements Serializable {
 		
 		return "";
 	}
+	
+	
 
 	public Timer getTimer() {
 		return timer;

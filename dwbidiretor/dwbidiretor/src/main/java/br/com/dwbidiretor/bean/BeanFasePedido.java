@@ -3,6 +3,7 @@ package br.com.dwbidiretor.bean;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,8 +19,8 @@ import javax.inject.Named;
 
 import org.primefaces.event.SelectEvent;
 
-
 import br.com.dwbidiretor.classe.FasePedido;
+import br.com.dwbidiretor.classe.FasePedidoItem;
 import br.com.dwbidiretor.classe.PedidoFase;
 import br.com.dwbidiretor.servico.ServicoFasePedido;
 import br.com.dwbidiretor.servico.ServicoPedidoFase;
@@ -34,19 +35,28 @@ public class BeanFasePedido implements Serializable {
 	@Inject
 	private ServicoFasePedido servico;
 	private List<FasePedido> lista = new ArrayList<>();
+	private List<FasePedidoItem> listaitem = new ArrayList<>();
 	
 	@Inject
 	private ServicoPedidoFase servicopedidofase;
 	private List<PedidoFase> listapedidofase = new ArrayList<>();
+	private PedidoFase pedidofase = new PedidoFase();
 	
-	int venda,outros = 1 ;
+	int venda =1 ;
+	int outros = 1 ;
 	int selecionado  = 1;
 	int totaldiasfase,mediadias = 0;
+	private Date data_grafico = new Date();
+	private Date data_grafico2 = new Date();
 
 	@PostConstruct
 	public void init() {
-		lista = servico.fasepedido(1, 1);
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
+		data_grafico =c.getTime();
 		
+		lista = servico.fasepedido(1, 1,data_grafico,data_grafico2);
+				
 	}
 	
 	public void filtrar(){
@@ -60,7 +70,7 @@ public class BeanFasePedido implements Serializable {
 			venda = 0;
 			outros = 1;
 		}
-		lista = servico.fasepedido(venda, outros);
+		lista = servico.fasepedido(venda, outros,data_grafico,data_grafico2);
 		listapedidofase.clear();
 	}
 	
@@ -68,7 +78,7 @@ public class BeanFasePedido implements Serializable {
 		totaldiasfase = 0;
 		fasePedido = (FasePedido) event.getObject();
 		if(fasePedido !=null) {
-			listapedidofase = servicopedidofase.pedidofase(venda, outros, fasePedido.getRoteiroid());
+			listapedidofase = servicopedidofase.pedidofase(venda, outros, fasePedido.getRoteiroid(),data_grafico,data_grafico2);
 			for(PedidoFase f:listapedidofase) {
 				if(f.getDataentradafase() == null) {
 					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy"); 
@@ -78,7 +88,7 @@ public class BeanFasePedido implements Serializable {
 					Date b = new Date();
 					long dt = b.getTime() - a.getTime();
 					dt = dt / 86400000L;		
-			        f.setDiasnafase(new BigDecimal(dt));
+			        f.setDiasnafase((double) dt);
 				}
 				totaldiasfase = totaldiasfase + f.getDiasnafase().intValue();
 			}
@@ -90,6 +100,29 @@ public class BeanFasePedido implements Serializable {
 		}
 		
     }
+	
+	public void onRowSelect2(SelectEvent event) throws ParseException {
+		pedidofase = (PedidoFase) event.getObject();
+		if(pedidofase != null) {
+			listaitem = servico.fasepedidopedido(pedidofase.getPedidoid().toString());
+		}
+	}
+
+	public Date getData_grafico() {
+		return data_grafico;
+	}
+
+	public void setData_grafico(Date data_grafico) {
+		this.data_grafico = data_grafico;
+	}
+
+	public Date getData_grafico2() {
+		return data_grafico2;
+	}
+
+	public void setData_grafico2(Date data_grafico2) {
+		this.data_grafico2 = data_grafico2;
+	}
 
 	public FasePedido getFasePedido() {
 		return fasePedido;
@@ -153,6 +186,41 @@ public class BeanFasePedido implements Serializable {
 
 	public void setMediadias(int mediadias) {
 		this.mediadias = mediadias;
+	}
+	
+	public PedidoFase getPedidofase() {
+		return pedidofase;
+	}
+
+	public void setPedidofase(PedidoFase pedidofase) {
+		this.pedidofase = pedidofase;
+	}
+
+	public List<FasePedidoItem> getListaitem() {
+		return listaitem;
+	}
+
+	public void setListaitem(List<FasePedidoItem> listaitem) {
+		this.listaitem = listaitem;
+	}
+
+	public String gettotal() {
+		float t = 0;
+
+		for (FasePedido p : getLista()) {
+			t = t + p.getVlpedido().floatValue();
+		}
+		
+		return NumberFormat.getCurrencyInstance().format(t);
+	}
+	
+	public String gettotalqtde() {
+		float total = 0;
+
+		for (FasePedido p : getLista()) {
+			total = total + p.getQtdepedido().intValue();
+		}
+		return ""+total;
 	}
 	
 	

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.dwbigestor.classe.HCliente;
+import br.com.dwbigestor.classe.Mapa;
 import br.com.dwbigestor.classe.MixProduto;
 import br.com.dwbigestor.classe.Produto;
 import br.com.dwbigestor.classe.Venda_Grupo;
@@ -79,14 +80,16 @@ public interface DAOGenerico<E> {
 	
 	public VendasEmGeralItem consultaitem(BigDecimal produto);
 	
-	public List<MetaVenda> metavenda(String vendedor1, String vendedor2);
+	public List<MetaVenda> metavenda(String vendedor1, String vendedor2,String ano, String mes, Date data_grafico,Date data_grafico2);
 	
 	public List<VendedorMetaVenda> vendedormetavenda(String vendedor1, String vendedor2);
 	
 	public List<Cliente> consultacliente(String palavra);
 	
+	public List<Mapa> mapa(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2);
+	
 	//elias
-	public List<HCliente> hclientes(String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2);
+	public List<HCliente> hclientes(String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2,String status);
 	public List<MixProduto> mixprodutos(String vendedor1, String vendedor2, String gestor1, String gestor2, String produto1, String produto2, String grupo1, String grupo2, String subgrupo1, String subgrupo2,String cliente1, String cliente2);
 	public List<Produto> produtos();
 	public List<Venda_Grupo> grupos();

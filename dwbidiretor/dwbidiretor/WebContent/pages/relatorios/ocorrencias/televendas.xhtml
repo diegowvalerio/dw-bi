@@ -1,0 +1,222 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+
+<style type="text/css">  
+            .color_100 {  
+                background-color: #CEF6E3;  
+            }  
+            
+            .color_m100 {  
+                background-color: #A9E2F3;  
+            }
+            
+            .color_0 {  
+                background-color: #F5A9D0;  
+            }
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+       Ocorrencias -> TeleVendas
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Ocorrencias -> TeleVendas" />
+
+		<h:form id="form">
+				<p:panelGrid columns="10" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
+
+					<p:outputLabel value=" Data Cadastro:  " for="data_grafico" />
+					<p:calendar locale="pt_BR" id="data_grafico"
+						value="#{beanTLOcorrencias.data_grafico}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico2" />
+					<p:calendar locale="pt_BR" id="data_grafico2"
+						value="#{beanTLOcorrencias.data_grafico2}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+					
+					<p:outputLabel value="Status:" for="status" />
+						<p:selectOneMenu id="status" value="#{beanTLOcorrencias.status}">
+							<f:selectItem itemLabel="Selecionar" noSelectionOption="true" />
+							<f:selectItem itemLabel="Todos" itemValue="TODOS" />
+							<f:selectItem itemLabel="Aberto" itemValue="ABERTO" />
+							<f:selectItem itemLabel="Atendido" itemValue="ATENDIDO" />
+							<f:selectItem itemLabel="Concluido" itemValue="CONCLUIDO" />
+					</p:selectOneMenu>	
+					
+					<p:outputLabel value="Tipo:" for="tipo" />
+						<p:selectOneMenu id="tipo" value="#{beanTLOcorrencias.tipo}">
+							<f:selectItem itemLabel="Selecionar" noSelectionOption="true" />
+							<f:selectItem itemLabel="Todos" itemValue="TODOS" />
+							<f:selectItem itemLabel="ORÇAMENTO - TELEVENDAS" itemValue="ORÇAMENTO - TELEVENDAS" />
+							<f:selectItem itemLabel="PEDIDOS - TELEVENDAS" itemValue="PEDIDOS - TELEVENDAS" />
+							<f:selectItem itemLabel="ORÇADO - TELEVENDAS" itemValue="ORÇADO - TELEVENDAS" />
+							<f:selectItem itemLabel="SEM INTERESSE - TELEVENDAS" itemValue="SEM INTERESSE - TELEVENDAS" />
+							<f:selectItem itemLabel="PRESENCIAL - TELEVENDAS" itemValue="PRESENCIAL - TELEVENDAS" />
+							<f:selectItem itemLabel="RETORNO - TELEVENDAS" itemValue="RETORNO - TELEVENDAS" />
+							<f:selectItem itemLabel="INTERESSE - TELEVENDAS" itemValue="INTERESSE - TELEVENDAS" />
+							<f:selectItem itemLabel="NUMERO INATIVO - TELEVENDAS" itemValue="NUMERO INATIVO - TELEVENDAS" />
+							<f:selectItem itemLabel="TELEVENDAS" itemValue="TELEVENDAS" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="Criador:" for="criador" />
+						<p:selectOneMenu id="criador" value="#{beanTLOcorrencias.criador}">
+							<f:selectItem itemLabel="Selecionar" noSelectionOption="true" />
+							<f:selectItem itemLabel="Todos" itemValue="TODOS" />
+							<f:selectItem itemLabel="Glenda" itemValue="GLENDA" />
+							<f:selectItem itemLabel="Patricia" itemValue="PATRICIA" />
+							<f:selectItem itemLabel="Roberta" itemValue="ROBERTA" />
+							<f:selectItem itemLabel="Francini" itemValue="FRANCINI" />
+					</p:selectOneMenu>	
+					
+					<p:outputLabel value=" Data Ult. Resposta  " for="data_grafico3" />
+					<p:calendar locale="pt_BR" id="data_grafico3"
+						value="#{beanTLOcorrencias.data_grafico3}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico4" />
+					<p:calendar locale="pt_BR" id="data_grafico4"
+						value="#{beanTLOcorrencias.data_grafico4}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>			
+
+					<p:commandButton action="#{beanTLOcorrencias.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld"
+						styleClass="btn-primary" />
+
+				</p:panelGrid>
+					
+					<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="venda" fileName="ocorrencias-televendas" pageOnly="true"/>
+			        </h:commandLink>
+					<div class="box box-primary" >
+					<div style="overflow:scroll;width:100%;overflow:auto">
+				
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
+					
+						<p:dataTable id="venda" var="vendas" scrollHeight="600"	value="#{beanTLOcorrencias.lista}" resizableColumns="true" scrollable="true">
+							
+							<p:column  headerText="Código" sortBy="#{vendas.ocorrenciaid}" >
+								<h:outputText value="#{vendas.ocorrenciaid}" />
+							</p:column>
+							
+							<p:column  headerText="Data" sortBy="#{vendas.dataocorrencia}" >
+								<h:outputText value="#{vendas.dataocorrencia}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Contato" sortBy="#{vendas.contato}" >
+								<h:outputText value="#{vendas.contato}" />
+							</p:column>
+							
+							<p:column headerText="Cliente" sortBy="#{vendas.codigocliente}" >
+								<h:outputText value="#{vendas.codigocliente}" />
+							</p:column>
+							
+							<p:column headerText="Nome Cliente" sortBy="#{vendas.nomecliente}">
+								<h:outputText value="#{vendas.nomecliente}" />
+							</p:column>
+							
+							<p:column headerText="Criador" sortBy="#{vendas.criador}" >
+								<h:outputText value="#{vendas.criador}" />
+							</p:column>
+									
+							<p:column headerText="Status" sortBy="#{vendas.status}" >
+								<h:outputText value="#{vendas.status}" />
+							</p:column>
+							
+							<p:column headerText="Tipo" sortBy="#{vendas.tipo}" >
+								<h:outputText value="#{vendas.tipo}" />
+							</p:column>
+							
+							<p:column headerText="Origem" sortBy="#{vendas.origem}" >
+								<h:outputText value="#{vendas.origem}" />
+							</p:column>
+
+							<p:column headerText="Resumo" sortBy="#{vendas.resumo}" >
+								<h:outputText value="#{vendas.resumo}" />
+							</p:column>
+							
+							<p:column headerText="Resp. Atual" sortBy="#{vendas.responsavelatual}" >
+								<h:outputText value="#{vendas.responsavelatual}" />
+							</p:column>
+							
+							<p:column headerText="Modulo" sortBy="#{vendas.modulo}" >
+								<h:outputText value="#{vendas.modulo}" />
+							</p:column>
+							
+							<p:column headerText="N° Vendas" sortBy="#{vendas.qtdevendas}" >
+								<h:outputText value="#{vendas.qtdevendas}" />
+							</p:column>
+							
+							<p:column headerText="Total" sortBy="#{vendas.totalvenda}" >
+								<h:outputText value="#{vendas.totalvenda}" >
+								<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column  headerText="P. Venda" sortBy="#{vendas.primeiravenda}" >
+								<h:outputText value="#{vendas.primeiravenda}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column  headerText="U. Venda" sortBy="#{vendas.ultimavenda}" >
+								<h:outputText value="#{vendas.ultimavenda}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Ultima Resposta" sortBy="#{vendas.ultimaresposta}">
+								<h:outputText value="#{vendas.ultimaresposta}" />
+							</p:column>
+							
+							<p:column  headerText="Data Ult." sortBy="#{vendas.dataultima}" >
+								<h:outputText value="#{vendas.dataultima}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+				
+						</p:dataTable>
+					</h:panelGrid>
+					
+					</div>
+					</div>
+					
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

@@ -4,7 +4,7 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:h="http://java.sun.com/jsf/html">
 
-	<ul class="sidebar-menu">
+	<ul class="sidebar-menu" >
 		<li><p:link href="/dwbidiretor/index.xhtml">
 				<i class="fa fa-home"></i>
 				<span>Inicio</span>
@@ -24,9 +24,9 @@
 		
 		<ul class="treeview-menu">
 		
-		<li><p:link href="/dwbidiretor/pages/relatorios/painel/diretor/painel_diretor.xhtml">
+		<li><p:link href="/dwbidiretor/pages/relatorios/p1/painel01.xhtml"  rendered="#{beanControleAcesso.acesso('diretor_painel_01')}">
 					<i class="fa fa-folder"></i>
-					<span>Diretor</span>
+					<span>Painel 01</span>
 				</p:link>
 		</li>
 
@@ -40,6 +40,46 @@
 		</p:link>	
 		
 		<ul class="treeview-menu">
+		
+		<li class="treeview"><p:link href="#" rendered="#{beanControleAcesso.acesso('diretor_pontuacao')}"> <i class="fa fa-th-list"></i>
+		<span>Pontuação</span> <span class="pull-right-container"> 
+		<i class="fa fa-angle-left pull-right"></i>
+		</span>
+		</p:link>	
+		
+		<ul class="treeview-menu">
+		
+		<li class="treeview"><p:link href="#"> <i class="fa fa-th-list"></i>
+		<span>2023</span> <span class="pull-right-container"> 
+		<i class="fa fa-angle-left pull-right"></i>
+		</span>
+		</p:link>	
+		
+		<ul class="treeview-menu">
+		
+		<li><p:link href="/dwbidiretor/pages/relatorios/pontuacao/2023/meta.xhtml">
+					<i class="fa fa-bars"></i>
+					<span>Meta</span>
+				</p:link>
+				</li>
+				
+		<li><p:link href="/dwbidiretor/pages/relatorios/pontuacao/2023/mix.xhtml">
+					<i class="fa fa-bars"></i>
+					<span>Mix</span>
+				</p:link>
+				</li>
+				
+		<li><p:link href="/dwbidiretor/pages/relatorios/pontuacao/2023/carteira.xhtml">
+					<i class="fa fa-bars"></i>
+					<span>Carteira</span>
+				</p:link>
+				</li>		
+				
+			</ul>	
+			</li>
+		</ul>	
+		</li>
+		
 		
 		<li class="treeview"><p:link href="#" rendered="#{beanControleAcesso.acesso('diretor_relatorios')}"> <i class="fa fa-th-list"></i>
 		<span>Relatórios</span> <span class="pull-right-container"> 
@@ -112,7 +152,7 @@
 	
 	<li><p:link href="https://drive.google.com/drive/folders/1fmqqtljyMauTlm0euwIyf_rDh4SgCBaN?usp=sharing" rendered="#{beanControleAcesso.acesso('diretor_arquivos')}">
 					<i class="fa fa-folder"></i>
-					<span>Arquivos</span>
+					<span>Marketing</span>
 				</p:link>
 		</li>
 		
@@ -151,6 +191,12 @@
 				</p:link>
 		</li>
 		
+		<li><p:link href="/dwbidiretor/pages/relatorios/clientesativosano/clientesativos.xhtml"  rendered="#{beanControleAcesso.acesso('diretor_clientesativos')}">
+					<i class="fa fa-folder"></i>
+					<span>Clientes Ativos - Novos</span>
+				</p:link>
+		</li>
+		
 		<li><p:link href="/dwbidiretor/pages/relatorios/reativacaocliente/reativacaocliente.xhtml"  rendered="#{beanControleAcesso.acesso('diretor_reativacaocliente')}">
 					<i class="fa fa-folder"></i>
 					<span>Reativação Cliente</span>
@@ -160,6 +206,12 @@
 		<li><p:link href="/dwbidiretor/pages/relatorios/vendasendereco/vendasendereco.xhtml"  rendered="#{beanControleAcesso.acesso('diretor_vendasendereco')}">
 					<i class="fa fa-folder"></i>
 					<span>Vendas Cliente / Endereço</span>
+				</p:link>
+		</li>
+		
+		<li><p:link href="/dwbidiretor/pages/relatorios/ocorrencias/televendas.xhtml"  rendered="#{beanControleAcesso.acesso('diretor_ocorrenciastelevendas')}">
+					<i class="fa fa-folder"></i>
+					<span>Ocorrências TeleVendas</span>
 				</p:link>
 		</li>
 		
@@ -202,6 +254,66 @@
 		</ul>	
 	</li>
 	
+	<li class="treeview"><p:link href="#" rendered="#{beanControleAcesso.acesso('diretor_financeiro')}"> <i class="fa fa-th-list"></i>
+		<span>Financeiro</span> <span class="pull-right-container"> 
+		<i class="fa fa-angle-left pull-right"></i>
+		</span>
+		</p:link>	
+		
+		<ul class="treeview-menu">
+		
+		<li><p:link href="/dwbidiretor/pages/relatorios/financeiro/titulo.xhtml" rendered="#{beanControleAcesso.acesso('diretor_financeiro_titulo')}">
+					<i class="fa fa-folder"></i>
+					<span>Boletos</span>
+				</p:link>
+		</li>
+		
+		<li><p:link href="/dwbidiretor/pages/relatorios/financeiro/nota.xhtml" rendered="#{beanControleAcesso.acesso('diretor_financeiro_nota')}">
+					<i class="fa fa-folder"></i>
+					<span>Notas Fiscais</span>
+				</p:link>
+		</li>
+		
+		
+		</ul>	
+	</li>
+	
+	<li class="treeview"><p:link href="#" rendered="#{beanControleAcesso.acesso('diretor_gestao')}"> <i class="fa fa-th-list"></i>
+		<span>Gestão</span> <span class="pull-right-container"> 
+		<i class="fa fa-angle-left pull-right"></i>
+		</span>
+		</p:link>	
+		
+		<ul class="treeview-menu">
+		
+		<li><p:link href="/dwbidiretor/pages/relatorios/vendasanalise/vendacusto.xhtml"  rendered="#{beanControleAcesso.acesso('diretor_vendascusto')}">
+					<i class="fa fa-folder"></i>
+					<span>Vendas Custo</span>
+				</p:link>
+		</li>
+		
+		<li><p:link href="/dwbidiretor/pages/relatorios/vendasanalise/vendauf.xhtml"  rendered="#{beanControleAcesso.acesso('diretor_vendasuf')}">
+					<i class="fa fa-folder"></i>
+					<span>Vendas UF x Ano/Mês</span>
+				</p:link>
+		</li>
+		
+		<li><p:link href="/dwbidiretor/pages/relatorios/vendasanalise/vendavendedor.xhtml"  rendered="#{beanControleAcesso.acesso('diretor_vendasvendedor')}">
+					<i class="fa fa-folder"></i>
+					<span>Vendas Representante</span>
+				</p:link>
+		</li>
+		
+		<li><p:link href="/dwbidiretor/pages/relatorios/producao/producao.xhtml" rendered="#{beanControleAcesso.acesso('diretor_producaor')}">
+					<i class="fa fa-folder"></i>
+					<span>Produção</span>
+				</p:link>
+		</li>
+	
+		</ul>	
+	</li>
+	
+			
 	<li class="treeview"><p:link href="#" rendered="#{beanControleAcesso.acesso('diretor_producao')}"> <i class="fa fa-th-list"></i>
 		<span>Produção</span> <span class="pull-right-container"> 
 		<i class="fa fa-angle-left pull-right"></i>
@@ -228,6 +340,24 @@
 				</p:link>
 		</li>
 		
+		<li><p:link href="/dwbidiretor/pages/relatorios/percas/percas.xhtml" rendered="#{beanControleAcesso.acesso('diretor_percas')}">
+					<i class="fa fa-folder"></i>
+					<span>Perca Produção</span>
+				</p:link>
+		</li>
+		
+		<li><p:link href="/dwbidiretor/pages/relatorios/producao/producao.xhtml" rendered="#{beanControleAcesso.acesso('diretor_producaor')}">
+					<i class="fa fa-folder"></i>
+					<span>Produção</span>
+				</p:link>
+		</li>
+		
+		<li><p:link href="/dwbidiretor/pages/relatorios/produto/produto.xhtml" rendered="#{beanControleAcesso.acesso('diretor_produto')}">
+					<i class="fa fa-folder"></i>
+					<span>Produtos</span>
+				</p:link>
+		</li>
+		
 	</ul>	
 	</li>
 		
@@ -248,6 +378,17 @@
 		<li><p:link href="/dwbidiretor/pages/relatorios/usuario/modulo.xhtml" rendered="#{beanControleAcesso.acesso('diretor_sistemabi_modulosbi')}">
 					<i class="fa fa-folder"></i>
 					<span>Módulos BI</span>
+				</p:link>
+		</li>
+		
+		<li><p:link href="/dwbidiretor/pages/relatorios/usuario/consultalog.xhtml" rendered="#{beanControleAcesso.acesso('diretor_sistemabi_consultalog')}">
+					<i class="fa fa-folder"></i>
+					<span>Consulta Log</span>
+				</p:link>
+		</li>
+		<li><p:link href="/dwbidiretor/pages/voip/ligacoes.xhtml"  rendered="#{beanControleAcesso.acesso('diretor_voipligacoes')}">
+					<i class="fa fa-folder"></i>
+					<span>Voip</span>
 				</p:link>
 		</li>
 	</ul>	

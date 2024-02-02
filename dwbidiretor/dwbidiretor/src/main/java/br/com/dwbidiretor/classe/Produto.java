@@ -3,21 +3,30 @@ package br.com.dwbidiretor.classe;
 import java.io.Serializable;
 import java.lang.String;
 import java.math.BigDecimal;
+import java.sql.Blob;
 
 
 public class Produto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private BigDecimal produtoid;
+	private String produtoid;
 	private String nomeproduto;
 	private String referencia;
 	private BigDecimal grupoid;
 	private BigDecimal subgrupoid;
 	
-	public BigDecimal getProdutoid() {
+	private byte[] img;
+	
+	public byte[] getImg() {
+		return img;
+	}
+	public void setImg(byte[] img) {
+		this.img = img;
+	}
+	public String getProdutoid() {
 		return produtoid;
 	}
-	public void setProdutoid(BigDecimal produtoid) {
+	public void setProdutoid(String produtoid) {
 		this.produtoid = produtoid;
 	}
 	public String getNomeproduto() {

@@ -1,6 +1,7 @@
 package br.com.dwbigestor.servico;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
@@ -17,8 +18,8 @@ public class ServicoMetaVenda implements Serializable{
 	private DAOMetaVenda dao;
 	
 	
-	public List<MetaVenda> metavenda(String vendedor1, String vendedor2) {
-		return dao.metavenda(vendedor1, vendedor2);
+	public List<MetaVenda> metavenda(String vendedor1, String vendedor2,String ano, String mes, Date data_grafico,Date data_grafico2) {
+		return dao.metavenda(vendedor1, vendedor2, ano, mes, data_grafico, data_grafico2);
 	}
 	
 }

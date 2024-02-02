@@ -3,6 +3,7 @@ package br.com.dwbidiretor.classe;
 import java.io.Serializable;
 import java.lang.String;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 
 
@@ -17,7 +18,7 @@ public class ClientesNovos implements Serializable {
 	private String nomefantasia;
 	private String cpfcnpj;
 	private Date datacadastro;
-	private BigDecimal vendas;
+	private BigInteger vendas;
 
 	public ClientesNovos() {
 		super();
@@ -79,11 +80,11 @@ public class ClientesNovos implements Serializable {
 		this.datacadastro = datacadastro;
 	}
 
-	public BigDecimal getVendas() {
+	public BigInteger getVendas() {
 		return vendas;
 	}
 
-	public void setVendas(BigDecimal vendas) {
+	public void setVendas(BigInteger vendas) {
 		this.vendas = vendas;
 	}
 	

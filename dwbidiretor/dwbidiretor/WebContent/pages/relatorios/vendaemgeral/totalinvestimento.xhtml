@@ -119,13 +119,21 @@
 							<p:column headerText="Vlr Total Pedido" width="6%"
 								sortBy="#{vendas.valortotalpedido}">
 								<h:outputText value="#{vendas.valortotalpedido}">
-									
+									<f:convertNumber type="currency" currencySymbol="" />
 								</h:outputText>
 							</p:column>
 							
 							<p:column headerText="Tipo Pedido" sortBy="#{vendas.tipopedido}" >
 								<h:outputText value="#{vendas.tipopedido}" />
-							</p:column>							
+							</p:column>
+							
+							<p:columnGroup type="footer">
+								<p:row>
+									<p:column colspan="5" style="text-align:right"
+										footerText="Total:" />
+									<p:column footerText="#{beanTotalInvestimento.total}" />
+								</p:row>
+							</p:columnGroup>							
 							
 						</p:dataTable>
 					</p:panelGrid>

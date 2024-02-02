@@ -27,6 +27,7 @@ public class VendasEmGeral implements Serializable {
 	private String tipopedido;
 	private String tipooperacaocfop;
 	private String statuspedido;
+	private BigDecimal codigovendedor;
 	private String nomevendedor;
 	
 	private Date dataliberadogestor;
@@ -38,6 +39,14 @@ public class VendasEmGeral implements Serializable {
 
 	public VendasEmGeral() {
 		super();
+	}
+
+	public BigDecimal getCodigovendedor() {
+		return codigovendedor;
+	}
+
+	public void setCodigovendedor(BigDecimal codigovendedor) {
+		this.codigovendedor = codigovendedor;
 	}
 
 	public Date getDataliberadogestor() {

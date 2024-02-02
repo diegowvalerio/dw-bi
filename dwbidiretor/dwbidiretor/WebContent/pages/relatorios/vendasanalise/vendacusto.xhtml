@@ -1,0 +1,258 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+       Vendas - Custo
+    </ui:define>
+
+	<ui:define name="description">
+        
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Vendas - Custo" />
+
+		<h:form id="form">
+			<p:panelGrid columns="9"
+				
+				layout="grid" styleClass="ui-fluid card" id="filtroscli">
+				
+					<p:outputLabel value="Ano 1:" for="ano" />	
+            		<p:inputText id="ano" value="#{beanVendaCusto.ano}" />
+            		
+            		<p:outputLabel value="Ano 2:" for="ano2" />	
+            		<p:inputText id="ano2" value="#{beanVendaCusto.ano2}" />
+            		
+            		<p:outputLabel value="Produto:" for="produto" />					
+					<p:selectCheckboxMenu id="produto" value="#{beanVendaCusto.produtosselecionados}" multiple="true" 
+                              filter="true" filterMatchMode="contains" converter="conversorProduto" >
+            		<f:selectItems value="#{beanVendaCusto.produtos}"  var="produts" itemLabel="#{produts.produtoid} || #{produts.referencia} || #{produts.nomeproduto}"
+						itemValue="#{produto}" />
+        			</p:selectCheckboxMenu>
+        			
+        			<p:outputLabel value="Vendedor:" for="vendedor" />
+					<p:selectOneMenu id="vendedor"
+					value="#{beanVendaCusto.vendedor}"
+					converter="conversorVendedor" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanVendaCusto.listavendedor}"
+						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
+						itemValue="#{vendedor}" />
+					</p:selectOneMenu>
+					
+					<p:commandButton action="#{beanVendaCusto.filtrar()}" value="Filtrar"
+						icon="fa fa-check" update=":form:paineld :form:paineld2 :form:paineld3 :form:paineld4" styleClass="btn-primary" />
+					
+			</p:panelGrid>	
+			<p:separator></p:separator>	
+			
+			<div class="row">
+			
+			
+			<div class="col-md-3" style="padding-right: 2px;">
+			<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
+						<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="vendascusto" fileName="vendascusto" pageOnly="true"/>
+						</h:commandLink>
+								
+						<p:dataTable id="vendascusto" var="vendascusto"  value="#{beanVendaCusto.lista}" >
+						
+							<f:facet name="header">Faturamento #{beanVendaCusto.ano}</f:facet>
+							
+							<p:column headerText="Mês" width="8%">
+								<h:outputText value="#{vendascusto.mes}" />
+							</p:column>		
+							
+							<p:column headerText="Venda">
+							<h:outputText value="#{vendascusto.venda}">
+								<f:convertNumber minFractionDigits="2" locale="pt-BR"/>
+							</h:outputText>
+							</p:column>	
+							
+							<p:column headerText="Custo" width="22%">
+							<h:outputText value="#{vendascusto.custo}">
+								<f:convertNumber minFractionDigits="2" locale="pt-BR"/>
+							</h:outputText>
+							</p:column>	
+							
+							<p:column headerText="%" width="11%">
+							<h:outputText value="#{vendascusto.percentual}">
+								<f:convertNumber minFractionDigits="2" locale="pt-BR"/>
+							</h:outputText>
+							</p:column>		
+							
+							<p:column headerText="Qtde" width="15%">
+							<h:outputText value="#{vendascusto.qtde}"/>
+							</p:column>		
+							
+							<p:column headerText="Produção" width="20%">
+							<h:outputText value="#{vendascusto.qtdeproducao}">
+									<f:convertNumber minFractionDigits="0" locale="pt-BR"/>
+								</h:outputText>
+							</p:column>													
+
+						</p:dataTable>
+												
+			</h:panelGrid>
+			</div>
+			
+			<div class="col-md-3" style="padding-left: 0px;">
+			<h:panelGrid columns="1" id="paineld2" columnClasses="left,right" width="100%">
+						<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="vendascustopedido" fileName="vendascustopedido" pageOnly="true"/>
+						</h:commandLink>
+								
+						<p:dataTable id="vendascustopedido" var="vendascustopedido"  value="#{beanVendaCusto.lista2}" >
+						
+							<f:facet name="header">Pedido #{beanVendaCusto.ano}</f:facet>
+							
+							<p:column headerText="Mês" width="10%">
+								<h:outputText value="#{vendascustopedido.mes}" />
+							</p:column>		
+							
+							<p:column headerText="Venda">
+							<h:outputText value="#{vendascustopedido.venda}">
+								<f:convertNumber minFractionDigits="2" locale="pt-BR"/>
+							</h:outputText>
+							</p:column>	
+							
+							<p:column headerText="Custo" width="30%">
+							<h:outputText value="#{vendascustopedido.custo}">
+								<f:convertNumber minFractionDigits="2" locale="pt-BR"/>
+							</h:outputText>
+							</p:column>	
+							
+							<p:column headerText="%" width="12%">
+							<h:outputText value="#{vendascustopedido.percentual}">
+								<f:convertNumber minFractionDigits="2" locale="pt-BR"/>
+							</h:outputText>
+							</p:column>	
+						
+							<p:column headerText="Qtde" width="20%">
+							<h:outputText value="#{vendascustopedido.qtde}"/>
+							</p:column>											
+
+						</p:dataTable>
+												
+			</h:panelGrid>
+			</div>
+			
+			
+			<div class="col-md-3" style="padding-right: 2px;">
+			<h:panelGrid columns="1" id="paineld3" columnClasses="left,right" width="100%">
+						<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="vendascusto" fileName="vendascusto" pageOnly="true"/>
+						</h:commandLink>
+								
+						<p:dataTable id="vendascusto3" var="vendascusto"  value="#{beanVendaCusto.lista_ano2}" >
+						
+							<f:facet name="header">Faturamento #{beanVendaCusto.ano2}</f:facet>
+							
+							<p:column headerText="Mês" width="8%">
+								<h:outputText value="#{vendascusto.mes}" />
+							</p:column>		
+							
+							<p:column headerText="Venda">
+							<h:outputText value="#{vendascusto.venda}">
+								<f:convertNumber minFractionDigits="2" locale="pt-BR"/>
+							</h:outputText>
+							</p:column>	
+							
+							<p:column headerText="Custo" width="22%">
+							<h:outputText value="#{vendascusto.custo}">
+								<f:convertNumber minFractionDigits="2" locale="pt-BR"/>
+							</h:outputText>
+							</p:column>	
+							
+							<p:column headerText="%" width="11%">
+							<h:outputText value="#{vendascusto.percentual}">
+								<f:convertNumber minFractionDigits="2" locale="pt-BR"/>
+							</h:outputText>
+							</p:column>		
+							
+							<p:column headerText="Qtde" width="15%">
+							<h:outputText value="#{vendascusto.qtde}"/>
+							</p:column>		
+							
+							<p:column headerText="Produção" width="20%">
+							<h:outputText value="#{vendascusto.qtdeproducao}">
+									<f:convertNumber minFractionDigits="0" locale="pt-BR"/>
+								</h:outputText>
+							</p:column>												
+
+						</p:dataTable>
+												
+			</h:panelGrid>
+			</div>
+			
+			<div class="col-md-3" style="padding-left: 0px;">
+			<h:panelGrid columns="1" id="paineld4" columnClasses="left,right" width="100%">
+						<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="vendascustopedido" fileName="vendascustopedido" pageOnly="true"/>
+						</h:commandLink>
+								
+						<p:dataTable id="vendascustopedido4" var="vendascustopedido"  value="#{beanVendaCusto.lista2_ano2}" >
+						
+							<f:facet name="header">Pedido #{beanVendaCusto.ano2}</f:facet>
+							
+							<p:column headerText="Mês" width="10%">
+								<h:outputText value="#{vendascustopedido.mes}" />
+							</p:column>		
+							
+							<p:column headerText="Venda">
+							<h:outputText value="#{vendascustopedido.venda}">
+								<f:convertNumber minFractionDigits="2" locale="pt-BR"/>
+							</h:outputText>
+							</p:column>	
+							
+							<p:column headerText="Custo" width="30%">
+							<h:outputText value="#{vendascustopedido.custo}">
+								<f:convertNumber minFractionDigits="2" locale="pt-BR"/>
+							</h:outputText>
+							</p:column>	
+							
+							<p:column headerText="%" width="12%">
+							<h:outputText value="#{vendascustopedido.percentual}">
+								<f:convertNumber minFractionDigits="2" locale="pt-BR"/>
+							</h:outputText>
+							</p:column>	
+						
+							<p:column headerText="Qtde" width="20%">
+							<h:outputText value="#{vendascustopedido.qtde}"/>
+							</p:column>											
+
+						</p:dataTable>
+												
+			</h:panelGrid>
+			</div>
+			
+			
+			</div>		
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

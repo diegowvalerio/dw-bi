@@ -17,7 +17,7 @@ public class PedidoFase implements Serializable {
 	private String tipopedido;
 	private String status;
 	private String dataentradafase;
-	private BigDecimal diasnafase;
+	private Double diasnafase;
 
 	public PedidoFase() {
 		super();
@@ -79,11 +79,11 @@ public class PedidoFase implements Serializable {
 		this.status = status;
 	}
 
-	public BigDecimal getDiasnafase() {
+	public Double getDiasnafase() {
 		return diasnafase;
 	}
 
-	public void setDiasnafase(BigDecimal diasnafase) {
+	public void setDiasnafase(Double diasnafase) {
 		this.diasnafase = diasnafase;
 	}
 

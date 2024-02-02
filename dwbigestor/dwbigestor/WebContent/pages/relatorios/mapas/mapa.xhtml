@@ -1,0 +1,159 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	xmlns:leaf="http://java.sun.com/jsf/composite/jsf2leaf"
+	template="/WEB-INF/templates/template.xhtml">
+	<f:view contentType="text/html" ></f:view>
+	
+	<ui:define name="head-end">  
+
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+
+
+</style>
+					
+	</ui:define>
+
+	<ui:define name="title">
+        Mapa em Geral
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Mapa em Geral" />
+		
+		<h:form id="form">
+			<p:panelGrid columns="9" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
+               	
+               		<p:outputLabel value=" Data:  " for="data_grafico" />
+					<p:calendar locale="pt_BR" id="data_grafico"
+						value="#{beanMapa.data_grafico}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico2" />
+					<p:calendar locale="pt_BR" id="data_grafico2"
+						value="#{beanMapa.data_grafico2}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+					
+					<p:outputLabel value="Vendedor:" for="vendedor" />
+					<p:selectOneMenu id="vendedor"
+					value="#{beanMapa.vendedor}" filter="true" filterMatchMode="contains"
+					converter="conversorVendedor">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanMapa.listavendedor}"
+						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
+						itemValue="#{vendedor}" />
+					</p:selectOneMenu>
+
+					<p:commandButton action="#{beanMapa.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:tabview:mapa1 :form:tabview:tabela2"
+						styleClass="btn-primary" />
+						
+				</p:panelGrid>
+				<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
+				
+					
+					<script src="http://maps.google.com/maps/api/js?key=AIzaSyAjAL7XsvNZ0WYfnV7AvD56HbPflHfFkVY" type="text/javascript"/>
+					
+					<p:tabView dynamic="false" cache="false" id="tabview">
+						<p:tab title="Mapa" id="mapa">
+						<p:gmap id="mapa1" center="-17.632169048521153 , -52.20644599463935"  zoom="3" type="ROADMAP"  style="width:100%;height:500px"  model="#{beanMapa.simpleModel}">
+							<p:ajax event="overlaySelect" listener="#{beanMapa.onMarkerSelect}" />
+ 
+       						<p:gmapInfoWindow id="infoWindow">
+           					 <p:outputPanel style="text-align: center; display: block; margin: auto">
+                    		<br />
+                   			<h:outputText value="#{beanMapa.marker.title}" />
+ 
+            				</p:outputPanel>
+        					</p:gmapInfoWindow>
+						</p:gmap>
+						<h:messages id="msgerro"></h:messages>	
+						
+						</p:tab>
+						<p:tab title="Dados" id="dados">
+						<h:commandLink value=" Baixar Dados em Excel">
+							<p:dataExporter type="xls" target="tabela2" fileName="dados_mapa" pageOnly="true"/>
+						</h:commandLink>
+							<p:dataTable id="tabela2" value="#{beanMapa.listamapa}" var="lista" scrollable="true" scrollHeight="480" resizableColumns="true">
+											<p:column headerText="Cod." >
+											<h:outputText value="#{lista.vendedor}" />
+											</p:column>
+											
+											<p:column headerText="Nome Vendedor" >
+												<h:outputText value="#{lista.nomevendedor}" />
+											</p:column>
+											
+											<p:column headerText="Cod.">
+											<h:outputText value="#{lista.cliente}" />
+											</p:column>
+											
+											<p:column headerText="Nome Cliente" >
+												<h:outputText value="#{lista.nomecliente}" />
+											</p:column>
+											
+											<p:column headerText="Cidade" >
+												<h:outputText value="#{lista.cidade}" />
+											</p:column>
+											
+											<p:column headerText="UF" >
+												<h:outputText value="#{lista.uf}" />
+											</p:column>
+											
+											<p:column headerText="Bairro" >
+												<h:outputText value="#{lista.bairro}" />
+											</p:column>
+											
+											<p:column headerText="Endereco" >
+												<h:outputText value="#{lista.endereco}" />
+											</p:column>
+											
+											<p:column headerText="N° " >
+												<h:outputText value="#{lista.numero}" />
+											</p:column>
+											
+											<p:column headerText="Ultima Compra " >
+												<h:outputText value="#{lista.ultimacompra}" />
+											</p:column>
+											
+											<p:column headerText="Vendas no Periodo " >
+												<h:outputText value="#{lista.totalperiodo}" />
+											</p:column>
+							</p:dataTable>
+						</p:tab>
+					</p:tabView>
+						
+				</h:panelGrid>
+				
+				<p:separator></p:separator>
+				
+				
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+

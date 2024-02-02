@@ -7,6 +7,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd
 http://www.springframework.org/schema/security
 http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 	<http pattern="/portal.xhtml" security="none" />
+	<http pattern="/pages/relatorios/p1/indicador-teste.xhtml" security="none" />
 	<http pattern="/login.xhtml" security="none" />
 	<http pattern="/negado.xhtml" security="none" />
 	<http pattern="/javax.faces.resource/**" security="none" />

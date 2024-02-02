@@ -1,0 +1,736 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+
+<style type="text/css">  
+            .color_100 {  
+                background-color: #CEF6E3;  
+            }  
+            
+            .color_m100 {  
+                background-color: #A9E2F3;  
+            }
+            
+            .color_0 {  
+                background-color: #F5A9D0;  
+            }
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+       Pontuação - Carteira - 2023
+    </ui:define>
+
+	<ui:define name="description">
+        Não considere os valores de meses futuros, os valores serão recalculos conforme o fechamente de cada mês. !
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Pontuação - Carteira - 2023" />
+
+		<h:form id="form">
+		
+		<p:panelGrid columns="9" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
+					
+					<p:outputLabel value="Região" for="regiao" />
+						<p:selectOneMenu id="regiao" value="#{beanPT_Carteira.regiao}">
+							<f:selectItem itemLabel="Selecionar" noSelectionOption="true" />
+							<f:selectItem itemLabel="Centro Oeste" itemValue="CENTRO OESTE" />
+							<f:selectItem itemLabel="Nordeste" itemValue="NORDESTE" />
+							<f:selectItem itemLabel="Norte" itemValue="NORTE" />
+							<f:selectItem itemLabel="Sudeste" itemValue="SUDESTE" />
+							<f:selectItem itemLabel="Sul" itemValue="SUL" />
+					</p:selectOneMenu>	
+					
+					<p:outputLabel value="Vendedor:" for="vendedor" />
+					<p:selectOneMenu id="vendedor"
+					value="#{beanPT_Carteira.vendedor}"
+					converter="conversorVendedor" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanPT_Carteira.listavendedor}"
+						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
+						itemValue="#{vendedor}" />
+					</p:selectOneMenu>
+							
+
+					<p:commandButton action="#{beanPT_Carteira.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld"
+						styleClass="btn-primary" />
+
+				</p:panelGrid>
+						
+					<h:panelGrid columns="1" id="paineld" style="width:100%">		
+					<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="venda" fileName="carteira1tri" pageOnly="true" />
+			       		</h:commandLink>			
+								       		
+						<p:dataTable id="venda" var="vendas"	value="#{beanPT_Carteira.lista}" resizableColumns="true" style="font-size: 12px;width:100%">
+						
+						<p:columnGroup type="header" >
+								<p:row>
+									<p:column colspan="1" rowspan="2" headerText="" style="border: 1px solid; width:5%"/>
+									<p:column colspan="22" headerText="1º Trimestre" style="border: 1px solid;background-color: #eceafb;"/>
+								</p:row>
+								<p:row>
+									
+									<p:column colspan="7" headerText="01"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="7" headerText="02"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="7" headerText="03"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column headerText="Total"  style="border: 1px solid;background-color: #eceafb;"/>
+									
+								</p:row>
+								
+								<p:row>
+									<p:column colspan="1" headerText="Vendedor"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Ativos"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Novos"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Reativado"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									
+									<p:column colspan="1" headerText="Ativos"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Novos"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Reativado"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									<p:column colspan="1" headerText="Ativos"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Novos"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Reativado"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									<p:column headerText="1°T"  style="border: 1px solid; text-align: Left;background-color: #eceafb;"/>
+									
+									
+								</p:row>	
+							</p:columnGroup>
+							
+							<p:column headerText="Vendedor">
+								<h:outputText value="#{vendas.vendedor} - #{vendas.nomevendedor}"/>
+							</p:column>
+							
+							<p:column headerText="Ativos">
+								<h:outputText value="#{vendas.ativos}"/>
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas.ativos_mes}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos_evolucao}" />
+							</p:column>
+							<p:column headerText="Novos"  >
+								<h:outputText value="#{vendas.novos}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos_novos}">
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Reativados"  >
+								<h:outputText value="#{vendas.reativados}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos_reativados}" >
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>		
+							
+							<p:column headerText="Ativos">
+								<h:outputText value="#{vendas.ativos2}"/>
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas.ativos_mes2}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos_evolucao2}" />
+							</p:column>
+							<p:column headerText="Novos"  >
+								<h:outputText value="#{vendas.novos2}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos_novos2}" >
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Reativados"  >
+								<h:outputText value="#{vendas.reativados2}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos_reativados2}" >
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>		
+							
+							<p:column headerText="Ativos">
+								<h:outputText value="#{vendas.ativos3}"/>
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas.ativos_mes3}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos_evolucao3}" />
+							</p:column>
+							<p:column headerText="Novos"  >
+								<h:outputText value="#{vendas.novos3}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos_novos3}" >
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Reativados"  >
+								<h:outputText value="#{vendas.reativados3}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos_reativados3}" >
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>							
+							
+							
+							<p:column headerText="1°T" style="background-color: #eceafb;" >
+								<h:outputText value="#{vendas.totaltri1}" />
+							</p:column>
+							
+							
+							
+						</p:dataTable>
+						
+						
+						<br></br>
+						
+						<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="venda2" fileName="carteira2tri" pageOnly="true" />
+			       		</h:commandLink>
+						<p:dataTable id="venda2" var="vendas2"	value="#{beanPT_Carteira.lista2}" resizableColumns="true" style="font-size: 12px;width:100%">
+							<p:columnGroup type="header" >
+								<p:row>
+								    <p:column colspan="1" rowspan="2" headerText="" style="border: 1px solid; width:5%"/>
+									<p:column colspan="22" headerText="2º Trimestre" style="border: 1px solid;background-color: #eceafb;"/>
+								</p:row>
+								<p:row>
+									
+									<p:column colspan="7" headerText="04"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="7" headerText="05"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="7" headerText="06"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column headerText="Total"  style="border: 1px solid;background-color: #eceafb;"/>
+									
+								</p:row>
+								
+								<p:row>
+								
+									<p:column colspan="1" headerText="Vendedor"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Ativos"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Novos"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Reativado"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									
+									<p:column colspan="1" headerText="Ativos"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Novos"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Reativado"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									<p:column colspan="1" headerText="Ativos"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Novos"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Reativado"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									<p:column headerText="2°T"  style="border: 1px solid; text-align: Left;background-color: #eceafb;"/>
+									
+									
+								</p:row>	
+							</p:columnGroup>
+							
+							<p:column headerText="Vendedor">
+								<h:outputText value="#{vendas2.vendedor} - #{vendas2.nomevendedor}"/>
+							</p:column>
+							
+							<p:column headerText="Ativos">
+								<h:outputText value="#{vendas2.ativos}"/>
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas2.ativos_mes}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas2.pontos_evolucao}" />
+							</p:column>
+							<p:column headerText="Novos"  >
+								<h:outputText value="#{vendas2.novos}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas2.pontos_novos}" >
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Reativados"  >
+								<h:outputText value="#{vendas2.reativados}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas2.pontos_reativados}" />
+							</p:column>		
+							
+							<p:column headerText="Ativos">
+								<h:outputText value="#{vendas2.ativos2}"/>
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas2.ativos_mes2}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas2.pontos_evolucao2}" />
+							</p:column>
+							<p:column headerText="Novos"  >
+								<h:outputText value="#{vendas2.novos2}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas2.pontos_novos2}" >
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Reativados"  >
+								<h:outputText value="#{vendas2.reativados2}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas2.pontos_reativados2}" />
+							</p:column>		
+							
+							<p:column headerText="Ativos">
+								<h:outputText value="#{vendas2.ativos3}"/>
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas2.ativos_mes3}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas2.pontos_evolucao3}" />
+							</p:column>
+							<p:column headerText="Novos"  >
+								<h:outputText value="#{vendas2.novos3}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas2.pontos_novos3}" >
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Reativados"  >
+								<h:outputText value="#{vendas2.reativados3}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas2.pontos_reativados3}" />
+							</p:column>			
+							
+							
+							<p:column headerText="2°T" style="background-color: #eceafb;" >
+								<h:outputText value="#{vendas2.totaltri1}" />
+							</p:column>
+							
+							</p:dataTable>
+							
+							<br></br>
+						
+						<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="venda3" fileName="carteira3tri" pageOnly="true" />
+			       		</h:commandLink>
+						<p:dataTable id="venda3" var="vendas3"	value="#{beanPT_Carteira.lista3}" resizableColumns="true" style="font-size: 12px;width:100%">
+							<p:columnGroup type="header" >
+								<p:row>
+									<p:column colspan="1" rowspan="2" headerText="" style="border: 1px solid; width:5%"/>
+									<p:column colspan="22" headerText="3º Trimestre" style="border: 1px solid;background-color: #eceafb;"/>
+								</p:row>
+								<p:row>
+									
+									<p:column colspan="7" headerText="04"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="7" headerText="05"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="7" headerText="06"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column headerText="Total"  style="border: 1px solid;background-color: #eceafb;"/>
+									
+								</p:row>
+								
+								<p:row>
+									
+									<p:column colspan="1" headerText="Vendedor"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Ativos"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Novos"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Reativado"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									
+									<p:column colspan="1" headerText="Ativos"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Novos"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Reativado"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									<p:column colspan="1" headerText="Ativos"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Novos"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Reativado"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									<p:column headerText="3°T"  style="border: 1px solid; text-align: Left;background-color: #eceafb;"/>
+									
+									
+								</p:row>	
+							</p:columnGroup>
+							
+							<p:column headerText="Vendedor">
+								<h:outputText value="#{vendas3.vendedor} - #{vendas3.nomevendedor}"/>
+							</p:column>
+							
+							<p:column headerText="Ativos">
+								<h:outputText value="#{vendas3.ativos}"/>
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas3.ativos_mes}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas3.pontos_evolucao}" />
+							</p:column>
+							<p:column headerText="Novos"  >
+								<h:outputText value="#{vendas3.novos}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas3.pontos_novos}" >
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Reativados"  >
+								<h:outputText value="#{vendas3.reativados}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas3.pontos_reativados}" >
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>		
+							
+							<p:column headerText="Ativos">
+								<h:outputText value="#{vendas3.ativos2}"/>
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas3.ativos_mes2}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas3.pontos_evolucao2}" />
+							</p:column>
+							<p:column headerText="Novos"  >
+								<h:outputText value="#{vendas3.novos2}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas3.pontos_novos2}">
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Reativados"  >
+								<h:outputText value="#{vendas3.reativados2}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas3.pontos_reativados2}" >
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>		
+							
+							<p:column headerText="Ativos">
+								<h:outputText value="#{vendas3.ativos3}"/>
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas3.ativos_mes3}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas3.pontos_evolucao3}" />
+							</p:column>
+							<p:column headerText="Novos"  >
+								<h:outputText value="#{vendas3.novos3}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas3.pontos_novos3}" >
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Reativados"  >
+								<h:outputText value="#{vendas3.reativados3}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas3.pontos_reativados3}" >
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>			
+							
+							
+							<p:column headerText="3°T" style="background-color: #eceafb;" >
+								<h:outputText value="#{vendas3.totaltri1}" />
+							</p:column>
+							
+							</p:dataTable>
+							
+							<br></br>
+						
+						<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="venda4" fileName="carteira4tri" pageOnly="true" />
+			       		</h:commandLink>
+						<p:dataTable id="venda4" var="vendas4"	value="#{beanPT_Carteira.lista4}" resizableColumns="true" style="font-size: 12px;width:100%">
+							<p:columnGroup type="header" >
+							
+								<p:row>
+								<p:column colspan="1" rowspan="2" headerText="" style="border: 1px solid; width:5%"/>
+									<p:column colspan="22" headerText="4º Trimestre" style="border: 1px solid;background-color: #eceafb;"/>
+								</p:row>
+								<p:row>
+									
+									<p:column colspan="7" headerText="04"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="7" headerText="05"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="7" headerText="06"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column headerText="Total"  style="border: 1px solid;background-color: #eceafb;"/>
+									
+								</p:row>
+								
+								<p:row>
+									
+									<p:column colspan="1" headerText="Vendedor"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Ativos"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Novos"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Reativado"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									
+									<p:column colspan="1" headerText="Ativos"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Novos"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Reativado"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									<p:column colspan="1" headerText="Ativos"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Novos"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column colspan="1" headerText="Reativado"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									<p:column headerText="4°T"  style="border: 1px solid; text-align: Left;background-color: #eceafb;"/>
+									
+									
+								</p:row>	
+							</p:columnGroup>
+							
+							
+							<p:column headerText="Vendedor">
+								<h:outputText value="#{vendas4.vendedor} - #{vendas4.nomevendedor}"/>
+							</p:column>
+							
+							<p:column headerText="Ativos">
+								<h:outputText value="#{vendas4.ativos}"/>
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas4.ativos_mes}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas4.pontos_evolucao}" />
+							</p:column>
+							<p:column headerText="Novos"  >
+								<h:outputText value="#{vendas4.novos}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas4.pontos_novos}" >
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Reativados"  >
+								<h:outputText value="#{vendas4.reativados}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas4.pontos_reativados}">
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>		
+							
+							<p:column headerText="Ativos">
+								<h:outputText value="#{vendas4.ativos2}"/>
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas4.ativos_mes2}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas4.pontos_evolucao2}" />
+							</p:column>
+							<p:column headerText="Novos"  >
+								<h:outputText value="#{vendas4.novos2}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas4.pontos_novos2}" >
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Reativados"  >
+								<h:outputText value="#{vendas4.reativados2}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas4.pontos_reativados2}" >
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>		
+							
+							<p:column headerText="Ativos">
+								<h:outputText value="#{vendas4.ativos3}"/>
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas4.ativos_mes3}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas4.pontos_evolucao3}" />
+							</p:column>
+							<p:column headerText="Novos"  >
+								<h:outputText value="#{vendas4.novos3}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas4.pontos_novos3}" >
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Reativados"  >
+								<h:outputText value="#{vendas4.reativados3}" />
+							</p:column>
+							
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas4.pontos_reativados3}" >
+								<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>			
+							
+							
+							<p:column headerText="4°T" style="background-color: #eceafb;" >
+								<h:outputText value="#{vendas4.totaltri1}" />
+							</p:column>
+							
+							</p:dataTable>
+					</h:panelGrid>
+					
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

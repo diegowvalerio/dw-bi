@@ -173,6 +173,11 @@ function my_ext(){
 								<f:convertNumber type="number" locale="pt-BR" />
 								</h:outputText>
 							</p:column>
+							<p:column headerText="Qtde 2023" style="border-color: black;background-color: #E0FFFF;" width="50">
+								<h:outputText value="#{mixs.qtde2023}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
 							<p:column headerText="Qtde Total" style="border-color: black;background-color: #B0E0E6;" width="50">
 								<h:outputText value="#{mixs.qtdetotal}" >
 								<f:convertNumber type="number" locale="pt-BR" />
@@ -204,11 +209,16 @@ function my_ext(){
 								<f:convertNumber type="number" locale="pt-BR" />
 								</h:outputText>
 							</p:column>
+							<p:column headerText="Valor 2023" style="border-color: black;background-color: #FAEBD7;" width="50">
+								<h:outputText value="#{mixs.vl2023}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
 							<p:column headerText="Valor Total" style="border-color: black;background-color: #FFDEAD;" width="70">
 								<h:outputText value="#{mixs.vltotal}" >
 								<f:convertNumber type="number" locale="pt-BR" />
 								</h:outputText>
-							</p:column>	
+							</p:column>
 							
 							
 							<p:columnGroup type="footer">
@@ -220,15 +230,18 @@ function my_ext(){
 									<p:column footerText="#{beanMixProduto.qtde2020}"/>	
 									<p:column footerText="#{beanMixProduto.qtde2021}"/>	
 									<p:column footerText="#{beanMixProduto.qtde2022}"/>	
+									<p:column footerText="#{beanMixProduto.qtde2023}"/>	
 									<p:column footerText="#{beanMixProduto.qtdetotal}"/>
 									<p:column footerText="#{beanMixProduto.vl2018}"/>
 									<p:column footerText="#{beanMixProduto.vl2019}"/>
 									<p:column footerText="#{beanMixProduto.vl2020}"/>	
 									<p:column footerText="#{beanMixProduto.vl2021}"/>	
 									<p:column footerText="#{beanMixProduto.vl2022}"/>
+									<p:column footerText="#{beanMixProduto.vl2023}"/>
 									<p:column footerText="#{beanMixProduto.vltotal}"/>					
 								</p:row>
             				</p:columnGroup>
+            				
             				
 						</p:dataTable>
 					</p:panelGrid>

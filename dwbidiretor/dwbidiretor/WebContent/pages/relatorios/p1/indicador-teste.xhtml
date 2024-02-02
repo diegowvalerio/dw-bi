@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:view contentType="text/html">
+	<h:head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<h:outputStylesheet library="css" name="prism.css" />
+
+	</h:head>
+
+
+	<h:body style="background-color: darkslategrey;">
+
+		<h:form id="form">
+		
+     		<p:poll interval="60" listener="#{beanP1_Painel.filtrar()}" update=":form" />
+     
+			<div  style=" transform: scale(1);transform-origin: 0 0;">
+
+			<div class="row" >
+			<div class="col-md-4">
+			<p:panelGrid columns="9"  id="filtroscli" >
+					
+					<p:outputLabel value=" Data:  " for="data_grafico" />
+					<p:calendar locale="pt_BR" id="data_grafico"
+						value="#{beanP1_Painel.data_grafico}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico2" />
+					<p:calendar locale="pt_BR" id="data_grafico2"
+						value="#{beanP1_Painel.data_grafico2}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+
+					<p:commandButton action="#{beanP1_Painel.filtrar()}" id="filtrar"
+						value="Filtrar" icon="fa fa-check" update=":form"
+						styleClass="btn-primary" />
+
+				</p:panelGrid>
+				</div>
+				<div class="col-md-3">
+					<p:dataTable id="faturameta" var="dados"  value="#{beanP1_Painel.lista}" >
+							
+							<p:column headerText="Faturado">
+							<h:outputText value="#{dados.faturado}">
+								<f:convertNumber minFractionDigits="2" locale="pt-BR" />
+							</h:outputText>
+							</p:column>	
+							
+							<p:column headerText="Meta">
+							<h:outputText value="#{dados.meta}">
+								<f:convertNumber minFractionDigits="2" locale="pt-BR"/>
+							</h:outputText>
+							</p:column>	
+							
+							<p:column headerText="%" width="18%">
+							<h:outputText value="#{dados.perc}">
+								<f:convertNumber minFractionDigits="2" locale="pt-BR"/>
+							</h:outputText>
+							</p:column>	
+														
+
+						</p:dataTable>
+			
+				</div>
+			</div>	
+			
+			<div class="row" >
+			
+				<div class="col-md-2">
+							<div class="box box-default" id="gf1">
+								<div class="box-header with-border">
+									<h3 class="box-title">Faturado x Meta</h3>
+
+									<div class="box-tools pull-right">
+										<button type="button" class="btn btn-box-tool"
+											data-widget="collapse">
+											<i class="fa fa-minus"></i>
+										</button>
+									</div>
+									<!-- /.box-tools -->
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body" >
+									<p:barChart model="#{beanP1_Painel.faturadometa}" style="width: 100%; height: 300px;" ></p:barChart>
+								</div>
+								<!-- /.box-body -->
+							</div>
+							<!-- /.box -->
+						</div>
+						
+						
+						<div class="col-md-7">
+							<div class="box box-default" id="gf2">
+								<div class="box-header with-border">
+									<h3 class="box-title">Faturamento por Dia</h3>
+
+									<div class="box-tools pull-right">
+										<button type="button" class="btn btn-box-tool"
+											data-widget="collapse">
+											<i class="fa fa-minus"></i>
+										</button>
+									</div>
+									<!-- /.box-tools -->
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body" >
+									<p:barChart model="#{beanP1_Painel.faturadodia}" style="width: 100%; height: 300px;"></p:barChart>
+								</div>
+								<!-- /.box-body -->
+							</div>
+							<!-- /.box -->
+						</div>
+						
+						<div class="col-md-3">
+							<div class="box box-default" id="gf2">
+								<div class="box-header with-border">
+									<h3 class="box-title">Faturamento por Dia</h3>
+
+									<div class="box-tools pull-right">
+										<button type="button" class="btn btn-box-tool"
+											data-widget="collapse">
+											<i class="fa fa-minus"></i>
+										</button>
+									</div>
+									<!-- /.box-tools -->
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body" >
+									<p:dataTable id="tabela2" value="#{beanP1_Painel.lista2}" var="lista" scrollable="true" scrollHeight="280" style="width: 100%; height: 300px;">
+											<p:column headerText="Ano" width="12%">
+												<h:outputText value="#{lista.ano}" />
+											</p:column>
+											
+											<p:column headerText="Mês" width="10%">
+												<h:outputText value="#{lista.mes}" />
+											</p:column>
+											
+											<p:column headerText="Dia" width="08%" >
+												<h:outputText value="#{lista.dia}" />
+											</p:column>
+											
+											<p:column headerText="Valor" >
+												<h:outputText value="#{lista.faturado}"  >
+						 							<f:convertNumber minFractionDigits="2" locale="pt-BR"/>
+						 						</h:outputText>
+											</p:column>
+										</p:dataTable>
+								</div>
+								<!-- /.box-body -->
+							</div>
+							<!-- /.box -->
+						</div>
+						
+			</div>
+			
+			<p:separator></p:separator>
+			
+			<div class="row" >
+			<div class="col-md-4">
+			<p:panelGrid columns="9"  id="filtroscli2" >
+					
+					<p:outputLabel value=" Data:  " for="data_grafico3" />
+					<p:calendar locale="pt_BR" id="data_grafico3"
+						value="#{beanP1_Painel.data_grafico3}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico4" />
+					<p:calendar locale="pt_BR" id="data_grafico4"
+						value="#{beanP1_Painel.data_grafico4}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+
+					<p:commandButton action="#{beanP1_Painel.filtrar()}" id="filtrar2"
+						value="Filtrar" icon="fa fa-check" update=":form"
+						styleClass="btn-primary" />
+
+				</p:panelGrid>
+				</div>
+			
+			
+				<div class="col-md-3">
+					<p:dataTable id="pedido" var="dados"  value="#{beanP1_Painel.listapedido}" >
+							
+							<p:column headerText="Pedido">
+							<h:outputText value="#{dados.faturado}">
+								<f:convertNumber minFractionDigits="2" locale="pt-BR" />
+							</h:outputText>
+							</p:column>	
+							
+							<p:column headerText="Meta">
+							<h:outputText value="#{dados.meta}">
+								<f:convertNumber minFractionDigits="2" locale="pt-BR"/>
+							</h:outputText>
+							</p:column>	
+							
+							<p:column headerText="%" width="18%">
+							<h:outputText value="#{dados.perc}">
+								<f:convertNumber minFractionDigits="2" locale="pt-BR"/>
+							</h:outputText>
+							</p:column>	
+														
+
+						</p:dataTable>
+			
+				</div>
+			</div>
+			<div class="row" >
+			
+				<div class="col-md-2">
+							<div class="box box-default" id="gf1pd">
+								<div class="box-header with-border">
+									<h3 class="box-title">Pedido x Meta</h3>
+
+									<div class="box-tools pull-right">
+										<button type="button" class="btn btn-box-tool"
+											data-widget="collapse">
+											<i class="fa fa-minus"></i>
+										</button>
+									</div>
+									<!-- /.box-tools -->
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body" >
+									<p:barChart model="#{beanP1_Painel.pedidometa}" style="width: 100%; height: 300px;" ></p:barChart>
+								</div>
+								<!-- /.box-body -->
+							</div>
+							<!-- /.box -->
+						</div>						
+						
+						<div class="col-md-7">
+							<div class="box box-default" id="gf2ped">
+								<div class="box-header with-border">
+									<h3 class="box-title">Pedido por Dia</h3>
+
+									<div class="box-tools pull-right">
+										<button type="button" class="btn btn-box-tool"
+											data-widget="collapse">
+											<i class="fa fa-minus"></i>
+										</button>
+									</div>
+									<!-- /.box-tools -->
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body" >
+									<p:barChart model="#{beanP1_Painel.pedidodia}" style="width: 100%; height: 300px;"></p:barChart>
+								</div>
+								<!-- /.box-body -->
+							</div>
+							<!-- /.box -->
+						</div>
+						
+						<div class="col-md-3">
+							<div class="box box-default" id="gf2peds">
+								<div class="box-header with-border">
+									<h3 class="box-title">Pedido por Dia</h3>
+
+									<div class="box-tools pull-right">
+										<button type="button" class="btn btn-box-tool"
+											data-widget="collapse">
+											<i class="fa fa-minus"></i>
+										</button>
+									</div>
+									<!-- /.box-tools -->
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body" >
+									<p:dataTable id="tabela2peds" value="#{beanP1_Painel.lista2pedido}" var="lista" scrollable="true" scrollHeight="280" style="width: 100%; height: 300px;">
+											<p:column headerText="Ano" width="12%">
+												<h:outputText value="#{lista.ano}" />
+											</p:column>
+											
+											<p:column headerText="Mês" width="10%">
+												<h:outputText value="#{lista.mes}" />
+											</p:column>
+											
+											<p:column headerText="Dia" width="08%" >
+												<h:outputText value="#{lista.dia}" />
+											</p:column>
+											
+											<p:column headerText="Valor" >
+												<h:outputText value="#{lista.faturado}"  >
+						 							<f:convertNumber minFractionDigits="2" locale="pt-BR"/>
+						 						</h:outputText>
+											</p:column>
+										</p:dataTable>
+								</div>
+								<!-- /.box-body -->
+							</div>
+							<!-- /.box -->
+						</div>
+						
+			</div>
+			
+			</div>		
+		</h:form>
+	
+	</h:body>
+					 
+</f:view>
+
+	<div class="footer">
+	
+		<p:outputLabel styleClass="btn btn-block" id="ipr" />
+	
+        <h:outputLink styleClass="btn btn-block" rendered="true"
+					 value="https://www.facebook.com/DwEquipamentosSolucoes" >Dw Equipamentos e Soluções</h:outputLink>
+    </div>
+</html>

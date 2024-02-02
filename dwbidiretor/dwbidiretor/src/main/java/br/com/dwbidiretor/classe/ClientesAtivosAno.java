@@ -3,6 +3,7 @@ package br.com.dwbidiretor.classe;
 import java.io.Serializable;
 import java.lang.String;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 
 
@@ -14,18 +15,18 @@ public class ClientesAtivosAno implements Serializable {
 	private String nomevendedor;
 	
 	private String ano;
-	private BigDecimal janeiro;
-	private BigDecimal fevereiro;
-	private BigDecimal marco;
-	private BigDecimal abril;
-	private BigDecimal maio;
-	private BigDecimal junho;
-	private BigDecimal julho;
-	private BigDecimal agosto;
-	private BigDecimal setembro;
-	private BigDecimal outubro;
-	private BigDecimal novembro;
-	private BigDecimal dezembro;
+	private BigInteger janeiro;
+	private BigInteger fevereiro;
+	private BigInteger marco;
+	private BigInteger abril;
+	private BigInteger maio;
+	private BigInteger junho;
+	private BigInteger julho;
+	private BigInteger agosto;
+	private BigInteger setembro;
+	private BigInteger outubro;
+	private BigInteger novembro;
+	private BigInteger dezembro;
 
 	public ClientesAtivosAno() {
 		super();
@@ -63,103 +64,103 @@ public class ClientesAtivosAno implements Serializable {
 		this.ano = ano;
 	}
 
-	public BigDecimal getJaneiro() {
+	public BigInteger getJaneiro() {
 		return janeiro;
 	}
 
-	public void setJaneiro(BigDecimal janeiro) {
+	public void setJaneiro(BigInteger janeiro) {
 		this.janeiro = janeiro;
 	}
 
-	public BigDecimal getFevereiro() {
+	public BigInteger getFevereiro() {
 		return fevereiro;
 	}
 
-	public void setFevereiro(BigDecimal fevereiro) {
+	public void setFevereiro(BigInteger fevereiro) {
 		this.fevereiro = fevereiro;
 	}
 
-	public BigDecimal getMarco() {
+	public BigInteger getMarco() {
 		return marco;
 	}
 
-	public void setMarco(BigDecimal marco) {
+	public void setMarco(BigInteger marco) {
 		this.marco = marco;
 	}
 
-	public BigDecimal getAbril() {
+	public BigInteger getAbril() {
 		return abril;
 	}
 
-	public void setAbril(BigDecimal abril) {
+	public void setAbril(BigInteger abril) {
 		this.abril = abril;
 	}
 
-	public BigDecimal getMaio() {
+	public BigInteger getMaio() {
 		return maio;
 	}
 
-	public void setMaio(BigDecimal maio) {
+	public void setMaio(BigInteger maio) {
 		this.maio = maio;
 	}
 
-	public BigDecimal getJunho() {
+	public BigInteger getJunho() {
 		return junho;
 	}
 
-	public void setJunho(BigDecimal junho) {
+	public void setJunho(BigInteger junho) {
 		this.junho = junho;
 	}
 
-	public BigDecimal getJulho() {
+	public BigInteger getJulho() {
 		return julho;
 	}
 
-	public void setJulho(BigDecimal julho) {
+	public void setJulho(BigInteger julho) {
 		this.julho = julho;
 	}
 
-	
-
-	public BigDecimal getAgosto() {
+	public BigInteger getAgosto() {
 		return agosto;
 	}
 
-	public void setAgosto(BigDecimal agosto) {
+	public void setAgosto(BigInteger agosto) {
 		this.agosto = agosto;
 	}
 
-	public BigDecimal getSetembro() {
+	public BigInteger getSetembro() {
 		return setembro;
 	}
 
-	public void setSetembro(BigDecimal setembro) {
+	public void setSetembro(BigInteger setembro) {
 		this.setembro = setembro;
 	}
 
-	public BigDecimal getOutubro() {
+	public BigInteger getOutubro() {
 		return outubro;
 	}
 
-	public void setOutubro(BigDecimal outubro) {
+	public void setOutubro(BigInteger outubro) {
 		this.outubro = outubro;
 	}
 
-	public BigDecimal getNovembro() {
+	public BigInteger getNovembro() {
 		return novembro;
 	}
 
-	public void setNovembro(BigDecimal novembro) {
+	public void setNovembro(BigInteger novembro) {
 		this.novembro = novembro;
 	}
 
-	public BigDecimal getDezembro() {
+	public BigInteger getDezembro() {
 		return dezembro;
 	}
 
-	public void setDezembro(BigDecimal dezembro) {
+	public void setDezembro(BigInteger dezembro) {
 		this.dezembro = dezembro;
 	}
+
+	
 
 	
 }

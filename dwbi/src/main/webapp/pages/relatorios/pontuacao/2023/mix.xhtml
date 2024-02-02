@@ -1,0 +1,331 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+
+<style type="text/css">  
+            .color_100 {  
+                background-color: #CEF6E3;  
+            }  
+            
+            .color_m100 {  
+                background-color: #A9E2F3;  
+            }
+            
+            .color_0 {  
+                background-color: #F5A9D0;  
+            }
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+       Pontuação - Mix - 2023
+    </ui:define>
+
+	<ui:define name="description">
+        Não considere os valores de meses futuros, os valores serão recalculos conforme o fechamente de cada mês. ! 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Pontuação - Mix - 2023" />
+
+		<h:form id="form">
+		
+					<h:panelGrid columns="1" id="paineld" style="width:100%">					
+						<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="venda" fileName="pontuacao-mix" pageOnly="true" />
+			       		</h:commandLink>
+			       		
+						<p:dataTable id="venda" var="vendas"	value="#{beanPT_Mix.lista}" resizableColumns="true" style="font-size: 12px;">
+						
+						<p:columnGroup type="header" >
+								<p:row>
+									<p:column colspan="1" rowspan="2" headerText="" style="border: 1px solid; width:10%"/>
+									<p:column colspan="10" headerText="1º Trimestre" style="border: 1px solid;background-color: #eceafb;"/>
+									<p:column colspan="10" headerText="2º Trimestre" style="border: 1px solid;background-color: #eceafb;"/>
+									<p:column colspan="10" headerText="3º Trimestre" style="border: 1px solid;background-color: #eceafb;"/>
+									<p:column colspan="10" headerText="4º Trimestre" style="border: 1px solid;background-color: #eceafb;"/>
+									<p:column colspan="1"  headerText="Total" style="border: 1px solid;background-color: #8cffd8;"/>
+								</p:row>
+								<p:row>
+									
+									<p:column colspan="3" headerText="01"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="3" headerText="02"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="3" headerText="03"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column headerText="Total"  style="border: 1px solid;background-color: #eceafb;"/>
+									
+									<p:column colspan="3" headerText="04"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="3" headerText="05"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="3" headerText="06"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column headerText="Total"  style="border: 1px solid;background-color: #eceafb;"/>
+									
+									<p:column colspan="3" headerText="07"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="3" headerText="08"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="3" headerText="09"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column headerText="Total"  style="border: 1px solid;background-color: #eceafb;"/>
+									
+									<p:column colspan="3" headerText="10"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="3" headerText="11"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column colspan="3" headerText="12"  style="border: 1px solid;background-color: #faebd7"/>
+									<p:column headerText="Total"  style="border: 1px solid;background-color: #eceafb;"/>
+									
+									<p:column colspan="1"  headerText="" style="border: 1px solid;background-color: #8cffd8;"/>
+									
+								</p:row>
+								
+								<p:row>
+								
+									<p:column colspan="1" headerText="Cliente"  style="border: 1px solid; text-align: Left"/>
+									
+									<p:column colspan="1" headerText="Mix"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									
+									<p:column colspan="1" headerText="Mix"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									
+									<p:column colspan="1" headerText="Mix"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column headerText="1°T"  style="border: 1px solid; text-align: Left;background-color: #eceafb;"/>
+									
+									<p:column colspan="1" headerText="Mix"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									
+									<p:column colspan="1" headerText="Mix"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									
+									<p:column colspan="1" headerText="Mix"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column headerText="2°T"  style="border: 1px solid; text-align: Left;background-color: #eceafb;"/>
+									
+									<p:column colspan="1" headerText="Mix"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									
+									<p:column colspan="1" headerText="Mix"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									
+									<p:column colspan="1" headerText="Mix"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column headerText="3°T"  style="border: 1px solid; text-align: Left;background-color: #eceafb;"/>
+									
+									<p:column colspan="1" headerText="Mix"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									
+									<p:column colspan="1" headerText="Mix"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									
+									
+									<p:column colspan="1" headerText="Mix"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Mês"  style="border: 1px solid; text-align: Left"/>
+									<p:column colspan="1" headerText="Pts"  style="border: 1px solid; text-align: Left;background-color: #faebd7"/>
+									<p:column headerText="4°T"  style="border: 1px solid; text-align: Left;background-color: #eceafb;"/>
+									
+									<p:column colspan="1" headerText="Anual"  style="border: 1px solid;background-color: #8cffd8;"/>
+									
+									
+								</p:row>	
+							</p:columnGroup>
+							
+							<p:column headerText="Cliente">
+								<h:outputText value="#{vendas.cliente} - #{vendas.nomecliente}"/>
+							</p:column>
+							
+							<p:column headerText="Mix"  >
+								<h:outputText value="#{vendas.mixmedio}" />
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas.mixmes}" />
+							</p:column>
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos}" />
+							</p:column>
+							<p:column headerText="Mix"  >
+								<h:outputText value="#{vendas.mixmedio2}" />
+							</p:column>
+							<p:column headerText="Mês" >
+								<h:outputText value="#{vendas.mixmes2}" />
+							</p:column>
+							<p:column headerText="Pontos"  style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos2}" />
+							</p:column>
+							<p:column headerText="Mix"  >
+								<h:outputText value="#{vendas.mixmedio3}" />
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas.mixmes3}" />
+							</p:column>
+							<p:column headerText="Pontos"  style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos3}" />
+							</p:column>
+							<p:column headerText="1°T"  style="background-color: #eceafb;" >
+								<h:outputText value="#{vendas.totaltri1}" />
+							</p:column>
+							
+							
+							<p:column headerText="Mix"  >
+								<h:outputText value="#{vendas.mixmedio4}" />
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas.mixmes4}" />
+							</p:column>
+							<p:column headerText="Pontos"  style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos4}" />
+							</p:column>
+							<p:column headerText="Mix"  >
+								<h:outputText value="#{vendas.mixmedio5}" />
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas.mixmes5}" />
+							</p:column>
+							<p:column headerText="Pontos"  style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos5}" />
+							</p:column>
+							<p:column headerText="Mix"  >
+								<h:outputText value="#{vendas.mixmedio6}" />
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas.mixmes6}" />
+							</p:column>
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos6}" />
+							</p:column>
+							<p:column headerText="2°T"  style="background-color: #eceafb;" >
+								<h:outputText value="#{vendas.totaltri2}" />
+							</p:column>
+							
+							
+							<p:column headerText="Mix"  >
+								<h:outputText value="#{vendas.mixmedio7}" />
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas.mixmes7}" />
+							</p:column>
+							<p:column headerText="Pontos"  style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos7}" />
+							</p:column>
+							<p:column headerText="Mix"  >
+								<h:outputText value="#{vendas.mixmedio8}" />
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas.mixmes8}" />
+							</p:column>
+							<p:column headerText="Pontos"  style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos8}" />
+							</p:column>
+							<p:column headerText="Mix"  >
+								<h:outputText value="#{vendas.mixmedio9}" />
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas.mixmes9}" />
+							</p:column>
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos9}" />
+							</p:column>
+							<p:column headerText="3°T" style="background-color: #eceafb;" >
+								<h:outputText value="#{vendas.totaltri3}" />
+							</p:column>
+							
+							
+							<p:column headerText="Mix"  >
+								<h:outputText value="#{vendas.mixmedio10}" />
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas.mixmes10}" />
+							</p:column>
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos10}" />
+							</p:column>
+							<p:column headerText="Mix"  >
+								<h:outputText value="#{vendas.mixmedio11}" />
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas.mixmes11}" />
+							</p:column>
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos11}" />
+							</p:column>
+							<p:column headerText="Mix"  >
+								<h:outputText value="#{vendas.mixmedio12}" />
+							</p:column>
+							<p:column headerText="Mês"  >
+								<h:outputText value="#{vendas.mixmes12}" />
+							</p:column>
+							<p:column headerText="Pontos" style="background-color: #faebd7;" >
+								<h:outputText value="#{vendas.pontos12}" />
+							</p:column>
+							<p:column headerText="4°T"  style="background-color: #eceafb;" >
+								<h:outputText value="#{vendas.totaltri4}" />
+							</p:column>
+							
+							<p:column headerText="Anual" style="background-color: #8cffd8;" >
+								<h:outputText value="#{vendas.totalanual}" />
+							</p:column>
+							
+							<p:columnGroup type="footer">
+								<p:row>
+									<p:column colspan="10" style="text-align:right"
+										footerText="Total 1º Trimestre:" />
+									<p:column footerText="#{beanPT_Mix.total1}" />
+									
+									<p:column colspan="9" style="text-align:right"
+										footerText="Total 2º Trimestre:" />
+									<p:column footerText="#{beanPT_Mix.total2}" />
+									
+									<p:column colspan="9" style="text-align:right"
+										footerText="Total 3º Trimestre:" />
+									<p:column footerText="#{beanPT_Mix.total3}" />
+									
+									<p:column colspan="9" style="text-align:right"
+										footerText="Total 4º Trimestre:" />
+									<p:column footerText="#{beanPT_Mix.total4}" />
+									
+									<p:column footerText="#{beanPT_Mix.totalanual}" />
+								</p:row>
+							</p:columnGroup>
+							
+						</p:dataTable>
+						
+					</h:panelGrid>
+					
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

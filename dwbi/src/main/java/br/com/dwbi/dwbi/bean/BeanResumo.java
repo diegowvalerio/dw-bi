@@ -100,9 +100,18 @@ public class BeanResumo implements Serializable {
 	
 	private String latitude;
 	private String longitude;
+	
+	private String mes;
+	private String ano;
 
 	@PostConstruct
 	public void init() {
+		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		String data = df.format(data_grafico);
+		
+		mes = data.substring(3,5);
+		ano = data.substring(6,10);
+		
 		SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		Date d = new Date();
 		servicousuario.registralog("acesso a pagina de inicio", "VENDEDOR", formatador.format(d), latitude, longitude);
@@ -1137,11 +1146,17 @@ public float getPercentualSobPedido_Amostra() {
 
 	
 	public void createAnimatedModels() {
+		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		String data = df.format(data_grafico2);
+		
+		mes = data.substring(3,5);
+		ano = data.substring(6,10);
+		
 		Calendar hoje = Calendar.getInstance();
 		
 		Date d = new Date();
 		graficometavenda = initBarModel();
-		graficometavenda.setTitle("Meta x Venda ("+ Integer.valueOf(d.getMonth()+1) +"/"+hoje.get(Calendar.YEAR) +")");
+		graficometavenda.setTitle("Meta x Venda ("+mes+"/"+ano+")");
 		graficometavenda.setAnimate(true);
 		graficometavenda.setLegendPosition("ne");
 		graficometavenda.setSeriesColors("20B2AA,808080");
@@ -1158,8 +1173,15 @@ public float getPercentualSobPedido_Amostra() {
 	
 	@SuppressWarnings("null")
 	public BarChartModel initBarModel() {
+		
+		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		String data = df.format(data_grafico2);
+		
+		mes = data.substring(3,5);
+		ano = data.substring(6,10);
+		    	
+    	listametavenda = servicometavenda.metavenda(vendedorfiltrado,vendedorfiltrado2,ano,mes,data_grafico, data_grafico2);
     	
-    	listametavenda = servicometavenda.metavenda(vendedorfiltrado,vendedorfiltrado2);
     	
     	 BarChartModel model = new BarChartModel();
          
@@ -1234,6 +1256,22 @@ public float getPercentualSobPedido_Amostra() {
 			return Float.parseFloat(formatarFloat.format(0).replace(",", "."));
 		}
 		
+	}
+
+	public String getMes() {
+		return mes;
+	}
+
+	public void setMes(String mes) {
+		this.mes = mes;
+	}
+
+	public String getAno() {
+		return ano;
+	}
+
+	public void setAno(String ano) {
+		this.ano = ano;
 	}
 
 }

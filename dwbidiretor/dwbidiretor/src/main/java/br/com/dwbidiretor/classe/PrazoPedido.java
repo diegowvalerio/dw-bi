@@ -20,6 +20,9 @@ public class PrazoPedido implements Serializable {
 	private String dt_digitacao;
 	private int dias_digitacao;
 	
+	private String dt_analise;
+	private int dias_analise;
+	
 	private String dt_financeiro;
 	private int dias_financeiro;
 	
@@ -65,6 +68,22 @@ public class PrazoPedido implements Serializable {
 	}
 
 	
+
+	public String getDt_analise() {
+		return dt_analise;
+	}
+
+	public void setDt_analise(String dt_analise) {
+		this.dt_analise = dt_analise;
+	}
+
+	public int getDias_analise() {
+		return dias_analise;
+	}
+
+	public void setDias_analise(int dias_analise) {
+		this.dias_analise = dias_analise;
+	}
 
 	public String getFase_atual() {
 		return fase_atual;

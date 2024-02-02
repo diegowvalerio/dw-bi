@@ -26,9 +26,28 @@ public class MixProduto implements Serializable {
 	private BigDecimal vl2021;
 	private BigDecimal vl2022;
 	private BigDecimal vltotal;
+	
+	private BigDecimal qtde2023;
+	private BigDecimal vl2023;
 		
 	public MixProduto() {
 		super();
+	}
+
+	public BigDecimal getQtde2023() {
+		return qtde2023;
+	}
+
+	public void setQtde2023(BigDecimal qtde2023) {
+		this.qtde2023 = qtde2023;
+	}
+
+	public BigDecimal getVl2023() {
+		return vl2023;
+	}
+
+	public void setVl2023(BigDecimal vl2023) {
+		this.vl2023 = vl2023;
 	}
 
 	public BigDecimal getCodigoproduto() {

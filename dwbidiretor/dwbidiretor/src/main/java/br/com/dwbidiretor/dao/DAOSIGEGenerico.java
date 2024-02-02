@@ -7,6 +7,7 @@ import java.util.List;
 
 import br.com.dwbidiretor.classe.RetornoAfinacao;
 import br.com.dwbidiretor.classe.SigeAcesso;
+import br.com.dwbidiretor.classe.SigeLog;
 import br.com.dwbidiretor.classe.SigeModulo;
 import br.com.dwbidiretor.classe.SigeUsuario;
 
@@ -34,5 +35,9 @@ public interface DAOSIGEGenerico<E> {
 	public E salvar_acesso(E e);
 	public E excluir_acesso(E e);
 	
+	//registra log
 	public void registralog(String conteudo, String pagina, String data, String latitude, String longetude, String aparelho);
+	
+	//consulta log
+	public List<SigeLog> consultalog(String usuario, String conteudo,String datahora, String ip, String tipo);
 }

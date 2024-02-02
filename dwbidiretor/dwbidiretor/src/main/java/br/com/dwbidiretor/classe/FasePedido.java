@@ -3,6 +3,7 @@ package br.com.dwbidiretor.classe;
 import java.io.Serializable;
 import java.lang.String;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Blob;
 import java.util.Date;
 
@@ -16,7 +17,7 @@ public class FasePedido implements Serializable {
 	private BigDecimal roteiroid;
 	private String nomeroteiro;
 	private BigDecimal vlpedido; 
-	private BigDecimal qtdepedido;
+	private BigInteger qtdepedido;
 	
 	public FasePedido() {
 		super();
@@ -46,11 +47,11 @@ public class FasePedido implements Serializable {
 		this.vlpedido = vlpedido;
 	}
 
-	public BigDecimal getQtdepedido() {
+	public BigInteger getQtdepedido() {
 		return qtdepedido;
 	}
 
-	public void setQtdepedido(BigDecimal qtdepedido) {
+	public void setQtdepedido(BigInteger qtdepedido) {
 		this.qtdepedido = qtdepedido;
 	}
 

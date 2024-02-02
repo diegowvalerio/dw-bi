@@ -13,8 +13,11 @@ import br.com.dwbi.classe.VendaGrupoSubGrupoProdutoQuantidadeValor;
 import br.com.dwbi.classe.VendasEmGeral;
 import br.com.dwbi.classe.VendasEmGeralItem;
 import br.com.dwbi.classe.Vendedor;
+import br.com.dwbi.classe.PT_Meta;
+import br.com.dwbi.classe.PT_Mix;
 import br.com.dwbi.classe.HCliente;
 import br.com.dwbi.classe.MixProduto;
+import br.com.dwbi.classe.PT_Carteira;
 import br.com.dwbi.classe.Produto;
 import br.com.dwbi.classe.Venda_Grupo;
 import br.com.dwbi.classe.Venda_Subgrupo;
@@ -79,10 +82,17 @@ public interface DAOGenerico<E> {
 	
 	public VendasEmGeralItem consultaitem(BigDecimal produto);
 	
-	public List<MetaVenda> metavenda(String vendedor1, String vendedor2);
+	public List<MetaVenda> metavenda(String vendedor1, String vendedor2,String ano, String mes, Date data_grafico, Date data_grafico2);
 	
 	public List<Cliente> consultacliente(String palavra);
 	
+	//pontução de campanha de representantes
+	public List<PT_Meta> pt_meta(String regiao,String vendedor1, String vendedor2);
+	public List<PT_Mix> pt_mix(String regiao,String vendedor1, String vendedor2);
+	public List<PT_Carteira> pt_carteira(String regiao,String vendedor1, String vendedor2);
+	public List<PT_Carteira> pt_carteira2(String regiao,String vendedor1, String vendedor2);
+	public List<PT_Carteira> pt_carteira3(String regiao,String vendedor1, String vendedor2);
+	public List<PT_Carteira> pt_carteira4(String regiao,String vendedor1, String vendedor2);
 	
 	//elias mix
 	public List<HCliente> hclientes(String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2);

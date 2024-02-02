@@ -17,7 +17,7 @@ public class ReativacaoCliente implements Serializable {
 	private Date primeiracompra;
 	private Date pnultimacompra;
 	private Date ultimacompra;
-	private BigDecimal qtdediaspnultimacompra;
+	private Double qtdediaspnultimacompra;
 	private BigDecimal gestorid;
 	private String nomegestor;
 	private BigDecimal vendedorid;
@@ -70,10 +70,10 @@ public class ReativacaoCliente implements Serializable {
 	public void setUltimacompra(Date ultimacompra) {
 		this.ultimacompra = ultimacompra;
 	}
-	public BigDecimal getQtdediaspnultimacompra() {
+	public Double getQtdediaspnultimacompra() {
 		return qtdediaspnultimacompra;
 	}
-	public void setQtdediaspnultimacompra(BigDecimal qtdediaspnultimacompra) {
+	public void setQtdediaspnultimacompra(Double qtdediaspnultimacompra) {
 		this.qtdediaspnultimacompra = qtdediaspnultimacompra;
 	}
 	public BigDecimal getGestorid() {

@@ -8,7 +8,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import br.com.dwbidiretor.classe.FasePedido;
+import br.com.dwbidiretor.classe.FasePedidoItem;
 import br.com.dwbidiretor.dao.DAOFasePedido;
+import br.com.dwbidiretor.dao.DAOFasePedidoItem;
 
 @Dependent
 public class ServicoFasePedido implements Serializable{
@@ -17,9 +19,17 @@ public class ServicoFasePedido implements Serializable{
 	@Inject
 	private DAOFasePedido dao;
 	
+	@Inject
+	private DAOFasePedidoItem dao2;
 	
-	public List<FasePedido> fasepedido(int venda, int outros){
-		return dao.fasepedido(venda, outros);
+	
+	public List<FasePedido> fasepedido(int venda, int outros,Date data1, Date data2){
+		return dao.fasepedido(venda, outros,data1,data2);
+	}
+	
+	
+	public List<FasePedidoItem> fasepedidopedido(String pedido){
+		return dao2.fasepedidoitem(pedido);
 	}
 	
 }

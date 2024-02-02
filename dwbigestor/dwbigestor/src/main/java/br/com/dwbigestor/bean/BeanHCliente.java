@@ -53,6 +53,10 @@ public class BeanHCliente implements Serializable {
 	private String gestorfiltrado2;
 	private String clientefiltrado;
 	private String clientefiltrado2;
+	private String status;
+	
+	//totais
+	private int ativo,inativo,semiativo,critico,total = 0;
 
 
 	@PostConstruct
@@ -133,9 +137,75 @@ public class BeanHCliente implements Serializable {
 			clientefiltrado2 = cliente.getCodigocliente().toString();
 		}
 		
-		lista = servico.hclientes(vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, clientefiltrado, clientefiltrado2);
-	}
+		lista = servico.hclientes(vendedorfiltrado,vendedorfiltrado2, gestorfiltrado, gestorfiltrado2, clientefiltrado, clientefiltrado2,status);
+		calculatotais();
+		}
+		
+		private void calculatotais() {
+			ativo = 0;
+			inativo =0;
+			semiativo = 0;
+			critico = 0;
+			total = 0;
+			if(lista.size()>0) {
+				for(HCliente c:lista) {
+					if(c.getStatus().equals("ATIVO")) {
+						ativo++;
+					}
+					if(c.getStatus().equals("INATIVO")) {
+						inativo++;
+					}
+					if(c.getStatus().equals("SEMI-ATIVO")) {
+						semiativo++;
+					}
+					if(c.getStatus().equals("CRITICO")) {
+						critico++;
+					}
+					total++;
+				}
+			}
+		}
 	
+
+	public int getAtivo() {
+			return ativo;
+		}
+
+		public void setAtivo(int ativo) {
+			this.ativo = ativo;
+		}
+
+		public int getInativo() {
+			return inativo;
+		}
+
+		public void setInativo(int inativo) {
+			this.inativo = inativo;
+		}
+
+		public int getSemiativo() {
+			return semiativo;
+		}
+
+		public void setSemiativo(int semiativo) {
+			this.semiativo = semiativo;
+		}
+
+		public int getCritico() {
+			return critico;
+		}
+
+		public void setCritico(int critico) {
+			this.critico = critico;
+		}
+
+		public int getTotal() {
+			return total;
+		}
+
+		public void setTotal(int total) {
+			this.total = total;
+		}
 
 	public List<Cliente> completaCliente(String nome) {
 		String n = nome.toUpperCase();
@@ -213,6 +283,14 @@ public class BeanHCliente implements Serializable {
 
 	public void setVendedorlogado(String vendedorlogado) {
 		this.vendedorlogado = vendedorlogado;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	public HCliente getHcliente() {

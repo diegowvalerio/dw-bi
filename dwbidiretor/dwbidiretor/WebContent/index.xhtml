@@ -24,6 +24,12 @@
 </style>
 <script type="text/javascript">
 
+//setTimeout(function() {
+//	location.reload()
+//	;}, 60000); 
+// 60000 milissegundos = 1 minuto
+
+
 function checkDevice() { 
 	 if( navigator.userAgent.match(/Android/i)
 	 || navigator.userAgent.match(/webOS/i)
@@ -53,9 +59,12 @@ async function getIP() {
     document.getElementById('form:plocalip').style.display = "none";
 }
 
-getIP();
+function loader(){
+	window.onload = getIP();
+}
 
 
+window.onload = getIP();
 
 </script>
 	</ui:define>
@@ -82,7 +91,6 @@ getIP();
 		
 		<span class="info-box-text">Dados a partir de : 01/04/2018</span>
 		
-			<section class="content">
 				<p:panelGrid columns="8" id="filtros" rendered="#{beanControleAcesso.acesso('diretor_inicio_filtros')}"
 					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 					layout="grid" styleClass="ui-fluid card">
@@ -127,11 +135,14 @@ getIP();
 							<p:watermark value="Pesquise por Nome, Código ou Cpf/Cnpj" for="cliente"></p:watermark>
 						</h:panelGroup>
 
-					<p:commandButton action="#{beanResumo.filtrar()}" value="Filtrar" oncomplete="getIP()"
-						icon="fa fa-check" update=":form" styleClass="btn-primary" />
+					<p:commandButton action="#{beanResumo.filtrar()}" value="Filtrar" oncomplete="loader()"
+						icon="fa fa-check" update=":geral" styleClass="btn-primary" />
 				</p:panelGrid>
 
 				<p:separator />
+				
+				</h:form>
+				<h:form id="geral">
 				
 				<p:panelGrid id="resumo" rendered="#{beanControleAcesso.acesso('diretor_inicio_resumo')}" >
 				
@@ -407,7 +418,7 @@ getIP();
 								class="fa fa-retweet"></i></span>
 
 							<div class="info-box-content">
-								<span class="info-box-text">Troca Defeito</span> <span
+								<span class="info-box-text">Troca Defeito (IGUAL)</span> <span
 									class="info-box-text"><h:outputText
 										value="#{beanResumo.trocaDefeitododia}" /></span>
 
@@ -420,6 +431,32 @@ getIP();
 										action="#{beanResumo.encaminha11()}"
 										styleClass="fa fa-arrow-circle-right small-box-footer"
 										value="  R$ #{beanResumo.valorTotalTrocaDefeito}" />
+								</span>
+							</div>
+							<!-- /.info-box-content -->
+						</div>
+						<!-- /.info-box -->
+					</div>
+					
+					<div class="col-md-3 col-sm-6 col-xs-12">
+						<div class="info-box ">
+							<span class="info-box-icon bg-secondary"><i
+								class="fa fa-retweet"></i></span>
+
+							<div class="info-box-content">
+								<span class="info-box-text">Troca Defeito (DIFERENTE)</span> <span
+									class="info-box-text"><h:outputText
+										value="#{beanResumo.trocaDefeitoDiferentedodia}" /></span>
+
+								<span class="progress-description" style="text-align:right"> 
+									<h:outputText 
+									value="(Não Invest.) #{beanResumo.percentualSobPedido_TrocaDefeitoDiferente} %"/>
+								</span>
+								
+								<span class="progress-description"> <h:commandLink
+										action="#{beanResumo.encaminha20()}"
+										styleClass="fa fa-arrow-circle-right small-box-footer"
+										value="  R$ #{beanResumo.valorTotalTrocaDefeitoDiferente}" />
 								</span>
 							</div>
 							<!-- /.info-box-content -->
@@ -575,8 +612,6 @@ getIP();
 					
 				</h:panelGrid>
 
-
-			</section>
 		</h:form>
 	</ui:define>
 

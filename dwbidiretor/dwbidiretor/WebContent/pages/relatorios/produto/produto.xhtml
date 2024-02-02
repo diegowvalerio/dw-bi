@@ -1,0 +1,95 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+	
+	<h:outputScript library="js" name="jquery.jqplot.js" />
+	<h:outputScript library="js" name="jqplot.barRenderer.min.js" />
+	<h:outputScript library="js" name="jqplot.categoryAxisRenderer.js" />
+	<h:outputStylesheet library="css" name="jquery.jqplot.css" />
+	<h:outputScript  library="js" name="jqplot.pointLabels.min.js"  />
+	
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+
+</style>
+		
+
+	</ui:define>
+
+	<ui:define name="title">
+   Produtos
+    </ui:define>
+
+	<ui:define name="description">
+		
+	</ui:define>
+
+	<ui:define name="body">	
+		
+		<h:form id="form">
+		
+			<section class="content">
+				<p:panelGrid columns="9" id="filtros" 
+					
+					layout="grid" styleClass="ui-fluid card">	
+					
+					<p:outputLabel value="Grupo:" for="grupo" />
+					<p:selectOneMenu id="grupo"
+					value="#{beanProduto.grupo}"
+					converter="conversorVendaGrupo" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanProduto.listagrupos}"
+						var="grups" itemLabel="#{grups.idgrupo} - #{grups.nomegrupo}"
+						itemValue="#{grupo}" />
+					</p:selectOneMenu>					
+
+					<p:commandButton action="#{beanProduto.filtrar()}" value="Filtrar"
+						icon="fa fa-check" update=":form" styleClass="btn-primary" />
+				</p:panelGrid>
+
+				<p:separator></p:separator>
+									
+					<p:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
+						
+						<p:dataTable id="prdo" var="prd"  value="#{beanProduto.lista}" >
+						
+							<p:column width="9%" headerText="Produto"
+								sortBy="#{prd.produtoid}">
+								<h:outputText value="#{prd.produtoid}" />
+							</p:column>
+
+							<p:column headerText="Descrição" sortBy="#{prd.nomeproduto}">
+								<h:outputText value="#{prd.nomeproduto}" />
+							</p:column>
+							
+							<p:column headerText="Imagem" width="20%" >
+        						<p:graphicImage value="#{beanProduto.productImage}" width="70" height="70" alt="#{prd.produtoid}">
+            						<f:param name="imgPRD" value="#{prd.produtoid}" ></f:param>
+        						</p:graphicImage>
+   							 </p:column>
+							
+						</p:dataTable>
+					</p:panelGrid>
+				
+			</section>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

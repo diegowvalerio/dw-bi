@@ -37,7 +37,7 @@ public class BeanPedidosConferidos implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		lista = servico.pedidosconferidos(data_grafico, data_grafico2);
+		
 	}
 	
 	public void filtrar(){

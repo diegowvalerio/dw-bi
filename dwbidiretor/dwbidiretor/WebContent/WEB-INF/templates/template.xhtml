@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html" template="/admin.xhtml">
+	xmlns:h="http://java.sun.com/jsf/html" template="/admin.xhtml" >
 
-	<ui:define name="head">
+	<ui:define name="head" >
 		<h:outputStylesheet library="css" name="showcase.css" />
 		<h:outputStylesheet library="css" name="prism.css" />
 		<h:outputScript library="js" name="locale-primeface.js" />
@@ -30,8 +30,6 @@
   		gtag('config', 'UA-149134751-1');
 		</script>
 		
-
-
 	</ui:define>
 
 	<ui:define name="logo-lg">
@@ -39,7 +37,7 @@
     </ui:define>
 
 	<ui:define name="logo-mini">
-        DW BI DIRETOR
+        DW
     </ui:define>
 
 	<ui:define name="menu-begin">
@@ -54,8 +52,8 @@
 		<ui:include src="/includes/top-menu.xhtml" />
 	</ui:define>
 
-	<ui:define name="content-end">
-		<section class="content">
+	<ui:define name="content-end" >
+		<section class="content" >
 			<ui:insert name="code" />
 		</section>
 	</ui:define>

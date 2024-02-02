@@ -83,11 +83,15 @@
 					</p:column>
 
 					<p:column headerText="Qtde Lote" width="5%">
-						<h:outputText value="#{listas.qtde}" />
+						<h:outputText value="#{listas.qtde}" >
+						 <f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 </h:outputText>
 					</p:column>
 					
 					<p:column headerText="Qtde Estoque" width="5%">
-						<h:outputText value="#{listas.saldo}" />
+						<h:outputText value="#{listas.saldo}" >
+						 <f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 </h:outputText>
 					</p:column>
 					
 					<p:column headerText="% Atendido" width="5%">

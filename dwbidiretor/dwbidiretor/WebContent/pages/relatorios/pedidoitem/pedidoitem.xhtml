@@ -155,7 +155,9 @@
 						<h:outputText value="#{beanPedidoItem.pedidoitem.tipopedido}" />
 						
 						<p:outputLabel value="Comissão: " />
-						<h:outputText value="#{beanPedidoItem.pedidoitem.pc_comissao} %" />
+						<h:outputText value="#{beanPedidoItem.pedidoitem.pc_comissao} %"  >
+						 		<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						</h:outputText>
 						
 						<p:outputLabel value="Lucro(14) " />
 						<h:outputText value="#{beanPedidoItem.pedidoitem.pc_lucro_visao14} %" />
@@ -204,69 +206,100 @@
 							</p:column>
 
 							<p:column headerText="Qtde Pedido" sortBy="#{vendas.qtdepedido}">
-								<h:outputText value="#{vendas.qtdepedido}" />
+								<h:outputText value="#{vendas.qtdepedido}"  >
+						 			<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 		</h:outputText>
 							</p:column>
 
 							<p:column headerText="Qtde Venda Seven"
 								sortBy="#{vendas.qtdevenda}">
-								<h:outputText value="#{vendas.qtdevenda}" />
+								<h:outputText value="#{vendas.qtdevenda}"  >
+						 			<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 		</h:outputText>
 							</p:column>
 							
 							<p:column headerText="Qtde Amostra Seven"
 								sortBy="#{vendas.qtdeamostra}">
-								<h:outputText value="#{vendas.qtdeamostra}" />
+								<h:outputText value="#{vendas.qtdeamostra}" >
+						 			<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 		</h:outputText>
 							</p:column>
 							
 							<p:column headerText="Qtde Amostra Paga Seven"
 								sortBy="#{vendas.qtdeamostrapaga}">
-								<h:outputText value="#{vendas.qtdeamostrapaga}" />
+								<h:outputText value="#{vendas.qtdeamostrapaga}"  >
+						 			<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 		</h:outputText>
 							</p:column>
 							
 							<p:column headerText="Qtde Bonificação Seven"
 								sortBy="#{vendas.qtdebonificacao}">
-								<h:outputText value="#{vendas.qtdebonificacao}" />
+								<h:outputText value="#{vendas.qtdebonificacao}"  >
+						 			<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 		</h:outputText>
 							</p:column>
 							
 							<p:column headerText="Qtde Bonificação Expositor Seven"
 								sortBy="#{vendas.qtdebonificacaoexpositor}">
-								<h:outputText value="#{vendas.qtdebonificacaoexpositor}" />
+								<h:outputText value="#{vendas.qtdebonificacaoexpositor}"  >
+						 			<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 		</h:outputText>
 							</p:column>
 							
 							<p:column headerText="Qtde Expositor Seven"
 								sortBy="#{vendas.qtdeexpositor}">
-								<h:outputText value="#{vendas.qtdeexpositor}" />
+								<h:outputText value="#{vendas.qtdeexpositor}"  >
+						 			<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 		</h:outputText>
 							</p:column>
 							
 							<p:column headerText="Qtde Troca Seven"
 								sortBy="#{vendas.qtdetroca}">
-								<h:outputText value="#{vendas.qtdetroca}" />
+								<h:outputText value="#{vendas.qtdetroca}"  >
+						 			<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 		</h:outputText>
 							</p:column>
 							
 							<p:column headerText="Qtde Negociações Seven"
 								sortBy="#{vendas.qtdenegociacoescomerciais}">
-								<h:outputText value="#{vendas.qtdenegociacoescomerciais}" />
+								<h:outputText value="#{vendas.qtdenegociacoescomerciais}" >
+						 			<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 		</h:outputText>
 							</p:column>
 
 							<p:column headerText="Qtde Venda Sige"
 								sortBy="#{vendas.sige_qtde_venda}">
-								<h:outputText value="#{vendas.sige_qtde_venda}" />
+								<h:outputText value="#{vendas.sige_qtde_venda}"  >
+						 			<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 		</h:outputText>
 							</p:column>
 							
 							<p:column headerText="Qtde Amostra Sige"
 								sortBy="#{vendas.sige_qtde_amostra}">
-								<h:outputText value="#{vendas.sige_qtde_amostra}" />
+								<h:outputText value="#{vendas.sige_qtde_amostra}"  >
+						 			<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 		</h:outputText>
 							</p:column>
+							
 							<p:column headerText="Qtde Bonificação Sige"
 								sortBy="#{vendas.sige_qtde_bonificacao}">
-								<h:outputText value="#{vendas.sige_qtde_bonificacao}" />
+								<h:outputText value="#{vendas.sige_qtde_bonificacao}" >
+						 			<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 		</h:outputText>
 							</p:column>
+							
 							<p:column headerText="Qtde Expositor Sige"
 								sortBy="#{vendas.sige_qtde_expositor}">
-								<h:outputText value="#{vendas.sige_qtde_expositor}" />
+								<h:outputText value="#{vendas.sige_qtde_expositor}"  >
+						 			<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 		</h:outputText>
 							</p:column>
+							
 							<p:column headerText="Qtde Troca Sige"
 								sortBy="#{vendas.sige_qtde_troca}">
-								<h:outputText value="#{vendas.sige_qtde_troca}" />
+								<h:outputText value="#{vendas.sige_qtde_troca}"  >
+						 			<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 		</h:outputText>
 							</p:column>
 													
 
