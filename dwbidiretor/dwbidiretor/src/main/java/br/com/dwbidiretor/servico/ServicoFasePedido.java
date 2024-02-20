@@ -23,8 +23,8 @@ public class ServicoFasePedido implements Serializable{
 	private DAOFasePedidoItem dao2;
 	
 	
-	public List<FasePedido> fasepedido(int venda, int outros,Date data1, Date data2){
-		return dao.fasepedido(venda, outros,data1,data2);
+	public List<FasePedido> fasepedido(int venda, int outros,Date data1, Date data2,String pedido, String lote){
+		return dao.fasepedido(venda, outros,data1,data2,pedido,lote);
 	}
 	
 	

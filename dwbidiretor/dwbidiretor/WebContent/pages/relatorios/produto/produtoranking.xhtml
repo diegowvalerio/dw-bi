@@ -1,0 +1,119 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+      Ranking Produtos Faturados
+    </ui:define>
+
+	<ui:define name="description">
+        
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Ranking Produtos Faturados" />
+
+		<h:form id="form">
+			<p:panelGrid columns="10"
+				
+				layout="grid" styleClass="ui-fluid card" id="filtroscli">
+				
+					<p:outputLabel value=" Data:  " for="data_grafico" />
+					<p:calendar locale="pt_BR" id="data_grafico"
+						value="#{beanProdutoRanking.data_grafico}" pattern="dd/MM/yyyy"
+						mask="true" required="true" readonlyInput="true">
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico2" />
+					<p:calendar locale="pt_BR" id="data_grafico2"
+						value="#{beanProdutoRanking.data_grafico2}" pattern="dd/MM/yyyy"
+						mask="true" required="true" readonlyInput="true">
+					</p:calendar>			
+	            		
+            		<p:outputLabel value="Produto:" for="produto" />					
+					<p:selectCheckboxMenu id="produto" value="#{beanProdutoRanking.produtosselecionados}" multiple="true" 
+                              filter="true" filterMatchMode="contains" converter="conversorProduto" >
+            		<f:selectItems value="#{beanProdutoRanking.produtos}"  var="produts" itemLabel="#{produts.produtoid} || #{produts.referencia} || #{produts.nomeproduto}"
+						itemValue="#{produto}" />
+        			</p:selectCheckboxMenu>
+        			
+        			<p:outputLabel value="Vendedor:" for="vendedor" />
+					<p:selectOneMenu id="vendedor"
+					value="#{beanProdutoRanking.vendedor}"
+					converter="conversorVendedor" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanProdutoRanking.listavendedor}"
+						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
+						itemValue="#{vendedor}" />
+					</p:selectOneMenu>
+					
+					<p:commandButton action="#{beanProdutoRanking.filtrar()}" value="Filtrar"
+						icon="fa fa-check" update=":form:paineld" styleClass="btn-primary" />
+					
+			</p:panelGrid>	
+			<p:separator></p:separator>	
+			
+			<p:panelGrid columns="1" id="paineld"  >
+
+				<p:dataTable id="prdo" var="prd" value="#{beanProdutoRanking.lista}" allowUnsorting="true" sortMode="single" sortOrder="descending" sortBy="#{prd.qtde}"
+				scrollHeight="600" scrollable="true" > 
+
+					<p:column width="9%" headerText="Produto" >
+						<h:outputText value="#{prd.produto}" />
+					</p:column>
+
+					<p:column headerText="Descrição" >
+						<h:outputText value="#{prd.nomeproduto}" />
+					</p:column>
+
+					<p:column headerText="Quantidade" width="20%" sortBy="#{prd.qtde}" >
+						<h:outputText value="#{prd.qtde}" >
+								<f:convertNumber minFractionDigits="0" locale="pt-BR"/>
+						</h:outputText>
+						
+						<f:facet name="footer">
+							<h:outputText value="#{beanProdutoRanking.totalqtde}" >
+								<f:convertNumber minFractionDigits="0" locale="pt-BR"/>
+							</h:outputText>
+						</f:facet>
+					</p:column>
+					
+					<p:column headerText="Valor" width="20%" sortBy="#{prd.venda}">
+						<h:outputText value="#{prd.venda}" >
+									<f:convertNumber type="currency" currencySymbol="R$" />
+						</h:outputText>
+						<f:facet name="footer">
+							<h:outputText value="#{beanProdutoRanking.totalvalor}" />
+						</f:facet>
+					</p:column>
+					
+
+				</p:dataTable>
+			</p:panelGrid>		
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

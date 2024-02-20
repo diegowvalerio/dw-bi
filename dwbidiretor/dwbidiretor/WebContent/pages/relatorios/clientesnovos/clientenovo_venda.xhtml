@@ -1,0 +1,148 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Clientes Novos - Venda
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title=" Clientes Novos - Venda" />
+
+		<h:form id="form">
+			
+					<p:panelGrid columns="9" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
+                             
+					<p:outputLabel value=" Data Cadastro:  " for="data_grafico" />
+					<p:calendar locale="pt_BR" id="data_grafico"
+						value="#{beanClienteNovoVenda.data_grafico}" pattern="dd/MM/yyyy"
+						mask="true" required="true" readonlyInput="true">
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico2" />
+					<p:calendar locale="pt_BR" id="data_grafico2"
+						value="#{beanClienteNovoVenda.data_grafico2}" pattern="dd/MM/yyyy"
+						mask="true" required="true" readonlyInput="true">
+					</p:calendar>
+					
+					<p:outputLabel value="Gestor:" for="gestor" />
+					<p:selectOneMenu id="gestor" value="#{beanClienteNovoVenda.gestor}"
+						converter="conversorGestor">
+						<f:selectItem itemLabel="Selecionar" noSelectionOption="false" />
+						<f:selectItems value="#{beanClienteNovoVenda.listagestor}" var="gestor"
+							itemLabel="#{gestor.nomegestor}"
+							itemValue="#{gestor}" />
+					</p:selectOneMenu>
+						
+					<p:outputLabel value="Vendedor:" for="vendedor" />
+					<p:selectOneMenu id="vendedor"
+					value="#{beanClienteNovoVenda.vendedor}"
+					converter="conversorVendedor" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanClienteNovoVenda.listavendedor}"
+						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
+						itemValue="#{vendedor}" />
+						<p:ajax listener="#{beanClienteNovoVenda.filtragestor}" update=":form:gestor" />
+					</p:selectOneMenu>
+					
+					<p:commandButton action="#{beanClienteNovoVenda.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld"
+						styleClass="btn-primary" />
+
+					</p:panelGrid>
+			<div class="box box-primary">
+				
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right"
+						style="width:100%">
+						
+						<p:dataTable id="cliente" var="clientes" value="#{beanClienteNovoVenda.lista}" resizableColumns="true" > 
+
+							<p:column headerText="Cliente" width="2%" >
+								<h:outputText value="#{clientes.codigocliente}" />
+							</p:column>
+
+							<p:column headerText="Razão Social" >
+								<h:outputText value="#{clientes.nomecliente}" />
+							</p:column>
+							
+							<p:column headerText="Fantasia" >
+								<h:outputText value="#{clientes.nomefantasia}" />
+							</p:column>
+							
+							<p:column headerText="Cpf/Cnpj" width="6%" >
+								<h:outputText value="#{clientes.cpfcnpj}" />
+							</p:column>
+
+							<p:column width="6%" headerText="Data Cadastro" sortBy="#{clientes.datacadastro}">
+								<h:outputText value="#{clientes.datacadastro}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Vendedor" width="4%">
+								<h:outputText value="#{clientes.codigovendedor}" />
+							</p:column>
+							
+							<p:column headerText="Nome Vendedor" sortBy="#{clientes.nomevendedor}">
+								<h:outputText value="#{clientes.nomevendedor}" />
+							</p:column>
+							
+							<p:column headerText="Gestor" sortBy="#{clientes.gestor}" width="6%">
+								<h:outputText value="#{clientes.gestor}" />
+							</p:column>
+							
+							<p:column width="3%" headerText="Vendas" sortBy="#{clientes.vendas}">
+								<h:outputText value="#{clientes.vendas}" />
+							</p:column>
+							
+							<p:column width="4%" headerText="1º Venda" >
+								<h:outputText value="#{clientes.primeira}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column width="5%" headerText="Ultima Venda" >
+								<h:outputText value="#{clientes.ultima}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Total Venda" sortBy="#{clientes.totalvenda}">
+								<h:outputText value="#{clientes.totalvenda}" >
+							<f:convertNumber type="currency" currencySymbol="R$"
+								minFractionDigits="2" locale="pt-BR"/>
+							</h:outputText>
+							</p:column>
+							
+						</p:dataTable>
+					</h:panelGrid>
+				
+			</div>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

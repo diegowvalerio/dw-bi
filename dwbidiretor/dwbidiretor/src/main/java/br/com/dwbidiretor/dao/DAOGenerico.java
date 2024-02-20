@@ -12,10 +12,13 @@ import br.com.dwbidiretor.classe.CPedidoFin;
 import br.com.dwbidiretor.classe.CPedidoLog;
 import br.com.dwbidiretor.classe.CidadeVenda;
 import br.com.dwbidiretor.classe.Cliente;
+import br.com.dwbidiretor.classe.ClienteNovo;
 import br.com.dwbidiretor.classe.ClientesAtivos;
 import br.com.dwbidiretor.classe.ClientesAtivosAno;
 import br.com.dwbidiretor.classe.ClientesNovos;
+import br.com.dwbidiretor.classe.CtaCorrente;
 import br.com.dwbidiretor.classe.DadosCliente;
+import br.com.dwbidiretor.classe.FaseMateriaPrima;
 import br.com.dwbidiretor.classe.FasePedido;
 import br.com.dwbidiretor.classe.FasePedidoItem;
 import br.com.dwbidiretor.classe.Gestor;
@@ -38,6 +41,7 @@ import br.com.dwbidiretor.classe.PT_Mix;
 import br.com.dwbidiretor.classe.PedidoFase;
 import br.com.dwbidiretor.classe.PedidoItem;
 import br.com.dwbidiretor.classe.PedidosConferidos;
+import br.com.dwbidiretor.classe.PedidosConferidosUsuario;
 import br.com.dwbidiretor.classe.Perca;
 import br.com.dwbidiretor.classe.PercaDia;
 import br.com.dwbidiretor.classe.PercaProduto;
@@ -45,6 +49,7 @@ import br.com.dwbidiretor.classe.PrazoPedido;
 import br.com.dwbidiretor.classe.Producao;
 import br.com.dwbidiretor.classe.ProducaoDia;
 import br.com.dwbidiretor.classe.Produto;
+import br.com.dwbidiretor.classe.ProdutoRanking;
 import br.com.dwbidiretor.classe.ReativacaoCliente;
 import br.com.dwbidiretor.classe.RetornoAfinacao;
 import br.com.dwbidiretor.classe.TLOcorrencia;
@@ -149,6 +154,8 @@ public interface DAOGenerico<E> {
 	
 	public List<ClientesNovos> clientesnovos_efetivado(Date data1, Date data2,String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2);
 	
+	public List<ClienteNovo> clientenovo_venda(Date data1, Date data2,String vendedor1, String vendedor2, String gestor1, String gestor2);
+	
 	public List<Vendedor> consultavendedor();
 	
 	public List<Cliente> consultacliente(String palavra);
@@ -174,6 +181,7 @@ public interface DAOGenerico<E> {
 	public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2);
 	
 	public List<PedidosConferidos> pedidosconferidos(Date data1, Date data2);
+	public List<PedidosConferidosUsuario> pedidosconferidosusuarios(Date data1, Date data2);
 	
 	public List<RetornoAfinacao> retornoafinacao(Date data1, Date data2, String cfop);
 	
@@ -188,9 +196,10 @@ public interface DAOGenerico<E> {
 	public List<ItensTabela> itenstabela(String idtabela);
 	public ItensTabela itenstabela(String idtabela, String produtoid);
 	
-	public List<FasePedido> fasepedido(int venda, int outros,Date data1, Date data2);
+	public List<FasePedido> fasepedido(int venda, int outros,Date data1, Date data2, String pedido, String lote);
 	public List<FasePedidoItem> fasepedidoitem(String pedido);
-	public List<PedidoFase> pedidofase(int venda, int outros, BigDecimal roteiro,Date data1, Date data2);
+	public List<PedidoFase> pedidofase(int venda, int outros, BigDecimal roteiro,Date data1, Date data2,String pediddo,String lote);
+	public List<FaseMateriaPrima> fasemateriaprima(String pedido,String produto);
 	public List<PrazoPedido> prazopedido(int venda, int outros,Date data1, Date data2);
 	
 	public List<Produto> produtosgrupo(String grupo);
@@ -207,11 +216,14 @@ public interface DAOGenerico<E> {
 	public List<VendaCusto> vendacustopedido(String ano, String produtos, String vendedor);
 	public List<VendaVendedor> vendavendedorfatura(String ano, String mes);
 	public List<VendaVendedor> vendavendedor(String ano, String mes);
+	public List<ProdutoRanking> produtoranking(Date data1, Date data2, String vendedor, String produtos );
 	
 	public List<P1_MetaFaturado> p1metafaturado(Date data1, Date data2);
 	public List<P1_FaturadoDia> p1faturadodia(Date data1, Date data2);
 	public List<P1_MetaFaturado> p1metapedido(Date data1, Date data2);
 	public List<P1_FaturadoDia> p1pedidodia(Date data1, Date data2);
+	
+	public List<CtaCorrente> ctacorrente();
 	
 	//comercial
 	public List<Titulo> titulos(String cliente, String status, String nota);

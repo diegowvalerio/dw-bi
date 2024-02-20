@@ -2398,7 +2398,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " )x "
 				+ " inner join cadcftv v on v.cadcftvid = x.vendedor "
 				+ " group by x.cadcftvid,x.vendedor,v.nome_cadcftv "
-				+ " )vendedorultimo on vendedorultimo.CADCFTVID = c.CADCFTVID "
+				+ " )vendedorultimo on vendedorultimo.CADCFTVID = c.CADCFTVID and vendedorultimo.ultima = freq.ultima "
 				
 				+ " INNER JOIN CADCFTV GR ON GR.CADCFTVID =  "+ usuarioconectado()
 				+ " INNER JOIN GESTOR G ON G.CNPJ_GESTOR = GR.CNPJCPF_CADCFTV OR G.CPF_GESTOR = GR.CNPJCPF_CADCFTV "

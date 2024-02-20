@@ -73,7 +73,7 @@ public class BeanAplicationScoped implements Serializable {
 					
 					if(hora.equals("20:1:0")) { //20:1:0
 						//enviaemail();
-						enviaemail_produtos_importados_saldoabaixo_minimo();
+						//enviaemail_produtos_importados_saldoabaixo_minimo();
 						
 					}
 					}

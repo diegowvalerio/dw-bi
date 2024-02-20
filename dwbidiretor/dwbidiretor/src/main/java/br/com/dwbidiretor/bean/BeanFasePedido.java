@@ -17,11 +17,14 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.event.ItemSelectEvent;
 import org.primefaces.event.SelectEvent;
 
+import br.com.dwbidiretor.classe.FaseMateriaPrima;
 import br.com.dwbidiretor.classe.FasePedido;
 import br.com.dwbidiretor.classe.FasePedidoItem;
 import br.com.dwbidiretor.classe.PedidoFase;
+import br.com.dwbidiretor.classe.painel.Venda_Grupo;
 import br.com.dwbidiretor.servico.ServicoFasePedido;
 import br.com.dwbidiretor.servico.ServicoPedidoFase;
 
@@ -36,11 +39,15 @@ public class BeanFasePedido implements Serializable {
 	private ServicoFasePedido servico;
 	private List<FasePedido> lista = new ArrayList<>();
 	private List<FasePedidoItem> listaitem = new ArrayList<>();
+	private FasePedidoItem fasePedidoItem  = new FasePedidoItem();
 	
 	@Inject
 	private ServicoPedidoFase servicopedidofase;
 	private List<PedidoFase> listapedidofase = new ArrayList<>();
 	private PedidoFase pedidofase = new PedidoFase();
+	
+	private List<FaseMateriaPrima> listamateriaprima = new ArrayList<>();
+	private FaseMateriaPrima faseMateriaPrima = new FaseMateriaPrima();
 	
 	int venda =1 ;
 	int outros = 1 ;
@@ -48,6 +55,8 @@ public class BeanFasePedido implements Serializable {
 	int totaldiasfase,mediadias = 0;
 	private Date data_grafico = new Date();
 	private Date data_grafico2 = new Date();
+	private String pedido = "";
+	private String lote = "";
 
 	@PostConstruct
 	public void init() {
@@ -55,7 +64,7 @@ public class BeanFasePedido implements Serializable {
 		c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
 		data_grafico =c.getTime();
 		
-		lista = servico.fasepedido(1, 1,data_grafico,data_grafico2);
+		lista = servico.fasepedido(1, 1,data_grafico,data_grafico2,"0000","0000");
 				
 	}
 	
@@ -70,15 +79,39 @@ public class BeanFasePedido implements Serializable {
 			venda = 0;
 			outros = 1;
 		}
-		lista = servico.fasepedido(venda, outros,data_grafico,data_grafico2);
+		
+		String l= "";
+		if(lote.equals("")) {
+			l = "0000";
+		}else {
+			l = lote;
+		}
+		
+		if(pedido.equals("")) {
+			lista = servico.fasepedido(venda, outros,data_grafico,data_grafico2,"0000",l);
+		}else {
+			lista = servico.fasepedido(venda, outros,data_grafico,data_grafico2,pedido,l);
+		}
+		
 		listapedidofase.clear();
 	}
 	
-	public void onRowSelect(SelectEvent event) throws ParseException {
+	public void onRowSelect(SelectEvent event) throws ParseException {		
 		totaldiasfase = 0;
 		fasePedido = (FasePedido) event.getObject();
 		if(fasePedido !=null) {
-			listapedidofase = servicopedidofase.pedidofase(venda, outros, fasePedido.getRoteiroid(),data_grafico,data_grafico2);
+			String l= "";
+			if(lote.equals("")) {
+				l = "0000";
+			}else {
+				l = lote;
+			}
+			
+			if(pedido.equals("")) {
+				listapedidofase = servicopedidofase.pedidofase(venda, outros, fasePedido.getRoteiroid(),data_grafico,data_grafico2,"0000",l);
+			}else {
+				listapedidofase = servicopedidofase.pedidofase(venda, outros, fasePedido.getRoteiroid(),data_grafico,data_grafico2,pedido,l);
+			}
 			for(PedidoFase f:listapedidofase) {
 				if(f.getDataentradafase() == null) {
 					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy"); 
@@ -106,6 +139,30 @@ public class BeanFasePedido implements Serializable {
 		if(pedidofase != null) {
 			listaitem = servico.fasepedidopedido(pedidofase.getPedidoid().toString());
 		}
+	}
+	
+	public void onRowSelect3(SelectEvent event) throws ParseException {
+		fasePedidoItem = (FasePedidoItem) event.getObject();
+		if(fasePedidoItem != null) {
+			listamateriaprima = servicopedidofase.fasemateriaprima(fasePedidoItem.getPedido().toString(), fasePedidoItem.getProduto().toString());
+		}
+		
+	}
+	
+	public String getLote() {
+		return lote;
+	}
+
+	public void setLote(String lote) {
+		this.lote = lote;
+	}
+
+	public FasePedidoItem getFasePedidoItem() {
+		return fasePedidoItem;
+	}
+
+	public void setFasePedidoItem(FasePedidoItem fasePedidoItem) {
+		this.fasePedidoItem = fasePedidoItem;
 	}
 
 	public Date getData_grafico() {
@@ -221,6 +278,30 @@ public class BeanFasePedido implements Serializable {
 			total = total + p.getQtdepedido().intValue();
 		}
 		return ""+total;
+	}
+
+	public String getPedido() {
+		return pedido;
+	}
+
+	public void setPedido(String pedido) {
+		this.pedido = pedido;
+	}
+
+	public List<FaseMateriaPrima> getListamateriaprima() {
+		return listamateriaprima;
+	}
+
+	public void setListamateriaprima(List<FaseMateriaPrima> listamateriaprima) {
+		this.listamateriaprima = listamateriaprima;
+	}
+
+	public FaseMateriaPrima getFaseMateriaPrima() {
+		return faseMateriaPrima;
+	}
+
+	public void setFaseMateriaPrima(FaseMateriaPrima faseMateriaPrima) {
+		this.faseMateriaPrima = faseMateriaPrima;
 	}
 	
 	

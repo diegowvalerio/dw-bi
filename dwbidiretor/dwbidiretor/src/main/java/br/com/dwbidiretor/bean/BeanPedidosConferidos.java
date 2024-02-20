@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.dwbidiretor.classe.PedidosConferidos;
+import br.com.dwbidiretor.classe.PedidosConferidosUsuario;
 import br.com.dwbidiretor.servico.ServicoPedidosConferidos;
 
 
@@ -30,6 +31,7 @@ public class BeanPedidosConferidos implements Serializable {
 	@Inject
 	private ServicoPedidosConferidos servico;
 	private List<PedidosConferidos> lista = new ArrayList<>();
+	private List<PedidosConferidosUsuario> listau = new ArrayList<>();
 
 	private Date data_grafico = new Date();
 	private Date data_grafico2 = new Date();
@@ -42,9 +44,26 @@ public class BeanPedidosConferidos implements Serializable {
 	
 	public void filtrar(){
 		lista = servico.pedidosconferidos(data_grafico, data_grafico2);
+		listau = servico.pedidosconferidosusuarios(data_grafico, data_grafico2);
 	}
 	
 	
+
+	public ServicoPedidosConferidos getServico() {
+		return servico;
+	}
+
+	public void setServico(ServicoPedidosConferidos servico) {
+		this.servico = servico;
+	}
+
+	public List<PedidosConferidosUsuario> getListau() {
+		return listau;
+	}
+
+	public void setListau(List<PedidosConferidosUsuario> listau) {
+		this.listau = listau;
+	}
 
 	public PedidosConferidos getPedidosconferidos() {
 		return pedidosconferidos;

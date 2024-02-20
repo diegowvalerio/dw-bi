@@ -33,6 +33,10 @@
 .color_falta {
 	background-color: #F5A9D0;
 }
+
+.color_importado {
+	background-color: #528B8B;
+}
 </style>
 	</ui:define>
 
@@ -72,6 +76,12 @@
 					<p:commandButton action="#{beanFasePedido.filtrar()}"
 						value="Filtrar" icon="fa fa-check" update=":form:paineld :form:paineld2"
 						styleClass="btn-primary" />
+						
+					<p:outputLabel value="Pedido:" for="pedido" />
+					<p:inputText value="#{beanFasePedido.pedido}"></p:inputText>	
+					
+					<p:outputLabel value="Lote:" for="lote" />
+					<p:inputText id="lote" value="#{beanFasePedido.lote}"></p:inputText>	
 
 					</p:panelGrid>
 					
@@ -123,8 +133,8 @@
 							<p:dataExporter type="xls" target="pedido" fileName="pedido-fase" pageOnly="true"/>
 						</h:commandLink>
 						
-					<p:dataTable id="pedido" var="listas2" value="#{beanFasePedido.listapedidofase}" selection="#{beanFasePedido.pedidofase}"
-						resizableColumns="true" selectionMode="single" rowKey="#{listas2.pedidoid}"   scrollHeight="600" scrollable="true" >      
+					<p:dataTable id="pedido" var="listas2" value="#{beanFasePedido.listapedidofase}" selection="#{beanFasePedido.pedidofase}" selectionMode="single"
+						resizableColumns="true" rowKey="#{listas2.pedidoid}"   scrollHeight="600" scrollable="true" >      
 						
 						 <p:ajax event="rowSelect" listener="#{beanFasePedido.onRowSelect2}" update=":form:painelDados" oncomplete="PF('dialog').show();"/> 
 						    			
@@ -169,6 +179,10 @@
 						<p:column headerText="Dias" width="5%">
 							<h:outputText value="#{listas2.diasnafase}" />
 						</p:column>
+						
+						<p:column headerText="Lote" width="6%">
+							<h:outputText value="#{listas2.lote}" />
+						</p:column>
 
 					</p:dataTable>
 
@@ -187,9 +201,12 @@
 					<div style="overflow:scroll;width:100%;overflow:auto"> 
 					<h:panelGrid columns="1" id="painelDados" columnClasses="left,right" width="100%">
 						
-        				<p:dataTable id="pedidoitem" var="listas3" value="#{beanFasePedido.listaitem}"  scrollHeight="400" scrollable="true" resizableColumns="true">
+        				<p:dataTable id="pedidoitem" var="listas3" value="#{beanFasePedido.listaitem}"  scrollHeight="400" scrollable="true" resizableColumns="true"
+        				selection="#{beanFasePedido.fasePedidoItem}" selectionMode="single" rowKey="#{listas3.produto}" >
+        				
+        					<p:ajax event="rowSelect" listener="#{beanFasePedido.onRowSelect3}" update=":form:painelDados2" oncomplete="PF('dialog2').show();"/> 
         					
-        					<p:column headerText="Código" width="4%">
+        					<p:column headerText="Código" width="4%" styleClass="#{listas3.importado == 1 ? 'color_importado' : null}" >
 								<h:outputText value="#{listas3.produto}" />
 							</p:column>
 							
@@ -258,6 +275,27 @@
 					</div>
 				</p:dialog>
 			
+				
+				
+				<p:dialog id="dlg2" header="Importados" widgetVar="dialog2" responsive="true" modal="true" position="center" onShow="position='center'" width="50%">
+					 			        				
+					<h:panelGrid columns="1" id="painelDados2" columnClasses="left,right" >
+						
+        				<p:dataTable id="pedidoitem2" var="listas4" value="#{beanFasePedido.listamateriaprima}" resizableColumns="true" >
+        						
+        					<p:column headerText="Código" width="5%">
+								<h:outputText value="#{listas4.produto}" />
+							</p:column>
+							
+							<p:column headerText="Produto">
+								<h:outputText value="#{listas4.nomeproduto}" />
+							</p:column>
+      
+						</p:dataTable>	
+									
+					</h:panelGrid>
+				
+				</p:dialog>
 		</h:form>
 
 	</ui:define>

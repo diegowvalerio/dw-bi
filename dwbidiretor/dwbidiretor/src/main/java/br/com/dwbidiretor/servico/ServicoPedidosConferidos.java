@@ -8,7 +8,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import br.com.dwbidiretor.classe.PedidosConferidos;
+import br.com.dwbidiretor.classe.PedidosConferidosUsuario;
 import br.com.dwbidiretor.dao.DAOPedidosConferidos;
+import br.com.dwbidiretor.dao.DAOPedidosConferidosUsuario;
 
 @Dependent
 public class ServicoPedidosConferidos implements Serializable{
@@ -16,10 +18,15 @@ public class ServicoPedidosConferidos implements Serializable{
 	
 	@Inject
 	private DAOPedidosConferidos dao;
-	
+	@Inject
+	private DAOPedidosConferidosUsuario dao2;
 	
 	public List<PedidosConferidos> pedidosconferidos(Date data1, Date data2){
 		return dao.pedidosconferidos(data1, data2);
+	}
+	
+	public List<PedidosConferidosUsuario> pedidosconferidosusuarios(Date data1, Date data2){
+		return dao2.pedidosconferidosusuarios(data1, data2);
 	}
 	
 }

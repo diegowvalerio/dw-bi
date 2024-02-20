@@ -28,6 +28,7 @@ import org.primefaces.model.charts.bar.BarChartModel;
 import org.primefaces.model.charts.bar.BarChartOptions;
 import org.primefaces.model.charts.optionconfig.legend.Legend;
 
+import br.com.dwbidiretor.classe.CtaCorrente;
 import br.com.dwbidiretor.classe.P1_FaturadoDia;
 import br.com.dwbidiretor.classe.P1_MetaFaturado;
 import br.com.dwbidiretor.servico.ServicoP1_FaturadoDia;
@@ -50,6 +51,8 @@ public class BeanP1_Painel implements Serializable {
 	private ServicoP1_FaturadoDia servico2;
 	private List<P1_FaturadoDia> lista2 = new ArrayList<>();
 	private List<P1_FaturadoDia> lista2pedido = new ArrayList<>();
+	
+	private List<CtaCorrente> listacta = new ArrayList<>();
 
 	private String vendedorlogado;
 
@@ -95,6 +98,8 @@ public class BeanP1_Painel implements Serializable {
 		cria_pedidometa();
 		ajustalistadiapedido();
 		
+		
+		listacta = servico2.ctacorrente();
 	}
 	
 	public void filtrar(){	
@@ -591,6 +596,14 @@ public class BeanP1_Painel implements Serializable {
 
 	public void setLista(List<P1_MetaFaturado> lista) {
 		this.lista = lista;
+	}
+
+	public List<CtaCorrente> getListacta() {
+		return listacta;
+	}
+
+	public void setListacta(List<CtaCorrente> listacta) {
+		this.listacta = listacta;
 	}
 
 }

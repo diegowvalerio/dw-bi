@@ -18,9 +18,18 @@ public class PedidoFase implements Serializable {
 	private String status;
 	private String dataentradafase;
 	private Double diasnafase;
+	private String lote;
 
 	public PedidoFase() {
 		super();
+	}
+
+	public String getLote() {
+		return lote;
+	}
+
+	public void setLote(String lote) {
+		this.lote = lote;
 	}
 
 	public BigDecimal getPedidoid() {
