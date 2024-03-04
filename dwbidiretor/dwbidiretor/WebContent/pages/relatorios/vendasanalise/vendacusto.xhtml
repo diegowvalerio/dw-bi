@@ -22,6 +22,49 @@
 	padding: 0;
 }
 </style>
+
+<script type="text/javascript">
+function my_ext(){  
+	this.cfg.config.enablePlugins = true;
+	var options = {
+            options: {
+            	series:[{
+            	      pointLabels: {
+            	         show: true,
+            	         hideZeros:false
+            	      }
+            	   }]
+            }
+         };
+	
+    $.extend(true, this.cfg.config, options);
+};
+   
+   
+function fullscreen(){
+	var el = document.getElementById("gf1");
+
+	  // Supports most browsers and their versions.
+	  var requestMethod = el.requestFullScreen || el.webkitRequestFullScreen 
+	  || el.mozRequestFullScreen || el.msRequestFullScreen;
+
+	  if (requestMethod) {
+
+	    // Native full screen.
+	    requestMethod.call(el);
+
+	  } else if (typeof window.ActiveXObject !== "undefined") {
+
+	    // Older IE.
+	    var wscript = new ActiveXObject("WScript.Shell");
+
+	    if (wscript !== null) {
+	      wscript.SendKeys("{F11}");
+	    }
+	  }
+} ; 
+</script>
+
 	</ui:define>
 
 	<ui:define name="title">
@@ -64,7 +107,7 @@
 					</p:selectOneMenu>
 					
 					<p:commandButton action="#{beanVendaCusto.filtrar()}" value="Filtrar"
-						icon="fa fa-check" update=":form:paineld :form:paineld2 :form:paineld3 :form:paineld4" styleClass="btn-primary" />
+						icon="fa fa-check" update=":form:paineld :form:paineld2 :form:paineld3 :form:paineld4 :form:bar1" styleClass="btn-primary" />
 					
 			</p:panelGrid>	
 			<p:separator></p:separator>	
@@ -247,10 +290,39 @@
 						</p:dataTable>
 												
 			</h:panelGrid>
+			</div>		
+			
+			</div>	
+			
+			<p:separator></p:separator>
+			
+			<div class="row">
+			
+			<div class="col-md-8">
+				<div class="box box-default" id="gf1">
+								<div class="box-header with-border">
+									<h3 class="box-title">Comparativo de Vendas</h3>
+
+									<div class="box-tools pull-right">
+										<button type="button" class="btn btn-box-tool"
+											data-widget="collapse">
+											<i class="fa fa-minus"></i>
+										</button>
+										<button type="button" class="btn btn-box-tool" onclick="fullscreen()">
+											<i class="fa fa-desktop"></i>
+										</button>
+									</div>
+									<!-- /.box-tools -->
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body" >
+								<p:barChart model="#{beanVendaCusto.barModel2}" id="bar1" />
+								</div>
+				</div>
 			</div>
 			
+			</div>	
 			
-			</div>		
 		</h:form>
 
 	</ui:define>

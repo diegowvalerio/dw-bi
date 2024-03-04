@@ -1,0 +1,196 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Vendas Frete
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Vendas Frete" />
+
+		<h:form id="form">
+				<p:panelGrid columns="8" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
+
+					<p:outputLabel value=" Data:  " for="data_grafico" />
+					<p:calendar locale="pt_BR" id="data_grafico"
+						value="#{beanVendasFrete.data_grafico}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico2" />
+					<p:calendar locale="pt_BR" id="data_grafico2"
+						value="#{beanVendasFrete.data_grafico2}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+					
+				<p:outputLabel value=" UF:  " for="uf" />
+					<p:selectOneMenu id="uf" value="#{beanVendasFrete.uf}"
+							lazy="true" style="width:125px" required="true">
+							<f:selectItem itemLabel="Todos" itemValue="TD" />
+							<f:selectItem itemLabel="AC" itemValue="AC" />
+							<f:selectItem itemLabel="AL" itemValue="AL" />
+							<f:selectItem itemLabel="AP" itemValue="AP" />
+							<f:selectItem itemLabel="AM" itemValue="AM" />
+							<f:selectItem itemLabel="BA" itemValue="BA" />
+							<f:selectItem itemLabel="CE" itemValue="CE" />
+							<f:selectItem itemLabel="ES" itemValue="ES" />
+							<f:selectItem itemLabel="GO" itemValue="GO" />
+							<f:selectItem itemLabel="MA" itemValue="MA" />
+							<f:selectItem itemLabel="MT" itemValue="MT" />
+							<f:selectItem itemLabel="MS" itemValue="MS" />
+							<f:selectItem itemLabel="MG" itemValue="MG" />
+							<f:selectItem itemLabel="PA" itemValue="PA" />
+							<f:selectItem itemLabel="PB" itemValue="PB" />
+							<f:selectItem itemLabel="PR" itemValue="PR" />
+							<f:selectItem itemLabel="PE" itemValue="PE" />
+							<f:selectItem itemLabel="PI" itemValue="PI" />
+							<f:selectItem itemLabel="RJ" itemValue="RJ" />
+							<f:selectItem itemLabel="RN" itemValue="RN" />
+							<f:selectItem itemLabel="RS" itemValue="RS" />
+							<f:selectItem itemLabel="RO" itemValue="RO" />
+							<f:selectItem itemLabel="RR" itemValue="RR" />
+							<f:selectItem itemLabel="SC" itemValue="SC" />
+							<f:selectItem itemLabel="SP" itemValue="SP" />
+							<f:selectItem itemLabel="SE" itemValue="SE" />
+							<f:selectItem itemLabel="TO" itemValue="TO" />
+							<f:selectItem itemLabel="DF" itemValue="DF" />
+							
+						</p:selectOneMenu>
+						
+					<p:outputLabel value="Vendedor:" for="vendedor" />
+					<p:selectOneMenu id="vendedor"
+					value="#{beanVendasFrete.vendedor}"
+					converter="conversorVendedor" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanVendasFrete.listavendedor}"
+						var="vendedor" itemLabel="#{vendedor.codigovendedor} - #{vendedor.nomevendedor}"
+						itemValue="#{vendedor}" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="Cliente" for="cliente" />
+						<h:panelGroup>
+							<p:autoComplete id="cliente" 
+								value="#{beanVendasFrete.cliente}"
+								completeMethod="#{beanVendasFrete.completaCliente}" var="c"
+								itemLabel="#{c.nomecliente}" itemValue="#{c}" forceSelection="true"
+								converter="conversorCliente" />
+							<p:watermark value="Digite Nome ou Código" for="cliente"></p:watermark>
+						</h:panelGroup>
+
+					<p:commandButton action="#{beanVendasFrete.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld"
+						styleClass="btn-primary" />
+
+				</p:panelGrid>
+				
+			<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="venda" fileName="vendas_frete" pageOnly="true"/>
+			</h:commandLink>	
+			
+			<div class="box box-primary" >
+				<div style="overflow:scroll;width:100%;overflow:auto">
+				
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
+						<p:dataTable id="venda" var="vendas"  scrollable="true"
+							value="#{beanVendasFrete.listavenda}" resizableColumns="true">
+
+													
+							<p:column headerText="Código" >
+								<h:outputText value="#{vendas.codigocliente}" />
+							</p:column>
+							
+							<p:column headerText="Cliente" >
+								<h:outputText value="#{vendas.nomecliente}" />
+							</p:column>
+							
+							<p:column headerText="N° Nota" >
+								<h:outputText value="#{vendas.pedido}" />
+							</p:column>
+
+							<p:column  headerText="Data Nota" >
+								<h:outputText value="#{vendas.data}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Vlr Total">
+								<h:outputText value="#{vendas.valortotal}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Tipo " >
+								<h:outputText value="#{vendas.tipopedido}" />
+							</p:column>
+							
+							<p:column headerText="Cidade " >
+								<h:outputText value="#{vendas.cidade}" />
+							</p:column>
+							
+							<p:column headerText="UF " >
+								<h:outputText value="#{vendas.uf}" />
+							</p:column>
+							
+							<p:column headerText="Vendedor" >
+								<h:outputText value="#{vendas.nomevendedor}" />
+							</p:column>
+							
+							<p:column headerText="Gestor" >
+								<h:outputText value="#{vendas.nomegestor}" />
+							</p:column>
+							
+							<p:column headerText="Transporte">
+								<h:outputText value="#{vendas.transporte}" />
+							</p:column>
+							
+							<p:column headerText="Nome Transporte">
+								<h:outputText value="#{vendas.nometransporte}" />
+							</p:column>
+							
+							<p:column headerText="N° Frete">
+								<h:outputText value="#{vendas.nconhecimentofrete}" />
+							</p:column>
+							
+							<p:column headerText="Vlr Frete">
+								<h:outputText value="#{vendas.vlfrete}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+									
+						</p:dataTable>
+					</h:panelGrid>
+					</div>
+				</div>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

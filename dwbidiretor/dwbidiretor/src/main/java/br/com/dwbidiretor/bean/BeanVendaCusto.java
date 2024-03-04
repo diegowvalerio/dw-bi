@@ -17,6 +17,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.primefaces.event.UnselectEvent;
+import org.primefaces.model.charts.ChartData;
+import org.primefaces.model.charts.axes.cartesian.CartesianScales;
+import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
+import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearTicks;
+import org.primefaces.model.charts.bar.BarChartDataSet;
+import org.primefaces.model.charts.bar.BarChartModel;
+import org.primefaces.model.charts.bar.BarChartOptions;
+import org.primefaces.model.charts.optionconfig.title.Title;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -70,6 +78,8 @@ public class BeanVendaCusto implements Serializable {
 	private String ano,ano2;
 	private String filtroproduto;
 	private String filtrovendedor;
+	
+	private BarChartModel barModel2;
 
 	@PostConstruct
 	public void init() {
@@ -86,6 +96,8 @@ public class BeanVendaCusto implements Serializable {
 		
 		filtroproduto = "1";
 		filtrovendedor = "-1" ;
+		
+		createBarModel2();
 	}
 	
 	public void filtrar(){
@@ -117,6 +129,7 @@ public class BeanVendaCusto implements Serializable {
 		
 		
 		//System.out.println(filtrovendedor);
+		createBarModel2();
 	
 	}
 
@@ -129,7 +142,79 @@ public class BeanVendaCusto implements Serializable {
 	         
 	    context.addMessage(null, msg);
 	}*/
+	
+	public void createBarModel2() {
+        barModel2 = new BarChartModel();
+        ChartData data = new ChartData();
+         
+        BarChartDataSet barDataSet = new BarChartDataSet();
+        barDataSet.setLabel(""+ano);
+        barDataSet.setBackgroundColor("rgba(30, 144, 255)");
+        barDataSet.setBorderColor("rgb(0, 0, 255)");
+        barDataSet.setBorderWidth(1);
+        List<Number> values = new ArrayList<>();
+        for(VendaCusto p:lista) {
+        		values.add(p.getVenda());
+        }
+        barDataSet.setData(values);
+         
+        BarChartDataSet barDataSet2 = new BarChartDataSet();
+        barDataSet2.setLabel(""+ano2);
+        barDataSet2.setBackgroundColor("rgba(244, 164, 96)");
+        barDataSet2.setBorderColor("rgb(160, 82, 45)");
+        barDataSet2.setBorderWidth(1);
+        List<Number> values2 = new ArrayList<>();
+        for(VendaCusto p:lista_ano2) {
+    		values2.add(p.getVenda());
+        }
+        barDataSet2.setData(values2);
+ 
+        data.addChartDataSet(barDataSet);
+        data.addChartDataSet(barDataSet2);
+         
+        List<String> labels = new ArrayList<>();
+        if(lista.size() > lista_ano2.size()) {
+        	for(VendaCusto p:lista) {
+        		 labels.add(p.getMes());
+        	}
+        }else {
+        	for(VendaCusto p:lista_ano2) {
+       		 labels.add(p.getMes());
+       	}
+        	
+        }
+        data.setLabels(labels);
+        barModel2.setData(data);
+         
+        //Options
+        BarChartOptions options = new BarChartOptions();
+        CartesianScales cScales = new CartesianScales();
+        CartesianLinearAxes linearAxes = new CartesianLinearAxes();
+        CartesianLinearTicks ticks = new CartesianLinearTicks();
+        ticks.setBeginAtZero(true);
+        linearAxes.setTicks(ticks);
+        cScales.addYAxesData(linearAxes);
+        options.setScales(cScales);
+         
+        Title title = new Title();
+        title.setDisplay(true);
+        title.setText("Comparativo de Vendas");
+        options.setTitle(title);
+         
+        barModel2.setExtender("my_ext");
+        barModel2.setOptions(options);
+    }
+	
+	
 	 
+	public BarChartModel getBarModel2() {
+		return barModel2;
+	}
+
+	public void setBarModel2(BarChartModel barModel2) {
+		this.barModel2 = barModel2;
+	}
+
 	public List<Produto> getProdutosselecionados() {
 		return produtosselecionados;
 	}

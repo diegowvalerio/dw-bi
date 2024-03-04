@@ -101,6 +101,7 @@ import br.com.dwbidiretor.classe.VendaVendedor;
 import br.com.dwbidiretor.classe.VendasEmGeral;
 import br.com.dwbidiretor.classe.VendasEmGeralItem;
 import br.com.dwbidiretor.classe.VendasEndereco;
+import br.com.dwbidiretor.classe.VendasFrete;
 import br.com.dwbidiretor.classe.Vendedor;
 import br.com.dwbidiretor.classe.VendedorMetaVenda;
 import br.com.dwbidiretor.classe.painel.Cliente_Ano;
@@ -7992,6 +7993,125 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		return list;
 	}
 	
+	public List<FasePedido> fasepedidodatafase(int venda, int outros, Date data1, Date data2, String pedido, String lote,Date fase){
+		List<FasePedido> list = new ArrayList<>();
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		String dataFormatada = formato.format(data1);
+		
+		String dataFormatada2 = formato.format(fase);
+		
+		//ajustar data +1 para filtrar corretamente
+		Calendar cal = Calendar.getInstance(); 
+		cal.setTime(fase); 
+		cal.add(Calendar.DATE, 1);
+		fase = cal.getTime();				
+		String dataFormatada3 = formato.format(fase);
+		
+		String sql = " "
+				+"  select "
+				+ " x.ROTEIROID,  "
+				+ " x.DESC_ROTEIRO,  "
+				+ " x.vl_pedido,  "
+				+ " x.qtde , "
+				+ " x.ordem "
+				+ " from( "
+				+ " select "
+				+ " r.ROTEIROID,  "
+				+ " r.DESC_ROTEIRO,  "
+				+ " coalesce(total.vl_pedido,0) vl_pedido,  "
+				+ " coalesce(total.qtde,0) qtde , "
+				+ " case  "
+				+ " when r.ROTEIROID = 1 then 1 "
+				+ " when r.ROTEIROID = 2 then 4 "
+				+ " when r.ROTEIROID = 3 then 3 "
+				+ " when r.ROTEIROID = 4 then 8 "
+				+ " when r.ROTEIROID = 5 then 10 "
+				+ " when r.ROTEIROID = 6 then 11 "
+				+ " when r.ROTEIROID = 7 then 12 "
+				+ " when r.ROTEIROID = 8 then 13 "
+				+ " when r.ROTEIROID = 9 then 5 "
+				+ " when r.ROTEIROID = 10 then 7 "
+				+ " when r.ROTEIROID = 11 then 9 "
+				+ " when r.ROTEIROID = 12 then 14 "
+				+ " when r.ROTEIROID = 13 then 6 "
+				+ " when r.ROTEIROID = 14 then 2 else 100 end ordem "
+				+ "  "
+				+ " from ROTEIRO r  "
+				+ "  "
+				+ " left join(  "
+				+ " select  "
+				+ " RT.ROTEIROID ,  "
+				+ " sum(p.VL_TOTALPROD_PEDIDOVENDA) vl_pedido,  "
+				+ " count(p.pedidovendaid) qtde  "
+				+ " from pedidovenda p  "
+				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+				+ " left join( "
+				+ " select   "
+				+ " p.roteiroid  ,   "
+				+ " p.pedidovendaid , "
+				+ " l.loteid  "
+				+ " from lote l "
+				+ " inner join LOTE_ITEM li on li.loteid = l.loteid "
+				+ " inner join pedidovenda_item it on it.pedidovendaitemid  = li.pedidovendaitemid  "
+				+ " inner join pedidovenda p on p.pedidovendaid = it.pedidovendaid  "
+				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID   "
+				+ " where p.STATUS_PEDIDOVENDA in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO')  "
+				+ " group by p.roteiroid ,  l.loteid ,p.pedidovendaid "
+				+ " )lote on lote.roteiroid = p.roteiroid and lote.pedidovendaid = p.pedidovendaid "
+				+ " inner join ( "
+				+ " select   "
+				+ " r.pedidovendaid,  "
+				+ " r.ROTEIROID  "  
+				+ " from ROTEIRO_PEDIDO r "
+				+ " inner join (  "
+				+ " select   "
+				+ " max(roteiropedidoid) roteiropedidoid,  "
+				+ " r.pedidovendaid  "
+				+ " from ROTEIRO_PEDIDO r inner join pedidovenda p2 on p2.pedidovendaid = r.pedidovendaid where p2.roteiroid not in (1,12) and DT_ROTEIRO_PEDIDO <= '" + dataFormatada3 + " '"
+				+ " group by r.pedidovendaid  "
+				+ " )rt on rt.roteiropedidoid = r.roteiropedidoid    "
+				+ " union all   "
+				+ " select   "
+				+ " r.pedidovendaid,  "
+				+ " r.ROTEIROID  "
+				+ " from pedidovenda r  "
+				+ " where r.roteiroid = 1 and r.DT_PEDIDOVENDA <=  ' " + dataFormatada2 + " ' "
+				+ " union all   "
+				+ " select   "
+				+ " r.pedidovendaid,  "
+				+ " r.ROTEIROID  "
+				+ " from pedidovenda r  "
+				+ " where r.roteiroid = 12 and r.DT_PEDIDOVENDA <=  ' " + dataFormatada2 + " ' "
+				+ " )rt on rt.pedidovendaid = p.pedidovendaid "
+				+ " where p.STATUS_PEDIDOVENDA in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO') "
+				+ " and p.DT_PEDIDOVENDA <=  ' " + dataFormatada2 + " ' "
+				+ " and (p.pedidovendaid = "+pedido+" or '0000' = "+pedido+") "
+				+ " AND (CF.tipooperacao_cfop = 'VENDA' and 1="+venda+" or CF.tipooperacao_cfop <> 'VENDA' and 1="+outros+") "
+				+ " and  (lote.loteid = "+lote+" or '0000' = "+lote+") "
+				+ " group by RT.ROTEIROID "
+				+ " ) total on total.ROTEIROID = r.ROTEIROID "
+				+ " "
+				+ " )x "
+				+ " group by x.ROTEIROID, x.DESC_ROTEIRO, x.vl_pedido, x.qtde ,x.ordem  "
+				+ "  order by x.ordem ";
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(sql);
+		
+		//System.out.println(sql);
+		
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			FasePedido fasePedido = new FasePedido();
+			fasePedido.setRoteiroid((BigDecimal) row[0]);
+			fasePedido.setNomeroteiro((String) row[1]);
+			fasePedido.setVlpedido((BigDecimal) row[2]);
+			fasePedido.setQtdepedido((BigInteger) row[3]);
+			
+			list.add(fasePedido);
+		}
+		return list;
+	}
+	
 	public List<CtaCorrente> ctacorrente(){
 		List<CtaCorrente> list = new ArrayList<>();
 		
@@ -12708,6 +12828,94 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 	return list;
 	
 }
+
+	public List<VendasFrete> vendasfrete(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2, String uf){
+		List<VendasFrete> list = new ArrayList<>();
+	
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		String dataFormatada = formato.format(data1);
+		String dataFormatada2 = formato.format(data2);
+		
+		int f = 0;
+		if(uf.equals("TD")) {
+			f = 2;
+		}else {
+			f = 1;
+		}
+
+		String sql = ""
+				+ "  select  "
+				+ " CI.CADCFTVID AS CLIENTE,   "
+				+ " CI.NOME_CADCFTV AS NOME_CLIENTE,  "
+				+ " p.NR_NOTA_PEDIDOVENDA nota,  "
+				+ " P.DT_FATURAMENTO_PEDIDOVENDA AS DATAfaturamento,  "
+				+ " p.vl_totalprod_pedidovenda,  "
+				+ " pg.nome_formapagto as prazo,  "
+				+ " t.desc_tipo_pedido as tipo_pedido,  "
+				+ " CF.tipooperacao_cfop,  "
+				+ " p.status_pedidovenda,  "
+				+ " en.nome_cidade,  "
+				+ " en.uf_cidade, "
+				+ " v.NOME_CADCFTV nome_vendedor, "
+				+ " G.NOME_GESTOR, "
+				+ " p.transportadorid , "
+				+ " tr.nome_cadcftv transportadora, "
+				+ " p.vl_custo_frete_pedidovenda , "
+				+ " p.nr_conhec_frete_pedidovenda  "
+				+ " from pedidovenda p  "
+				+ " INNER JOIN CADCFTV V ON V.CADCFTVID = P.VENDEDOR1ID  "
+				+ " INNER JOIN CADCFTV CI ON CI.CADCFTVID = P.CADCFTVID  "
+				+ " inner join tipo_pedido t on t.tipopedidoid = p.tipopedidoid  "
+				+ " inner join formapagto pg on pg.formapagtoid = p.formapagtoid  "
+				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+				+ " INNER JOIN VENDEDOR V2 ON V2.CADCFTVID = p.VENDEDOR1ID  "
+				+ " INNER JOIN GESTOR G ON G.GESTORID = V2.GESTORID "
+				+ " left JOIN CADCFTV tr ON tr.CADCFTVID = P.transportadorid   "
+				+ " LEFT join (  "
+				+ " SELECT V.CADCFTVID,CI.UF_CIDADE, ci.nome_cidade, V.END_ENDCADCFTV, V.CEP_ENDCADCFTV, V.NRO_ENDCADCFTV FROM ENDCADCFTV V  "
+				+ " inner join(  "
+				+ " SELECT max(ENDCADCFTVID) d , CADCFTVID cod FROM ENDCADCFTV  "
+				+ " group by cadcftvid  "
+				+ " )x on x.d = v.ENDCADCFTVID and x.cod = v.CADCFTVID  "
+				+ " INNER JOIN CIDADE CI ON CI.CIDADEID = V.CIDADEID  "
+				+ " ) EN ON EN.CADCFTVID = p.CADCFTVID  "
+				+ " where p.status_pedidovenda in ('FATURADO')  "
+				+ " AND CF.tipooperacao_cfop = 'VENDA'  "
+				+ " and p.tp_nota_pedidovenda = 'NORMAL'  "
+				+ " and p.DT_FATURAMENTO_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
+				+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
+				+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
+				+ " and (en.uf_cidade = '"+uf+"' and 1="+f+" or 2="+f+" ) ";
+				
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(sql);
+	
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			VendasFrete vendas = new VendasFrete();
+			
+			vendas.setCodigocliente((BigDecimal) row[0]);
+			vendas.setNomecliente((String) row[1] );
+			vendas.setPedido((String) row[2]);
+			vendas.setData((Date) row[3] );
+			vendas.setValortotal((BigDecimal) row[4] );
+			vendas.setPrazo((String) row[5]);
+			vendas.setTipopedido((String) row[6]);
+			vendas.setTipooperacaocfop((String) row[7]);
+			vendas.setStatuspedido((String) row[8]);
+			vendas.setCidade((String) row[9]);
+			vendas.setUf((String) row[10]);
+			vendas.setNomevendedor((String) row[11] );
+			vendas.setNomegestor((String) row[12]);
+			vendas.setTransporte((BigDecimal) row[13]);
+			vendas.setNometransporte((String) row[14]);
+			vendas.setVlfrete((BigDecimal) row[15] );
+			vendas.setNconhecimentofrete((String) row[16]);
+
+			list.add(vendas);
+		}
+	
+		return list;
+	}
 
 public List<VendasEndereco> vendasendereco(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2) {
 	List<VendasEndereco> list = new ArrayList<>();

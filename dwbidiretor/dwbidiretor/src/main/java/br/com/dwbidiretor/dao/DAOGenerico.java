@@ -64,6 +64,7 @@ import br.com.dwbidiretor.classe.VendaVendedor;
 import br.com.dwbidiretor.classe.VendasEmGeral;
 import br.com.dwbidiretor.classe.VendasEmGeralItem;
 import br.com.dwbidiretor.classe.VendasEndereco;
+import br.com.dwbidiretor.classe.VendasFrete;
 import br.com.dwbidiretor.classe.Vendedor;
 import br.com.dwbidiretor.classe.VendedorMetaVenda;
 import br.com.dwbidiretor.classe.painel.Cliente_Ano;
@@ -197,6 +198,7 @@ public interface DAOGenerico<E> {
 	public ItensTabela itenstabela(String idtabela, String produtoid);
 	
 	public List<FasePedido> fasepedido(int venda, int outros,Date data1, Date data2, String pedido, String lote);
+	public List<FasePedido> fasepedidodatafase(int venda, int outros,Date data1, Date data2, String pedido, String lote,Date fase);
 	public List<FasePedidoItem> fasepedidoitem(String pedido);
 	public List<PedidoFase> pedidofase(int venda, int outros, BigDecimal roteiro,Date data1, Date data2,String pediddo,String lote);
 	public List<FaseMateriaPrima> fasemateriaprima(String pedido,String produto);
@@ -204,6 +206,8 @@ public interface DAOGenerico<E> {
 	
 	public List<Produto> produtosgrupo(String grupo);
 	public Imagem imagem(String produtoid); 
+	
+	public List<VendasFrete> vendasfrete(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2, String uf);
 	
 	//willian
 	public List<ClientesAtivos> clientesativos(String ano);
