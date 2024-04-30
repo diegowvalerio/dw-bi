@@ -19,8 +19,8 @@ public class ServicoProdutoRanking implements Serializable{
 	private DAOProdutoRanking dao;
 
 	
-	public List<ProdutoRanking> produtoranking(Date data1, Date data2, String vendedor, String produtos ){
-		return dao.produtoranking(data1, data2, vendedor, produtos);
+	public List<ProdutoRanking> produtoranking(Date data1, Date data2, String vendedor, String produtos, String categoriaid ){
+		return dao.produtoranking(data1, data2, vendedor, produtos, categoriaid);
 	}
 	
 	

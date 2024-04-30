@@ -215,6 +215,12 @@
 				</p:link>
 		</li>
 		
+		<li><p:link href="/dwbidiretor/pages/relatorios/tabelapreco/tabproduto.xhtml" rendered="#{beanControleAcesso.acesso('diretor_tabproduto')}">
+					<i class="fa fa-folder"></i>
+					<span>Tabela Preço Produto</span>
+				</p:link>
+		</li>
+		
 		<li><p:link href="/dwbidiretor/pages/relatorios/vendasendereco/vendasendereco.xhtml"  rendered="#{beanControleAcesso.acesso('diretor_vendasendereco')}">
 					<i class="fa fa-folder"></i>
 					<span>Vendas Cliente / Endereço</span>
@@ -269,7 +275,7 @@
 				</p:link>
 		</li>
 		
-		<li><p:link href="/dwbidiretor/pages/relatorios/fasepedido/fasepedido_datafase.xhtml" rendered="#{beanControleAcesso.acesso('diretor_fasepedido')}">
+		<li><p:link href="/dwbidiretor/pages/relatorios/fasepedido/fasepedido_datafase.xhtml" rendered="#{beanControleAcesso.acesso('diretor_fasepedido_datafase')}">
 					<i class="fa fa-folder"></i>
 					<span>Fase x Pedido - Data Fase</span>
 				</p:link>
@@ -301,6 +307,12 @@
 		<li><p:link href="/dwbidiretor/pages/relatorios/financeiro/nota.xhtml" rendered="#{beanControleAcesso.acesso('diretor_financeiro_nota')}">
 					<i class="fa fa-folder"></i>
 					<span>Notas Fiscais</span>
+				</p:link>
+		</li>
+		
+		<li><p:link href="/dwbidiretor/pages/relatorios/ctaresumo/ctaresumo.xhtml" rendered="#{beanControleAcesso.acesso('diretor_financeiro_ctaresumo')}">
+					<i class="fa fa-folder"></i>
+					<span>Resumo Gerencial</span>
 				</p:link>
 		</li>
 		
@@ -361,6 +373,23 @@
 		</ul>	
 	</li>
 	
+	<li class="treeview"><p:link href="#" rendered="#{beanControleAcesso.acesso('diretor_rh')}"> <i class="fa fa-th-list"></i>
+		<span>RH</span> <span class="pull-right-container"> 
+		<i class="fa fa-angle-left pull-right"></i>
+		</span>
+		</p:link>	
+		
+		<ul class="treeview-menu">
+		
+		<li><p:link href="/dwbidiretor/pages/relatorios/rh/rh_folha.xhtml" rendered="#{beanControleAcesso.acesso('diretor_rh_folha')}">
+					<i class="fa fa-folder"></i>
+					<span>Resumo Folha</span>
+				</p:link>
+		</li>
+		
+		
+	</ul>	
+	</li>
 			
 	<li class="treeview"><p:link href="#" rendered="#{beanControleAcesso.acesso('diretor_producao')}"> <i class="fa fa-th-list"></i>
 		<span>Produção</span> <span class="pull-right-container"> 
@@ -397,6 +426,18 @@
 		<li><p:link href="/dwbidiretor/pages/relatorios/producao/producao.xhtml" rendered="#{beanControleAcesso.acesso('diretor_producaor')}">
 					<i class="fa fa-folder"></i>
 					<span>Produção</span>
+				</p:link>
+		</li>
+		
+		<li><p:link href="/dwbidiretor/pages/relatorios/fasepedido/fasepedido_produtos.xhtml" rendered="#{beanControleAcesso.acesso('diretor_fasepedido_produtos')}">
+					<i class="fa fa-folder"></i>
+					<span>Fase x Pedido - Produtos</span>
+				</p:link>
+		</li>
+		
+		<li><p:link href="/dwbidiretor/pages/relatorios/produto/produto-estoque.xhtml" rendered="#{beanControleAcesso.acesso('diretor_produto-estoque')}">
+					<i class="fa fa-folder"></i>
+					<span>Produtos x Estoque</span>
 				</p:link>
 		</li>
 		

@@ -25,6 +25,7 @@ public class FasePedidoItem implements Serializable {
 	private BigDecimal faltapedidogeral;
 	private BigDecimal faltapedidoestoquegeral;
 	private String importado;
+	private String mesa;
 	
 	public FasePedidoItem() {
 		super();
@@ -132,6 +133,14 @@ public class FasePedidoItem implements Serializable {
 
 	public void setImportado(String importado) {
 		this.importado = importado;
+	}
+
+	public String getMesa() {
+		return mesa;
+	}
+
+	public void setMesa(String mesa) {
+		this.mesa = mesa;
 	}
 
 	

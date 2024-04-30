@@ -1,0 +1,106 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+       Tabela Preço Produto
+    </ui:define>
+
+	<ui:define name="description">
+        (182-Tabela Varejo 2024)
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Tabela Preço Produto" />
+
+		<h:form id="form">
+			<p:panelGrid columns="12" layout="grid" styleClass="ui-fluid card" id="filtroscli">
+				
+					<p:commandButton action="#{beanTabProduto.filtrar()}" value="Filtrar"
+						icon="fa fa-check" update=":form:paineld" styleClass="btn-primary" />
+					
+			</p:panelGrid>	
+			
+			<p:separator></p:separator>	
+			
+			
+						
+			<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
+						<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="tabproduto" fileName="tabproduto" pageOnly="true"/>
+						</h:commandLink>
+						<p:outputLabel>#{beanTabProduto.tabproduto.tabelaprecoid}-#{beanTabProduto.tabproduto.nometabela}</p:outputLabel>
+														
+						<p:dataTable id="tabproduto" var="lista"  value="#{beanTabProduto.lista}" >
+						
+						
+							<p:column headerText="Código" width="5%">
+								<h:outputText value="#{lista.produtoid}"  >
+								<f:convertNumber maxFractionDigits="0" locale="pt-BR" pattern="#0000"/>
+							</h:outputText>
+							</p:column>		
+							
+							<p:column headerText="Produto" >
+								<h:outputText value="#{lista.nomeproduto}" />
+							</p:column>	
+							
+							<p:column headerText="Valor" width="7%">
+								<h:outputText value="#{lista.valor_unitario}" >
+									<f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="4"/>
+								</h:outputText>
+							</p:column>	
+							
+							<p:column headerText="Liquido" width="7%">
+								<h:outputText value="#{lista.valor_unitario_liquido}" >
+									<f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="4"/>
+								</h:outputText>
+							</p:column>	
+							
+							<p:column headerText="Promoção ?" width="7%">
+								<h:outputText value="#{lista.promocao}" />
+							</p:column>	
+							
+							<p:column headerText="Vl Promocão" width="7%">
+								<h:outputText value="#{lista.valor_promocao}" >
+									<f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="4"/>
+								</h:outputText>
+							</p:column>	
+							
+							<p:column headerText="Custo" width="7%">
+								<h:outputText value="#{lista.valor_custo}" >
+									<f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="4"/>
+								</h:outputText>
+							</p:column>	
+											
+
+						</p:dataTable>
+												
+			</h:panelGrid>
+					
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

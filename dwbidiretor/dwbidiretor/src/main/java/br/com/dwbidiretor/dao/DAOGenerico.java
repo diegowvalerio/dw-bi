@@ -6,10 +6,12 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.dwbidiretor.classe.PT_Carteira;
+import br.com.dwbidiretor.classe.Almoxarifado;
 import br.com.dwbidiretor.classe.AnaliseClientePedido;
 import br.com.dwbidiretor.classe.CPedido;
 import br.com.dwbidiretor.classe.CPedidoFin;
 import br.com.dwbidiretor.classe.CPedidoLog;
+import br.com.dwbidiretor.classe.Categoria;
 import br.com.dwbidiretor.classe.CidadeVenda;
 import br.com.dwbidiretor.classe.Cliente;
 import br.com.dwbidiretor.classe.ClienteNovo;
@@ -17,6 +19,7 @@ import br.com.dwbidiretor.classe.ClientesAtivos;
 import br.com.dwbidiretor.classe.ClientesAtivosAno;
 import br.com.dwbidiretor.classe.ClientesNovos;
 import br.com.dwbidiretor.classe.CtaCorrente;
+import br.com.dwbidiretor.classe.CtaResumo;
 import br.com.dwbidiretor.classe.DadosCliente;
 import br.com.dwbidiretor.classe.FaseMateriaPrima;
 import br.com.dwbidiretor.classe.FasePedido;
@@ -49,10 +52,13 @@ import br.com.dwbidiretor.classe.PrazoPedido;
 import br.com.dwbidiretor.classe.Producao;
 import br.com.dwbidiretor.classe.ProducaoDia;
 import br.com.dwbidiretor.classe.Produto;
+import br.com.dwbidiretor.classe.ProdutoEstoque;
 import br.com.dwbidiretor.classe.ProdutoRanking;
 import br.com.dwbidiretor.classe.ReativacaoCliente;
 import br.com.dwbidiretor.classe.RetornoAfinacao;
+import br.com.dwbidiretor.classe.Rh_Folha;
 import br.com.dwbidiretor.classe.TLOcorrencia;
+import br.com.dwbidiretor.classe.TabProduto;
 import br.com.dwbidiretor.classe.TabelaPreco;
 import br.com.dwbidiretor.classe.TipoPerca;
 import br.com.dwbidiretor.classe.Titulo;
@@ -198,16 +204,23 @@ public interface DAOGenerico<E> {
 	public ItensTabela itenstabela(String idtabela, String produtoid);
 	
 	public List<FasePedido> fasepedido(int venda, int outros,Date data1, Date data2, String pedido, String lote);
+	public List<FasePedido> fasepedido_produtos(int venda, int outros,Date data1, Date data2, String pedido, String lote);
+	public List<FasePedidoItem> fasepedidoitem_produto(int venda, int outros,Date data1, Date data2, String pedido, String lote, BigDecimal roteiro);
 	public List<FasePedido> fasepedidodatafase(int venda, int outros,Date data1, Date data2, String pedido, String lote,Date fase);
 	public List<FasePedidoItem> fasepedidoitem(String pedido);
 	public List<PedidoFase> pedidofase(int venda, int outros, BigDecimal roteiro,Date data1, Date data2,String pediddo,String lote);
 	public List<FaseMateriaPrima> fasemateriaprima(String pedido,String produto);
 	public List<PrazoPedido> prazopedido(int venda, int outros,Date data1, Date data2);
 	
+	public List<ProdutoEstoque> produtoestoque(String produto,String almoxarifado,String grupo,String subgrupo, String tipo, int tipop);
+	public List<Almoxarifado> almoxarifados();
 	public List<Produto> produtosgrupo(String grupo);
 	public Imagem imagem(String produtoid); 
 	
 	public List<VendasFrete> vendasfrete(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2, String uf);
+	
+	//rh
+	public List<Rh_Folha> rh_folha(String ano, String mes);
 	
 	//willian
 	public List<ClientesAtivos> clientesativos(String ano);
@@ -220,14 +233,15 @@ public interface DAOGenerico<E> {
 	public List<VendaCusto> vendacustopedido(String ano, String produtos, String vendedor);
 	public List<VendaVendedor> vendavendedorfatura(String ano, String mes);
 	public List<VendaVendedor> vendavendedor(String ano, String mes);
-	public List<ProdutoRanking> produtoranking(Date data1, Date data2, String vendedor, String produtos );
+	public List<ProdutoRanking> produtoranking(Date data1, Date data2, String vendedor, String produtos , String categoriaid);
 	
 	public List<P1_MetaFaturado> p1metafaturado(Date data1, Date data2);
 	public List<P1_FaturadoDia> p1faturadodia(Date data1, Date data2);
 	public List<P1_MetaFaturado> p1metapedido(Date data1, Date data2);
 	public List<P1_FaturadoDia> p1pedidodia(Date data1, Date data2);
-	
+	public List<TabProduto> tabproduto(String idtabela);	
 	public List<CtaCorrente> ctacorrente();
+	public List<CtaResumo> ctaresumo(String ano);
 	
 	//comercial
 	public List<Titulo> titulos(String cliente, String status, String nota);
@@ -253,6 +267,7 @@ public interface DAOGenerico<E> {
 	public List<CidadeVenda> cidadevenda(String vendedor1, String vendedor2, String gestor1, String gestor2,Date data1, Date data2, Integer filtra);
 	public List<ReativacaoCliente> reativacaocliente(String vendedor1, String vendedor2, String gestor1, String gestor2,Date data1, Date data2);
 	public List<ClientesAtivosAno> clientesativosano(String vendedor1, String vendedor2, String gestor1, String gestor2, String ano);
+	public List<Categoria> categorias();
 	
 	//Jaqueline
 	public List<CPedido> cpedido(BigDecimal pedido);

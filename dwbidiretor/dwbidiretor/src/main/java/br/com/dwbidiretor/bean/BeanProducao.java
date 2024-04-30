@@ -261,6 +261,7 @@ public class BeanProducao implements Serializable {
 		title.setText(mes + "/" + ano);
 		options.setTitle(title);*/
 
+      
         producao_anomes.setOptions(options);
 	}
 	

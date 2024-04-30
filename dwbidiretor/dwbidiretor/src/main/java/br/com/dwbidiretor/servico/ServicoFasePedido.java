@@ -1,6 +1,7 @@
 package br.com.dwbidiretor.servico;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -36,4 +37,11 @@ public class ServicoFasePedido implements Serializable{
 		return dao2.fasepedidoitem(pedido);
 	}
 	
+	public List<FasePedido> fasepedido_produtos(int venda, int outros,Date data1, Date data2,String pedido, String lote){
+		return dao.fasepedido_produtos(venda, outros,data1,data2,pedido,lote);
+	}
+	
+	public List<FasePedidoItem> fasepedidoitem_produto(int venda, int outros,Date data1, Date data2, String pedido, String lote, BigDecimal roteiro){
+		return dao2.fasepedidoitem_produto(venda, outros,data1,data2,pedido,lote,roteiro);
+	}
 }

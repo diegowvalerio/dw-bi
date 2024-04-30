@@ -1,0 +1,239 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Resumo Gerencial
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Resumo Gerencial" />
+
+		<h:form id="form">
+				<p:panelGrid columns="5" columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+                             layout="grid" styleClass="ui-fluid card" id="filtroscli">
+
+					<p:outputLabel value="Ano: " for="ano" />					
+					<p:inputText value="#{beanCtaResumo.ano}" id="ano">
+					</p:inputText>
+					
+
+					<p:commandButton action="#{beanCtaResumo.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld "
+						styleClass="btn-primary" />
+
+				</p:panelGrid>
+				
+				<p:separator></p:separator>
+					
+			<div class="box box-primary" >
+				<div style="overflow:scroll;width:100%;overflow:auto">
+				
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
+					<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="venda" fileName="resumo-gerencial"   />
+						</h:commandLink>
+
+						<p:dataTable id="venda" var="vendas"   expandableRowGroups="true" sortBy="#{vendas.status}"	value="#{beanCtaResumo.lista}"  resizableColumns="true">
+							
+							 <p:headerRow>
+           						 <p:column colspan="3">
+                					<h:outputText value="#{vendas.status}" />
+            					</p:column>
+        					</p:headerRow>
+							
+							<p:column headerText="Tipo" visible="false">
+                					<h:outputText value="#{vendas.status}" />
+            				</p:column>
+            					
+							<p:column headerText="Conta" width="5%">
+								<h:outputText value="#{vendas.planocontaid}" />
+							</p:column>
+							
+							<p:column headerText="Nome Conta" width="15%">
+								<h:outputText value="#{vendas.nomeplanoconta}" />
+							</p:column>
+							
+							<p:column headerText="Jan" >
+								<h:outputText value="#{vendas.jan}" >
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Fev" >
+								<h:outputText value="#{vendas.fev}" >
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Mar" >
+								<h:outputText value="#{vendas.mar}" >
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Abr" >
+								<h:outputText value="#{vendas.abr}" >
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Mai" >
+								<h:outputText value="#{vendas.mai}" >
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Jun" >
+								<h:outputText value="#{vendas.jun}" >
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Jul" >
+								<h:outputText value="#{vendas.jul}" >
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Ago" >
+								<h:outputText value="#{vendas.ago}" >
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Set" >
+								<h:outputText value="#{vendas.set}" >
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Out" >
+								<h:outputText value="#{vendas.out}" >
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Nov" >
+								<h:outputText value="#{vendas.nov}" >
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Dez" >
+								<h:outputText value="#{vendas.dez}" >
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column exportable="false" visible="false">
+							#{beanCtaResumo.calcula_jan(vendas.jan.doubleValue())}
+							#{beanCtaResumo.calcula_fev(vendas.fev.doubleValue())}
+							#{beanCtaResumo.calcula_mar(vendas.mar.doubleValue())}
+							#{beanCtaResumo.calcula_abr(vendas.abr.doubleValue())}
+							#{beanCtaResumo.calcula_mai(vendas.mai.doubleValue())}
+							#{beanCtaResumo.calcula_jun(vendas.jun.doubleValue())}
+							#{beanCtaResumo.calcula_jul(vendas.jul.doubleValue())}
+							#{beanCtaResumo.calcula_ago(vendas.ago.doubleValue())}
+							#{beanCtaResumo.calcula_set(vendas.set.doubleValue())}
+							#{beanCtaResumo.calcula_out(vendas.out.doubleValue())}
+							#{beanCtaResumo.calcula_nov(vendas.nov.doubleValue())}
+							#{beanCtaResumo.calcula_dez(vendas.dez.doubleValue())}
+							</p:column>
+							
+							<p:summaryRow>
+           						<p:column style="text-align:right" colspan="2">
+                					<h:outputText value="Total:" />
+            					</p:column>
+            					
+            					<p:column>
+                					<h:outputText value="#{beanCtaResumo.total_jan}" >
+										<f:convertNumber type="currency" currencySymbol="R$" />
+									</h:outputText>
+            					</p:column>
+            					<p:column>
+                					<h:outputText value="#{beanCtaResumo.total_fev}" >
+										<f:convertNumber type="currency" currencySymbol="R$" />
+									</h:outputText>
+            					</p:column>
+            					<p:column>
+                					<h:outputText value="#{beanCtaResumo.total_mar}" >
+										<f:convertNumber type="currency" currencySymbol="R$" />
+									</h:outputText>
+            					</p:column>
+            					<p:column>
+                					<h:outputText value="#{beanCtaResumo.total_abr}" >
+										<f:convertNumber type="currency" currencySymbol="R$" />
+									</h:outputText>
+            					</p:column>
+            					<p:column>
+                					<h:outputText value="#{beanCtaResumo.total_mai}" >
+										<f:convertNumber type="currency" currencySymbol="R$" />
+									</h:outputText>
+            					</p:column>
+            					<p:column>
+                					<h:outputText value="#{beanCtaResumo.total_jun}" >
+										<f:convertNumber type="currency" currencySymbol="R$" />
+									</h:outputText>
+            					</p:column>
+            					<p:column>
+                					<h:outputText value="#{beanCtaResumo.total_jul}" >
+										<f:convertNumber type="currency" currencySymbol="R$" />
+									</h:outputText>
+            					</p:column>
+            					<p:column>
+                					<h:outputText value="#{beanCtaResumo.total_ago}" >
+										<f:convertNumber type="currency" currencySymbol="R$" />
+									</h:outputText>
+            					</p:column>
+            					<p:column>
+                					<h:outputText value="#{beanCtaResumo.total_set}" >
+										<f:convertNumber type="currency" currencySymbol="R$" />
+									</h:outputText>
+            					</p:column>
+            					<p:column>
+                					<h:outputText value="#{beanCtaResumo.total_out}" >
+										<f:convertNumber type="currency" currencySymbol="R$" />
+									</h:outputText>
+            					</p:column>
+            					<p:column>
+                					<h:outputText value="#{beanCtaResumo.total_nov}" >
+										<f:convertNumber type="currency" currencySymbol="R$" />
+									</h:outputText>
+            					</p:column>
+            					<p:column>
+                					<h:outputText value="#{beanCtaResumo.total_dez}" >
+										<f:convertNumber type="currency" currencySymbol="R$" />
+									</h:outputText>
+            					</p:column>
+            					
+        					</p:summaryRow>
+
+							
+						</p:dataTable>
+					
+					</h:panelGrid>
+					</div>
+				</div>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

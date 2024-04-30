@@ -1,0 +1,157 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+	
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+
+</style>
+		
+
+	</ui:define>
+
+	<ui:define name="title">
+   Produtos x Estoque
+    </ui:define>
+
+	<ui:define name="description">
+		
+	</ui:define>
+
+	<ui:define name="body">	
+		
+		<h:form id="form">
+		
+				<p:panelGrid columns="6" id="filtros" layout="grid"	styleClass="ui-fluid card">	
+					
+					<p:outputLabel value="Produto:" for="produto" />
+					<p:selectOneMenu id="produto"
+					value="#{beanProdutoEstoque.produto}"   style="width:100%"
+					converter="conversorProduto" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanProdutoEstoque.lista}"
+						var="produts" itemLabel="#{produts.produtoid} || #{produts.referencia} || #{produts.nomeproduto}"
+						itemValue="#{produto}" /> 
+					</p:selectOneMenu>
+					
+					
+					<p:outputLabel value="Grupo:" for="grupo" />
+					<p:selectOneMenu id="grupo"
+					value="#{beanProdutoEstoque.grupo}"
+					converter="conversorVendaGrupo" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanProdutoEstoque.listagrupos}"
+						var="grups" itemLabel="#{grups.idgrupo} - #{grups.nomegrupo}"
+						itemValue="#{grupo}" />
+					</p:selectOneMenu>	
+					
+					<p:outputLabel value="SubGrupo:" for="subgrupo" />
+					<p:selectOneMenu id="subgrupo"  style="width:95%"
+					value="#{beanProdutoEstoque.subgrupo}"
+					converter="conversorVendaSubGrupo" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanProdutoEstoque.listaSubgrupos}"
+						var="sgrups" itemLabel="#{sgrups.idsubgrupo} - #{sgrups.nomesubgrupo}"
+						itemValue="#{subgrupo}" />
+					</p:selectOneMenu>	
+									
+					
+					<p:outputLabel value="Estoque:" for="estoque" />
+					<p:selectOneMenu id="estoque"
+					value="#{beanProdutoEstoque.almoxarifado}"
+					converter="conversorAlmoxarifado" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanProdutoEstoque.listaalmoxarifados}"
+						var="grups" itemLabel="#{grups.almoxarifadoid} - #{grups.nome}"
+						itemValue="#{almoxarifado}" />
+					</p:selectOneMenu>	
+					
+					<p:outputLabel value="Tipo:" for="tipo" />
+					<p:selectOneMenu id="tipo" value="#{beanProdutoEstoque.tipofiltro}"
+							lazy="true" style="width:125px" >
+							<f:selectItem itemLabel="Todos" itemValue="-1"/>
+							<f:selectItem itemLabel="ACABADO" itemValue="ACABADO" />
+							<f:selectItem itemLabel="COMPONENTE" itemValue="COMPONENTE" />
+							<f:selectItem itemLabel="MATERIA-PRIMA" itemValue="MATPRIMA" />
+							<f:selectItem itemLabel="PRODUTO" itemValue="PRODUTO" />
+							<f:selectItem itemLabel="CONJUNTO" itemValue="CONJUNTO" />
+						</p:selectOneMenu>		
+						
+					<p:selectOneRadio id="console" value="#{beanProdutoEstoque.selecionado}" unselectable="true" label="Tipo">
+            			<f:selectItem itemLabel="Todos" itemValue="-1"/>
+            			<f:selectItem itemLabel="Importado" itemValue="86"/>
+        			</p:selectOneRadio>	
+
+					<p:commandButton action="#{beanProdutoEstoque.filtrar()}" value="Filtrar"
+						icon="fa fa-check" update=":form:paineld" styleClass="btn-primary" />
+						
+				</p:panelGrid>
+
+				<p:separator></p:separator>
+									
+					<h:panelGrid columns="1" id="paineld" width="99%">
+						<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="produtosestoque" fileName="produtos_saldo_estoque" pageOnly="true"/>
+						</h:commandLink>
+						
+						<p:dataTable id="produtosestoque" var="prd"  value="#{beanProdutoEstoque.listaproduto_estoque}"  resizableColumns="true" >
+						
+							<p:column headerText="Cód." width="5%"
+								sortBy="#{prd.produtoid}">
+								<h:outputText value="#{prd.produtoid}" >
+									<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Descrição" >
+								<h:outputText value="#{prd.nomeproduto}" />
+							</p:column>
+							
+							<p:column headerText="Grupo"  width="10%"> 
+								<h:outputText value="#{prd.grupo}" />
+							</p:column>
+							
+							<p:column headerText="SubGrupo"  width="15%">
+								<h:outputText value="#{prd.subgrupo}" />
+							</p:column>
+							
+							<p:column headerText="Tipo" width="5%">
+								<h:outputText value="#{prd.tipoproduto}" />
+							</p:column>
+							
+							<p:column headerText="Estoque"  width="10%">
+								<h:outputText value="#{prd.almoxarifado}" />
+							</p:column>
+							
+							<p:column headerText="Saldo"  width="5%">
+								<h:outputText value="#{prd.estoque}" >
+									<f:convertNumber minFractionDigits="0" locale="pt-BR"/>
+								</h:outputText>
+							</p:column>
+							
+							
+						</p:dataTable>
+					</h:panelGrid>
+				
+		</h:form>
+		
+	</ui:define>
+
+</ui:composition>

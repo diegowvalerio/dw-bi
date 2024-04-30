@@ -36,7 +36,7 @@
 		<adm:breadcrumb title="Ranking Produtos Faturados" />
 
 		<h:form id="form">
-			<p:panelGrid columns="10"
+			<p:panelGrid columns="8"
 				
 				layout="grid" styleClass="ui-fluid card" id="filtroscli">
 				
@@ -69,26 +69,39 @@
 						itemValue="#{vendedor}" />
 					</p:selectOneMenu>
 					
+					<p:outputLabel value="Categoria:" for="categoria" />
+					<p:selectOneMenu id="categoria"
+					value="#{beanProdutoRanking.categoria}"
+					converter="conversorCategoria" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanProdutoRanking.categorias}"
+						var="categorias" itemLabel="#{categorias.categoriaid} - #{categorias.nomecategoria}"
+						itemValue="#{categoria}" />
+					</p:selectOneMenu>
+					
 					<p:commandButton action="#{beanProdutoRanking.filtrar()}" value="Filtrar"
 						icon="fa fa-check" update=":form:paineld" styleClass="btn-primary" />
 					
 			</p:panelGrid>	
 			<p:separator></p:separator>	
-			
-			<p:panelGrid columns="1" id="paineld"  >
+			 
+			<h:panelGrid columns="1" id="paineld" width="94%">
+						<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="prdo" fileName="ranking_produtos" pageOnly="true"/>
+						</h:commandLink>
 
 				<p:dataTable id="prdo" var="prd" value="#{beanProdutoRanking.lista}" allowUnsorting="true" sortMode="single" sortOrder="descending" sortBy="#{prd.qtde}"
-				scrollHeight="600" scrollable="true" > 
+				scrollHeight="500" scrollable="true"  resizableColumns="true"> 
 
-					<p:column width="9%" headerText="Produto" >
+					<p:column  headerText="Produto" sortBy="#{prd.produto}" >
 						<h:outputText value="#{prd.produto}" />
 					</p:column>
 
-					<p:column headerText="Descrição" >
+					<p:column headerText="Descrição"  sortBy="#{prd.nomeproduto}">
 						<h:outputText value="#{prd.nomeproduto}" />
 					</p:column>
 
-					<p:column headerText="Quantidade" width="20%" sortBy="#{prd.qtde}" >
+					<p:column headerText="Quantidade" sortBy="#{prd.qtde}" >
 						<h:outputText value="#{prd.qtde}" >
 								<f:convertNumber minFractionDigits="0" locale="pt-BR"/>
 						</h:outputText>
@@ -100,7 +113,7 @@
 						</f:facet>
 					</p:column>
 					
-					<p:column headerText="Valor" width="20%" sortBy="#{prd.venda}">
+					<p:column headerText="Valor" sortBy="#{prd.venda}" >
 						<h:outputText value="#{prd.venda}" >
 									<f:convertNumber type="currency" currencySymbol="R$" />
 						</h:outputText>
@@ -109,9 +122,14 @@
 						</f:facet>
 					</p:column>
 					
+					<p:column headerText="Mesa" sortBy="#{prd.nomemesa}" >
+						<h:outputText value="#{prd.nomemesa}" />
+					</p:column>
+					
 
 				</p:dataTable>
-			</p:panelGrid>		
+			</h:panelGrid>		
+			
 		</h:form>
 
 	</ui:define>

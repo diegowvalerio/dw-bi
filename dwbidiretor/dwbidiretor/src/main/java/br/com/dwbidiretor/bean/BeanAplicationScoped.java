@@ -33,6 +33,8 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.general.PieDataset;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -85,6 +87,7 @@ public class BeanAplicationScoped implements Serializable {
 		timer.scheduleAtFixedRate(tarefa, 0, 1000);
 		
 	}
+	
 	
 	public void  registralog(String conteudo, String pagina, String data) {
 		

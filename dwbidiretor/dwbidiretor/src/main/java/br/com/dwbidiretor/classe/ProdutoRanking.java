@@ -14,10 +14,21 @@ public class ProdutoRanking implements Serializable {
 	private String nomeproduto;
 	private BigDecimal venda;
 	private BigDecimal qtde;
+	private String nomemesa;
 	
 
 	public ProdutoRanking() {
 		super();
+	}
+
+
+	public String getNomemesa() {
+		return nomemesa;
+	}
+
+
+	public void setNomemesa(String nomemesa) {
+		this.nomemesa = nomemesa;
 	}
 
 

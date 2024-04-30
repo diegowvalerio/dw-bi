@@ -1,0 +1,192 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+
+.color_ok {
+	background-color: #CEF6E3;
+}
+
+.color_parcial {
+	background-color: #A9E2F3;
+}
+
+.color_falta {
+	background-color: #F5A9D0;
+}
+
+.color_importado {
+	background-color: #528B8B;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Fase Pedidos x Produtos
+    </ui:define>
+
+	<ui:define name="description">
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Fase Pedidos x Produtos" />
+
+		<h:form id="form">
+			
+					<p:panelGrid columns="6" 
+                             layout="grid" styleClass="ui-fluid card" >
+                                     			
+        			<p:outputLabel value=" Data:  " for="data_grafico" />
+					<p:calendar locale="pt_BR" id="data_grafico"
+						value="#{beanFasePedidoProdutos.data_grafico}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico2" />
+					<p:calendar locale="pt_BR" id="data_grafico2"
+						value="#{beanFasePedidoProdutos.data_grafico2}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+					
+					<p:selectOneRadio id="console" value="#{beanFasePedidoProdutos.selecionado}" unselectable="true">
+            			<f:selectItem itemLabel="Todos" itemValue="1"/>
+            			<f:selectItem itemLabel="Venda" itemValue="2"/>
+            			<f:selectItem itemLabel="Outros" itemValue="3"/>
+        			</p:selectOneRadio>
+					
+					<p:commandButton action="#{beanFasePedidoProdutos.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld :form:paineld2"
+						styleClass="btn-primary" />
+						
+					<p:outputLabel value="Pedido:" for="pedido" />
+					<p:inputText id="pedido" value="#{beanFasePedidoProdutos.pedido}"></p:inputText>	
+					
+					<p:outputLabel value="Lote:" for="lote" />
+					<p:inputText id="lote" value="#{beanFasePedidoProdutos.lote}"></p:inputText>	
+
+					</p:panelGrid>
+					
+				<p:separator></p:separator>
+				
+				<div class="row" >
+				<div class="col-md-3 col-sm-6 col-xs-12">
+					<h:panelGrid columns="1" id="paineld" columnClasses="left,right" >
+
+					<p:dataTable id="fase" var="listas" value="#{beanFasePedidoProdutos.lista}" selection="#{beanFasePedidoProdutos.fasePedido}"
+						resizableColumns="true" selectionMode="single" rowKey="#{listas.roteiroid}">
+						<f:facet name="header">Fases</f:facet>
+						<p:ajax event="rowSelect" listener="#{beanFasePedidoProdutos.onRowSelect}" update=":form:paineld2"/>
+            			
+						
+						<p:column headerText="Fase" >
+							<h:outputText value="#{listas.nomeroteiro}" />
+						</p:column>
+
+						<p:column headerText="Valor">
+							<h:outputText value="#{listas.vlpedido}">
+							<f:convertNumber type="currency" currencySymbol="R$"
+								minFractionDigits="2" locale="pt-BR"/>
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Qtde" width="7%">
+							<h:outputText value="#{listas.qtdepedido}" />
+						</p:column>
+						
+						<br></br>
+						
+						<p:columnGroup type="footer">
+                				<p:row>	
+                    				<p:column style="background-color: #dcdcdc;text-align:right" footerText="Total:"/>
+									<p:column footerText="#{beanFasePedidoProdutos.total}"/>
+									<p:column footerText="#{beanFasePedidoProdutos.totalqtde}"/>
+														
+								</p:row>
+            				</p:columnGroup>
+					</p:dataTable>
+					
+					</h:panelGrid>
+				</div>	
+				<div class="col-md-9 col-sm-6 col-xs-12">
+					<h:panelGrid columns="1" id="paineld2" columnClasses="left,right" >
+					
+					<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="pedidoitem" fileName="pedidoitem" pageOnly="true"/>
+						</h:commandLink>
+						
+        				<p:dataTable id="pedidoitem" var="listas3" value="#{beanFasePedidoProdutos.listaitem}"  scrollHeight="400" scrollable="true" resizableColumns="true" >
+        				
+        					
+        					<p:column headerText="Código" width="4%" >
+								<h:outputText value="#{listas3.produto}" />
+							</p:column>
+							
+							<p:column headerText="Produto">
+								<h:outputText value="#{listas3.nomeproduto}" />
+							</p:column>
+							
+							<p:column headerText="Qtde" width="3%">
+								<h:outputText value="#{listas3.qtdepedido}" >
+									<f:convertNumber minFractionDigits="0" locale="pt-BR"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Reservado" width="5%" styleClass="#{listas3.qtdereservada > 0 ? 'color_parcial' : null}" >
+								<h:outputText value="#{listas3.qtdereservada}" >
+									<f:convertNumber minFractionDigits="0" locale="pt-BR"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Falta" width="3%">
+								<h:outputText value="#{listas3.faltapedido}" >
+									<f:convertNumber minFractionDigits="0" locale="pt-BR"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Estoque" width="5%">
+								<h:outputText value="#{listas3.saldoatual}" >
+									<f:convertNumber minFractionDigits="0" locale="pt-BR"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Falta - Estoque" width="10%" styleClass="#{listas3.faltapedidoestoque > 0 ? 'color_falta' : 'color_ok'}" >
+								<h:outputText value="#{listas3.faltapedidoestoque}" >
+									<f:convertNumber minFractionDigits="0" locale="pt-BR"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Mesa" width="10%" >
+								<h:outputText value="#{listas3.mesa}" />
+							</p:column>
+      
+						</p:dataTable>	
+
+				</h:panelGrid>
+				</div>	
+				</div>	
+			
+				
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

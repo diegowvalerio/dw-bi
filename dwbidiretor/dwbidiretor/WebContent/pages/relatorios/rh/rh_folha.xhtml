@@ -1,0 +1,191 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+	
+	<h:outputScript library="js" name="jquery.jqplot.js" />
+	<h:outputScript library="js" name="jqplot.barRenderer.min.js" />
+	<h:outputScript library="js" name="jqplot.categoryAxisRenderer.js" />
+	<h:outputStylesheet library="css" name="jquery.jqplot.css" />
+	<h:outputScript  library="js" name="jqplot.pointLabels.min.js"  />
+	<h:outputScript  library="js" name="chartjs-plugin-datalabels.js"  />
+	
+	
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+
+</style>
+		
+<script type="text/javascript">
+function my_ext(){  
+	this.cfg.config.enablePlugins = true;
+	var options = {
+            options: {
+            	series:[{
+            	      pointLabels: {
+            	         show: true,
+            	         hideZeros:false
+            	      }
+            	   }]
+            }
+         };
+	
+    $.extend(true, this.cfg.config, options);
+};
+
+function chartExtender() {
+	   this.cfg.config.enablePlugins = true;
+	   this.cfg.config.options = {
+		        legend: {
+		           display: true
+		        }                    
+		    };          
+	   var options = {
+	     
+	      options: {
+	    	  plugins: {
+	    	        datalabels: {
+	    	          color: '#000',
+	    	          align: 'end',
+	    	          anchor: 'end',
+	    	          formatter: function(value, context) {
+	    	            return context.chart.data.labels[context.dataIndex];
+	    	          },
+	    	          font: {
+	    	            size: 16,
+	    	            style: 'bold',
+	    	          }
+	    	        }
+	    	     },
+	      },
+	      data: {
+	         datasets: [{
+	            // Change options only for labels of THIS DATASET
+	            datalabels: {
+	               color: '#FFCE56'
+	            }
+	         }]
+	      }
+	   };
+
+	   //merge all options into the main chart options
+	   $.extend(true, this.cfg.config, options);
+	}; 
+
+</script>
+
+	</ui:define>
+
+	<ui:define name="title">
+        RH - Resumo da Folha
+    </ui:define>
+
+	<ui:define name="description">
+		
+	</ui:define>
+
+	<ui:define name="body">	
+		
+		<h:form id="form">
+		
+			<section class="content">
+				<p:panelGrid columns="5" id="filtros" 
+					
+					layout="grid" styleClass="ui-fluid card">
+					
+					<p:outputLabel value=" Ano:  " for="ano" />
+					<p:selectOneMenu id="ano" value="#{beanRh.ano}"
+							lazy="true" style="width:125px" required="true">
+							<f:selectItem itemLabel="2022" itemValue="2022" />
+							<f:selectItem itemLabel="2023" itemValue="2023" />
+							<f:selectItem itemLabel="2024" itemValue="2024" />
+							<f:selectItem itemLabel="2025" itemValue="2025" />
+							<f:selectItem itemLabel="2026" itemValue="2026" />
+						</p:selectOneMenu>
+
+					<p:outputLabel value=" Mês:  " for="mes" />
+					<p:selectOneMenu id="mes" value="#{beanRh.mes}"
+							lazy="true" style="width:125px" required="true">
+							<f:selectItem itemLabel="01-Jan" itemValue="01" />
+							<f:selectItem itemLabel="02-Fev" itemValue="02" />
+							<f:selectItem itemLabel="03-Mar" itemValue="03" />
+							<f:selectItem itemLabel="04-Abr" itemValue="04" />
+							<f:selectItem itemLabel="05-Mai" itemValue="05" />
+							<f:selectItem itemLabel="06-Jun" itemValue="06" />
+							<f:selectItem itemLabel="07-Jul" itemValue="07" />
+							<f:selectItem itemLabel="08-Ago" itemValue="08" />
+							<f:selectItem itemLabel="09-Set" itemValue="09" />
+							<f:selectItem itemLabel="10-Out" itemValue="10" />
+							<f:selectItem itemLabel="11-Nov" itemValue="11" />
+							<f:selectItem itemLabel="12-Dez" itemValue="12" />
+						</p:selectOneMenu>
+
+					<p:commandButton action="#{beanRh.filtrar()}" value="Filtrar"
+						icon="fa fa-check" update=":form" styleClass="btn-primary" />
+				</p:panelGrid>
+
+				<p:separator></p:separator>
+									
+					<div class="row" >	
+
+						
+						<div class="col-md-3">
+							<div class="box box-default" id="teste">
+							
+								<div class="box-header with-border">
+									<h3 class="box-title">Total Colaboradores</h3>
+								</div>
+			
+								<div class="box-body" >
+									<img src="#{beanRh.urlimg}" width="100%" />
+								</div>
+							</div>
+						</div>
+						
+						
+						<div class="col-md-6">
+							<div class="box box-default" id="gf2">
+								<div class="box-header with-border">
+									<h3 class="box-title">Produção Dia</h3>
+								</div>
+							
+								<div class="box-body" >
+									<p:dataTable id="tabela3" value="#{beanRh.lista}" var="lista" scrollable="true" scrollHeight="300">
+											<p:column headerText="Ano" width="5%">
+												<h:outputText value="#{lista.ano}" />
+											</p:column>
+											
+											<p:column headerText="Mês" >
+												<h:outputText value="#{lista.mes}"  >
+						 							<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 							</h:outputText>
+											</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+						
+						
+					</div>
+				
+			</section>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

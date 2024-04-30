@@ -21,10 +21,12 @@ import org.primefaces.event.UnselectEvent;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import br.com.dwbidiretor.classe.Categoria;
 import br.com.dwbidiretor.classe.FasePedido;
 import br.com.dwbidiretor.classe.Produto;
 import br.com.dwbidiretor.classe.ProdutoRanking;
 import br.com.dwbidiretor.classe.Vendedor;
+import br.com.dwbidiretor.servico.ServicoCategoria;
 import br.com.dwbidiretor.servico.ServicoProduto;
 import br.com.dwbidiretor.servico.ServicoProdutoRanking;
 import br.com.dwbidiretor.servico.ServicoVendedor;
@@ -53,6 +55,11 @@ public class BeanProdutoRanking implements Serializable {
 	private List<Vendedor> listavendedor = new ArrayList<>();
 	private Vendedor vendedor = new Vendedor();
 	
+	@Inject
+	private ServicoCategoria servicoCategoria;
+	private List<Categoria> categorias = new ArrayList<>();
+	private Categoria categoria = new Categoria();
+	
 	private Date data_grafico = new Date();
 	private Date data_grafico2 = new Date();
 	
@@ -61,6 +68,7 @@ public class BeanProdutoRanking implements Serializable {
 	
 	private String filtroproduto;
 	private String filtrovendedor;
+	private String filtrocategoria;
 
 	@PostConstruct
 	public void init() {
@@ -75,8 +83,11 @@ public class BeanProdutoRanking implements Serializable {
 		produtos = servicoproduto.produtos();
 		listavendedor = servicovendedor.consultavendedor();
 		
+		categorias = servicoCategoria.categorias();
+		
 		filtroproduto = "1";
 		filtrovendedor = "-1" ;
+		filtrocategoria = "-1";
 	}
 	
 	public void filtrar(){
@@ -92,6 +103,12 @@ public class BeanProdutoRanking implements Serializable {
 			filtrovendedor = vendedor.getCodigovendedor().toString();
 		}
 		
+		if(categoria == null) {
+			filtrocategoria = "-1";
+		}else {
+			filtrocategoria = categoria.getCategoriaid().toString();
+		}
+		
 		
 		for(Produto p:produtosselecionados) {
 			filtroproduto = filtroproduto+p.getProdutoid()+",";
@@ -100,7 +117,7 @@ public class BeanProdutoRanking implements Serializable {
 			filtroproduto = filtroproduto.replaceFirst(".$", "");
 		}
 		
-		lista = servico.produtoranking(data_grafico, data_grafico2, filtrovendedor, filtroproduto);
+		lista = servico.produtoranking(data_grafico, data_grafico2, filtrovendedor, filtroproduto, filtrocategoria);
 	
 	}
 
@@ -123,6 +140,38 @@ public class BeanProdutoRanking implements Serializable {
 		return NumberFormat.getCurrencyInstance().format(t);
 	}
 	 
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
+	}
+
+	public String getFiltrocategoria() {
+		return filtrocategoria;
+	}
+
+	public void setFiltrocategoria(String filtrocategoria) {
+		this.filtrocategoria = filtrocategoria;
+	}
+
+	public ProdutoRanking getProdutoranking() {
+		return produtoranking;
+	}
+
+	public void setProdutoranking(ProdutoRanking produtoranking) {
+		this.produtoranking = produtoranking;
+	}
+
+	public List<Categoria> getCategorias() {
+		return categorias;
+	}
+
+	public void setCategorias(List<Categoria> categorias) {
+		this.categorias = categorias;
+	}
+
 	public List<Produto> getProdutosselecionados() {
 		return produtosselecionados;
 	}

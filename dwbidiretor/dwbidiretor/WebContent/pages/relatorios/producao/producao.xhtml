@@ -11,6 +11,7 @@
 	<h:outputScript library="js" name="jqplot.categoryAxisRenderer.js" />
 	<h:outputStylesheet library="css" name="jquery.jqplot.css" />
 	<h:outputScript  library="js" name="jqplot.pointLabels.min.js"  />
+	<h:outputScript  library="js" name="chartjs-plugin-datalabels.js"  />
 	
 	<ui:define name="head-end">
 		<style type="text/css">
@@ -30,7 +31,8 @@
 
 </style>
 		
-<script type="text/javascript">
+<script type="text/javascript">	
+	
 function my_ext(){  
 	this.cfg.config.enablePlugins = true;
 	var options = {

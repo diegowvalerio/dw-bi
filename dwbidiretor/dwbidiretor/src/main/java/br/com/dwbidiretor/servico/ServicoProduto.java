@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import br.com.dwbidiretor.classe.Imagem;
 import br.com.dwbidiretor.classe.Produto;
+import br.com.dwbidiretor.classe.ProdutoEstoque;
 import br.com.dwbidiretor.dao.DAOImagem;
 import br.com.dwbidiretor.dao.DAOProduto;
 
@@ -28,6 +29,10 @@ public class ServicoProduto implements Serializable{
 	
 	public List<Produto> produtosgrupo(String grupo){
 		return dao.produtosgrupo(grupo);
+	}
+	
+	public List<ProdutoEstoque> produtoestoque(String produto,String almoxarifado,String grupo,String subgrupo, String tipo, int tipop){
+		return dao.produtoestoque(produto, almoxarifado, grupo, subgrupo, tipo,tipop);
 	}
 	
 	public Imagem imagem(String produtoid) {

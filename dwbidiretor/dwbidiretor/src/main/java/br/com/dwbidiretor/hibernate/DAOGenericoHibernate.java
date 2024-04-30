@@ -43,10 +43,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.dwbidiretor.classe.PT_Carteira;
+import br.com.dwbidiretor.classe.Almoxarifado;
 import br.com.dwbidiretor.classe.AnaliseClientePedido;
 import br.com.dwbidiretor.classe.CPedido;
 import br.com.dwbidiretor.classe.CPedidoFin;
 import br.com.dwbidiretor.classe.CPedidoLog;
+import br.com.dwbidiretor.classe.Categoria;
 import br.com.dwbidiretor.classe.CidadeVenda;
 import br.com.dwbidiretor.classe.Cliente;
 import br.com.dwbidiretor.classe.ClienteNovo;
@@ -54,6 +56,7 @@ import br.com.dwbidiretor.classe.ClientesAtivos;
 import br.com.dwbidiretor.classe.ClientesAtivosAno;
 import br.com.dwbidiretor.classe.ClientesNovos;
 import br.com.dwbidiretor.classe.CtaCorrente;
+import br.com.dwbidiretor.classe.CtaResumo;
 import br.com.dwbidiretor.classe.DadosCliente;
 import br.com.dwbidiretor.classe.FaseMateriaPrima;
 import br.com.dwbidiretor.classe.FasePedido;
@@ -86,10 +89,13 @@ import br.com.dwbidiretor.classe.PrazoPedido;
 import br.com.dwbidiretor.classe.Producao;
 import br.com.dwbidiretor.classe.ProducaoDia;
 import br.com.dwbidiretor.classe.Produto;
+import br.com.dwbidiretor.classe.ProdutoEstoque;
 import br.com.dwbidiretor.classe.ProdutoRanking;
 import br.com.dwbidiretor.classe.ReativacaoCliente;
 import br.com.dwbidiretor.classe.RetornoAfinacao;
+import br.com.dwbidiretor.classe.Rh_Folha;
 import br.com.dwbidiretor.classe.TLOcorrencia;
+import br.com.dwbidiretor.classe.TabProduto;
 import br.com.dwbidiretor.classe.TabelaPreco;
 import br.com.dwbidiretor.classe.TipoPerca;
 import br.com.dwbidiretor.classe.Titulo;
@@ -3354,6 +3360,218 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		return p;
 	}
 	
+	public List<CtaResumo> ctaresumo(String ano){
+		List<CtaResumo> list= new ArrayList<>();
+		
+		String sql= ""
+				+ " select  "
+				+ " X.ano, "
+				+ " x.planocontaid, "
+				+ " x.nome_planoconta, "
+				+ " 'A RECEBER' status, "
+				+ " sum(x.jan) as jan, "
+				+ " sum(x.fev) as fev, "
+				+ " sum(x.mar) as mar, "
+				+ " sum(x.abr) as abr, "
+				+ " sum(x.mai) as mai, "
+				+ " sum(x.jun) as jun, "
+				+ " sum(x.jul) as jul, "
+				+ " sum(x.ago) as ago, "
+				+ " sum(x.set) as set, "
+				+ " sum(x.out) as out, "
+				+ " sum(x.nov) as nov, "
+				+ " sum(x.dez) as dez "
+				+ " FROM( "
+				+ " select  "
+				+ " to_char(c.dt_vencto_ctareceber,'YYYY') ANO, "
+				+ " c.planocontaid , "
+				+ " pl.nome_planoconta , "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '01' then c.vl_ctareceber else 0 end as JAN, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '02' then c.vl_ctareceber else 0 end as FEV, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '03' then c.vl_ctareceber else 0 end as MAR, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '04' then c.vl_ctareceber else 0 end as ABR, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '05' then c.vl_ctareceber else 0 end as MAI, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '06' then c.vl_ctareceber else 0 end as JUN, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '07' then c.vl_ctareceber else 0 end as JUL, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '08' then c.vl_ctareceber else 0 end as AGO, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '09' then c.vl_ctareceber else 0 end as SET, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '10' then c.vl_ctareceber else 0 end as OUT, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '11' then c.vl_ctareceber else 0 end as NOV, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '12' then c.vl_ctareceber else 0 end as DEZ "
+				+ " from CTARECEBER c  "
+				+ " inner join planoconta pl on pl.planocontaid = c.planocontaid  "
+				+ " where to_char(c.dt_vencto_ctareceber,'YYYY')= '"+ano+"' "
+				+ " and c.status_ctareceber = 'ABERTO' "
+				+ " and dt_vencto_ctareceber >= CURRENT_DATE "
+				+ " )x "
+				+ " group by  "
+				+ " X.ano, "
+				+ " x.planocontaid, "
+				+ " x.nome_planoconta "
+				+ " union ALL "
+				+ " select  "
+				+ " X.ano, "
+				+ " x.planocontaid, "
+				+ " x.nome_planoconta, "
+				+ " 'A RECEBER VENCIDO' status, "
+				+ " sum(x.jan) as jan, "
+				+ " sum(x.fev) as fev, "
+				+ " sum(x.mar) as mar, "
+				+ " sum(x.abr) as abr, "
+				+ " sum(x.mai) as mai, "
+				+ " sum(x.jun) as jun, "
+				+ " sum(x.jul) as jul, "
+				+ " sum(x.ago) as ago, "
+				+ " sum(x.set) as set, "
+				+ " sum(x.out) as out, "
+				+ " sum(x.nov) as nov, "
+				+ " sum(x.dez) as dez "
+				+ " FROM( "
+				+ " select  "
+				+ " to_char(c.dt_vencto_ctareceber,'YYYY') ANO, "
+				+ " c.planocontaid , "
+				+ " pl.nome_planoconta , "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '01' then c.vl_ctareceber else 0 end as JAN, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '02' then c.vl_ctareceber else 0 end as FEV, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '03' then c.vl_ctareceber else 0 end as MAR, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '04' then c.vl_ctareceber else 0 end as ABR, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '05' then c.vl_ctareceber else 0 end as MAI, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '06' then c.vl_ctareceber else 0 end as JUN, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '07' then c.vl_ctareceber else 0 end as JUL, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '08' then c.vl_ctareceber else 0 end as AGO, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '09' then c.vl_ctareceber else 0 end as SET, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '10' then c.vl_ctareceber else 0 end as OUT, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '11' then c.vl_ctareceber else 0 end as NOV, "
+				+ " case when to_char(c.dt_vencto_ctareceber,'MM') = '12' then c.vl_ctareceber else 0 end as DEZ "
+				+ " from CTARECEBER c  "
+				+ " inner join planoconta pl on pl.planocontaid = c.planocontaid  "
+				+ " where to_char(c.dt_vencto_ctareceber,'YYYY')= '"+ano+"' "
+				+ " and c.status_ctareceber = 'ABERTO' "
+				+ " and dt_vencto_ctareceber < CURRENT_DATE "
+				+ " )x "
+				+ " group by  "
+				+ " X.ano, "
+				+ " x.planocontaid, "
+				+ " x.nome_planoconta "
+				+ " union ALL "
+				+ " select  "
+				+ " X.ano, "
+				+ " x.planocontaid, "
+				+ " x.nome_planoconta, "
+				+ " 'A PAGAR' status, "
+				+ " sum(x.jan) as jan, "
+				+ " sum(x.fev) as fev, "
+				+ " sum(x.mar) as mar, "
+				+ " sum(x.abr) as abr, "
+				+ " sum(x.mai) as mai, "
+				+ " sum(x.jun) as jun, "
+				+ " sum(x.jul) as jul, "
+				+ " sum(x.ago) as ago, "
+				+ " sum(x.set) as set, "
+				+ " sum(x.out) as out, "
+				+ " sum(x.nov) as nov, "
+				+ " sum(x.dez) as dez "
+				+ " FROM( "
+				+ " select  "
+				+ " to_char(c.dt_vencto_ctapagar,'YYYY') ANO, "
+				+ " c.planocontaid , "
+				+ " pl.nome_planoconta , "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '01' then c.vl_ctapagar else 0 end as JAN, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '02' then c.vl_ctapagar else 0 end as FEV, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '03' then c.vl_ctapagar else 0 end as MAR, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '04' then c.vl_ctapagar else 0 end as ABR, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '05' then c.vl_ctapagar else 0 end as MAI, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '06' then c.vl_ctapagar else 0 end as JUN, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '07' then c.vl_ctapagar else 0 end as JUL, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '08' then c.vl_ctapagar else 0 end as AGO, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '09' then c.vl_ctapagar else 0 end as SET, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '10' then c.vl_ctapagar else 0 end as OUT, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '11' then c.vl_ctapagar else 0 end as NOV, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '12' then c.vl_ctapagar else 0 end as DEZ "
+				+ " from ctapagar c  "
+				+ " inner join planoconta pl on pl.planocontaid = c.planocontaid  "
+				+ " where to_char(c.dt_vencto_ctapagar,'YYYY')= '"+ano+"' "
+				+ " and c.status_ctapagar = 'ABERTO' "
+				+ " )x "
+				+ " group by  "
+				+ " X.ano, "
+				+ " x.planocontaid, "
+				+ " x.nome_planoconta "
+				+ " union ALL "
+				+ " select  "
+				+ " X.ano, "
+				+ " x.planocontaid, "
+				+ " x.nome_planoconta, "
+				+ " 'PREVISAO' status, "
+				+ " sum(x.jan) as jan, "
+				+ " sum(x.fev) as fev, "
+				+ " sum(x.mar) as mar, "
+				+ " sum(x.abr) as abr, "
+				+ " sum(x.mai) as mai, "
+				+ " sum(x.jun) as jun, "
+				+ " sum(x.jul) as jul, "
+				+ " sum(x.ago) as ago, "
+				+ " sum(x.set) as set, "
+				+ " sum(x.out) as out, "
+				+ " sum(x.nov) as nov, "
+				+ " sum(x.dez) as dez "
+				+ " FROM( "
+				+ " select  "
+				+ " to_char(c.dt_vencto_ctapagar,'YYYY') ANO, "
+				+ " c.planocontaid , "
+				+ " pl.nome_planoconta , "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '01' then c.vl_ctapagar else 0 end as JAN, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '02' then c.vl_ctapagar else 0 end as FEV, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '03' then c.vl_ctapagar else 0 end as MAR, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '04' then c.vl_ctapagar else 0 end as ABR, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '05' then c.vl_ctapagar else 0 end as MAI, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '06' then c.vl_ctapagar else 0 end as JUN, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '07' then c.vl_ctapagar else 0 end as JUL, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '08' then c.vl_ctapagar else 0 end as AGO, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '09' then c.vl_ctapagar else 0 end as SET, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '10' then c.vl_ctapagar else 0 end as OUT, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '11' then c.vl_ctapagar else 0 end as NOV, "
+				+ " case when to_char(c.dt_vencto_ctapagar,'MM') = '12' then c.vl_ctapagar else 0 end as DEZ "
+				+ " from ctapagar c  "
+				+ " inner join planoconta pl on pl.planocontaid = c.planocontaid  "
+				+ " where to_char(c.dt_vencto_ctapagar,'YYYY')= '"+ano+"' "
+				+ " and c.status_ctapagar = 'PREVISAO' "
+				+ " )x "
+				+ " group by  "
+				+ " X.ano, "
+				+ " x.planocontaid, "
+				+ " x.nome_planoconta "
+				+ " ";
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(sql);
+		
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			CtaResumo c = new CtaResumo();
+			
+			c.setAno((String)row[0]);
+			c.setPlanocontaid((String)row[1]);
+			c.setNomeplanoconta((String)row[2]);
+			c.setStatus((String)row[3]);
+			c.setJan((BigDecimal)row[4]);
+			c.setFev((BigDecimal)row[5]);
+			c.setMar((BigDecimal)row[6]);
+			c.setAbr((BigDecimal)row[7]);
+			c.setMai((BigDecimal)row[8]);
+			c.setJun((BigDecimal)row[9]);
+			c.setJul((BigDecimal)row[10]);
+			c.setAgo((BigDecimal)row[11]);
+			c.setSet((BigDecimal)row[12]);
+			c.setOut((BigDecimal)row[13]);
+			c.setNov((BigDecimal)row[14]);
+			c.setDez((BigDecimal)row[15]);
+			
+			list.add(c);
+		}
+		
+		return list;
+	}
+	
 	
 	public List<TLOcorrencia> tlocorrencias(String criador, Date data1, Date data2, String status, String tipo,Date data3, Date data4){
 		List<TLOcorrencia> p = new ArrayList<>();
@@ -6068,7 +6286,31 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		return list;
 	}
 	
-	public List<ProdutoRanking> produtoranking(Date data1, Date data2, String vendedor, String produtos ){
+	public List<Categoria> categorias(){
+		List<Categoria> list = new ArrayList<>();
+		
+		String sql = ""
+				+ " select "
+				+ " c.categoriaid , "
+				+ " c.nome_categoria "
+				+ " from categoria c  "
+				+ "  ";
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(sql);
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			Categoria c = new Categoria();
+			
+			c.setCategoriaid((BigDecimal)row[0]);
+			c.setNomecategoria((String)row[1]);
+			
+			list.add(c);
+		}
+		
+		return list;
+	}
+	
+	public List<ProdutoRanking> produtoranking(Date data1, Date data2, String vendedor, String produtos , String categoriaid){
 		List<ProdutoRanking> list = new ArrayList<>();
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 		String dataFormatada = formato.format(data1);
@@ -6080,16 +6322,21 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " x.produtoid, "
 				+ " x.nome_produto, "
 				+ " sum(x.valor) valor, "
-				+ " sum(x.qtde) qtde "
+				+ " sum(x.qtde) qtde,"
+				+ " x.NOME_MESA "
 				+ " from( "
 				+ " SELECT   "
 				+ " g.produtoid , "
 				+ " pr.nome_produto , "
 				+ " 0 valor, "
-				+ " sum(g.QT_PEDIDOVENDA_ITEM) qtde   "
+				+ " sum(g.QT_PEDIDOVENDA_ITEM) qtde,   "
+				+ " c.NOME_CELULAPRODUCAO as NOME_MESA "
 				+ " from pedidovenda_item  g  "
 				+ " inner join pedidovenda p on p.pedidovendaid = g.pedidovendaid "
+				+ " inner join cliente cl on cl.cadcftvid = p.cadcftvid "
+				+ " inner join categoria ct on ct.categoriaid = cl.categoriaid "
 				+ " inner join produto pr on pr.produtoid = g.produtoid  "
+				+ " left JOIN CELULA_PRODUCAO c on c.CELULAPRODUCAOID = pr.CELULAPRODUCAOID "
 				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID   "
 				+ " where p.status_pedidovenda in ('FATURADO')   "
 				+ " AND CF.tipooperacao_cfop = 'VENDA'    "
@@ -6097,34 +6344,42 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " and p.tp_nota_pedidovenda = 'NORMAL'   "
 				+ " and (g.produtoid in ("+produtos+") or 1 in ("+produtos+")) "
 				+ " and (p.vendedor1id = "+vendedor+" or -1 = "+vendedor+" ) "
+				+ " and (ct.categoriaid = "+categoriaid+" or -1 = "+categoriaid+" ) "
 				+ " and p.dt_faturamento_pedidovenda between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
 				+ " GROUP BY  "
 				+ " g.produtoid , "
-				+ " pr.nome_produto  "
+				+ " pr.nome_produto, c.NOME_CELULAPRODUCAO  "
 				+ " union all "
 				+ " SELECT   "
 				+ " g.produtoid , "
 				+ " pr.nome_produto , "
 				+ " round(sum(g.qt_pedidovenda_item * g.vl_unit_pedidovenda_item),2) valor, "
-				+ " 0 qtde   "
+				+ " 0 qtde,  "
+				+ " c.NOME_CELULAPRODUCAO as NOME_MESA "
 				+ " from pedidovenda_item  g  "
 				+ " inner join pedidovenda p on p.pedidovendaid = g.pedidovendaid "
+				+ " inner join cliente cl on cl.cadcftvid = p.cadcftvid "
+				+ " inner join categoria ct on ct.categoriaid = cl.categoriaid "
 				+ " inner join produto pr on pr.produtoid = g.produtoid  "
+				+ " left JOIN CELULA_PRODUCAO c on c.CELULAPRODUCAOID = pr.CELULAPRODUCAOID "
 				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID   "
 				+ " where p.status_pedidovenda in ('FATURADO')   "
 				+ " AND CF.tipooperacao_cfop = 'VENDA'    "
 				+ " and p.tp_nota_pedidovenda = 'NORMAL'   "
 				+ " and (g.produtoid in ("+produtos+") or 1 in ("+produtos+")) "
 				+ " and (p.vendedor1id = "+vendedor+" or -1 = "+vendedor+" ) "
+				+ " and (ct.categoriaid = "+categoriaid+" or -1 = "+categoriaid+" ) "
 				+ " and p.dt_faturamento_pedidovenda between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
 				+ " GROUP BY  "
 				+ " g.produtoid , "
-				+ " pr.nome_produto  "
+				+ " pr.nome_produto,c.NOME_CELULAPRODUCAO  "
 				+ " )x "
 				+ " group by "
 				+ " x.produtoid, "
-				+ " x.nome_produto "
+				+ " x.nome_produto,x.NOME_MESA "
 				+ "  ";
+		
+		//System.out.println(sql);
 		
 		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(sql);	
 		
@@ -6136,6 +6391,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			vc.setNomeproduto((String)row[1]);
 			vc.setVenda((BigDecimal)row[2]);
 			vc.setQtde((BigDecimal)row[3]);
+			vc.setNomemesa((String)row[4]);
 			
 			list.add(vc);
 		}
@@ -6769,6 +7025,83 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			cidade.setDataprimeiracompra((Date) row[4]);
 			
 			list.add(cidade);
+		}
+		
+		return list;
+	}
+	
+	
+	public List<ProdutoEstoque> produtoestoque(String produto,String almoxarifado,String grupo,String subgrupo, String tipo, int tipop){
+		List<ProdutoEstoque> list = new ArrayList<>();
+		
+		String sql =" "
+				+ " select  "
+				+ " pr.produtoid , "
+				+ " pr.nome_produto, "
+				+ " g.nome_grupoproduto , "
+				+ " s.nome_subgrupoproduto , "
+				+ " pr.tp_produto , "
+				+ " NVL(saldo.almoxarifado,'-') almoxarifado, "
+				+ " NVL(saldo.estoque,0) estoque "
+				+ " from produto pr "
+				+ " left join( "
+				+ " select "
+				+ " ap.produtoid, "
+				+ " a.nome_almoxarifado almoxarifado, "
+				+ " ap.saldoatu_almoxarifado_produto estoque "
+				+ " from almoxarifado_produto ap "
+				+ " inner join almoxarifado a on a.almoxarifadoid = ap.almoxarifadoid  "
+				+ " where a.status_almoxarifado = 'ATIVO' and a.bo_considera_consulta_estoque = 'SIM' "
+				+ " and (a.almoxarifadoid = '"+almoxarifado+"' or '-1' = '"+almoxarifado+"') "
+				+ " )saldo on saldo.produtoid = pr.produtoid  "
+				+ " inner join subgrupoproduto s on s.subgrupoprodutoid = pr.subgrupoprodutoid  "
+				+ " inner join grupoproduto g on g.grupoprodutoid = s.grupoprodutoid  "
+				+ " where (pr.tp_produto = '"+tipo+"' or '-1' = '"+tipo+"')"
+				+ " and (pr.produtoid = '"+produto+"' or '-1' = '"+produto+"')"
+				+ " and (g.grupoprodutoid = '"+grupo+"' or '-1' = '"+grupo+"') "
+				+ " and (s.subgrupoprodutoid = '"+subgrupo+"' or '-1' = '"+subgrupo+"')"
+				+ " and (pr.tipoprodutoid = "+tipop+" or -1 = "+tipop+") ";
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(sql);
+		
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			ProdutoEstoque pr = new ProdutoEstoque();
+			
+			pr.setProdutoid((BigDecimal)row[0]);
+			pr.setNomeproduto((String)row[1]);
+			pr.setGrupo((String)row[2]);
+			pr.setSubgrupo((String)row[3]);
+			pr.setTipoproduto((String)row[4]);
+			pr.setAlmoxarifado((String)row[5]);
+			pr.setEstoque((BigDecimal)row[6]);
+			
+			list.add(pr);
+		}
+		
+		return list;
+	}
+	
+	
+	public List<Almoxarifado> almoxarifados(){
+		List<Almoxarifado> list = new ArrayList<>();
+		
+		String sql = " select "
+				+ " a.almoxarifadoid , "
+				+ " a.nome_almoxarifado nome "
+				+ " from almoxarifado a "
+				+ " where a.status_almoxarifado = 'ATIVO' and a.bo_considera_consulta_estoque = 'SIM' ";
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(sql);
+		
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			Almoxarifado pr = new Almoxarifado();
+			
+			pr.setAlmoxarifadoid((BigDecimal)row[0]);
+			pr.setNome((String)row[1]);
+			
+			list.add(pr);
 		}
 		
 		return list;
@@ -7822,6 +8155,67 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		return list;
 	}
 	
+	public List<FasePedidoItem> fasepedidoitem_produto(int venda, int outros,Date data1, Date data2, String pedido, String lote, BigDecimal roteiro){
+		List<FasePedidoItem> list = new ArrayList<>();
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		String dataFormatada = formato.format(data1);
+		String dataFormatada2 = formato.format(data2);
+		
+		String sql = ""
+				+ " select "
+				+ " it.produtoid codigoproduto, "
+				+ " it.ds_produto_pedidovenda_item nomeproduto, "
+				+ " sum(it.qt_pedidovenda_item) qtde_pedido, "
+				+ " sum(it.qt_entrega_pedidovenda_item) qtde_reservada, "
+				+ " (sum(it.qt_pedidovenda_item) - sum(it.qt_entrega_pedidovenda_item)) falta_pedido, "
+				+ " AL.SALDOATU_ALMOXARIFADO_PRODUTO saldo_estoque_atual, "
+				+ " case when ((sum(it.qt_pedidovenda_item) - sum(it.qt_entrega_pedidovenda_item)) - AL.SALDOATU_ALMOXARIFADO_PRODUTO ) < 0 then 0 else ((sum(it.qt_pedidovenda_item) - sum(it.qt_entrega_pedidovenda_item)) - AL.SALDOATU_ALMOXARIFADO_PRODUTO ) end falta_pedido_estoque,"
+				+ " c.NOME_CELULAPRODUCAO as NOME_MESA "
+				+ " from pedidovenda_item it "
+				+ " INNER JOIN ALMOXARIFADO_PRODUTO AL ON AL.PRODUTOID = IT.PRODUTOID AND AL.ALMOXARIFADOID = 1 "
+				+ " inner join pedidovenda p on p.pedidovendaid = it.pedidovendaid  "
+				+ " inner join produto pr on pr.produtoid = it.produtoid "
+				+ " left JOIN CELULA_PRODUCAO c on c.CELULAPRODUCAOID = pr.CELULAPRODUCAOID "
+				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID   "
+				+ " left join lote_item lote on lote.pedidovendaitemid = it.pedidovendaitemid "
+				+ " where p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
+				+ " and p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL') "
+				+ " and (p.pedidovendaid = "+pedido+" or '0000' = "+pedido+") "
+				+ " AND (CF.tipooperacao_cfop = 'VENDA' and 1="+venda+" or CF.tipooperacao_cfop <> 'VENDA' and 1="+outros+") "
+				+ " and  (lote.loteid in ("+lote+") or '0000' in ("+lote+")) "
+				+ " and p.ROTEIROID = "+roteiro+" "
+				+ " and (it.qt_pedidovenda_item <> it.qt_entrega_pedidovenda_item) "
+				+ " group by it.produtoid,it.ds_produto_pedidovenda_item,AL.SALDOATU_ALMOXARIFADO_PRODUTO,c.NOME_CELULAPRODUCAO "
+				+ " order by ((sum(it.qt_pedidovenda_item) - sum(it.qt_entrega_pedidovenda_item)) - AL.SALDOATU_ALMOXARIFADO_PRODUTO ) desc "
+				+ " ";
+		
+		//System.out.println(sql);
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(sql);
+		
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			FasePedidoItem fasePedido = new FasePedidoItem();
+			
+			//fasePedido.setPedido((BigDecimal) row[0]);
+			fasePedido.setProduto((BigDecimal) row[0]);
+			fasePedido.setNomeproduto((String) row[1]);
+			fasePedido.setQtdepedido((BigDecimal) row[2]);
+			fasePedido.setQtdereservada((BigDecimal) row[3]);
+			fasePedido.setFaltapedido((BigDecimal) row[4]);
+			fasePedido.setSaldoatual((BigDecimal) row[5]);
+			fasePedido.setFaltapedidoestoque((BigDecimal) row[6]);
+			//fasePedido.setQtdepedidogeral((BigDecimal) row[8]);
+			//fasePedido.setQtdereservadageral((BigDecimal) row[9]);
+			//fasePedido.setFaltapedidogeral((BigDecimal) row[10]);
+			//fasePedido.setFaltapedidoestoquegeral((BigDecimal) row[11]);
+			fasePedido.setMesa((String) row[7]);
+			
+			list.add(fasePedido);
+		}
+		
+		return list;
+	}
 	
 	public List<FasePedidoItem> fasepedidoitem(String pedido){
 		List<FasePedidoItem> list = new ArrayList<>();
@@ -7974,6 +8368,97 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " and (p.pedidovendaid = "+pedido+" or '0000' = "+pedido+") "
 				+ " AND (CF.tipooperacao_cfop = 'VENDA' and 1="+venda+" or CF.tipooperacao_cfop <> 'VENDA' and 1="+outros+") "
 				+ " and  (lote.loteid = "+lote+" or '0000' = "+lote+") "
+				+ " group by p.ROTEIROID "
+				+ " ) total on total.ROTEIROID = r.ROTEIROID "
+				+ " "
+				+ " )x "
+				+ " group by x.ROTEIROID, x.DESC_ROTEIRO, x.vl_pedido, x.qtde ,x.ordem  "
+				+ "  order by x.ordem ");
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			FasePedido fasePedido = new FasePedido();
+			fasePedido.setRoteiroid((BigDecimal) row[0]);
+			fasePedido.setNomeroteiro((String) row[1]);
+			fasePedido.setVlpedido((BigDecimal) row[2]);
+			fasePedido.setQtdepedido((BigInteger) row[3]);
+			
+			list.add(fasePedido);
+		}
+		return list;
+	}
+	
+	public List<FasePedido> fasepedido_produtos(int venda, int outros, Date data1, Date data2, String pedido, String lote){
+		List<FasePedido> list = new ArrayList<>();
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		String dataFormatada = formato.format(data1);
+		String dataFormatada2 = formato.format(data2);
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(
+				"  select "
+				+ " x.ROTEIROID,  "
+				+ " x.DESC_ROTEIRO,  "
+				+ " x.vl_pedido,  "
+				+ " x.qtde , "
+				+ " x.ordem "
+				+ " from( "
+				+ " select "
+				+ " r.ROTEIROID,  "
+				+ " r.DESC_ROTEIRO,  "
+				+ " coalesce(total.vl_pedido,0) vl_pedido,  "
+				+ " coalesce(total.qtde,0) qtde , "
+				+ " case  "
+				+ " when r.ROTEIROID = 1 then 1 "
+				+ " when r.ROTEIROID = 2 then 4 "
+				+ " when r.ROTEIROID = 3 then 3 "
+				+ " when r.ROTEIROID = 4 then 8 "
+				+ " when r.ROTEIROID = 5 then 10 "
+				+ " when r.ROTEIROID = 6 then 11 "
+				+ " when r.ROTEIROID = 7 then 12 "
+				+ " when r.ROTEIROID = 8 then 13 "
+				+ " when r.ROTEIROID = 9 then 5 "
+				+ " when r.ROTEIROID = 10 then 7 "
+				+ " when r.ROTEIROID = 11 then 9 "
+				+ " when r.ROTEIROID = 12 then 14 "
+				+ " when r.ROTEIROID = 13 then 6 "
+				+ " when r.ROTEIROID = 14 then 2 else 100 end ordem "
+				+ "  "
+				+ " from ROTEIRO r  "
+				+ "  "
+				+ " left join(  "
+				+ " select  "
+				+ " p.ROTEIROID ,  "
+				+ " sum(p.VL_TOTALPROD_PEDIDOVENDA) vl_pedido,  "
+				+ " count(p.pedidovendaid) qtde  "
+				+ " from pedidovenda p  "
+				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+				+ " left join( "
+				+ " select   "
+				+ " p.roteiroid  ,   "
+				+ " p.pedidovendaid , "
+				+ " l.loteid  "
+				+ " from lote l "
+				+ " inner join LOTE_ITEM li on li.loteid = l.loteid "
+				+ " inner join pedidovenda_item it on it.pedidovendaitemid  = li.pedidovendaitemid  "
+				+ " inner join pedidovenda p on p.pedidovendaid = it.pedidovendaid  "
+				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID   "
+				+ " where p.STATUS_PEDIDOVENDA in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO')  "
+				+ " group by p.roteiroid ,  l.loteid ,p.pedidovendaid "
+				+ " )lote on lote.roteiroid = p.roteiroid and lote.pedidovendaid = p.pedidovendaid "
+				+ " "
+				+ " inner join ( "
+				+ " select "
+				+ " it.pedidovendaid "
+				+ " from pedidovenda_item it "
+				+ " left join lote_item lote on lote.pedidovendaitemid = it.pedidovendaitemid "
+				+ " where (it.qt_pedidovenda_item <> it.qt_entrega_pedidovenda_item) "
+				+ " group by it.pedidovendaid "
+				+ " )item on item.pedidovendaid = p.pedidovendaid "
+				+ " "
+				+ " where p.STATUS_PEDIDOVENDA in ('ABERTO','BLOQUEADO','PARCIAL','FECHADO') "
+				+ " and p.DT_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' "
+				+ " and (p.pedidovendaid = "+pedido+" or '0000' = "+pedido+") "
+				+ " AND (CF.tipooperacao_cfop = 'VENDA' and 1="+venda+" or CF.tipooperacao_cfop <> 'VENDA' and 1="+outros+") "
+				+ " and  (lote.loteid in ("+lote+") or '0000' in ("+lote+")) "
 				+ " group by p.ROTEIROID "
 				+ " ) total on total.ROTEIROID = r.ROTEIROID "
 				+ " "
@@ -11763,6 +12248,50 @@ public List<Cliente> clientes() {
 		return list;
 	}
 	
+	public List<TabProduto> tabproduto(String idtabela){
+		List<TabProduto> list = new ArrayList<>();
+		
+		String sql= ""
+				+ " select  "
+				+ " t.tabelaprecoid , "
+				+ " t2.nome_tabelapreco , "
+				+ " t2.pc_desc_max_item_tabpreco desc_max, "
+				+ " t.produtoid , "
+				+ " p.nome_produto , "
+				+ " t.vl_unit_tabelaprecoproduto vl_unitario, "
+				+ " t.vl_unit_tabelaprecoproduto - ((t.vl_unit_tabelaprecoproduto * t2.pc_desc_max_item_tabpreco)/100) vl_unitario_Liquido, "
+				+ " t.bo_promocao_tabelaprecoproduto bo_promocao, "
+				+ " t.vl_promocao_tabelaprecoproduto vl_promocao, "
+				+ " p.vl_custo_produto vl_custo "
+				+ " from tabelaprecoproduto t  "
+				+ " inner join tabelapreco t2 on t2.tabelaprecoid = t.tabelaprecoid  "
+				+ " inner join produto p on p.produtoid = t.produtoid  "
+				+ " where t.tabelaprecoid  = "+idtabela ;
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(sql);
+		
+		List<Object[]> lista = query.getResultList();
+
+		for (Object[] row : lista) {
+			TabProduto p = new TabProduto();
+			
+			p.setTabelaprecoid((BigDecimal)row[0]);
+			p.setNometabela((String)row[1]);
+			p.setDesc_max((BigDecimal)row[2]);
+			p.setProdutoid((BigDecimal)row[3]);
+			p.setNomeproduto((String)row[4]);
+			p.setValor_unitario((BigDecimal)row[5]);
+			p.setValor_unitario_liquido((BigDecimal)row[6]);
+			p.setPromocao((String)row[7]);
+			p.setValor_promocao((BigDecimal)row[8]);
+			p.setValor_custo((BigDecimal)row[9]);
+			
+			list.add(p);
+		}
+		
+		return list;
+	}
+	
 	public VendasEmGeralItem consultaitem(BigDecimal produto) {
 		VendasEmGeralItem vendasEmGeralItem = new VendasEmGeralItem();
 
@@ -12829,6 +13358,132 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 	
 }
 
+	public List<Rh_Folha> rh_folha(String ano, String mes){
+		List<Rh_Folha>  list = new ArrayList<>();
+		
+		String sql = ""
+				+ "  "
+				+ " select  "
+				+ " vendas.ano, "
+				+ " vendas.mes, "
+				+ " vendas.valor_faturado, "
+				+ " clt.qtde_clt, "
+				+ " cltv.valor_clt, "
+				+ " trunc((cltv.valor_clt/vendas.valor_faturado)*100,2) perc_clt, "
+				+ " trunc(vendas.valor_faturado/clt.qtde_clt,2) valor_faturado_clt, "
+				+ " pj.qtde_pj, "
+				+ " pjv.valor_pj, "
+				+ " trunc((pjv.valor_pj/vendas.valor_faturado)*100,2) perc_pj, "
+				+ " trunc(vendas.valor_faturado/pj.qtde_pj,2) valor_faturado_pj,"
+				+ " clt.qtde_clt+pj.qtde_pj total_funcionarios, "
+				+ " cltv.valor_clt + pjv.valor_pj total_valor "
+				+ " from( "
+				+ " SELECT   "
+				+ " to_char(p.dt_faturamento_pedidovenda,'YYYY') ano, "
+				+ " to_char(p.dt_faturamento_pedidovenda,'MM') mes, "
+				+ " sum(g.vl_total_pedidovenda_item) valor_faturado "
+				+ " from pedidovenda_item  g  "
+				+ " inner join pedidovenda p on p.pedidovendaid = g.pedidovendaid "
+				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID   "
+				+ " where p.status_pedidovenda in ('FATURADO')   "
+				+ " AND CF.tipooperacao_cfop = 'VENDA'    "
+				+ " and p.tp_nota_pedidovenda = 'NORMAL'   "
+				+ " and to_char(p.dt_faturamento_pedidovenda,'YYYY')= '"+ano+"' "
+				+ " and to_char(p.dt_faturamento_pedidovenda,'MM') = '"+mes+"' "
+				+ " group by to_char(p.dt_faturamento_pedidovenda,'YYYY'),to_char(p.dt_faturamento_pedidovenda,'MM') "
+				+ " )vendas "
+				+ " left join ( "
+				+ " select  "
+				+ " x.ano, "
+				+ " x.mes, "
+				+ " count(x.funcionario) qtde_clt "
+				+ " from( "
+				+ " select "
+				+ " to_char(d.data_emissao_despesa,'YYYY') ano, "
+				+ " to_char(d.data_emissao_despesa,'MM')mes, "
+				+ " d.cadcftvid funcionario "
+				+ " from despesa d "
+				+ " inner join cadcftv c on c.cadcftvid = d.cadcftvid "
+				+ " inner join planoconta p on p.planocontaid = d.planocontaid "
+				+ " where  p.planocontaid in ('3.1.2.1','3.1.2.2','3.1.2.3','3.1.2.4','3.1.2.5','3.1.2.6','3.1.2.7','3.1.2.8','3.1.2.9','3.1.2.10','3.1.2.11','3.1.2.12','3.1.2.15','3.1.2.16','3.2.2.1','3.2.2.2','3.2.2.3','3.2.2.4','3.2.2.5','3.2.2.6','3.2.2.7','3.2.2.8','3.2.2.9','3.2.2.10','3.2.2.11','3.2.2.13') "
+				+ " and to_char(d.data_emissao_despesa,'YYYY') = '"+ano+"' "
+				+ " and to_char(d.data_emissao_despesa,'MM') = '"+mes+"' "
+				+ " group by d.cadcftvid,to_char(d.data_emissao_despesa,'MM'),to_char(d.data_emissao_despesa,'YYYY') "
+				+ " )x group by x.ano,x.mes "
+				+ " )clt on clt.ano = vendas.ano and clt.mes = vendas.mes "
+				+ " left join( "
+				+ " select "
+				+ " to_char(d.data_emissao_despesa,'YYYY') ano, "
+				+ " to_char(d.data_emissao_despesa,'MM')mes, "
+				+ " sum(d.vl_despesa) valor_clt "
+				+ " from despesa d "
+				+ " inner join cadcftv c on c.cadcftvid = d.cadcftvid "
+				+ " inner join planoconta p on p.planocontaid = d.planocontaid "
+				+ " where  p.planocontaid in ('3.1.2.1','3.1.2.2','3.1.2.3','3.1.2.4','3.1.2.5','3.1.2.6','3.1.2.7','3.1.2.8','3.1.2.9','3.1.2.10','3.1.2.11','3.1.2.12','3.1.2.15','3.1.2.16','3.2.2.1','3.2.2.2','3.2.2.3','3.2.2.4','3.2.2.5','3.2.2.6','3.2.2.7','3.2.2.8','3.2.2.9','3.2.2.10','3.2.2.11','3.2.2.13') "
+				+ " and to_char(d.data_emissao_despesa,'YYYY') = '"+ano+"' "
+				+ " and to_char(d.data_emissao_despesa,'MM') = '"+mes+"' "
+				+ " group by to_char(d.data_emissao_despesa,'MM'),to_char(d.data_emissao_despesa,'YYYY') "
+				+ " )cltv on cltv.ano = vendas.ano and cltv.mes = vendas.mes "
+				+ " left join ( "
+				+ " select  "
+				+ " x.ano, "
+				+ " x.mes, "
+				+ " count(x.funcionario) qtde_pj "
+				+ " from( "
+				+ " select "
+				+ " to_char(d.data_emissao_despesa,'YYYY') ano, "
+				+ " to_char(d.data_emissao_despesa,'MM')mes, "
+				+ " d.cadcftvid funcionario "
+				+ " from despesa d "
+				+ " inner join cadcftv c on c.cadcftvid = d.cadcftvid "
+				+ " inner join planoconta p on p.planocontaid = d.planocontaid "
+				+ " where p.planocontaid in ('3.1.2.17','3.2.1.36','3.2.2.14') "
+				+ " and to_char(d.data_emissao_despesa,'YYYY') = '"+ano+"' "
+				+ " and to_char(d.data_emissao_despesa,'MM') = '"+mes+"' "
+				+ " group by d.cadcftvid,to_char(d.data_emissao_despesa,'MM'),to_char(d.data_emissao_despesa,'YYYY') "
+				+ " )x group by x.ano,x.mes "
+				+ " )pj on pj.ano = vendas.ano and pj.mes = vendas.mes "
+				+ " left join( "
+				+ " select "
+				+ " to_char(d.data_emissao_despesa,'YYYY') ano, "
+				+ " to_char(d.data_emissao_despesa,'MM')mes, "
+				+ " sum(d.vl_despesa) valor_pj "
+				+ " from despesa d "
+				+ " inner join cadcftv c on c.cadcftvid = d.cadcftvid "
+				+ " inner join planoconta p on p.planocontaid = d.planocontaid "
+				+ " where  p.planocontaid in ('3.1.2.17','3.2.1.36','3.2.2.14') "
+				+ " and to_char(d.data_emissao_despesa,'YYYY') = '"+ano+"' "
+				+ " and to_char(d.data_emissao_despesa,'MM') =  '"+mes+"' "
+				+ " group by to_char(d.data_emissao_despesa,'MM'),to_char(d.data_emissao_despesa,'YYYY') "
+				+ " )pjv on pjv.ano = vendas.ano and pjv.mes = vendas.mes ";
+		
+		//System.out.println(sql);
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(sql);
+		
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			Rh_Folha rh = new  Rh_Folha();
+			
+			rh.setAno((String)row[0]);
+			rh.setMes((String)row[1]);
+			rh.setValor_faturado((BigDecimal)row[2]);
+			rh.setQtde_clt((BigInteger)row[3]);
+			rh.setValor_clt((BigDecimal)row[4]);
+			rh.setPerc_clt((BigDecimal)row[5]);
+			rh.setValor_faturado_clt((BigDecimal)row[6]);
+			rh.setQtde_pj((BigInteger)row[7]);
+			rh.setValor_pj((BigDecimal)row[8]);
+			rh.setPerc_pj((BigDecimal)row[9]);
+			rh.setValor_faturado_pj((BigDecimal)row[10]);
+			rh.setTotal_funcionarios((BigInteger)row[11]);
+			rh.setTotal_valor((BigDecimal)row[12]);
+			
+			list.add(rh);
+		}
+		
+		return list;
+	}
 	public List<VendasFrete> vendasfrete(Date data1, Date data2, String vendedor1, String vendedor2,String cliente1, String cliente2, String uf){
 		List<VendasFrete> list = new ArrayList<>();
 	
@@ -12885,7 +13540,8 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 				+ " and p.DT_FATURAMENTO_PEDIDOVENDA between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " ' " 
 				+ " and p.cadcftvid between ' " + cliente1 + " ' and ' " + cliente2 + " ' "
 				+ " and v.cadcftvid between ' " + vendedor1 + " ' and ' " + vendedor2 + " ' "
-				+ " and (en.uf_cidade = '"+uf+"' and 1="+f+" or 2="+f+" ) ";
+				+ " and (en.uf_cidade = '"+uf+"' and 1="+f+" or 2="+f+" ) "
+				+ " order by en.uf_cidade,tr.nome_cadcftv,en.nome_cidade ";
 				
 		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(sql);
 	
