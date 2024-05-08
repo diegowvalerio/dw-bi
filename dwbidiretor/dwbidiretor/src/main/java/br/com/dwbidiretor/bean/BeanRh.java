@@ -44,6 +44,8 @@ public class BeanRh implements Serializable {
 	private StreamedContent image;
 	private DonutChartModel donutModel;
 	private String urlimg;
+	private String urlimg2;
+	private String urlimg3;
 	
 	@PostConstruct
 	public void init() {
@@ -62,6 +64,8 @@ public class BeanRh implements Serializable {
 
 		//cria_totalfuncionarios();
 		gerarimg();
+		gerarimg2();
+		gerarimg3();
 	}
 	
 	private void gerarimg() {
@@ -76,7 +80,7 @@ public class BeanRh implements Serializable {
         		+ "  type: 'doughnut', "
         		+ "  data: { "
         		+ "    labels: ['CLT', 'PJ'], "
-        		+ "    datasets: [{ data: ["+rh_folha.getQtde_clt()+","+rh_folha.getQtde_pj()+"],"
+        		+ "    datasets: [{ data: ["+rh_folha.getPerc_clt_funcionarios()+","+rh_folha.getPerc_pj_funcionarios()+"],"
         		+ "	   backgroundColor: [ "
         		+ "          'rgb(255, 159, 64)', "
         		+ "          'rgb(54, 162, 235)', "
@@ -87,11 +91,14 @@ public class BeanRh implements Serializable {
         		+ "    plugins: {"
         		+ "		datalabels: { "
         		+ "        display: true, "
-        		+ "        backgroundColor: '#ccc', "
+        		+ "        backgroundColor: '#FFFFFF', "
         		+ "        borderRadius: 3, "
         		+ "        font: { "
         		+ "          color: 'red', "
         		+ "          weight: 'bold', "
+        		+ "        }, "
+        		+ "        formatter: (value) => { "
+        		+ "          return value + '%'; "
         		+ "        }, "
         		+ "      },	"
         		+ "      doughnutlabel: { "
@@ -107,7 +114,104 @@ public class BeanRh implements Serializable {
         	urlimg = chart.getUrl();
 		
         // Or get the image
-        imageBytes = chart.toByteArray();
+        //imageBytes = chart.toByteArray();
+		}
+	}
+	
+	
+	private void gerarimg2() {
+		if(lista.size()>0) {
+        	rh_folha = lista.get(0);
+		
+		QuickChart chart = new QuickChart("http","177.72.156.109",8854);
+        chart.setWidth(500);
+        chart.setHeight(300);
+        chart.setVersion("2.9.4");
+        chart.setConfig("{ "
+        		+ "  type: 'doughnut', "
+        		+ "  data: { "
+        		+ "    labels: ['CLT', 'PJ'], "
+        		+ "    datasets: [{ data: ["+rh_folha.getPerc_clt_valor()+","+rh_folha.getPerc_pj_valor()+"],"
+        		+ "	   backgroundColor: [ "
+        		+ "          'rgb(255, 159, 64)', "
+        		+ "          'rgb(54, 162, 235)', "
+        		+ "        ],"
+        		+ "		}], "
+        		+ "  }, "
+        		+ "  options: { "
+        		+ "    plugins: {"
+        		+ "		datalabels: { "
+        		+ "        display: true, "
+        		+ "        backgroundColor: '#FFFFFF', "
+        		+ "        borderRadius: 3, "
+        		+ "        font: { "
+        		+ "          color: 'red', "
+        		+ "          weight: 'bold', "
+        		+ "        }, "
+        		+ "        formatter: (value) => { "
+        		+ "          return value + '%'; "
+        		+ "        }, "
+        		+ "      },	"
+        		+ "      doughnutlabel: { "
+        		+ "        labels: [{ text: '"+rh_folha.getTotal_valor()+"', font: { size: 20 } }, { text: 'Total' }], "
+        		+ "      },"
+        		+ "    }, "
+        		+ "  }, "
+        		+ "}");
+
+        // Print the chart image URL
+        //System.out.println(chart.getUrl());
+        
+        	urlimg2 = chart.getUrl();
+		
+        // Or get the image
+        //imageBytes = chart.toByteArray();
+		}
+	}
+	
+	private void gerarimg3() {
+		if(lista.size()>0) {
+        	rh_folha = lista.get(0);
+        	
+		float faturado = 100-(rh_folha.getPerc_clt().floatValue()+rh_folha.getPerc_pj().floatValue());
+		
+		QuickChart chart = new QuickChart("http","177.72.156.109",8854);
+        chart.setWidth(500);
+        chart.setHeight(300);
+        chart.setVersion("2.9.4");
+        chart.setConfig("{ "
+        		+ "  type: 'doughnut', "
+        		+ "  data: { "
+        		+ "    datasets: [ "
+        		+ "      { "
+        		+ "        data: ["+ faturado +", "+rh_folha.getPerc_clt()+", "+rh_folha.getPerc_pj()+"], "
+        		+ "        backgroundColor: [ "
+        		+ "          'rgb(75, 192, 192)', "
+        		+ "          'rgb(255, 159, 64)', "
+        		+ "          'rgb(54, 162, 235)',           "
+        		+ "        ], "
+        		+ "      }, "
+        		+ "    ], "
+        		+ "    labels: ['Faturado', 'CLT', 'PJ'], "
+        		+ "  }, "
+        		+ "  options: { "
+        		+ "    plugins: { "
+        		+ "      datalabels: { "
+        		+ "        labels: { "
+        		+ "          font: {size: 0.1,}, "
+        		+ "        }, "
+        		+ "      },  "
+        		+ "    }, "
+        		+ "  }, "
+        		+ " } ");
+
+        // Print the chart image URL
+        //System.out.println(chart.getUrl());
+        
+        	urlimg3 = chart.getUrl();
+		
+        // Or get the image
+        //imageBytes = chart.toByteArray();
 		}
 	}
 	
@@ -152,6 +256,14 @@ public class BeanRh implements Serializable {
         donutModel.setExtender("chartExtender");
         donutModel.setData(data);
         
+	}
+
+	public String getUrlimg3() {
+		return urlimg3;
+	}
+
+	public void setUrlimg3(String urlimg3) {
+		this.urlimg3 = urlimg3;
 	}
 
 	public String getAno() {
@@ -224,6 +336,14 @@ public class BeanRh implements Serializable {
 
 	public void setUrlimg(String urlimg) {
 		this.urlimg = urlimg;
+	}
+
+	public String getUrlimg2() {
+		return urlimg2;
+	}
+
+	public void setUrlimg2(String urlimg2) {
+		this.urlimg2 = urlimg2;
 	}
 	
 	

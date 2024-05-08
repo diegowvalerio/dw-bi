@@ -153,30 +153,139 @@ function chartExtender() {
 								</div>
 			
 								<div class="box-body" >
+									<p:dataTable id="tabela1" value="#{beanRh.lista}" var="lista" scrollable="true" scrollHeight="300">
+											<p:column headerText="CLT" >
+												<h:outputText value="#{lista.qtde_clt}" />
+											</p:column>
+											
+											<p:column headerText="PJ" >
+												<h:outputText value="#{lista.qtde_pj}"  />
+						 							
+											</p:column>
+											
+											<p:column headerText="Total" >
+												<h:outputText value="#{lista.total_funcionarios}" />
+											</p:column>
+											
+									</p:dataTable>
 									<img src="#{beanRh.urlimg}" width="100%" />
 								</div>
 							</div>
 						</div>
 						
-						
-						<div class="col-md-6">
-							<div class="box box-default" id="gf2">
-								<div class="box-header with-border">
-									<h3 class="box-title">Produção Dia</h3>
-								</div>
+						<div class="col-md-3">
+							<div class="box box-default" id="teste2">
 							
+								<div class="box-header with-border">
+									<h3 class="box-title">Total Folha</h3>
+								</div>
+			
 								<div class="box-body" >
-									<p:dataTable id="tabela3" value="#{beanRh.lista}" var="lista" scrollable="true" scrollHeight="300">
-											<p:column headerText="Ano" width="5%">
-												<h:outputText value="#{lista.ano}" />
+									<p:dataTable id="tabela2" value="#{beanRh.lista}" var="lista" scrollable="true" scrollHeight="300">
+											<p:column headerText="CLT" >
+												<h:outputText value="#{lista.valor_clt}" >
+													<f:convertNumber type="currency" currencySymbol="R$" />
+												</h:outputText>
 											</p:column>
 											
-											<p:column headerText="Mês" >
-												<h:outputText value="#{lista.mes}"  >
-						 							<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+											<p:column headerText="PJ" >
+												<h:outputText value="#{lista.valor_pj}" >
+													<f:convertNumber type="currency" currencySymbol="R$" />
+												</h:outputText>
+						 							
+											</p:column>
+											
+											<p:column headerText="Total" >
+												<h:outputText value="#{lista.total_valor2}" >
+													<f:convertNumber type="currency" currencySymbol="R$" />
+												</h:outputText>
+											</p:column>
+											
+									</p:dataTable>
+									<img src="#{beanRh.urlimg2}" width="100%" />
+								</div>
+							</div>
+						</div>
+						
+						
+						<div class="col-md-3">
+							<div class="box box-default" id="gf2">
+								<div class="box-header with-border">
+									<h3 class="box-title">Faturamento x Folha</h3>
+								</div>
+							
+								<div class="box-body" style="padding: 0;">
+									
+									<p:dataTable id="tabela3" value="#{beanRh.lista}" var="lista" scrollable="true" scrollHeight="300" >
+												
+											<p:column headerText="Faturado" width="10%">
+												<h:outputText value="#{lista.valor_faturado}"  >
+						 							<f:convertNumber type="currency" currencySymbol="" />
 						 							</h:outputText>
 											</p:column>
+											
+											<p:column headerText="Total" width="18%">
+												<h:outputText value="#{lista.total_valor2}"  >
+						 							<f:convertNumber type="currency" currencySymbol="" />
+						 							</h:outputText>
+											</p:column>
+											
+											<p:column headerText="%" width="10%">
+												<h:outputText value="#{lista.perc_folha_faturado_total}"  >
+						 							
+						 						</h:outputText>
+											</p:column>
+											
+											<p:column headerText="% CLT" width="8%" >
+												<h:outputText value="#{lista.perc_clt}"  >
+						 							
+						 						</h:outputText>
+											</p:column>
+											
+											<p:column headerText="% PJ" width="8%">
+												<h:outputText value="#{lista.perc_pj}"  >
+						 							
+						 						</h:outputText>
+											</p:column>
+											
+											
 									</p:dataTable>
+									
+									<br/>
+									
+									<div class="box-header with-border">
+										<h3 class="box-title">Faturamento x Colaboradores</h3>
+									</div>
+									
+									<p:dataTable id="tabela4" value="#{beanRh.lista}" var="lista" scrollable="true" scrollHeight="300" >
+												
+											<p:column headerText="Faturado">
+												<h:outputText value="#{lista.valor_faturado}"  >
+						 							<f:convertNumber type="currency" currencySymbol="" />
+						 							</h:outputText>
+											</p:column>
+											
+											<p:column headerText="CLT+PJ">
+												<h:outputText value="#{lista.valor_faturado_total}"  >
+						 							<f:convertNumber type="currency" currencySymbol="" />
+						 							</h:outputText>
+											</p:column>
+											
+											<p:column headerText="CLT" >
+												<h:outputText value="#{lista.valor_faturado_clt}"  >
+						 							<f:convertNumber type="currency" currencySymbol="" />
+						 						</h:outputText>
+											</p:column>
+											
+											<p:column headerText="PJ" >
+												<h:outputText value="#{lista.valor_faturado_pj}"  >
+						 							<f:convertNumber type="currency" currencySymbol="" />
+						 						</h:outputText>
+											</p:column>
+											
+											
+									</p:dataTable>
+									
 								</div>
 							</div>
 						</div>

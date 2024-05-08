@@ -13376,7 +13376,14 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 				+ " trunc((pjv.valor_pj/vendas.valor_faturado)*100,2) perc_pj, "
 				+ " trunc(vendas.valor_faturado/pj.qtde_pj,2) valor_faturado_pj,"
 				+ " clt.qtde_clt+pj.qtde_pj total_funcionarios, "
-				+ " cltv.valor_clt + pjv.valor_pj total_valor "
+				+ " to_char( cltv.valor_clt + pjv.valor_pj , 'L9G999G990D99') total_valor, "
+				+ " round(cast(clt.qtde_clt as decimal)/(clt.qtde_clt+pj.qtde_pj )*100,2) perc_clt_funcionarios, "
+				+ " round(cast(pj.qtde_pj as decimal)/(clt.qtde_clt+pj.qtde_pj )*100,2) perc_pj_funcionarios, "
+				+ " round(cltv.valor_clt/(cltv.valor_clt + pjv.valor_pj)*100,2) perc_clt_valor, "
+				+ " round(pjv.valor_pj/(cltv.valor_clt + pjv.valor_pj)*100,2) perc_pj_valor, "
+				+ " cltv.valor_clt + pjv.valor_pj  total_valor2,"
+				+ " round(((cltv.valor_clt + pjv.valor_pj )/vendas.valor_faturado)*100,2) perc_folha_faturado_total,"
+				+ " trunc(vendas.valor_faturado/(clt.qtde_clt+pj.qtde_pj),2) valor_faturado_total "
 				+ " from( "
 				+ " SELECT   "
 				+ " to_char(p.dt_faturamento_pedidovenda,'YYYY') ano, "
@@ -13477,7 +13484,14 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 			rh.setPerc_pj((BigDecimal)row[9]);
 			rh.setValor_faturado_pj((BigDecimal)row[10]);
 			rh.setTotal_funcionarios((BigInteger)row[11]);
-			rh.setTotal_valor((BigDecimal)row[12]);
+			rh.setTotal_valor((String)row[12]);
+			rh.setPerc_clt_funcionarios((BigDecimal)row[13]);
+			rh.setPerc_pj_funcionarios((BigDecimal)row[14]);
+			rh.setPerc_clt_valor((BigDecimal)row[15]);
+			rh.setPerc_pj_valor((BigDecimal)row[16]);
+			rh.setTotal_valor2((BigDecimal)row[17]);
+			rh.setPerc_folha_faturado_total((BigDecimal)row[18]);
+			rh.setValor_faturado_total((BigDecimal)row[19]);
 			
 			list.add(rh);
 		}

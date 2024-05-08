@@ -21,7 +21,14 @@ public class Rh_Folha implements Serializable {
 	private BigDecimal perc_pj;
 	private BigDecimal valor_faturado_pj;
 	private BigInteger total_funcionarios;
-	private BigDecimal total_valor;
+	private String total_valor;
+	private BigDecimal perc_clt_funcionarios;
+	private BigDecimal perc_pj_funcionarios;
+	private BigDecimal perc_clt_valor;
+	private BigDecimal perc_pj_valor;
+	private BigDecimal total_valor2;
+	private BigDecimal perc_folha_faturado_total;
+	private BigDecimal valor_faturado_total;
 	
 	public String getAno() {
 		return ano;
@@ -83,10 +90,10 @@ public class Rh_Folha implements Serializable {
 	public void setTotal_funcionarios(BigInteger total_funcionarios) {
 		this.total_funcionarios = total_funcionarios;
 	}
-	public BigDecimal getTotal_valor() {
+	public String getTotal_valor() {
 		return total_valor;
 	}
-	public void setTotal_valor(BigDecimal total_valor) {
+	public void setTotal_valor(String total_valor) {
 		this.total_valor = total_valor;
 	}
 	public BigInteger getQtde_clt() {
@@ -101,6 +108,50 @@ public class Rh_Folha implements Serializable {
 	public void setQtde_pj(BigInteger qtde_pj) {
 		this.qtde_pj = qtde_pj;
 	}
+	public BigDecimal getPerc_clt_funcionarios() {
+		return perc_clt_funcionarios;
+	}
+	public void setPerc_clt_funcionarios(BigDecimal perc_clt_funcionarios) {
+		this.perc_clt_funcionarios = perc_clt_funcionarios;
+	}
+	public BigDecimal getPerc_pj_funcionarios() {
+		return perc_pj_funcionarios;
+	}
+	public void setPerc_pj_funcionarios(BigDecimal perc_pj_funcionarios) {
+		this.perc_pj_funcionarios = perc_pj_funcionarios;
+	}
+	public BigDecimal getPerc_clt_valor() {
+		return perc_clt_valor;
+	}
+	public void setPerc_clt_valor(BigDecimal perc_clt_valor) {
+		this.perc_clt_valor = perc_clt_valor;
+	}
+	public BigDecimal getPerc_pj_valor() {
+		return perc_pj_valor;
+	}
+	public void setPerc_pj_valor(BigDecimal perc_pj_valor) {
+		this.perc_pj_valor = perc_pj_valor;
+	}
+	public BigDecimal getTotal_valor2() {
+		return total_valor2;
+	}
+	public void setTotal_valor2(BigDecimal total_valor2) {
+		this.total_valor2 = total_valor2;
+	}
+	public BigDecimal getPerc_folha_faturado_total() {
+		return perc_folha_faturado_total;
+	}
+	public void setPerc_folha_faturado_total(BigDecimal perc_folha_faturado_total) {
+		this.perc_folha_faturado_total = perc_folha_faturado_total;
+	}
+	public BigDecimal getValor_faturado_total() {
+		return valor_faturado_total;
+	}
+	public void setValor_faturado_total(BigDecimal valor_faturado_total) {
+		this.valor_faturado_total = valor_faturado_total;
+	}
+
+
 
 	
 }
