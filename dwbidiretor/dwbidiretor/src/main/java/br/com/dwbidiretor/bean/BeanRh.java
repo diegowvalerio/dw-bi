@@ -1,9 +1,11 @@
 package br.com.dwbidiretor.bean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +25,7 @@ import org.primefaces.model.charts.donut.DonutChartOptions;
 import org.primefaces.model.charts.optionconfig.legend.Legend;
 
 import br.com.dwbidiretor.classe.Rh_Folha;
+import br.com.dwbidiretor.classe.Rh_Setor;
 import br.com.dwbidiretor.servico.ServicoRh_Folha;
 import io.quickchart.QuickChart;
 
@@ -38,6 +41,10 @@ public class BeanRh implements Serializable {
 	
 	private List<Rh_Folha> lista = new ArrayList<>();
 	private Rh_Folha rh_folha = new Rh_Folha();
+	
+	private List<Rh_Setor> listaSetor = new ArrayList<>();
+	private Rh_Setor rh_setor = new Rh_Setor();
+	
 	@Inject
 	private ServicoRh_Folha servico;
 	private  byte[] imageBytes;
@@ -60,14 +67,18 @@ public class BeanRh implements Serializable {
 	
 	public void filtrar(){
 		
-		lista = servico.rh_folha(ano, mes);		
+		lista = servico.rh_folha(ano, mes);	
+		listaSetor= servico.rh_setor(ano, mes);
 
 		//cria_totalfuncionarios();
 		gerarimg();
 		gerarimg2();
-		gerarimg3();
+		//gerarimg3();
+	
 	}
 	
+	
+
 	private void gerarimg() {
 		if(lista.size()>0) {
         	rh_folha = lista.get(0);
@@ -170,10 +181,19 @@ public class BeanRh implements Serializable {
 	}
 	
 	private void gerarimg3() {
-		if(lista.size()>0) {
-        	rh_folha = lista.get(0);
-        	
-		float faturado = 100-(rh_folha.getPerc_clt().floatValue()+rh_folha.getPerc_pj().floatValue());
+		rh_setor = listaSetor.get(0);
+		String[] setor =  new String[listaSetor.size()];
+		BigInteger[] qtde = new BigInteger[listaSetor.size()];
+		
+		for (int i = 0; i < listaSetor.size(); i++) {
+			setor[i]= listaSetor.get(i).getSetor_2();
+			qtde[i]= listaSetor.get(i).getQtde();
+		}
+		
+		//System.out.println(Arrays.toString(setor));
+		
+		if(listaSetor.size()>0) {
+        
 		
 		QuickChart chart = new QuickChart("http","177.72.156.109",8854);
         chart.setWidth(500);
@@ -182,38 +202,58 @@ public class BeanRh implements Serializable {
         chart.setConfig("{ "
         		+ "  type: 'doughnut', "
         		+ "  data: { "
-        		+ "    datasets: [ "
-        		+ "      { "
-        		+ "        data: ["+ faturado +", "+rh_folha.getPerc_clt()+", "+rh_folha.getPerc_pj()+"], "
-        		+ "        backgroundColor: [ "
-        		+ "          'rgb(75, 192, 192)', "
+        		+ "    labels: "+Arrays.toString(setor)+", "
+        		+ "    datasets: [{ data: "+Arrays.toString(qtde)+","
+        		+ "	   backgroundColor: [ "
         		+ "          'rgb(255, 159, 64)', "
-        		+ "          'rgb(54, 162, 235)',           "
-        		+ "        ], "
-        		+ "      }, "
-        		+ "    ], "
-        		+ "    labels: ['Faturado', 'CLT', 'PJ'], "
+        		+ "          'rgb(54, 162, 235)', "
+        		+ "          'rgb(54, 162, 235)', "
+        		+ "          'rgb(54, 162, 235)', "
+        		+ "          'rgb(54, 162, 235)', "
+        		+ "          'rgb(54, 162, 235)', "
+        		+ "          'rgb(54, 162, 235)', "
+        		+ "          'rgb(54, 162, 235)', "
+        		+ "          'rgb(54, 162, 235)', "
+        		+ "          'rgb(54, 162, 235)', "
+        		+ "          'rgb(54, 162, 235)', "
+        		+ "          'rgb(54, 162, 235)', "
+        		+ "          'rgb(54, 162, 235)', "
+        		+ "          'rgb(54, 162, 235)', "
+        		+ "          'rgb(54, 162, 235)', "
+        		+ "          'rgb(54, 162, 235)', "
+        		+ "          'rgb(54, 162, 235)', "
+        		+ "          'rgb(54, 162, 235)', "
+        		+ "          'rgb(54, 162, 235)', "
+        		+ "        ],"
+        		+ "		}], "
         		+ "  }, "
         		+ "  options: { "
-        		+ "    plugins: { "
-        		+ "      datalabels: { "
-        		+ "        labels: { "
-        		+ "          font: {size: 0.1,}, "
+        		+ "    plugins: {"
+        		+ "		datalabels: { "
+        		+ "        display: true, "
+        		+ "        backgroundColor: '#FFFFFF', "
+        		+ "        borderRadius: 3, "
+        		+ "        font: { "
+        		+ "          color: 'red', "
+        		+ "          weight: 'bold', "
         		+ "        }, "
-        		+ "      },  "
+        		+ "        formatter: (value) => { "
+        		+ "          return value + '%'; "
+        		+ "        }, "
+        		+ "      },	"
+        		+ "      doughnutlabel: { "
+        		+ "        labels: [{ text: '"+rh_setor.getQtde_geral()+"', font: { size: 20 } }, { text: 'Total' }], "
+        		+ "      },"
         		+ "    }, "
         		+ "  }, "
-        		+ " } ");
-
-        // Print the chart image URL
-        //System.out.println(chart.getUrl());
+        		+ "}");
         
         	urlimg3 = chart.getUrl();
-		
-        // Or get the image
-        //imageBytes = chart.toByteArray();
+        	System.out.println(chart.getUrl());
 		}
+		
 	}
+	
 	
 	private void cria_totalfuncionarios() {
 		donutModel = new DonutChartModel();
@@ -344,6 +384,14 @@ public class BeanRh implements Serializable {
 
 	public void setUrlimg2(String urlimg2) {
 		this.urlimg2 = urlimg2;
+	}
+
+	public List<Rh_Setor> getListaSetor() {
+		return listaSetor;
+	}
+
+	public void setListaSetor(List<Rh_Setor> listaSetor) {
+		this.listaSetor = listaSetor;
 	}
 	
 	

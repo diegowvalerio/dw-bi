@@ -286,10 +286,90 @@ function chartExtender() {
 											
 									</p:dataTable>
 									
+									<br/>
+									
+									<div class="box-header with-border">
+										<h3 class="box-title">Faturamento x Comissão Vendas</h3>
+									</div>
+									
+									<p:dataTable id="tabela5" value="#{beanRh.lista}" var="lista" scrollable="true" scrollHeight="300" >
+												
+											<p:column headerText="Faturado">
+												<h:outputText value="#{lista.valor_faturado}"  >
+						 							<f:convertNumber type="currency" currencySymbol="" />
+						 							</h:outputText>
+											</p:column>
+											
+											<p:column headerText="Comissão Vendas">
+												<h:outputText value="#{lista.valor_comissao}"  >
+						 							<f:convertNumber type="currency" currencySymbol="" />
+						 							</h:outputText>
+											</p:column>
+											
+											<p:column headerText="%" >
+												<h:outputText value="#{lista.perc_comissao_faturado}"  >						 							
+						 						</h:outputText>
+											</p:column>
+																						
+									</p:dataTable>
+									
 								</div>
 							</div>
 						</div>
 						
+					</div>
+					
+					<div class="row" >	
+					
+					<div class="col-md-9">
+							<div class="box box-default" id="gf2">
+								<div class="box-header with-border">
+									<h3 class="box-title">Folha x Setor</h3>
+								</div>
+							
+								<div class="box-body" style="padding: 0;">
+								
+								<p:dataTable id="tabela6" value="#{beanRh.listaSetor}" var="lista" >
+								
+											<p:column headerText="Setor">
+												<h:outputText value="#{lista.setor}" />
+											</p:column>
+											
+											<p:column headerText="Qtde do Setor">
+												<h:outputText value="#{lista.qtde}" />
+											</p:column>
+											
+											
+											
+											<p:column headerText="% Qtde Setor">
+												<h:outputText value="#{lista.perc_qtde_setor}" />
+											</p:column>
+												
+											<p:column headerText="Valor do Setor">
+												<h:outputText value="#{lista.valor_setor}"  >
+						 							<f:convertNumber type="currency" currencySymbol="R$ " />
+						 							</h:outputText>
+											</p:column>
+																					
+											<p:column headerText="% Valor Setor x Faturado" >
+												<h:outputText value="#{lista.perc_valor_setor}"  />						 							
+											</p:column>
+											
+											<p:column headerText="Valor Setor / Pessoa">
+												<h:outputText value="#{lista.valor_pessoa}"  >
+						 							<f:convertNumber type="currency" currencySymbol="R$ " />
+						 							</h:outputText>
+											</p:column>
+											
+											<p:column headerText="% Valor Setor Pessoa x Faturado" >
+												<h:outputText value="#{lista.perc_valor_pessoa}"  />						 							
+											</p:column>
+																						
+									</p:dataTable>
+								
+								</div>
+							</div>
+						</div>
 						
 					</div>
 				

@@ -13,7 +13,7 @@ public class DAOProdutoHibernate extends DAOGenericoHibernate<Produto> implement
 	
 	public DAOProdutoHibernate(){
 		super(Produto.class);
-	}
+	} 
 
 
 }

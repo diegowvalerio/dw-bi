@@ -29,6 +29,8 @@ public class Rh_Folha implements Serializable {
 	private BigDecimal total_valor2;
 	private BigDecimal perc_folha_faturado_total;
 	private BigDecimal valor_faturado_total;
+	private BigDecimal valor_comissao;
+	private BigDecimal perc_comissao_faturado;
 	
 	public String getAno() {
 		return ano;
@@ -149,6 +151,18 @@ public class Rh_Folha implements Serializable {
 	}
 	public void setValor_faturado_total(BigDecimal valor_faturado_total) {
 		this.valor_faturado_total = valor_faturado_total;
+	}
+	public BigDecimal getValor_comissao() {
+		return valor_comissao;
+	}
+	public void setValor_comissao(BigDecimal valor_comissao) {
+		this.valor_comissao = valor_comissao;
+	}
+	public BigDecimal getPerc_comissao_faturado() {
+		return perc_comissao_faturado;
+	}
+	public void setPerc_comissao_faturado(BigDecimal perc_comissao_faturado) {
+		this.perc_comissao_faturado = perc_comissao_faturado;
 	}
 
 

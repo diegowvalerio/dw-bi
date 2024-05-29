@@ -57,6 +57,7 @@ import br.com.dwbidiretor.classe.ProdutoRanking;
 import br.com.dwbidiretor.classe.ReativacaoCliente;
 import br.com.dwbidiretor.classe.RetornoAfinacao;
 import br.com.dwbidiretor.classe.Rh_Folha;
+import br.com.dwbidiretor.classe.Rh_Setor;
 import br.com.dwbidiretor.classe.TLOcorrencia;
 import br.com.dwbidiretor.classe.TabProduto;
 import br.com.dwbidiretor.classe.TabelaPreco;
@@ -221,6 +222,7 @@ public interface DAOGenerico<E> {
 	
 	//rh
 	public List<Rh_Folha> rh_folha(String ano, String mes);
+	public List<Rh_Setor> rh_setor(String ano, String mes);
 	
 	//willian
 	public List<ClientesAtivos> clientesativos(String ano);

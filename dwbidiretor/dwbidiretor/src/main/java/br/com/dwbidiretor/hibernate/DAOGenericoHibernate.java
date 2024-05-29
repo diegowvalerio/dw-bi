@@ -94,6 +94,7 @@ import br.com.dwbidiretor.classe.ProdutoRanking;
 import br.com.dwbidiretor.classe.ReativacaoCliente;
 import br.com.dwbidiretor.classe.RetornoAfinacao;
 import br.com.dwbidiretor.classe.Rh_Folha;
+import br.com.dwbidiretor.classe.Rh_Setor;
 import br.com.dwbidiretor.classe.TLOcorrencia;
 import br.com.dwbidiretor.classe.TabProduto;
 import br.com.dwbidiretor.classe.TabelaPreco;
@@ -13358,6 +13359,103 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 	
 }
 
+	public List<Rh_Setor> rh_setor(String ano, String mes){
+		List<Rh_Setor>  list = new ArrayList<>();
+		
+		String sql  = " "
+				+ "  select  "
+				+ " cc.desc_centroconsumo setor, "
+				+ " x.qtde, "
+				+ " g.qtde_geral, "
+				+ " round((cast(x.qtde as decimal)/g.qtde_geral)*100,2) perc_qtde_setor, "
+				+ " xv.valor_setor, "
+				+ " vendas.valor_faturado, "
+				+ " round((xv.valor_setor/vendas.valor_faturado)*100,2) perc_valor_setor, "
+				+ " round((trunc(xv.valor_setor/x.qtde,2)/vendas.valor_faturado)*100,2) perc_valor_por_pessoa, "
+				+ " trunc(xv.valor_setor/x.qtde,2) valor_por_pessoa,"
+				+ " ''''||cc.desc_centroconsumo||'''' setor_2 "
+				+ " from centroconsumo cc "
+				+ " left join( "
+				+ " select 1 as g, centroconsumoid, count(x.funcionario) qtde "
+				+ " from( "
+				+ " select d.cadcftvid funcionario, c2.centroconsumoid  "
+				+ " from despesa d "
+				+ " inner join despesa_centroconsumo dc on dc.despesaid  = d.despesaid "
+				+ " inner join centroconsumo c2 on c2.centroconsumoid = dc.centroconsumoid  "
+				+ " inner join planoconta p on p.planocontaid = d.planocontaid "
+				+ " where  p.planocontaid in ('3.1.2.1','3.1.2.2','3.1.2.3','3.1.2.4','3.1.2.5','3.1.2.7','3.1.2.8','3.1.2.9','3.1.2.10','3.1.2.11','3.1.2.12','3.1.2.15', "
+				+ " '3.2.2.1','3.2.2.2','3.2.2.3','3.2.2.4','3.2.2.5','3.2.2.7','3.2.2.8','3.2.2.10','3.2.2.11','3.2.2.13','3.1.2.17','3.2.1.36','3.2.2.14') "
+				+ " and to_char(d.data_emissao_despesa,'YYYY') = '"+ano+"' "
+				+ " and to_char(d.data_emissao_despesa,'MM') = '"+mes+"' "
+				+ " group by d.cadcftvid,c2.centroconsumoid)x group by x.centroconsumoid "
+				+ " )x on x.centroconsumoid = cc.centroconsumoid  "
+				+ " left join( "
+				+ " select c2.centroconsumoid ,sum(d.vl_despesa) valor_setor "
+				+ " from despesa d "
+				+ " inner join despesa_centroconsumo dc on dc.despesaid  = d.despesaid "
+				+ " inner join centroconsumo c2 on c2.centroconsumoid = dc.centroconsumoid  "
+				+ " inner join planoconta p on p.planocontaid = d.planocontaid "
+				+ " where  p.planocontaid in ('3.1.2.1','3.1.2.2','3.1.2.3','3.1.2.4','3.1.2.5','3.1.2.7','3.1.2.8','3.1.2.9','3.1.2.10','3.1.2.11','3.1.2.12','3.1.2.15', "
+				+ " '3.2.2.1','3.2.2.2','3.2.2.3','3.2.2.4','3.2.2.5','3.2.2.7','3.2.2.8','3.2.2.10','3.2.2.11','3.2.2.13','3.1.2.17','3.2.1.36','3.2.2.14') "
+				+ " and to_char(d.data_emissao_despesa,'YYYY') = '"+ano+"' "
+				+ " and to_char(d.data_emissao_despesa,'MM') = '"+mes+"' "
+				+ " group by c2.centroconsumoid "
+				+ " )xv on xv.centroconsumoid = cc.centroconsumoid  "
+				+ " left join( "
+				+ " select 1 as g, count(x.funcionario) qtde_geral "
+				+ " from( "
+				+ " select d.cadcftvid funcionario  "
+				+ " from despesa d "
+				+ " inner join despesa_centroconsumo dc on dc.despesaid  = d.despesaid "
+				+ " inner join planoconta p on p.planocontaid = d.planocontaid "
+				+ " where  p.planocontaid in ('3.1.2.1','3.1.2.2','3.1.2.3','3.1.2.4','3.1.2.5','3.1.2.7','3.1.2.8','3.1.2.9','3.1.2.10','3.1.2.11','3.1.2.12','3.1.2.15', "
+				+ " '3.2.2.1','3.2.2.2','3.2.2.3','3.2.2.4','3.2.2.5','3.2.2.7','3.2.2.8','3.2.2.10','3.2.2.11','3.2.2.13','3.1.2.17','3.2.1.36','3.2.2.14') "
+				+ " and dc.centroconsumoid in (8,7,4,6,12,10,5,11,31,13,9) "
+				+ " and to_char(d.data_emissao_despesa,'YYYY') = '"+ano+"' "
+				+ " and to_char(d.data_emissao_despesa,'MM') = '"+mes+"' "
+				+ " group by d.cadcftvid)x "
+				+ " )g on g.g = x.g "
+				+ " left join( "
+				+ " SELECT   "
+				+ " sum(g.vl_total_pedidovenda_item) valor_faturado "
+				+ " from pedidovenda_item  g  "
+				+ " inner join pedidovenda p on p.pedidovendaid = g.pedidovendaid "
+				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID   "
+				+ " where p.status_pedidovenda in ('FATURADO')   "
+				+ " AND CF.tipooperacao_cfop = 'VENDA'    "
+				+ " and p.tp_nota_pedidovenda = 'NORMAL'   "
+				+ " and to_char(p.dt_faturamento_pedidovenda,'YYYY')= '"+ano+"' "
+				+ " and to_char(p.dt_faturamento_pedidovenda,'MM') = '"+mes+"' "
+				+ " )vendas on 1=1 "
+				+ " where x.qtde is not null "
+				+ " and cc.centroconsumoid in (8,7,4,6,12,10,5,11,31,13,9) " ;
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(sql);
+		
+		List<Object[]> lista = query.getResultList();
+		
+		for (Object[] row : lista) {
+			Rh_Setor rh = new  Rh_Setor();
+			
+			rh.setSetor((String)row[0]);
+			rh.setQtde((BigInteger)row[1]);
+			rh.setQtde_geral((BigInteger)row[2]);
+			rh.setPerc_qtde_setor((BigDecimal)row[3]);
+			rh.setValor_setor((BigDecimal)row[4]);
+			rh.setValor_faturado((BigDecimal)row[5]);
+			rh.setPerc_valor_setor((BigDecimal)row[6]);
+			rh.setPerc_valor_pessoa((BigDecimal)row[7]);
+			rh.setValor_pessoa((BigDecimal)row[8]);
+			rh.setSetor_2((String)row[9]);
+			
+			list.add(rh);
+			
+		}
+			
+		return list;
+	}
+	
+	
 	public List<Rh_Folha> rh_folha(String ano, String mes){
 		List<Rh_Folha>  list = new ArrayList<>();
 		
@@ -13371,19 +13469,21 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 				+ " cltv.valor_clt, "
 				+ " trunc((cltv.valor_clt/vendas.valor_faturado)*100,2) perc_clt, "
 				+ " trunc(vendas.valor_faturado/clt.qtde_clt,2) valor_faturado_clt, "
-				+ " pj.qtde_pj, "
-				+ " pjv.valor_pj, "
-				+ " trunc((pjv.valor_pj/vendas.valor_faturado)*100,2) perc_pj, "
-				+ " trunc(vendas.valor_faturado/pj.qtde_pj,2) valor_faturado_pj,"
-				+ " clt.qtde_clt+pj.qtde_pj total_funcionarios, "
-				+ " to_char( cltv.valor_clt + pjv.valor_pj , 'L9G999G990D99') total_valor, "
-				+ " round(cast(clt.qtde_clt as decimal)/(clt.qtde_clt+pj.qtde_pj )*100,2) perc_clt_funcionarios, "
-				+ " round(cast(pj.qtde_pj as decimal)/(clt.qtde_clt+pj.qtde_pj )*100,2) perc_pj_funcionarios, "
-				+ " round(cltv.valor_clt/(cltv.valor_clt + pjv.valor_pj)*100,2) perc_clt_valor, "
-				+ " round(pjv.valor_pj/(cltv.valor_clt + pjv.valor_pj)*100,2) perc_pj_valor, "
-				+ " cltv.valor_clt + pjv.valor_pj  total_valor2,"
-				+ " round(((cltv.valor_clt + pjv.valor_pj )/vendas.valor_faturado)*100,2) perc_folha_faturado_total,"
-				+ " trunc(vendas.valor_faturado/(clt.qtde_clt+pj.qtde_pj),2) valor_faturado_total "
+				+ " coalesce(pj.qtde_pj,0) qtde_pj, "
+				+ " coalesce(pjv.valor_pj,0) valor_pj, "
+				+ " coalesce(trunc((pjv.valor_pj/vendas.valor_faturado)*100,2),0) perc_pj, "
+				+ " coalesce(trunc(vendas.valor_faturado/pj.qtde_pj,2),0) valor_faturado_pj, "
+				+ " coalesce(clt.qtde_clt,0)+coalesce(pj.qtde_pj,0) total_funcionarios, "
+				+ " to_char( coalesce(cltv.valor_clt,0) + coalesce(pjv.valor_pj,0) , 'L9G999G990D99') total_valor, "
+				+ " round(cast(clt.qtde_clt as decimal)/(clt.qtde_clt+coalesce(pj.qtde_pj,0))*100,2) perc_clt_funcionarios, "
+				+ " round(cast(coalesce(pj.qtde_pj,0) as decimal)/(clt.qtde_clt+coalesce(pj.qtde_pj,0) )*100,2) perc_pj_funcionarios, "
+				+ " round(cltv.valor_clt/(cltv.valor_clt + coalesce(pjv.valor_pj,0))*100,2) perc_clt_valor, "
+				+ " round(coalesce(pjv.valor_pj,0)/(cltv.valor_clt + coalesce(pjv.valor_pj,0))*100,2) perc_pj_valor, "
+				+ " coalesce(cltv.valor_clt,0) + coalesce(pjv.valor_pj,0)  total_valor2, "
+				+ " round(((coalesce(cltv.valor_clt,0) + coalesce(pjv.valor_pj,0) )/vendas.valor_faturado)*100,2) perc_folha_faturado_total, "
+				+ " trunc(vendas.valor_faturado/(coalesce(clt.qtde_clt,0)+coalesce(pj.qtde_pj,0)),2) valor_faturado_total, "
+				+ " comissao.valor_comissao, "
+				+ " round((comissao.valor_comissao/vendas.valor_faturado)*100,2) perc_comissao_faturado "
 				+ " from( "
 				+ " SELECT   "
 				+ " to_char(p.dt_faturamento_pedidovenda,'YYYY') ano, "
@@ -13412,7 +13512,7 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 				+ " from despesa d "
 				+ " inner join cadcftv c on c.cadcftvid = d.cadcftvid "
 				+ " inner join planoconta p on p.planocontaid = d.planocontaid "
-				+ " where  p.planocontaid in ('3.1.2.1','3.1.2.2','3.1.2.3','3.1.2.4','3.1.2.5','3.1.2.6','3.1.2.7','3.1.2.8','3.1.2.9','3.1.2.10','3.1.2.11','3.1.2.12','3.1.2.15','3.1.2.16','3.2.2.1','3.2.2.2','3.2.2.3','3.2.2.4','3.2.2.5','3.2.2.6','3.2.2.7','3.2.2.8','3.2.2.9','3.2.2.10','3.2.2.11','3.2.2.13') "
+				+ " where  p.planocontaid in ('3.1.2.1','3.1.2.2','3.1.2.3','3.1.2.4','3.1.2.5','3.1.2.7','3.1.2.8','3.1.2.9','3.1.2.10','3.1.2.11','3.1.2.12','3.1.2.15','3.2.2.1','3.2.2.2','3.2.2.3','3.2.2.4','3.2.2.5','3.2.2.7','3.2.2.8','3.2.2.10','3.2.2.11','3.2.2.13') "
 				+ " and to_char(d.data_emissao_despesa,'YYYY') = '"+ano+"' "
 				+ " and to_char(d.data_emissao_despesa,'MM') = '"+mes+"' "
 				+ " group by d.cadcftvid,to_char(d.data_emissao_despesa,'MM'),to_char(d.data_emissao_despesa,'YYYY') "
@@ -13426,7 +13526,7 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 				+ " from despesa d "
 				+ " inner join cadcftv c on c.cadcftvid = d.cadcftvid "
 				+ " inner join planoconta p on p.planocontaid = d.planocontaid "
-				+ " where  p.planocontaid in ('3.1.2.1','3.1.2.2','3.1.2.3','3.1.2.4','3.1.2.5','3.1.2.6','3.1.2.7','3.1.2.8','3.1.2.9','3.1.2.10','3.1.2.11','3.1.2.12','3.1.2.15','3.1.2.16','3.2.2.1','3.2.2.2','3.2.2.3','3.2.2.4','3.2.2.5','3.2.2.6','3.2.2.7','3.2.2.8','3.2.2.9','3.2.2.10','3.2.2.11','3.2.2.13') "
+				+ " where  p.planocontaid in ('3.1.2.1','3.1.2.2','3.1.2.3','3.1.2.4','3.1.2.5','3.1.2.7','3.1.2.8','3.1.2.9','3.1.2.10','3.1.2.11','3.1.2.12','3.1.2.15','3.2.2.1','3.2.2.2','3.2.2.3','3.2.2.4','3.2.2.5','3.2.2.7','3.2.2.8','3.2.2.10','3.2.2.11','3.2.2.13') "
 				+ " and to_char(d.data_emissao_despesa,'YYYY') = '"+ano+"' "
 				+ " and to_char(d.data_emissao_despesa,'MM') = '"+mes+"' "
 				+ " group by to_char(d.data_emissao_despesa,'MM'),to_char(d.data_emissao_despesa,'YYYY') "
@@ -13462,7 +13562,20 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 				+ " and to_char(d.data_emissao_despesa,'YYYY') = '"+ano+"' "
 				+ " and to_char(d.data_emissao_despesa,'MM') =  '"+mes+"' "
 				+ " group by to_char(d.data_emissao_despesa,'MM'),to_char(d.data_emissao_despesa,'YYYY') "
-				+ " )pjv on pjv.ano = vendas.ano and pjv.mes = vendas.mes ";
+				+ " )pjv on pjv.ano = vendas.ano and pjv.mes = vendas.mes "
+				+ " left join( "
+				+ " select "
+				+ " to_char(d.data_emissao_despesa,'YYYY') ano, "
+				+ " to_char(d.data_emissao_despesa,'MM')mes, "
+				+ " sum(d.vl_despesa) valor_comissao "
+				+ " from despesa d "
+				+ " inner join cadcftv c on c.cadcftvid = d.cadcftvid "
+				+ " inner join planoconta p on p.planocontaid = d.planocontaid "
+				+ " where p.planocontaid in ('3.2.1.1') "
+				+ " and to_char(d.data_emissao_despesa,'YYYY') = '"+ano+"' "
+				+ " and to_char(d.data_emissao_despesa,'MM') =   '"+mes+"' "
+				+ " group by to_char(d.data_emissao_despesa,'MM'),to_char(d.data_emissao_despesa,'YYYY')  "
+				+ " )comissao on comissao.ano = vendas.ano and comissao.mes = vendas.mes ";
 		
 		//System.out.println(sql);
 		
@@ -13492,6 +13605,8 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 			rh.setTotal_valor2((BigDecimal)row[17]);
 			rh.setPerc_folha_faturado_total((BigDecimal)row[18]);
 			rh.setValor_faturado_total((BigDecimal)row[19]);
+			rh.setValor_comissao((BigDecimal)row[20]);
+			rh.setPerc_comissao_faturado((BigDecimal)row[21]);
 			
 			list.add(rh);
 		}

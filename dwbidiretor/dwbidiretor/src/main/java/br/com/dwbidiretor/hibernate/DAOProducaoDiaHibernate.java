@@ -17,3 +17,4 @@ public class DAOProducaoDiaHibernate extends DAOGenericoHibernate<ProducaoDia> i
 
 
 }
+ 
