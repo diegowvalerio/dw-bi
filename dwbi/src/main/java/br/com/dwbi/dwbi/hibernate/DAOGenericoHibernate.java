@@ -38,6 +38,7 @@ import br.com.dwbi.classe.PT_Meta;
 import br.com.dwbi.classe.PT_Mix;
 import br.com.dwbi.classe.HCliente;
 import br.com.dwbi.classe.Produto;
+import br.com.dwbi.classe.ProdutoVenda;
 import br.com.dwbi.classe.MixProduto;
 import br.com.dwbi.classe.PT_Carteira;
 import br.com.dwbi.classe.Venda_Grupo;
@@ -5896,6 +5897,62 @@ pr.setTotaltri1((BigDecimal)row[24]);
 				return list;
 				
 			}
+			
+	public List<ProdutoVenda> produtos_venda(Date data1,Date data2, String produtos, String cliente){
+		List<ProdutoVenda> list = new ArrayList<>();
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		String dataFormatada = formato.format(data1);
+		String dataFormatada2 = formato.format(data2);
+		
+		String sql = ""
+				+ " select  "
+				+ " p.nr_nota_pedidovenda  nota, "
+				+ " p.dt_faturamento_pedidovenda  datanota, "
+				+ " c.cadcftvid cliente, "
+				+ " c.nome_cadcftv nomecliente, "
+				//+ " p.vendedor1id vendedor,  "
+				//+ " v.nome_cadcftv nomevendedor, "
+				+ " it.produtoid produto, "
+				+ " pr.nome_produto , "
+				+ " it.qt_pedidovenda_item qtde "
+				+ " from pedidovenda p  "
+				+ " inner join pedidovenda_item it on it.pedidovendaid = p.pedidovendaid  "
+				+ " inner join produto pr on pr.produtoid = it.produtoid  "
+				+ " inner join cadcftv c on c.cadcftvid = p.cadcftvid "
+				+ " inner join cadcftv v on v.cadcftvid = p.vendedor1id  "
+				+ " INNER JOIN CFOP CF ON CF.CFOPID = P.CFOPID  "
+				+ " where p.status_pedidovenda in ('FATURADO')  "
+				+ " AND CF.TIPOOPERACAO_CFOP = 'VENDA'  "
+				+ " and p.origem_pedidovenda <> 'SIMETRICA' "
+				+ " and p.dt_faturamento_pedidovenda between ' " + dataFormatada + " ' and ' " + dataFormatada2 + " '"
+				+ " and (it.produtoid in ("+produtos+") or 1 in ("+produtos+")) "
+				+ " and (p.cadcftvid = "+cliente+" or 1 = "+cliente+" ) "
+				+ " and v.cadcftvid ="+ usuarioconectado()	;
+		
+		//System.out.println(sql);
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(sql);
+		
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			ProdutoVenda v = new ProdutoVenda();
+			
+			v.setNota((String)row[0]);
+			v.setDatanota((Date)row[1]);
+			v.setCliente((BigDecimal)row[2]);
+			v.setNomecliente((String)row[3]);
+			v.setProduto((BigDecimal)row[4]);
+			v.setNomeproduto((String)row[5]);
+			v.setQtde((BigDecimal)row[6]);
+			
+			list.add(v);
+		}
+		
+		return list;
+	}
+	
+	
+	
 	//clientes cadastrados no periodo
 	public List<ClientesNovos> clientesnovos(Date data1,Date data2,String vendedor1, String vendedor2) {
 		List<ClientesNovos> list = new ArrayList<>();

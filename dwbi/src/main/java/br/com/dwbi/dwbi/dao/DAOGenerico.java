@@ -19,6 +19,7 @@ import br.com.dwbi.classe.HCliente;
 import br.com.dwbi.classe.MixProduto;
 import br.com.dwbi.classe.PT_Carteira;
 import br.com.dwbi.classe.Produto;
+import br.com.dwbi.classe.ProdutoVenda;
 import br.com.dwbi.classe.Venda_Grupo;
 import br.com.dwbi.classe.Venda_Subgrupo;
 
@@ -101,6 +102,9 @@ public interface DAOGenerico<E> {
 	public List<Venda_Grupo> grupos();
 	public List<Venda_Subgrupo> subgrupos();
 	public List<Cliente> clientes();
+	
+	//produtos faturados 
+	public List<ProdutoVenda> produtos_venda(Date data1,Date data2, String produtos, String cliente);
 	
 	
 }

@@ -329,6 +329,10 @@ function chartExtender() {
 							
 								<div class="box-body" style="padding: 0;">
 								
+								<h:commandLink value="Excel">
+									<p:dataExporter type="xls" target="tabela6" fileName="folha_setor" pageOnly="true"/>
+								</h:commandLink>
+								
 								<p:dataTable id="tabela6" value="#{beanRh.listaSetor}" var="lista" >
 								
 											<p:column headerText="Setor">

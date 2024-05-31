@@ -1,0 +1,128 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Produtos por Vendas (Faturado)
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise ... 
+    </ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Vendas por Produtos" />
+
+		<h:form id="form">
+				<p:panelGrid columns="4" id="filtroscli" >
+
+					<p:outputLabel value=" Data:  " for="data_grafico" />
+					<p:calendar locale="pt_BR" id="data_grafico"
+						value="#{beanProdutoVenda.data_grafico}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+
+					<p:outputLabel value=" Até:  " for="data_grafico2" />
+					<p:calendar locale="pt_BR" id="data_grafico2"
+						value="#{beanProdutoVenda.data_grafico2}" pattern="dd/MM/yyyy"
+						mask="true" required="true" >
+					</p:calendar>
+					
+					<p:outputLabel value="Produto:" for="produto" />
+					<p:inputText id="produto" value="#{beanProdutoVenda.produtofiltrado}"></p:inputText>
+					
+						
+        			<p:outputLabel value="Cliente:" for="cliente" />
+					<p:selectOneMenu id="cliente"
+					value="#{beanProdutoVenda.cliente}"
+					converter="conversorCliente" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecionar" />
+					<f:selectItems value="#{beanProdutoVenda.listacliente}"
+						var="clientes" itemLabel="#{clientes.codigocliente} - #{clientes.nomecliente}"
+						itemValue="#{cliente}" />
+					</p:selectOneMenu>
+					
+        			
+        		<p:commandButton action="#{beanProdutoVenda.filtrar()}"
+						value="Filtrar" icon="fa fa-check" update=":form:paineld"
+						styleClass="btn-primary" />
+						
+				</p:panelGrid>
+				
+	
+				
+				
+        			
+        		
+
+				
+			
+			<h:panelGrid columns="1" id="paineld" width="98%">
+						<h:commandLink value="Excel">
+							<p:dataExporter type="xls" target="prdo" fileName="venda" pageOnly="true"/>
+						</h:commandLink>
+
+				<p:dataTable id="prdo" var="vendas" value="#{beanProdutoVenda.lista}" scrollHeight="500" scrollable="true"  resizableColumns="true" style="font-size:14px; border-color: black;" > 
+													
+							<p:column headerText="Nota"  width="3%">
+								<h:outputText value="#{vendas.nota}" />
+							</p:column>
+							
+							<p:column  headerText="Data Nota" width="5%">
+								<h:outputText value="#{vendas.datanota}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Cliente" width="3%">
+								<h:outputText value="#{vendas.cliente}" />
+							</p:column>
+							
+							<p:column headerText="Nome Cliente">
+								<h:outputText value="#{vendas.nomecliente}" />
+							</p:column>
+							
+							<p:column headerText="Produto"  width="4%">
+								<h:outputText value="#{vendas.produto}" />
+							</p:column>
+							
+							<p:column headerText="Nome Produto" >
+								<h:outputText value="#{vendas.nomeproduto}" />
+							</p:column>							
+							
+							<p:column  headerText="QTde"  width="4%">
+								<h:outputText value="#{vendas.qtde}" >
+								<f:convertNumber minFractionDigits="0" locale="pt-BR"/>
+								</h:outputText>
+							</p:column>
+									
+						</p:dataTable>
+					</h:panelGrid>
+					
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
