@@ -13,9 +13,18 @@ public class Perca implements Serializable {
 	public String ano;
 	public String mes;
 	public BigDecimal quantidade;
+	public BigDecimal valor;
 	
 	public Perca() {
 		super();
+	}
+
+	public BigDecimal getValor() {
+		return valor;
+	}
+
+	public void setValor(BigDecimal valor) {
+		this.valor = valor;
 	}
 
 	public String getSetor() {

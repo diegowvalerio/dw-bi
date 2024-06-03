@@ -11,9 +11,18 @@ public class PercaDia implements Serializable {
 	
 	public String dia;
 	public BigDecimal quantidade;
+	public BigDecimal valor;
 	
 	public PercaDia() {
 		super();
+	}
+
+	public BigDecimal getValor() {
+		return valor;
+	}
+
+	public void setValor(BigDecimal valor) {
+		this.valor = valor;
 	}
 
 	public String getDia() {

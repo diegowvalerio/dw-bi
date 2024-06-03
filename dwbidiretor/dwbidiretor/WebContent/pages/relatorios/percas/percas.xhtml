@@ -153,6 +153,9 @@ function fullscreen2(){
 							<f:selectItem itemLabel="AFINAÇÃO" itemValue="AFINAÇÃO" />
 							<f:selectItem itemLabel="USINAGEM" itemValue="USINAGEM" />
 							<f:selectItem itemLabel="FUNDIÇÃO" itemValue="FUNDIÇÃO" />
+							<f:selectItem itemLabel="ALIANZ" itemValue="ALIANZ" />
+							<f:selectItem itemLabel="FORNECEDOR" itemValue="FORNECEDOR" />
+							<f:selectItem itemLabel="PINTURA" itemValue="PINTURA" />
 						</p:selectOneMenu>	
 						
 					<p:outputLabel value="Tipo:" for="tipo" />
@@ -293,7 +296,9 @@ function fullscreen2(){
 							</p:column>
 							
 							<p:column headerText="Cod." sortBy="#{defeitos.produtoid}" width="5%">
-								<h:outputText value="#{defeitos.produtoid}" />
+								<h:outputText value="#{defeitos.produtoid}" >
+								<f:convertNumber minFractionDigits="0" locale="pt-BR" groupingUsed="false" />
+								</h:outputText>
 							</p:column>
 
 							<p:column  headerText="Produto" sortBy="#{defeitos.nomeproduto}">
@@ -302,8 +307,14 @@ function fullscreen2(){
 
 							<p:column  headerText="Qtde" sortBy="#{defeitos.quantidade}" width="4%">
 								<h:outputText value="#{defeitos.quantidade}"  >
-						 <f:convertNumber maxFractionDigits="15" groupingUsed="false" />
-						 </h:outputText>
+						 			<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 		</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Valor" width="5%">
+								<h:outputText value="#{defeitos.valor}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
 							</p:column>
 
 							<p:column  headerText="Cod. Tipo" width="3%">
@@ -319,6 +330,7 @@ function fullscreen2(){
 									<p:column colspan="5" style="text-align:right"
 										footerText="Total:" />
 									<p:column footerText="#{beanPercas.qtdetotal}" />
+									<p:column footerText="#{beanPercas.valortotal}" />
 								</p:row>
 							</p:columnGroup>
 							

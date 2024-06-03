@@ -264,6 +264,15 @@ public class BeanPercas implements Serializable {
 
 	return new DecimalFormat("###,###.###").format(total);
 }
+	public String getvalortotal() {
+		float total = 0;
+
+		for (PercaProduto p : getListaproduto()) {
+			total = total + p.getValor().floatValue();
+		}
+
+		return new DecimalFormat("###,###.##").format(total);
+	}
 
 	public List<PercaProduto> getListaproduto() {
 		return listaproduto;

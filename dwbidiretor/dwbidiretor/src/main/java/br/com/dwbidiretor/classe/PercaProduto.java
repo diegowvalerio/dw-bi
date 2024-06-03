@@ -17,9 +17,18 @@ public class PercaProduto implements Serializable {
 	public BigDecimal quantidade;
 	public BigDecimal tipopercaid;
 	public String tipoperca;
+	public BigDecimal valor;
 	
 	public BigDecimal getProdutoid() {
 		return produtoid;
+	}
+
+	public BigDecimal getValor() {
+		return valor;
+	}
+
+	public void setValor(BigDecimal valor) {
+		this.valor = valor;
 	}
 
 	public void setProdutoid(BigDecimal produtoid) {
