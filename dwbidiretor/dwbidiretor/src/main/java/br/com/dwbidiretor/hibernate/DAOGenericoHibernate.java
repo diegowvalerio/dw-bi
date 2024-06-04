@@ -13640,7 +13640,7 @@ public List<DadosCliente> dadoscliente(Date data1, Date data2, String vendedor1,
 				+ " and to_char(p.dt_faturamento_pedidovenda,'MM') = '"+mes+"' "
 				+ " )vendas on 1=1 "
 				+ " where x.qtde is not null "
-				+ " and cc.centroconsumoid in (8,7,4,6,12,10,5,11,31,13,9) " ;
+				+ " and cc.centroconsumoid in (8,7,4,6,12,10,5,11,31,13,9,14) " ;
 		
 		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(sql);
 		
