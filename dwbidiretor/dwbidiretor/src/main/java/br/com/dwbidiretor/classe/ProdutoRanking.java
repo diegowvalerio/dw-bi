@@ -15,6 +15,8 @@ public class ProdutoRanking implements Serializable {
 	private BigDecimal venda;
 	private BigDecimal qtde;
 	private String nomemesa;
+	private BigDecimal saldo_expedicao;
+	private BigDecimal qtde_reservada;
 	
 
 	public ProdutoRanking() {
@@ -69,6 +71,26 @@ public class ProdutoRanking implements Serializable {
 
 	public void setQtde(BigDecimal qtde) {
 		this.qtde = qtde;
+	}
+
+
+	public BigDecimal getSaldo_expedicao() {
+		return saldo_expedicao;
+	}
+
+
+	public void setSaldo_expedicao(BigDecimal saldo_expedicao) {
+		this.saldo_expedicao = saldo_expedicao;
+	}
+
+
+	public BigDecimal getQtde_reservada() {
+		return qtde_reservada;
+	}
+
+
+	public void setQtde_reservada(BigDecimal qtde_reservada) {
+		this.qtde_reservada = qtde_reservada;
 	}
 
 }

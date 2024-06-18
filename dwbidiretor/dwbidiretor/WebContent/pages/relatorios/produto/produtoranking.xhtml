@@ -85,7 +85,7 @@
 			</p:panelGrid>	
 			<p:separator></p:separator>	
 			 
-			<h:panelGrid columns="1" id="paineld" width="94%">
+			<h:panelGrid columns="1" id="paineld" width="90%">
 						<h:commandLink value="Excel">
 							<p:dataExporter type="xls" target="prdo" fileName="ranking_produtos" pageOnly="true"/>
 						</h:commandLink>
@@ -124,6 +124,18 @@
 					
 					<p:column headerText="Mesa" sortBy="#{prd.nomemesa}" >
 						<h:outputText value="#{prd.nomemesa}" />
+					</p:column>
+					
+					<p:column headerText="Estoque Disponível" sortBy="#{prd.saldo_expedicao}" >
+						<h:outputText value="#{prd.saldo_expedicao}" >
+									<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Estoque Reservado" sortBy="#{prd.qtde_reservada}" >
+						<h:outputText value="#{prd.qtde_reservada}" >
+									<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						</h:outputText>
 					</p:column>
 					
 

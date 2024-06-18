@@ -6536,7 +6536,9 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " x.nome_produto, "
 				+ " sum(x.valor) valor, "
 				+ " sum(x.qtde) qtde,"
-				+ " x.NOME_MESA "
+				+ " x.NOME_MESA,"
+				+ " saldo.saldo, "
+				+ " reservado.qtde_reservada  "
 				+ " from( "
 				+ " SELECT   "
 				+ " g.produtoid , "
@@ -6587,9 +6589,25 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " g.produtoid , "
 				+ " pr.nome_produto,c.NOME_CELULAPRODUCAO  "
 				+ " )x "
+				+ " left join ( "
+				+ " select "
+				+ " al.produtoid , "
+				+ " al.saldoatu_almoxarifado_produto saldo "
+				+ " from almoxarifado_produto al "
+				+ " where al.almoxarifadoid = 1 "
+				+ " )saldo on saldo.produtoid = x.produtoid "
+				+ " left join ( "
+				+ " select "
+				+ " it.produtoid , "
+				+ " sum(it.qt_entrega_pedidovenda_item) qtde_reservada "
+				+ " from pedidovenda_item it "
+				+ " inner join pedidovenda p on p.pedidovendaid = it.pedidovendaid "
+				+ " where p.status_pedidovenda in ('ABERTO','BLOQUEADO','PARCIAL') "
+				+ " group by it.produtoid "
+				+ " ) reservado on reservado.produtoid = x.produtoid"
 				+ " group by "
 				+ " x.produtoid, "
-				+ " x.nome_produto,x.NOME_MESA "
+				+ " x.nome_produto,x.NOME_MESA, saldo.saldo, reservado.qtde_reservada "
 				+ "  ";
 		
 		//System.out.println(sql);
@@ -6605,6 +6623,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			vc.setVenda((BigDecimal)row[2]);
 			vc.setQtde((BigDecimal)row[3]);
 			vc.setNomemesa((String)row[4]);
+			vc.setSaldo_expedicao((BigDecimal)row[5]);
+			vc.setQtde_reservada((BigDecimal)row[6]);
 			
 			list.add(vc);
 		}
