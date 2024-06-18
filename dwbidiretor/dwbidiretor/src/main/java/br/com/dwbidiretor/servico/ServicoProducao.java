@@ -9,8 +9,10 @@ import javax.inject.Inject;
 
 import br.com.dwbidiretor.classe.Producao;
 import br.com.dwbidiretor.classe.ProducaoDia;
+import br.com.dwbidiretor.classe.ProducaoProduto;
 import br.com.dwbidiretor.dao.DAOProducao;
 import br.com.dwbidiretor.dao.DAOProducaoDia;
+import br.com.dwbidiretor.dao.DAOProducaoProduto;
 
 @Dependent
 public class ServicoProducao implements Serializable{
@@ -21,6 +23,9 @@ public class ServicoProducao implements Serializable{
 	@Inject
 	private DAOProducaoDia dao2;
 	
+	@Inject
+	private DAOProducaoProduto dao3;
+	
 	
 	public List<Producao> producao(String ano, String mes) {
 		return dao.producao(ano,mes);
@@ -30,5 +35,8 @@ public class ServicoProducao implements Serializable{
 		return dao2.producaodia(ano, mes,setor,i);
 	}
 	
+	public List<ProducaoProduto> producaoproduto(String ano, String mes, String setor, String dia){
+		return dao2.producaoproduto(ano, mes,setor,dia);
+	}
 	
 }

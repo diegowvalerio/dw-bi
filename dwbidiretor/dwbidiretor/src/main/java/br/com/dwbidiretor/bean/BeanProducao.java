@@ -31,8 +31,10 @@ import org.primefaces.model.charts.bar.BarChartDataSet;
 import org.primefaces.model.charts.bar.BarChartModel;
 import org.primefaces.model.charts.bar.BarChartOptions;
 
+import br.com.dwbidiretor.classe.PercaProduto;
 import br.com.dwbidiretor.classe.Producao;
 import br.com.dwbidiretor.classe.ProducaoDia;
+import br.com.dwbidiretor.classe.ProducaoProduto;
 import br.com.dwbidiretor.classe.painel.Venda_Grupo;
 import br.com.dwbidiretor.servico.ServicoProducao;
 
@@ -49,15 +51,22 @@ public class BeanProducao implements Serializable {
 	
 	private List<Producao> lista = new ArrayList<>();
 	private Producao producao = new Producao();
+	private ProducaoDia producaodia = new ProducaoDia();
 	private List<ProducaoDia> listadia = new ArrayList<>();
+	private List<ProducaoProduto> listaproduto = new ArrayList<>();
 	@Inject
 	private ServicoProducao servico;
 	
 	private BarChartModel producao_anomes;
 	private BarChartModel producao_dia;
 	
+	private String setorp,diap;
+	
 	@PostConstruct
 	public void init() {
+		setorp = "-2";
+		diap = "-2";
+		
 		i = 2;
 		setor = "0";
 		nome = "GERAL";
@@ -71,6 +80,7 @@ public class BeanProducao implements Serializable {
 		
 		lista = servico.producao(ano, mes);
 		listadia = servico.producaodia(ano, mes,setor,i);
+		listaproduto = servico.producaoproduto(ano, mes, setorp, diap);
 	
 		ajustalistadia();
 		cria_producao_anomes();
@@ -82,19 +92,42 @@ public class BeanProducao implements Serializable {
 		
 		lista = servico.producao(ano, mes);
 		listadia = servico.producaodia(ano, mes,setor,i);
+		listaproduto = servico.producaoproduto(ano, mes, setorp, diap);
 		
 		ajustalistadia();
 		cria_producao_anomes();
 		
 	}
+
+	public void itemSelect2(ItemSelectEvent event) {
+	producaodia = listadia.get(event.getItemIndex());
+	 
+	if(producao != null) {
+		listaproduto = servico.producaoproduto(ano, mes, producao.getSetorid().toString(), producaodia.getDia().toString());
+	}else {
+		listaproduto = servico.producaoproduto(ano, mes,setorp, producaodia.getDia().toString());
+	}	 
+ 
+}
+	
+	public void onRowSelect2(SelectEvent event) throws ParseException {
+		producaodia = (ProducaoDia) event.getObject();
+		
+		if(producaodia != null && producao != null) {
+			 listaproduto = servico.producaoproduto(ano, mes, producao.getSetorid().toString(), producaodia.getDia().toString());
+		}else {
+			listaproduto = servico.producaoproduto(ano, mes, setorp, diap);
+		}
+	}
 	
 	public void itemSelect(ItemSelectEvent event) {
-	 Producao v = lista.get(event.getItemIndex());
+	producao = lista.get(event.getItemIndex());
 	 
-	 listadia = servico.producaodia(ano, mes,v.getSetorid().toString(),1);
+	 listadia = servico.producaodia(ano, mes,producao.getSetorid().toString(),1);
+	 listaproduto = servico.producaoproduto(ano, mes, producao.getSetorid().toString(), diap);
 	 
 	 if(listadia.size()>0) {
-		 nome = v.getSetor();
+		 nome = producao.getSetor();
 		 ajustalistadia();
 	 }
  
@@ -105,6 +138,7 @@ public class BeanProducao implements Serializable {
 		
 		if(producao != null) {
 			listadia = servico.producaodia(ano, mes,producao.getSetorid().toString(),1);
+			listaproduto = servico.producaoproduto(ano, mes, producao.getSetorid().toString(), diap);
 			
 			 if(listadia.size()>0) {
 				 nome = producao.getSetor();
@@ -265,6 +299,55 @@ public class BeanProducao implements Serializable {
         producao_anomes.setOptions(options);
 	}
 	
+	public ProducaoDia getProducaodia() {
+		return producaodia;
+	}
+
+	public void setProducaodia(ProducaoDia producaodia) {
+		this.producaodia = producaodia;
+	}
+
+	public String getqtdetotal() {
+	float total = 0;
+
+	for (ProducaoProduto p : getListaproduto()) {
+		total = total + p.getQuantidade().intValue();
+	}
+
+	return new DecimalFormat("###,###.###").format(total);
+}
+	public String getvalortotal() {
+		float total = 0;
+
+		for (ProducaoProduto p : getListaproduto()) {
+			total = total + p.getValor().floatValue();
+		}
+
+		return new DecimalFormat("###,###.##").format(total);
+	}
+	public List<ProducaoProduto> getListaproduto() {
+		return listaproduto;
+	}
+
+	public void setListaproduto(List<ProducaoProduto> listaproduto) {
+		this.listaproduto = listaproduto;
+	}
+
+	public String getSetorp() {
+		return setorp;
+	}
+
+	public void setSetorp(String setorp) {
+		this.setorp = setorp;
+	}
+
+	public String getDiap() {
+		return diap;
+	}
+
+	public void setDiap(String diap) {
+		this.diap = diap;
+	}
 
 	public int getT() {
 		return t;

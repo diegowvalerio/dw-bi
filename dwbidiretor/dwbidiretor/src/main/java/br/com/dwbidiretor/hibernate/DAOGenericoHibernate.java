@@ -88,6 +88,7 @@ import br.com.dwbidiretor.classe.PercaProduto;
 import br.com.dwbidiretor.classe.PrazoPedido;
 import br.com.dwbidiretor.classe.Producao;
 import br.com.dwbidiretor.classe.ProducaoDia;
+import br.com.dwbidiretor.classe.ProducaoProduto;
 import br.com.dwbidiretor.classe.Produto;
 import br.com.dwbidiretor.classe.ProdutoEstoque;
 import br.com.dwbidiretor.classe.ProdutoRanking;
@@ -3709,7 +3710,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " SUM(o.QT_OUTRASAIDAMP)QTDE, "
 						+ " o.TIPOOUTRASAIDAMPID, "
 						+ " tipo.DESC_TIPOOUTRASAIDAMP, "
-						+ " SUM(o.QT_OUTRASAIDAMP)*SUM(o.vl_custo_outrasaidamp) valor "
+						+ " SUM(o.QT_OUTRASAIDAMP * o.vl_custo_outrasaidamp) valor "
 						+ "  "
 						+ " from OUTRASAIDAMP o "
 						+ " inner join TIPO_OUTRASAIDAMP tipo on tipo.TIPOOUTRASAIDAMPID = o.TIPOOUTRASAIDAMPID "
@@ -3738,7 +3739,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " SUM(o.QT_OUTRASAIDAMP)QTDE, "
 						+ " o.TIPOOUTRASAIDAMPID, "
 						+ " tipo.DESC_TIPOOUTRASAIDAMP ,"
-						+ " SUM(o.QT_OUTRASAIDAMP)*SUM(o.vl_custo_outrasaidamp) valor "
+						+ " SUM(o.QT_OUTRASAIDAMP * o.vl_custo_outrasaidamp) valor "
 						+ "  "
 						+ " from OUTRASAIDAMP o "
 						+ " inner join TIPO_OUTRASAIDAMP tipo on tipo.TIPOOUTRASAIDAMPID = o.TIPOOUTRASAIDAMPID "
@@ -3767,7 +3768,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " SUM(o.QT_OUTRASAIDAMP)QTDE, "
 						+ " o.TIPOOUTRASAIDAMPID, "
 						+ " tipo.DESC_TIPOOUTRASAIDAMP, "
-						+ " SUM(o.QT_OUTRASAIDAMP)*SUM(o.vl_custo_outrasaidamp) valor "
+						+ " SUM(o.QT_OUTRASAIDAMP * o.vl_custo_outrasaidamp) valor "
 						+ "  "
 						+ " from OUTRASAIDAMP o "
 						+ " inner join TIPO_OUTRASAIDAMP tipo on tipo.TIPOOUTRASAIDAMPID = o.TIPOOUTRASAIDAMPID "
@@ -3796,7 +3797,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " SUM(o.QT_OUTRASAIDAMP)QTDE, "
 						+ " o.TIPOOUTRASAIDAMPID, "
 						+ " tipo.DESC_TIPOOUTRASAIDAMP, "
-						+ " SUM(o.QT_OUTRASAIDAMP)*SUM(o.vl_custo_outrasaidamp) valor "
+						+ " SUM(o.QT_OUTRASAIDAMP * o.vl_custo_outrasaidamp) valor "
 						+ "  "
 						+ " from OUTRASAIDAMP o "
 						+ " inner join TIPO_OUTRASAIDAMP tipo on tipo.TIPOOUTRASAIDAMPID = o.TIPOOUTRASAIDAMPID "
@@ -3825,7 +3826,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " SUM(o.QT_OUTRASAIDAMP)QTDE, "
 						+ " o.TIPOOUTRASAIDAMPID, "
 						+ " tipo.DESC_TIPOOUTRASAIDAMP, "
-						+ " SUM(o.QT_OUTRASAIDAMP)*SUM(o.vl_custo_outrasaidamp) valor "
+						+ " SUM(o.QT_OUTRASAIDAMP * o.vl_custo_outrasaidamp) valor "
 						+ "  "
 						+ " from OUTRASAIDAMP o "
 						+ " inner join TIPO_OUTRASAIDAMP tipo on tipo.TIPOOUTRASAIDAMPID = o.TIPOOUTRASAIDAMPID "
@@ -3854,7 +3855,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " SUM(o.QT_OUTRASAIDAMP)QTDE, "
 						+ " o.TIPOOUTRASAIDAMPID, "
 						+ " tipo.DESC_TIPOOUTRASAIDAMP, "
-						+ " SUM(o.QT_OUTRASAIDAMP)*SUM(o.vl_custo_outrasaidamp) valor "
+						+ " SUM(o.QT_OUTRASAIDAMP * o.vl_custo_outrasaidamp) valor "
 						+ "  "
 						+ " from OUTRASAIDAMP o "
 						+ " inner join TIPO_OUTRASAIDAMP tipo on tipo.TIPOOUTRASAIDAMPID = o.TIPOOUTRASAIDAMPID "
@@ -3883,7 +3884,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " SUM(o.QT_OUTRASAIDAMP)QTDE, "
 						+ " o.TIPOOUTRASAIDAMPID, "
 						+ " tipo.DESC_TIPOOUTRASAIDAMP ,"
-						+ " SUM(o.QT_OUTRASAIDAMP)*SUM(o.vl_custo_outrasaidamp) valor "
+						+ " SUM(o.QT_OUTRASAIDAMP * o.vl_custo_outrasaidamp) valor "
 						+ "  "
 						+ " from OUTRASAIDAMP o "
 						+ " inner join TIPO_OUTRASAIDAMP tipo on tipo.TIPOOUTRASAIDAMPID = o.TIPOOUTRASAIDAMPID "
@@ -3912,7 +3913,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " SUM(o.QT_OUTRASAIDAMP)QTDE, "
 						+ " o.TIPOOUTRASAIDAMPID, "
 						+ " tipo.DESC_TIPOOUTRASAIDAMP, "
-						+ " SUM(o.QT_OUTRASAIDAMP)*SUM(o.vl_custo_outrasaidamp) valor "
+						+ " SUM(o.QT_OUTRASAIDAMP * o.vl_custo_outrasaidamp) valor "
 						+ "  "
 						+ " from OUTRASAIDAMP o "
 						+ " inner join TIPO_OUTRASAIDAMP tipo on tipo.TIPOOUTRASAIDAMPID = o.TIPOOUTRASAIDAMPID "
@@ -3941,7 +3942,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 						+ " SUM(o.QT_OUTRASAIDAMP)QTDE, "
 						+ " o.TIPOOUTRASAIDAMPID, "
 						+ " tipo.DESC_TIPOOUTRASAIDAMP, "
-						+ " SUM(o.QT_OUTRASAIDAMP)*SUM(o.vl_custo_outrasaidamp) valor "
+						+ " SUM(o.QT_OUTRASAIDAMP * o.vl_custo_outrasaidamp) valor "
 						+ "  "
 						+ " from OUTRASAIDAMP o "
 						+ " inner join TIPO_OUTRASAIDAMP tipo on tipo.TIPOOUTRASAIDAMPID = o.TIPOOUTRASAIDAMPID "
@@ -4481,6 +4482,83 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 		}
 
 		return p;
+	}
+	
+	public List<ProducaoProduto> producaoproduto(String ano,String mes,String setor,String dia){
+		List<ProducaoProduto> list = new ArrayList<>();
+		
+		String sql = " "
+				+ "  select  "
+				+ " s.nome_subgrupoproduto setor, "
+				+ " TO_CHAR(e.dt_entradaproducao,'YYYY') ano, "
+				+ " TO_CHAR(e.dt_entradaproducao,'MM') mes, "
+				+ " p.produtoid , "
+				+ " p.nome_produto , "
+				+ " round(sum(ei.qtde_entradaproducao),0) qtde, "
+				+ " trunc(sum(ei.qtde_entradaproducao * ei.vl_custounit_entradaproducaoit),2) total_custo  "
+				+ " from entradaproducao e  "
+				+ " inner join entradaproducao_item ei on ei.entradaproducaoid = e.entradaproducaoid  "
+				+ " inner join produto p on p.produtoid = ei.produtoid  "
+				+ " inner join subgrupoproduto s on s.subgrupoprodutoid = p.subgrupoprodutoid "
+				+ " inner join grupoproduto g on g.grupoprodutoid = s.grupoprodutoid "
+				+ " inner join almoxarifado a on a.almoxarifadoid = ei.almoxarifadoid "
+				+ " where p.tp_produto = 'COMPONENTE' "
+				+ " and TO_CHAR(e.dt_entradaproducao,'MM') = '"+mes+"'"
+				+ " and TO_CHAR(e.dt_entradaproducao,'YYYY') = '"+ano+"'"
+				+ " and (s.subgrupoprodutoid = '"+setor+"' or '-2'= "+setor+") "
+				+ " and (TO_CHAR(e.dt_entradaproducao,'DD') = '"+dia+"' or '-2' = '"+dia+"' )"
+				+ " group by  "
+				+ " TO_CHAR(e.dt_entradaproducao,'YYYY'), "
+				+ " TO_CHAR(e.dt_entradaproducao,'MM'), "
+				+ " s.nome_subgrupoproduto , "
+				+ " p.produtoid , "
+				+ " p.nome_produto "
+				+ " union all  "
+				+ " select  "
+				+ " 'MONTAGEM' setor, "
+				+ " TO_CHAR(e.dt_entradaproducao,'YYYY') ano, "
+				+ " TO_CHAR(e.dt_entradaproducao,'MM') mes, "
+				+ " p.produtoid , "
+				+ " p.nome_produto , "
+				+ " round(sum(ei.qtde_entradaproducao),0) qtde, "
+				+ " trunc(sum(ei.qtde_entradaproducao * ei.vl_custounit_entradaproducaoit),2) total_custo  "
+				+ " from entradaproducao e  "
+				+ " inner join entradaproducao_item ei on ei.entradaproducaoid = e.entradaproducaoid  "
+				+ " inner join produto p on p.produtoid = ei.produtoid  "
+				+ " inner join subgrupoproduto s on s.subgrupoprodutoid = p.subgrupoprodutoid "
+				+ " inner join grupoproduto g on g.grupoprodutoid = s.grupoprodutoid "
+				+ " inner join almoxarifado a on a.almoxarifadoid = ei.almoxarifadoid "
+				+ " where p.tp_produto = 'ACABADO' "
+				+ " and TO_CHAR(e.dt_entradaproducao,'MM') = '"+mes+"'"
+				+ " and TO_CHAR(e.dt_entradaproducao,'YYYY') = '"+ano+"'"
+				+ " and (99999 = '"+setor+"' or '-2'= "+setor+") "
+				+ " and (TO_CHAR(e.dt_entradaproducao,'DD') = '"+dia+"' or '-2' = '"+dia+"' )"
+				+ " group by  "
+				+ " TO_CHAR(e.dt_entradaproducao,'YYYY'), "
+				+ " TO_CHAR(e.dt_entradaproducao,'MM'), "
+				+ " s.nome_subgrupoproduto , "
+				+ " p.produtoid , "
+				+ " p.nome_produto ";
+		
+		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(sql);
+
+		List<Object[]> lista = query.getResultList();
+		for (Object[] row : lista) {
+			ProducaoProduto pr = new ProducaoProduto();
+
+			pr.setSetor((String)row[0]);
+			pr.setAno((String)row[1]);
+			pr.setMes((String)row[2]);
+			pr.setProdutoid((BigDecimal)row[3]);
+			pr.setNomeproduto((String)row[4]);
+			pr.setQuantidade((BigDecimal)row[5]);
+			pr.setValor((BigDecimal)row[6]);
+
+			list.add(pr);
+		}
+
+		
+		return list;
 	}
 
 	public List<CPedidoFin> cpedidofin(Date data1, Date data2, String vendedor1, String vendedor2, String gestor1, String gestor2,String cliente1, String cliente2, String status, int bo_vencido ){
@@ -7275,7 +7353,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " s.nome_subgrupoproduto , "
 				+ " pr.tp_produto , "
 				+ " NVL(saldo.almoxarifado,'-') almoxarifado, "
-				+ " NVL(saldo.estoque,0) estoque "
+				+ " NVL(saldo.estoque,0) estoque,"
+				+ " t.nome_tipoproduto "
 				+ " from produto pr "
 				+ " left join( "
 				+ " select "
@@ -7289,6 +7368,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " )saldo on saldo.produtoid = pr.produtoid  "
 				+ " inner join subgrupoproduto s on s.subgrupoprodutoid = pr.subgrupoprodutoid  "
 				+ " inner join grupoproduto g on g.grupoprodutoid = s.grupoprodutoid  "
+				+ " inner join tipoproduto t on t.tipoprodutoid = pr.tipoprodutoid"
 				+ " where (pr.tp_produto = '"+tipo+"' or '-1' = '"+tipo+"')"
 				+ " and (pr.produtoid = '"+produto+"' or '-1' = '"+produto+"')"
 				+ " and (g.grupoprodutoid = '"+grupo+"' or '-1' = '"+grupo+"') "
@@ -7308,6 +7388,7 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 			pr.setTipoproduto((String)row[4]);
 			pr.setAlmoxarifado((String)row[5]);
 			pr.setEstoque((BigDecimal)row[6]);
+			pr.setNome_tipoproduto((String)row[7]);
 			
 			list.add(pr);
 		}

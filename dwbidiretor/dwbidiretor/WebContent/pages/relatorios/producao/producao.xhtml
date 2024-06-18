@@ -174,12 +174,12 @@ function fullscreen2(){
 								<p:tabView dynamic="false" cache="false" id="tabview2">
 									<p:tab title="Gráfico" id="grafico2">
 									<p:barChart model="#{beanProducao.producao_anomes}" >
-									<p:ajax event="itemSelect" listener="#{beanProducao.itemSelect}" update=":form:tabview3:producaodia :form:tabview3:tabela3" />
+									<p:ajax event="itemSelect" listener="#{beanProducao.itemSelect}" update=":form:tabview3:producaodia :form:tabview3:tabela3 :form:producao" />
 									</p:barChart>
 									</p:tab>
 									<p:tab title="Dados" id="dados2">
 									<p:dataTable id="tabela2" value="#{beanProducao.lista}" var="lista" scrollable="true" scrollHeight="300" selection="#{beanProducao.producao}" selectionMode="single" rowKey="#{lista.setorid}">
-											<p:ajax event="rowSelect" listener="#{beanProducao.onRowSelect}" update=":form:tabview3:producaodia :form:tabview3:tabela3"/>
+											<p:ajax event="rowSelect" listener="#{beanProducao.onRowSelect}" update=":form:tabview3:producaodia :form:tabview3:tabela3 :form:producao"/>
 											
 											<p:column headerText="Ano" width="5%">
 												<h:outputText value="#{lista.ano}" />
@@ -228,10 +228,13 @@ function fullscreen2(){
 								<div class="box-body" >
 								<p:tabView dynamic="false" cache="false" id="tabview3">
 									<p:tab title="Gráfico" id="grafico3">
-									<p:barChart model="#{beanProducao.producao_dia}"  id="producaodia" />									
+									<p:barChart model="#{beanProducao.producao_dia}"  id="producaodia" >
+									<p:ajax event="itemSelect" listener="#{beanProducao.itemSelect2}" update=":form:producao" />
+									</p:barChart>									
 									</p:tab>
 									<p:tab title="Dados" id="dados3">
-									<p:dataTable id="tabela3" value="#{beanProducao.listadia}" var="lista" scrollable="true" scrollHeight="300">
+									<p:dataTable id="tabela3" value="#{beanProducao.listadia}" var="lista" scrollable="true" scrollHeight="300" selection="#{beanProducao.producaodia}" selectionMode="single" rowKey="#{lista.dia}">
+										<p:ajax event="rowSelect" listener="#{beanProducao.onRowSelect2}" update=":form:producao"/>
 											<p:column headerText="Dia" width="5%">
 												<h:outputText value="#{lista.dia}" />
 											</p:column>
@@ -252,6 +255,66 @@ function fullscreen2(){
 						
 						
 					</div>
+					
+					<p:separator></p:separator>
+					
+				
+						<h:commandLink value="Baixar em Excel">
+							<p:dataExporter type="xls" target="producao" fileName="producao" pageOnly="true"/>
+						</h:commandLink>
+						
+						<p:dataTable id="producao" var="itens"  value="#{beanProducao.listaproduto}"  scrollHeight="500" scrollable="true"  >
+						
+							<p:column headerText="Setor"  width="6%">
+								<h:outputText value="#{itens.setor}" />
+							</p:column>
+							
+							<p:column headerText="Ano" width="3%">
+								<h:outputText value="#{itens.ano}" />
+							</p:column>
+							
+							<p:column headerText="Mês"  width="3%">
+								<h:outputText value="#{itens.mes}" />
+							</p:column>
+							
+							<p:column headerText="Cod."  width="5%">
+								<h:outputText value="#{itens.produtoid}" >
+								<f:convertNumber minFractionDigits="0" locale="pt-BR" groupingUsed="false" />
+								</h:outputText>
+							</p:column>
+
+							<p:column  headerText="Produto" >
+								<h:outputText value="#{itens.nomeproduto}" />
+							</p:column>
+
+							<p:column  headerText="Qtde"  width="4%">
+								<h:outputText value="#{itens.quantidade}"  >
+						 			<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+						 		</h:outputText>
+						 		<f:facet name="footer">
+						 			<h:outputText value="#{beanProducao.qtdetotal}" />
+						 		</f:facet>
+							</p:column>
+							
+							<p:column headerText="Valor" width="8%">
+								<h:outputText value="#{itens.valor}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+								<f:facet name="footer">
+						 			<h:outputText value="#{beanProducao.valortotal}" />
+						 		</f:facet>
+							</p:column>
+							
+<!-- 							<p:columnGroup type="footer"> -->
+<!-- 								<p:row> -->
+<!-- 									<p:column colspan="8" style="text-align:right" -->
+<!-- 										footerText="Total:" /> -->
+<!-- 									<p:column footerText="#{beanPercas.qtdetotal}" /> -->
+<!-- 									<p:column footerText="#{beanPercas.valortotal}" /> -->
+<!-- 								</p:row> -->
+<!-- 							</p:columnGroup> -->
+							
+						</p:dataTable>
 				
 			</section>
 		</h:form>

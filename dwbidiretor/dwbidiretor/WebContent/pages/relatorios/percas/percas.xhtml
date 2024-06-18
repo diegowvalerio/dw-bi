@@ -276,14 +276,14 @@ function fullscreen2(){
 					
 					<p:separator></p:separator>
 					
-					<p:panelGrid columns="1" id="paineld" columnClasses="left,right" width="100%">
+				
 						<h:commandLink value="Baixar em Excel">
 							<p:dataExporter type="xls" target="defeito" fileName="defeitos" pageOnly="true"/>
 						</h:commandLink>
 						
-						<p:dataTable id="defeito" var="defeitos"  value="#{beanPercas.listaproduto}" >
+						<p:dataTable id="defeito" var="defeitos"  value="#{beanPercas.listaproduto}"  scrollHeight="500" scrollable="true"  >
 						
-							<p:column headerText="Setor" sortBy="#{defeitos.setor}" width="6%">
+							<p:column headerText="Setor"  width="6%">
 								<h:outputText value="#{defeitos.setor}" />
 							</p:column>
 							
@@ -295,26 +295,32 @@ function fullscreen2(){
 								<h:outputText value="#{defeitos.mes}" />
 							</p:column>
 							
-							<p:column headerText="Cod." sortBy="#{defeitos.produtoid}" width="5%">
+							<p:column headerText="Cod."  width="5%">
 								<h:outputText value="#{defeitos.produtoid}" >
 								<f:convertNumber minFractionDigits="0" locale="pt-BR" groupingUsed="false" />
 								</h:outputText>
 							</p:column>
 
-							<p:column  headerText="Produto" sortBy="#{defeitos.nomeproduto}">
+							<p:column  headerText="Produto" >
 								<h:outputText value="#{defeitos.nomeproduto}" />
 							</p:column>
 
-							<p:column  headerText="Qtde" sortBy="#{defeitos.quantidade}" width="4%">
+							<p:column  headerText="Qtde"  width="4%">
 								<h:outputText value="#{defeitos.quantidade}"  >
 						 			<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
 						 		</h:outputText>
+						 		<f:facet name="footer">
+						 			<h:outputText value="#{beanPercas.qtdetotal}" />
+						 		</f:facet>
 							</p:column>
 							
 							<p:column headerText="Valor" width="5%">
 								<h:outputText value="#{defeitos.valor}">
 									<f:convertNumber type="currency" currencySymbol="R$" />
 								</h:outputText>
+								<f:facet name="footer">
+						 			<h:outputText value="#{beanPercas.valortotal}" />
+						 		</f:facet>
 							</p:column>
 
 							<p:column  headerText="Cod. Tipo" width="3%">
@@ -325,17 +331,17 @@ function fullscreen2(){
 								<h:outputText value="#{defeitos.tipoperca}" />
 							</p:column>
 							
-							<p:columnGroup type="footer">
-								<p:row>
-									<p:column colspan="5" style="text-align:right"
-										footerText="Total:" />
-									<p:column footerText="#{beanPercas.qtdetotal}" />
-									<p:column footerText="#{beanPercas.valortotal}" />
-								</p:row>
-							</p:columnGroup>
+<!-- 							<p:columnGroup type="footer"> -->
+<!-- 								<p:row> -->
+<!-- 									<p:column colspan="8" style="text-align:right" -->
+<!-- 										footerText="Total:" /> -->
+<!-- 									<p:column footerText="#{beanPercas.qtdetotal}" /> -->
+<!-- 									<p:column footerText="#{beanPercas.valortotal}" /> -->
+<!-- 								</p:row> -->
+<!-- 							</p:columnGroup> -->
 							
 						</p:dataTable>
-					</p:panelGrid>
+					
 				
 			</section>
 		</h:form>

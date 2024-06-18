@@ -51,6 +51,7 @@ import br.com.dwbidiretor.classe.PercaProduto;
 import br.com.dwbidiretor.classe.PrazoPedido;
 import br.com.dwbidiretor.classe.Producao;
 import br.com.dwbidiretor.classe.ProducaoDia;
+import br.com.dwbidiretor.classe.ProducaoProduto;
 import br.com.dwbidiretor.classe.Produto;
 import br.com.dwbidiretor.classe.ProdutoEstoque;
 import br.com.dwbidiretor.classe.ProdutoRanking;
@@ -286,6 +287,7 @@ public interface DAOGenerico<E> {
 	//producao
 	public List<Producao> producao(String ano, String mes);
 	public List<ProducaoDia> producaodia(String ano, String mes, String setor, int i);
+	public List<ProducaoProduto> producaoproduto(String ano,String mes,String setor,String dia);
 	
 	//painel diretor
 	public List<Diretor_01> diretor_01(String ano, String mes);

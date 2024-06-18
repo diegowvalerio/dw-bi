@@ -16,6 +16,7 @@ public class ProdutoEstoque implements Serializable {
 	private String tipoproduto;
 	private String almoxarifado;
 	private BigDecimal estoque;
+	private String nome_tipoproduto;
 	
 	public ProdutoEstoque() {
 		super();
@@ -68,6 +69,14 @@ public class ProdutoEstoque implements Serializable {
 	}
 	public void setEstoque(BigDecimal estoque) {
 		this.estoque = estoque;
+	}
+
+	public String getNome_tipoproduto() {
+		return nome_tipoproduto;
+	}
+
+	public void setNome_tipoproduto(String nome_tipoproduto) {
+		this.nome_tipoproduto = nome_tipoproduto;
 	}
 	
 	

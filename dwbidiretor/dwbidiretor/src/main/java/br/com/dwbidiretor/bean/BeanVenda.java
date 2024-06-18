@@ -89,7 +89,7 @@ public class BeanVenda implements Serializable {
 		yAxis.setMax(10);
 
 		animatedModel2 = initBarModel();
-		animatedModel2.setTitle("Venda Ano x Mï¿½s");
+		animatedModel2.setTitle("Venda Ano x Mês");
 		animatedModel2.setAnimate(true);
 		animatedModel2.setLegendPosition("ne");
 		yAxis = animatedModel2.getAxis(AxisType.Y);
@@ -99,7 +99,7 @@ public class BeanVenda implements Serializable {
 		yAxis.setLabel("Valor");
 
 		Axis XAxis = animatedModel2.getAxis(AxisType.X);
-		XAxis.setLabel("Mï¿½s");
+		XAxis.setLabel("Mês");
 
 
 	}

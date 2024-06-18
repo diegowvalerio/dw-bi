@@ -111,7 +111,8 @@
 							<p:dataExporter type="xls" target="produtosestoque" fileName="produtos_saldo_estoque" pageOnly="true"/>
 						</h:commandLink>
 						
-						<p:dataTable id="produtosestoque" var="prd"  value="#{beanProdutoEstoque.listaproduto_estoque}"  resizableColumns="true" >
+						<p:dataTable id="produtosestoque" var="prd"  value="#{beanProdutoEstoque.listaproduto_estoque}"  resizableColumns="true" 
+						 allowUnsorting="true" sortMode="single" sortOrder="descending" sortBy="#{prd.estoque}" >
 						
 							<p:column headerText="Cód." width="5%"
 								sortBy="#{prd.produtoid}">
@@ -124,11 +125,11 @@
 								<h:outputText value="#{prd.nomeproduto}" />
 							</p:column>
 							
-							<p:column headerText="Grupo"  width="10%"> 
+							<p:column headerText="Grupo"  sortBy="#{prd.grupo}" width="10%"> 
 								<h:outputText value="#{prd.grupo}" />
 							</p:column>
 							
-							<p:column headerText="SubGrupo"  width="15%">
+							<p:column headerText="SubGrupo" sortBy="#{prd.subgrupo}"  width="15%">
 								<h:outputText value="#{prd.subgrupo}" />
 							</p:column>
 							
@@ -136,11 +137,15 @@
 								<h:outputText value="#{prd.tipoproduto}" />
 							</p:column>
 							
+							<p:column headerText="Classificação" width="8%">
+								<h:outputText value="#{prd.nome_tipoproduto}" />
+							</p:column>
+							
 							<p:column headerText="Estoque"  width="10%">
 								<h:outputText value="#{prd.almoxarifado}" />
 							</p:column>
 							
-							<p:column headerText="Saldo"  width="5%">
+							<p:column headerText="Saldo"  sortBy="#{prd.estoque}" width="5%">
 								<h:outputText value="#{prd.estoque}" >
 									<f:convertNumber minFractionDigits="0" locale="pt-BR"/>
 								</h:outputText>
