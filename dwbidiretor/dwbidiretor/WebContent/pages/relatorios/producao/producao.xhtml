@@ -233,8 +233,10 @@ function fullscreen2(){
 									</p:barChart>									
 									</p:tab>
 									<p:tab title="Dados" id="dados3">
+									
 									<p:dataTable id="tabela3" value="#{beanProducao.listadia}" var="lista" scrollable="true" scrollHeight="300" selection="#{beanProducao.producaodia}" selectionMode="single" rowKey="#{lista.dia}">
 										<p:ajax event="rowSelect" listener="#{beanProducao.onRowSelect2}" update=":form:producao"/>
+											<f:facet name="header">#{beanProducao.nome}</f:facet>
 											<p:column headerText="Dia" width="5%">
 												<h:outputText value="#{lista.dia}" />
 											</p:column>
@@ -264,7 +266,7 @@ function fullscreen2(){
 						</h:commandLink>
 						
 						<p:dataTable id="producao" var="itens"  value="#{beanProducao.listaproduto}"  scrollHeight="500" scrollable="true"  >
-						
+							<f:facet name="header">#{beanProducao.nome}</f:facet>
 							<p:column headerText="Setor"  width="6%">
 								<h:outputText value="#{itens.setor}" />
 							</p:column>

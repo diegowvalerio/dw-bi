@@ -4540,6 +4540,8 @@ public class DAOGenericoHibernate<E> implements DAOGenerico<E>, Serializable {
 				+ " p.produtoid , "
 				+ " p.nome_produto ";
 		
+		//System.out.println(sql);
+		
 		javax.persistence.Query query = (javax.persistence.Query) manager.createNativeQuery(sql);
 
 		List<Object[]> lista = query.getResultList();

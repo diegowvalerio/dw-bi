@@ -96,16 +96,17 @@ public class BeanProducao implements Serializable {
 		
 		ajustalistadia();
 		cria_producao_anomes();
+		producao = new Producao();
 		
 	}
 
 	public void itemSelect2(ItemSelectEvent event) {
 	producaodia = listadia.get(event.getItemIndex());
-	 
-	if(producao != null) {
-		listaproduto = servico.producaoproduto(ano, mes, producao.getSetorid().toString(), producaodia.getDia().toString());
-	}else {
+	
+	if(producao.getSetorid() == null) {
 		listaproduto = servico.producaoproduto(ano, mes,setorp, producaodia.getDia().toString());
+	}else {
+		listaproduto = servico.producaoproduto(ano, mes, producao.getSetorid().toString(), producaodia.getDia().toString());
 	}	 
  
 }
@@ -113,10 +114,10 @@ public class BeanProducao implements Serializable {
 	public void onRowSelect2(SelectEvent event) throws ParseException {
 		producaodia = (ProducaoDia) event.getObject();
 		
-		if(producaodia != null && producao != null) {
-			 listaproduto = servico.producaoproduto(ano, mes, producao.getSetorid().toString(), producaodia.getDia().toString());
+		if(producao.getSetorid() == null) {
+			listaproduto = servico.producaoproduto(ano, mes,setorp, producaodia.getDia().toString());
 		}else {
-			listaproduto = servico.producaoproduto(ano, mes, setorp, diap);
+			listaproduto = servico.producaoproduto(ano, mes, producao.getSetorid().toString(), producaodia.getDia().toString());
 		}
 	}
 	
