@@ -206,6 +206,9 @@ public class BeanMixProduto implements Serializable {
 		values.add(getQtde2023i());
 		labels.add("2023");
 		
+		values.add(getQtde2024i());
+		labels.add("2024");
+		
 		hbarDataSet.setData(values);
 		hbarDataSet.setFill(true);
 		hbarDataSet.setBackgroundColor("rgba(176, 224, 230)");
@@ -257,6 +260,9 @@ public class BeanMixProduto implements Serializable {
 		
 		values.add(getVl2023i());
 		labels.add("2023");
+		
+		values.add(getVl2024i());
+		labels.add("2024");
 		
 		hbarDataSet.setData(values);
 		hbarDataSet.setFill(true);
@@ -325,7 +331,13 @@ public class BeanMixProduto implements Serializable {
 		}
 		return t;
 	}
-	
+	public int getQtde2024i(){
+		int t = 0 ;
+		for(MixProduto m:lista) {
+			t = t + m.getQtde2024().intValue();
+		}
+		return t;
+	}
 	public float getVl2018i(){
 		float t = 0 ;
 		for(MixProduto m:lista) {
@@ -365,6 +377,13 @@ public class BeanMixProduto implements Serializable {
 		float t = 0 ;
 		for(MixProduto m:lista) {
 			t = t + m.getVl2023().floatValue();
+		}
+		return t;
+	}
+	public float getVl2024i(){
+		float t = 0 ;
+		for(MixProduto m:lista) {
+			t = t + m.getVl2024().floatValue();
 		}
 		return t;
 	}
@@ -409,6 +428,20 @@ public class BeanMixProduto implements Serializable {
 			t = t + m.getQtde2023().intValue();
 		}
 		return NumberFormat.getNumberInstance().format(t);
+	}
+	public String getQtde2024(){
+		int t = 0 ;
+		for(MixProduto m:lista) {
+			t = t + m.getQtde2024().intValue();
+		}
+		return NumberFormat.getNumberInstance().format(t);
+	}
+	public String getVl2024(){
+		float t = 0 ;
+		for(MixProduto m:lista) {
+			t = t + m.getVl2024().floatValue();
+		}
+		return NumberFormat.getCurrencyInstance().format(t);
 	}
 	public String getQtdetotal(){
 		int t = 0 ;

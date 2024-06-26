@@ -155,86 +155,98 @@ function my_ext(){
 							<p:dataExporter type="xls" target="mixp" fileName="mixprodutos" pageOnly="true"/>
 			</h:commandLink>
 								
-					<p:panelGrid columns="1" id="paineld" >
+					<h:panelGrid columns="1" id="paineld" >
 									
-						<p:dataTable id="mixp" var="mixs"  style="font-size:12px;" 
-							value="#{beanMixProduto.lista}"  scrollHeight="600" scrollable="true">
+						<p:dataTable id="mixp" var="mixs"  style="font-size:12px;" resizableColumns="true"
+							value="#{beanMixProduto.lista}"  scrollHeight="450" scrollable="true">
 											 
-           					<p:column headerText="Cód."  width="50" style="border-color: black;">
-                				<h:outputText value="#{mixs.codigoproduto}" />
+           					<p:column headerText="Cód."    style="border-color: black;">
+                				<h:outputText value="#{mixs.codigoproduto}" >
+									<f:convertNumber maxFractionDigits="15" groupingUsed="false" />
+								</h:outputText>
             				</p:column>
         					  						
-							<p:column headerText="Descrição" width="500"  style="border-color: black;">
+							<p:column headerText="Descrição"   style="border-color: black;" width="20%">
 								<h:outputText value="#{mixs.nomeproduto}" />
 							</p:column>
 							
-							<p:column headerText="Qtde 2018" style="border-color: black;background-color: #E0FFFF;" width="50">
+							<p:column headerText="Qtde 2018" style="border-color: black;background-color: #E0FFFF;"  >
 								<h:outputText value="#{mixs.qtde2018}" >
 								<f:convertNumber type="number" locale="pt-BR" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Qtde 2019" style="border-color: black;background-color: #E0FFFF;" width="50">
+							<p:column headerText="Qtde 2019" style="border-color: black;background-color: #E0FFFF;"  >
 								<h:outputText value="#{mixs.qtde2019}" >
 								<f:convertNumber type="number" locale="pt-BR" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Qtde 2020" style="border-color: black;background-color: #E0FFFF;" width="50">
+							<p:column headerText="Qtde 2020" style="border-color: black;background-color: #E0FFFF;"  >
 								<h:outputText value="#{mixs.qtde2020}" >
 								<f:convertNumber type="number" locale="pt-BR" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Qtde 2021" style="border-color: black;background-color: #E0FFFF;" width="50">
+							<p:column headerText="Qtde 2021" style="border-color: black;background-color: #E0FFFF;"  >
 								<h:outputText value="#{mixs.qtde2021}" >
 								<f:convertNumber type="number" locale="pt-BR" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Qtde 2022" style="border-color: black;background-color: #E0FFFF;" width="50">
+							<p:column headerText="Qtde 2022" style="border-color: black;background-color: #E0FFFF;"  >
 								<h:outputText value="#{mixs.qtde2022}" >
 								<f:convertNumber type="number" locale="pt-BR" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Qtde 2023" style="border-color: black;background-color: #E0FFFF;" width="50">
+							<p:column headerText="Qtde 2023" style="border-color: black;background-color: #E0FFFF;"  >
 								<h:outputText value="#{mixs.qtde2023}" >
 								<f:convertNumber type="number" locale="pt-BR" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Qtde Total" style="border-color: black;background-color: #B0E0E6;" width="50">
+							<p:column headerText="Qtde 2024" style="border-color: black;background-color: #E0FFFF;"  >
+								<h:outputText value="#{mixs.qtde2024}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Qtde Total" style="border-color: black;background-color: #B0E0E6;"  >
 								<h:outputText value="#{mixs.qtdetotal}" >
 								<f:convertNumber type="number" locale="pt-BR" />
 								</h:outputText>
 							</p:column>
 							
-							<p:column headerText="Valor 2018" style="border-color: black;background-color: #FAEBD7;" width="50">
+							<p:column headerText="Valor 2018" style="border-color: black;background-color: #FAEBD7;"  >
 								<h:outputText value="#{mixs.vl2018}" >
 								<f:convertNumber type="number" locale="pt-BR" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Valor 2019" style="border-color: black;background-color: #FAEBD7;" width="50">
+							<p:column headerText="Valor 2019" style="border-color: black;background-color: #FAEBD7;"  >
 								<h:outputText value="#{mixs.vl2019}" >
 								<f:convertNumber type="number" locale="pt-BR" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Valor 2020" style="border-color: black;background-color: #FAEBD7;" width="50">
+							<p:column headerText="Valor 2020" style="border-color: black;background-color: #FAEBD7;"  >
 								<h:outputText value="#{mixs.vl2020}" >
 								<f:convertNumber type="number" locale="pt-BR" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Valor 2021" style="border-color: black;background-color: #FAEBD7;" width="50">
+							<p:column headerText="Valor 2021" style="border-color: black;background-color: #FAEBD7;"  >
 								<h:outputText value="#{mixs.vl2021}" >
 								<f:convertNumber type="number" locale="pt-BR" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Valor 2022" style="border-color: black;background-color: #FAEBD7;" width="50">
+							<p:column headerText="Valor 2022" style="border-color: black;background-color: #FAEBD7;"  >
 								<h:outputText value="#{mixs.vl2022}" >
 								<f:convertNumber type="number" locale="pt-BR" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Valor 2023" style="border-color: black;background-color: #FAEBD7;" width="50">
+							<p:column headerText="Valor 2023" style="border-color: black;background-color: #FAEBD7;"  >
 								<h:outputText value="#{mixs.vl2023}" >
 								<f:convertNumber type="number" locale="pt-BR" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Valor Total" style="border-color: black;background-color: #FFDEAD;" width="70">
+							<p:column headerText="Valor 2024" style="border-color: black;background-color: #FAEBD7;"  >
+								<h:outputText value="#{mixs.vl2024}" >
+								<f:convertNumber type="number" locale="pt-BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Valor Total" style="border-color: black;background-color: #FFDEAD;" >
 								<h:outputText value="#{mixs.vltotal}" >
 								<f:convertNumber type="number" locale="pt-BR" />
 								</h:outputText>
@@ -251,6 +263,7 @@ function my_ext(){
 									<p:column footerText="#{beanMixProduto.qtde2021}"/>	
 									<p:column footerText="#{beanMixProduto.qtde2022}"/>	
 									<p:column footerText="#{beanMixProduto.qtde2023}"/>	
+									<p:column footerText="#{beanMixProduto.qtde2024}"/>	
 									<p:column footerText="#{beanMixProduto.qtdetotal}"/>
 									<p:column footerText="#{beanMixProduto.vl2018}"/>
 									<p:column footerText="#{beanMixProduto.vl2019}"/>
@@ -258,12 +271,13 @@ function my_ext(){
 									<p:column footerText="#{beanMixProduto.vl2021}"/>	
 									<p:column footerText="#{beanMixProduto.vl2022}"/>
 									<p:column footerText="#{beanMixProduto.vl2023}"/>
+									<p:column footerText="#{beanMixProduto.vl2024}"/>
 									<p:column footerText="#{beanMixProduto.vltotal}"/>					
 								</p:row>
             				</p:columnGroup>
             				
 						</p:dataTable>
-					</p:panelGrid>
+					</h:panelGrid>
 					
 					<p:separator></p:separator>
 										
